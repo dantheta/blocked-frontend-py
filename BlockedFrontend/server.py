@@ -159,13 +159,29 @@ def support():
 def check():
     return render_template('check.html')
 
-def run(config=None):
+@app.route('/__refresh')
+def refresh():
+    import subprocess
+    if not app.config['dev']:
+        return "Refresh target forbidden", 403
+
+    proc=subprocess.Popen(['git','pull','github','master'],
+        chdir=os.path.dirname(os.path.basename(sys.argv[0])),
+        shell=True
+        )
+    proc.wait()
+    return "OK"
+
+
+
+def run(config=None, dev=False):
     if config:
         apiconf = dict(config.items('api'))
         app.config['api'] = ApiClient(
             apiconf['email'],
             apiconf['secret']
             )
+        app.config['dev_mode'] = dev
     else:
         app.config['api'] = None
 
