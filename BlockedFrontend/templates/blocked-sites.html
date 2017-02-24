@@ -1,0 +1,111 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = "Websites being blocked by UK Internet Service Providers" %}
+
+
+{%block banner_text %}
+
+A great many websites are being blocked mistakenly as a result of government imposed filters used by Internet Service Providers.  We need your help to check and unblock these websites.  This is something anyone with a web browser can assist with.
+
+{% endblock %}
+
+{% block body %}
+<!-- template BasicPage -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
+<div class="row">
+<div class="col-md-4">
+
+<form class="form category-form" action="#">
+<div class="form-group">
+<label for="category">What category of site do you want to check?</label>
+<select name="category"  id="category" style="width: 100%">
+
+</select>
+</div>
+</form>
+
+</div>
+<div class="pagemenu col-md-4 col-md-offset-4">
+
+<div><a href="#">Browse a random category</a></div>
+<div><a href="#">Check a specific website</a></div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+
+<table class="table table-striped table-hover" id="results">
+<!-- 
+<tr>
+  <td><h4>+item.url</h4><div>+item.url+</div></td>
+  <td class="reveal"><a href="#">Visit Site</a><a href="#">View site report</a></td>
+  <td><a href="#" class="btn btn-default">Request Unblock</a></td>
+</tr>
+-->
+</table>
+
+</div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+  function formatresult(obj) {
+   if (obj.loading) return obj.text;
+   var out = $('<div><strong>' + obj.text + ' (' + obj.total_blocked_url_count + ') ' 
+    + '</strong><div>' + obj.display_name + '</div></div>');
+  
+    return out;
+  
+  }
+  
+  $(document).ready(function(){
+    $('#category').select2({
+      placeholder: "Search for a category...",
+      minimumInputLength: 2,
+      templateResult: formatresult,
+      ajax: {
+        url: "/apicategorysearch",
+        dataType: 'json',
+        delay: 250,
+        dropdownCssClass: "bigdrop",
+        allowClear: true,
+        data: function(term, page) {
+          return term;
+        },
+        processResults: function(data) {
+          return { results: 
+            $.map(data.categories, function(obj) { obj.text = obj.name; return obj; }) 
+          };
+        },   
+      }
+    });
+    $('#category').on('select2:select', function(e) {
+        var id = $('#category').val();
+        $('#results').empty();
+        $.getJSON('/apicategoryresults?cat='+id, function (data, status, xhr) {
+            $.each(data.sites, function(index, item) {
+              additem(item);
+            });
+        });
+    });
+    $.getJSON('/apicategoryresults?cat=1', function(data, status, xhr) {
+        $.each(data.sites, function (index, item) {
+            additem(item);
+        });
+    });
+  });
+  function additem(item) {
+    var node = $('<tr><td><h4>'+item.title+'</h4><div>'+item.url+'</div></td>' +
+        '<td class="reveal"><a href="'+item.url+'" target="_blank">Visit Site</a>' +
+        '<a href="/site?url=' + item.url + '">View site report</a></td>' +
+        '<td><a class="btn btn-default" href="/unblock?url=' + item.url + '">Request Unblock</a></td></tr>');
+    $('#results').append(node);
+  }
+{% endblock %}
+
+{% block page_js_libs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
+
+{% endblock %}

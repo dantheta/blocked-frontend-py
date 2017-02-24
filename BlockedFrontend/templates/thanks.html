@@ -1,0 +1,33 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = "Thank you." %}
+
+{%block body %}
+
+
+<div class="row">
+<div class="col-md-7">
+
+<p>
+
+{% if u %}
+  {% if v == '1' %}
+  You will need to validate your email address before your unblocking requests are sent.<br />
+  Please check your email and follow the validation link.
+  {% else %}
+  Your unblock request was successfully submitted and 
+  will be sent to the appropriate ISPs.
+  {% endif %}
+{% else %}
+  Your feedback was successfully submitted.
+{% endif %}
+
+</p>
+
+<div><a href="/blocked-sites">Unblock another site</a></div>
+</div>
+</div>
+
+{{ chunks.contactForm('shaded-row') }}
+
+{% endblock %}

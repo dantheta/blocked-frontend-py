@@ -1,0 +1,163 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:600|Roboto');
+
+h1, .pctlg {
+  margin-top: 0px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 46px;
+  line-height: 52px;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 40px;
+}
+
+
+h3, .pctdesc, .pagerole {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 34px;
+}
+
+a {
+  text-decoration: underline;
+  color: #111;
+}
+
+a.btn {
+    text-decoration: none;
+    }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.shaded-row {
+  background-color: #eee;
+}
+
+.menurow {
+  margin-top: 1.5em;
+  margin-bottom: 3em;
+}
+
+.statsrow {
+  padding-top: 4em;
+  padding-bottom: 4em;
+}
+
+.row {
+  padding-top: 0.5em;
+  padding-bottom: 2em;
+}
+.menu {
+  text-align: right;
+}
+
+.menu a {
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 2em;
+  color: #111;    
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.menu a.current {
+  color: #c11;
+}
+
+.menu a:active {
+  color: #c11;
+}
+
+.pagemenu div {
+  margin-bottom: 0.2em;
+}
+
+.pctlg {
+  font-size: 64px;
+}
+
+form {
+margin-top: 2em;
+}
+
+#results * a {
+    text-decoration: none;
+    }
+
+#results h4 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 35em;
+
+    }
+
+#results * td.reveal a {
+    display: none;
+}
+
+#results * tr:hover td.reveal a {
+    display: inline-block;
+    text-decoration: underline;
+    text-transform: uppercase;
+    padding-right: 1em;
+
+}
+#results * td {
+    width: 40%;
+    vertical-align: middle;
+    text-align: center;
+    }
+#results * td:last-child {
+    width: 20%;
+    text-align: right;
+    }
+#results * td:first-child {
+    text-align: left;
+    }
+
+#active * td {
+    background-color: #ffeded;
+}
+
+#past * td {
+    background-color: #ececec;
+    }
+
+.showmore {
+    text-align: right;
+}
+
+.pagerole {
+    margin-bottom: 0.5em;
+    }
+
+.url {
+    color: grey;
+    text-overflow: ellipsis;
+}
+
+a.btn-primary, button, input.btn-primary, a.btn-default{
+  text-transform: uppercase;
+  background-color: black;
+  background-image: none;
+  border-radius: 0px;
+
+}
+
+input.form-control, textarea.form-control, input[type=checkbox] {
+  border-color: black;
+  border-radius: 0px;
+}

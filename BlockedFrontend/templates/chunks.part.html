@@ -1,0 +1,56 @@
+
+{%macro contactForm(rowClass="") %}
+
+<div class="row {{rowClass}}">
+<div class="col-md-6">
+<h3>Stay informed</h3>
+
+<p>If you would like to stay informed about ORG's work in censorship, privacy, copyright reform and defending human rights and digital civil liberties, please sign up for our newsletter.</p>
+
+<form method="POST" action="/signup" class="form">
+
+<div class="form-group">
+  <label for="email">Email address</label>
+  <div class="input-group">
+  <input class="form-control" id="email" name="email" />
+  <span class="input-group-btn">
+    <input type="submit" class="btn btn-primary" value="Sign up" />
+  </span>
+  </div>
+</div>
+
+</form>
+
+</div>
+</div>
+{%endmacro%}
+
+{%macro contactChunk() %}
+
+<div class="col-md-4">
+<h3>Support the project</h3>
+
+<p>You can join the Open Rights Group or <a href="#">donate</a> to <a href="/support">support the project</a>.</p>
+
+<p>With your help we can build bigger and better tools to fight censorship and surveillance</p>
+</div>
+
+<div class="col-md-4">
+<h3>Share your story</h3>
+
+<p>Is a site being blocked affecting your personally?</p>
+
+<p>We are collecting <a href="#">personal stories</a> to help petition ISPs.</p>
+
+</div>
+
+<div class="col-md-4">
+<h3>Spread the word</h3>
+
+<p>Share the Blocked project on social media and help raise awareness of censorship</p>
+
+_twitter_ _facebook_
+
+</div>
+
+{%endmacro%}

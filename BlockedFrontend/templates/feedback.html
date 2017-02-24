@@ -1,0 +1,76 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = domain %}
+{%set pagerole = "Give feedback on a blocked site" %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-6">
+
+<h2>Your feedback</h2>
+
+<form action="/submit-unblock" method="POST">
+<input type="hidden" name="url" value="{{url}}" />
+<input type="hidden" name="networks" value="ORG" />
+<input type="hidden" name="email" value="user@blocked.org.uk" />
+<input type="hidden" name="name" value="website user" />
+<input type="hidden" name="checkedsite" value="checkedsite" />
+
+<p>Please check all that apply to this site</p>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="broken" name="report_type" />
+    Site is a broken or dead link
+  </label>
+</div>
+</div>
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="adult" name="report_type" />
+    Site is adult in nature and is correctly blocked
+  </label>
+</div>
+</div>
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="squat" name="report_type" />
+    Site is a squatted domain
+  </label>
+</div>
+</div>
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="sale" name="report_type" />
+    Site domain is for sale
+  </label>
+</div>
+</div>
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="redirect" name="report_type" />
+    URL redirects to another site
+  </label>
+</div>
+</div>
+<div class="form-group">
+  <label for="message">Any further feedback?</label>
+  <div class="control-group">
+    <textarea  rows="6" type="text" name="message" id="message" class="form-control"></textarea>
+  </div>
+</div>
+
+<div class="form-group">
+  <input type="submit" class="btn btn-primary" value="Send feedback" />
+</div>
+
+</form>
+
+  </div>
+</div>
+{% endblock %}

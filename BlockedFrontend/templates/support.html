@@ -1,0 +1,57 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = "Taking action against censorship from Internet Service Providers" %}
+
+{% block banner_text %}
+Blocked is a free tool.  It was generously funded by our sponsors and Open
+Rights Group (ORG) supporters, and it was built by ORG volunteers.  We
+welcome support of this project, and there are lots of ways you can help.
+{% endblock %}
+
+{% block body %}
+<!-- template BasicPage -->
+<div class="row">
+<div class="col-md-6">
+<h3>Spread the word</h3>
+
+<p></p>
+</div>
+<div class="col-md-6">
+<h3>Write to your MP</h3>
+
+<p></p>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-6">
+<h3>Donate</h3>
+
+<p></p>
+</div>
+<div class="col-md-6">
+<h3>Join the Open Rights Group</h3>
+
+<p></p>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-6">
+<h3>Volunteer</h3>
+
+<p></p>
+</div>
+</div>
+
+
+{{ chunks.contactForm('shaded-row') }}
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+
+
+{% endblock %}

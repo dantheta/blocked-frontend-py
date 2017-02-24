@@ -1,0 +1,92 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = domain %}
+{%set pagerole = "Site blocking report" %}
+
+{%block banner_text%}
+{%endblock%}
+
+{%block page_menu%}
+  <div><a href="/sites">Browse more blocked sites</a></div>
+  <div><a href="/check">Check if a site is being blocked</a></div>
+{% endblock %}
+
+{% block page_script %}
+  $(document).ready(function(){
+    $('#pastblock').hide();
+    $('.showmore a').click(function() {
+      $('#pastblock').slideDown();
+    });
+  });
+{% endblock %}
+
+{%block body %}
+
+<h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
+
+<table id="active" class="table">
+<tr>
+  <th>ISP</th>
+  <th>Last Checked</th>
+  <th>Last Blocked</th>
+  <th></th>
+</tr>
+{% for item in results %}
+{% if item.status == 'blocked' %}
+<tr>
+  <td>{{item.network_name}}</td>
+  <td>{{item.status_timestamp}}</td>
+  <td>{{item.last_blocked_timestamp}}</td>
+  <td></td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+
+<div class="showmore">
+  <a href="#">View past blocks for this site</a>
+</div>
+
+<div id="pastblock">
+<h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
+
+<table id="past" class="table">
+<tr>
+  <th>ISP</th>
+  <th>Last Checked</th>
+  <th>Last Blocked</th>
+  <th></th>
+</tr>
+{% for item in results %}
+{% if not item.status == 'blocked' and item.last_blocked_timestamp %}
+<tr>
+  <td>{{item.network_name}}</td>
+  <td>{{item.status_timestamp}}</td>
+  <td>{{item.last_blocked_timestamp}}</td>
+  <td></td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+
+</div>
+
+<div>
+<a href="/unblock?url={{url}}" class="btn btn-primary">Request unblock</a>
+</div>
+
+<div class="row">
+<div class="col-md-4">
+<h4>Tell us about this site</h4>
+<p>For example: is the link dead, or is the domain being squatted?
+<a href="/feedback?url={{url}}">Please let us know</a>
+</p>
+</div>
+</div>
+
+
+<div class="row shaded-row">
+{{chunks.contactChunk() }}
+</div>
+
+{% endblock %}

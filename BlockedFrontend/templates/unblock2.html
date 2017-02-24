@@ -1,0 +1,54 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = domain %}
+{%set pagerole = "Request a site be unblocked" %}
+
+{%block banner_text%}
+{%endblock%}
+
+{%block body %}
+<div class="row">
+<div class="col-md-7">
+
+<form action="/submit-unblock" class="form" method="POST">
+<input type="hidden" name="url" value="{{data.url}}" />
+<input type="hidden" name="name" value="{{data.name}}" />
+<input type="hidden" name="email" value="{{data.email}}" />
+<input type="hidden" name="report_type" value="unblock" />
+<h2>About the site</h2>
+<div class="form-group">
+  <label for="message">Please explain why this site should be unblocked</label>
+  <div class="control-group">
+    <textarea  rows="6" type="text" name="message" id="message" class="form-control"></textarea>
+  </div>
+</div>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="1" name="checkedsite"/>
+    I confirm that the site is not squatted, abandoned, a redirected URL or 
+    unsuitable for under 18s.
+  </label>
+</div>
+</div>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="contact" name="contact" />
+    Please email me if the site is unblocked
+  </label>
+</div>
+</div>
+
+<div class="form-group">
+<input type="submit" class="btn btn-primary" value="Submit unblock request" />
+</div>
+
+</form>
+
+</div>
+</div>
+
+{%endblock%}

@@ -1,0 +1,65 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = domain %}
+{%set pagerole = "Request a site be unblocked" %}
+
+{%block banner_text%}
+{%endblock%}
+
+{%block body %}
+<!-- template: BasicPage -->
+<div class="row">
+<div class="col-md-7">
+
+<form action="/unblock2" method="POST" class="form">
+<input type="hidden" name="url" value="{{url}}" />
+<h2>Your details</h2>
+<div class="form-group">
+  <label for="name">Name</label>
+  <div class="control-group">
+    <input  type="text" placeholder="" name="name" id="name" class="form-control" />
+  </div>
+</div>
+<div class="form-group">
+  <label for="email">Email address</label>
+  <div class="control-group">
+    <input  type="text" placeholder="" name="email" id="email" class="form-control" />
+  </div>
+</div>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="user" name="user"/>
+    I am a user of {{url}}
+  </label>
+</div>
+</div>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="owner" name="owner" />
+    I am the owner of {{url}}
+  </label>
+</div>
+</div>
+
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="bystander" name="bystander" />
+    I am someone who cares about censorship
+  </label>
+</div>
+</div>
+
+<div class="form-group">
+<input type="submit" class="btn btn-primary" value="Continue" />
+</div>
+
+</form>
+
+</div>
+</div>
+{% endblock %}

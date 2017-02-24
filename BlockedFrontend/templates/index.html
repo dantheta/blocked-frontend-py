@@ -1,0 +1,62 @@
+{% extends "BasicPage.html" %}
+
+
+{%set pagetitle = "Take action against web censorship" %}
+
+
+{%block banner_text%}
+  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
+  
+  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
+
+{%endblock%}
+
+{%block page_menu%}
+
+<div><a href="/blocked-sites">Browse blocked sites by category</a></div>
+  <div><a href="/check">Check if a site is being blocked</a></div>
+  <div><a href="/unblock">Get a site unblocked</a></div>
+
+{% endblock %}
+
+{%block body %}
+<!-- template BasicPage -->
+<div class="row shaded-row">
+<div class="col-md-7">
+<h2>The scale of the problem</h2>
+
+<p>Based on the <a href="#">100,000 most popular sites</a> according to Alexa, this is the scale of the censorship problem in the UK...</p>
+
+</div>
+</div>
+
+<div class="row shaded-row statsrow">
+<div class="col-md-4">
+<div class="pctlg">21%</div>
+<div class="pctdesc">of sites are being blocked by strict ISP filters</div>
+</div>
+<div class="col-md-4">
+<div class="pctlg">12%</div>
+<div class="pctdesc">of sites are being blocked by default ISP filters</div>
+</div>
+</div>
+
+<div class="row shaded-row">
+<div class="col-md-12">
+
+<p>For more information on ISP filters, see our <a href="#">FAQ</a>.</p>
+
+<p>See a breakdown of these numbers <a href="#">by Internet Service Provider.</a></p>
+</div>
+</div>
+
+<div class="row">
+{{chunks.contactChunk() }}
+</div>
+
+
+{{ chunks.contactForm("shaded-row") }}
+
+
+
+{%endblock%}

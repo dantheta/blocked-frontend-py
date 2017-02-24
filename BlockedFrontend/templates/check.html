@@ -1,0 +1,32 @@
+{% extends "BasicPage.html" %}
+
+{%set pagetitle = "Taking action against censorship from Internet Service Providers" %}
+
+{% block body %}
+
+<!-- template: BasicPage -->
+<div class="row">
+<div class="col-md-7">
+
+<form action="/site" method="GET" class="form form-inline">
+
+<div class="form-group">
+  <label for="url">Website address</label>
+  <div class="control-group">
+    <div class="input-group">
+    <input style="width: 36em" type="text" placeholder="http://" name="url" id="url" class="form-control" />
+    <span class="input-group-btn">
+    <input type="submit" value="Check site" class="btn btn-primary" />
+    </span>
+    </div>
+  </div>
+</div>
+
+</form>
+
+</div>
+</div>
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+{% endblock %}
