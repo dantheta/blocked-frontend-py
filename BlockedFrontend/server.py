@@ -74,6 +74,7 @@ def site():
         results = results,
         activecount=activecount,
         pastcount=pastcount,
+        domain= get_domain(request.args['url']),
         url = request.args['url']
         )
 
