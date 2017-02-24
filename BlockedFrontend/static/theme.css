@@ -62,13 +62,12 @@ body {
 }
 
 .menu a {
+  font-family: 'Poppins', sans-serif;
   text-transform: uppercase;
   text-decoration: none;
   display: inline-block;
   margin-right: 2em;
   color: #111;    
-
-  font-family: 'Roboto', sans-serif;
   font-size: 14px;
 }
 
@@ -78,6 +77,10 @@ body {
 
 .menu a:active {
   color: #c11;
+}
+
+.pagemenu {
+  font-family: 'Poppins', sans-serif;
 }
 
 .pagemenu div {
@@ -149,6 +152,10 @@ margin-top: 2em;
     text-overflow: ellipsis;
 }
 
+.url a {
+    color: grey;
+}
+
 a.btn-primary, button, input.btn-primary, a.btn-default{
   text-transform: uppercase;
   background-color: black;
@@ -161,3 +168,5 @@ input.form-control, textarea.form-control, input[type=checkbox] {
   border-color: black;
   border-radius: 0px;
 }
+
+
