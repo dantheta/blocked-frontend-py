@@ -159,15 +159,16 @@ def support():
 def check():
     return render_template('check.html')
 
-@app.route('/__refresh')
-def refresh():
+@app.route('/refresh')
+@app.route('/refresh/<remote>')
+def refresh(remote='github'):
     import subprocess
-    if not app.config['dev']:
+    if not app.config['dev_mode']:
         return "Refresh target forbidden", 403
 
-    proc=subprocess.Popen(['git','pull','github','master'],
-        chdir=os.path.dirname(os.path.basename(sys.argv[0])),
-        shell=True
+    print remote
+    proc=subprocess.Popen(['git','pull',remote,'master'],
+        cwd=os.path.dirname(os.path.abspath(sys.argv[0])),
         )
     proc.wait()
     return "OK"
@@ -181,8 +182,8 @@ def run(config=None, dev=False):
             apiconf['email'],
             apiconf['secret']
             )
-        app.config['dev_mode'] = dev
     else:
         app.config['api'] = None
+    app.config['dev_mode'] = dev
 
     app.run(host='0.0.0.0', debug=True)
