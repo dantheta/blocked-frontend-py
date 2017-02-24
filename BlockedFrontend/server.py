@@ -45,6 +45,7 @@ def apicategoryresults():
         'id': request.args['cat'],
         'recurse': 1,
         'active': 1,
+        'page': request.args.get('page', 0),
         }
     req['signature'] = app.config['api'].sign(req, ['id'])
     data = app.config['api'].GET('category/sites/'+request.args['cat'],

@@ -45,12 +45,18 @@ A great many websites are being blocked mistakenly as a result of government imp
 </tr>
 -->
 </table>
+<div>
+<button class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page </button>
+<button class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></button>
+
 
 </div>
 </div>
 {% endblock %}
 
 {% block page_script %}
+  var catid = 1;
+  var off = 0;
   function formatresult(obj) {
    if (obj.loading) return obj.text;
    var out = $('<div><strong>' + obj.text + ' (' + obj.total_blocked_url_count + ') ' 
@@ -59,8 +65,30 @@ A great many websites are being blocked mistakenly as a result of government imp
     return out;
   
   }
+  function getsites(id) {
+    $.getJSON('/apicategoryresults?cat='+id+'&page='+off, function (data, status, xhr) {
+        $('#results').empty();
+        $.each(data.sites, function(index, item) {
+          additem(item);
+        });
+    });
+  }
+  $('#nextpage').click(function() {
+    off = off+20;
+    $('#prevpage').show();
+    getsites(catid);
+  });
+  $('#prevpage').click(function() {
+    off = off-20;
+    if (off == 0) {
+        $('#prevpage').hide();
+    }
+    getsites(catid);
+  });
+
   
   $(document).ready(function(){
+    $('#prevpage').hide();
     $('#category').select2({
       placeholder: "Search for a category...",
       minimumInputLength: 2,
@@ -83,12 +111,10 @@ A great many websites are being blocked mistakenly as a result of government imp
     });
     $('#category').on('select2:select', function(e) {
         var id = $('#category').val();
-        $('#results').empty();
-        $.getJSON('/apicategoryresults?cat='+id, function (data, status, xhr) {
-            $.each(data.sites, function(index, item) {
-              additem(item);
-            });
-        });
+        catid = id;
+        off=0;
+        $('#prevpage').hide();
+        getsites(catid);
     });
     $.getJSON('/apicategoryresults?cat=1', function(data, status, xhr) {
         $.each(data.sites, function (index, item) {
