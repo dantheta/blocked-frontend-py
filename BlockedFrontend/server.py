@@ -6,7 +6,7 @@ import urlparse
 
 from api import ApiClient
 
-from flask import Flask,render_template,request,jsonify,redirect
+from flask import Flask,render_template,request,jsonify,redirect,url_for
 app = Flask(__name__)
 
 def get_domain(url):
@@ -159,11 +159,11 @@ def support():
 def check():
     return render_template('check.html')
 
-@app.route('/refresh')
-@app.route('/refresh/<remote>')
+@app.route('/_refresh')
+@app.route('/_refresh/<remote>')
 def refresh(remote='github'):
     import subprocess
-    if not app.config['dev_mode']:
+    if app.config['dev_key'] != request.args['key']:
         return "Refresh target forbidden", 403
 
     print remote
@@ -173,9 +173,12 @@ def refresh(remote='github'):
     proc.wait()
     return "OK"
 
+@app.route('/random')
+def random():
+    data = app.config['api'].GET('ispreport/candidates',{'count':1})
+    return redirect(url_for('site', url=data['results'][0]))
 
-
-def run(config=None, dev=False):
+def run(config=None, dev=None):
     if config:
         apiconf = dict(config.items('api'))
         app.config['api'] = ApiClient(
@@ -184,6 +187,7 @@ def run(config=None, dev=False):
             )
     else:
         app.config['api'] = None
-    app.config['dev_mode'] = dev
+    app.config['dev_key'] = dev
+    print dev
 
     app.run(host='0.0.0.0', debug=True)
