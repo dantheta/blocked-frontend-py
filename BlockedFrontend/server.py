@@ -23,8 +23,14 @@ def get_timestamp():
     return time.strftime('%Y-%m-%d %H:%M:%S')
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/<page>')
+def index(page='index'):
+    if '/' in page:
+        return "Invalid page name", 400
+    try:
+        return render_template(page + '.html')
+    except:
+        return "Page not found", 404
 
 @app.route('/blocked-sites')
 def blocked_sites():
@@ -147,18 +153,6 @@ def thanks():
         v=request.args.get('v'),
         )
         
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-@app.route('/support')
-def support():
-    return render_template('support.html')
-
-@app.route('/check')
-def check():
-    return render_template('check.html')
-
 @app.route('/_refresh')
 @app.route('/_refresh/<remote>')
 def refresh(remote='github'):
