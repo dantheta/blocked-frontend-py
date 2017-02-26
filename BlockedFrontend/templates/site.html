@@ -35,8 +35,8 @@
 {% if item.status == 'blocked' %}
 <tr>
   <td>{{item.network_name}}</td>
-  <td>{{item.status_timestamp}}</td>
-  <td>{{item.last_blocked_timestamp}}</td>
+  <td>{{item.status_timestamp|fmtime}}</td>
+  <td>{{item.last_blocked_timestamp|fmtime}}</td>
   <td></td>
 </tr>
 {% endif %}
@@ -61,8 +61,8 @@
 {% if not item.status == 'blocked' and item.last_blocked_timestamp %}
 <tr>
   <td>{{item.network_name}}</td>
-  <td>{{item.status_timestamp}}</td>
-  <td>{{item.last_blocked_timestamp}}</td>
+  <td>{{item.status_timestamp|fmtime}}</td>
+  <td>{{item.last_blocked_timestamp|fmtime}}</td>
   <td></td>
 </tr>
 {% endif %}

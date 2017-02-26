@@ -2,12 +2,19 @@
 import os
 import sys
 import time
+import datetime
 import urlparse
 
 from api import ApiClient
 
 from flask import Flask,render_template,request,jsonify,redirect,url_for
 app = Flask(__name__)
+
+@app.template_filter('fmtime')
+def fmtime(s):
+    return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
+        .strftime('%d %B, %Y at %H:%M')
+    
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
