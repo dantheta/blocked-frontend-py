@@ -36,22 +36,27 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div class="row sitelistrow">
 <div class="col-md-12">
 
-<div id="loading">Loading... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></div>
-<div id="categoryname">Blocked sites in all categories</div>
-<div id="blockcount"></div>
+<div id="categoryname">Blocked sites in category "{{ data.name }}"</div>
+<div id="blockcount">{{ data.total_blocked_url_count }} blocked sites</div>
 
 <table class="table table-hover" id="results">
-<!-- 
+{% for item in data.sites %}
 <tr>
-  <td><h4>+item.url</h4><div>+item.url+</div></td>
-  <td class="reveal"><a href="#">Visit Site</a><a href="#">View site report</a></td>
-  <td><a href="#" class="btn btn-default">Request Unblock</a></td>
+  <td><h4>{{item.title}}</h4><div>{{item.url}}</div></td>
+  <td class="reveal">
+    <a href="{{item.url}}" rel="nofollow" target="_blank">Visit Site</a>
+    <a href="{{ url_for('site', url=item.url) }}">View site report</a>
+  </td>
+  <td><a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a></td>
 </tr>
--->
+{% endfor %}
 </table>
 <div id="paging">
-<button class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page </button>
-<button class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></button>
+{% if page > 0 %}
+<a href="{{ url_for('blocked_sites', category=category, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page </a>
+{% endif %}
+{{ page }}
+<a href="{{ url_for('blocked_sites', category=category, page=page+1) }}" class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></a>
 <div>
 
 
@@ -70,30 +75,6 @@ A great many websites are being blocked mistakenly as a result of government imp
     return out;
   
   }
-  function getsites(id) {
-    $('#loading').show();
-    $.getJSON('/apicategoryresults?cat='+id+'&page='+off, function (data, status, xhr) {
-        $('#results').empty();
-        $.each(data.sites, function(index, item) {
-          additem(item);
-        });
-        $('#categoryname').text("Sites in category \"" + data.name + "\"");
-        $('#blockcount').text(data.total_blocked_url_count + " blocked sites");
-        $('#loading').hide();
-    });
-  }
-  $('#nextpage').click(function() {
-    off = off+1;
-    $('#prevpage').show();
-    getsites(catid);
-  });
-  $('#prevpage').click(function() {
-    off = off-1;
-    if (off == 0) {
-        $('#prevpage').hide();
-    }
-    getsites(catid);
-  });
 
   
   $(document).ready(function(){
@@ -121,19 +102,9 @@ A great many websites are being blocked mistakenly as a result of government imp
     $('#category').on('select2:select', function(e) {
         var id = $('#category').val();
         catid = id;
-        off=0;
-        $('#prevpage').hide();
-        getsites(catid);
+        window.location.href='/blocked-sites/'+catid;
     });
-    getsites(catid);
   });
-  function additem(item) {
-    var node = $('<tr><td><h4>'+item.title+'</h4><div>'+item.url+'</div></td>' +
-        '<td class="reveal"><a href="'+item.url+'" target="_blank">Visit Site</a>' +
-        '<a href="/site?url=' + item.url + '">View site report</a></td>' +
-        '<td><a class="btn btn-default" href="/unblock?url=' + item.url + '">Request Unblock</a></td></tr>');
-    $('#results').append(node);
-  }
 {% endblock %}
 
 {% block page_js_libs %}

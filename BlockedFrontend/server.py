@@ -7,7 +7,7 @@ import urlparse
 
 from api import ApiClient
 
-from flask import Flask,render_template,request,jsonify,redirect,url_for
+from flask import Flask,render_template,request,jsonify,redirect,url_for,g
 app = Flask(__name__)
 
 @app.template_filter('fmtime')
@@ -40,16 +40,27 @@ def index(page='index'):
         return "Page not found", 404
 
 @app.route('/blocked-sites')
-def blocked_sites():
-    return render_template('blocked-sites.html')
+@app.route('/blocked-sites/<int:category>')
+@app.route('/blocked-sites/<int:category>/<int:page>')
+def blocked_sites(category=1, page=0):
+    req = {
+        'id': category,
+        'recurse': 1,
+        'active': 1,
+        'page': page,
+        }
+    req['signature'] = api.sign(req, ['id'])
+    data = api.GET('category/sites/'+str(category),
+        req)
+    return render_template('blocked-sites.html',data=data, page=page, category=category)
 
 @app.route('/apicategorysearch')
 def apicategorysearch():
     req = {
         'search': request.args['term']
     }
-    req['signature'] = app.config['api'].sign(req, ['search'])
-    data = app.config['api'].GET('category/search', req, decode=False)
+    req['signature'] = api.sign(req, ['search'])
+    data = api.GET('category/search', req, decode=False)
     return data
 
 @app.route('/apicategoryresults')
@@ -60,8 +71,8 @@ def apicategoryresults():
         'active': 1,
         'page': request.args.get('page', 0),
         }
-    req['signature'] = app.config['api'].sign(req, ['id'])
-    data = app.config['api'].GET('category/sites/'+request.args['cat'],
+    req['signature'] = api.sign(req, ['id'])
+    data = api.GET('category/sites/'+request.args['cat'],
         req, decode=False)
     return data
 
@@ -73,8 +84,8 @@ def site(url=None):
     req = {
         'url': url,
         }
-    req['signature'] = app.config['api'].sign(req, ['url'])
-    data = app.config['api'].GET('status/url', req)
+    req['signature'] = api.sign(req, ['url'])
+    data = api.GET('status/url', req)
     activecount=0
     pastcount=0
     results = [x for x in data['results'] if x['isp_active'] ]
@@ -124,9 +135,6 @@ def submit_unblock():
     if not request.form.get('checkedsite'):
         return None #TODO: message template
     form = request.form
-    print form
-    api = app.config['api']
-
     req = {
         'url': form['url'],
         'reporter': {
@@ -179,18 +187,19 @@ def refresh(remote='github'):
 
 @app.route('/random')
 def random():
-    data = app.config['api'].GET('ispreport/candidates',{'count':1})
+    data = api.GET('ispreport/candidates',{'count':1})
     return redirect(url_for('site', url=data['results'][0]))
 
 def run(config=None, dev=None):
+    global api
     if config:
         apiconf = dict(config.items('api'))
-        app.config['api'] = ApiClient(
+        api = ApiClient(
             apiconf['email'],
             apiconf['secret']
             )
     else:
-        app.config['api'] = None
+        api = None
     app.config['dev_key'] = dev
     print dev
 
