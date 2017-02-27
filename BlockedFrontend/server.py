@@ -66,9 +66,12 @@ def apicategoryresults():
     return data
 
 @app.route('/site')
-def site():
+@app.route('/site/<path:url>')
+def site(url=None):
+    if not url:
+        url = request.args['url']
     req = {
-        'url': request.args['url'],
+        'url': url,
         }
     req['signature'] = app.config['api'].sign(req, ['url'])
     data = app.config['api'].GET('status/url', req)
@@ -87,8 +90,8 @@ def site():
         results = results,
         activecount=activecount,
         pastcount=pastcount,
-        domain= get_domain(request.args['url']),
-        url = request.args['url']
+        domain= get_domain(url),
+        url = url
         )
 
 @app.route('/unblock')
