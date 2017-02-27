@@ -1,12 +1,17 @@
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:600|Roboto');
 
-h1, .pctlg {
+h1, .pctlg, #blockcount {
   margin-top: 0px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 46px;
   line-height: 52px;
+}
+
+#blockcount {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 h2 {
@@ -39,7 +44,7 @@ body {
   line-height: 26px;
 }
 
-.shaded-row {
+.shaded-row, .sitelistrow {
   background-color: #eee;
 }
 
@@ -61,7 +66,7 @@ body {
   text-align: right;
 }
 
-.menu a {
+.menu a, #categoryname {
   font-family: 'Poppins', sans-serif;
   text-transform: uppercase;
   text-decoration: none;
@@ -69,6 +74,10 @@ body {
   margin-right: 2em;
   color: #111;    
   font-size: 14px;
+}
+
+#categoryname {
+  color: darkgray;
 }
 
 .menu a.current {
@@ -156,7 +165,7 @@ margin-top: 2em;
     color: grey;
 }
 
-a.btn-primary, button, input.btn-primary, a.btn-default{
+a.btn-primary, button.btn-primary, input.btn-primary, a.btn-default{
   text-transform: uppercase;
   background-color: black;
   background-image: none;
@@ -193,3 +202,7 @@ input.form-control, textarea.form-control, input[type=checkbox] {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
 }
+
+#paging {
+    margin-top: 1.5em;
+    }

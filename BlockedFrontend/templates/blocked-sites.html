@@ -33,12 +33,14 @@ A great many websites are being blocked mistakenly as a result of government imp
 </div>
 </div>
 
-<div class="row">
+<div class="row sitelistrow">
 <div class="col-md-12">
 
 <div id="loading">Loading... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></div>
+<div id="categoryname">Blocked sites in all categories</div>
+<div id="blockcount"></div>
 
-<table class="table table-striped table-hover" id="results">
+<table class="table table-hover" id="results">
 <!-- 
 <tr>
   <td><h4>+item.url</h4><div>+item.url+</div></td>
@@ -47,7 +49,7 @@ A great many websites are being blocked mistakenly as a result of government imp
 </tr>
 -->
 </table>
-<div>
+<div id="paging">
 <button class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page </button>
 <button class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></button>
 <div>
@@ -75,16 +77,18 @@ A great many websites are being blocked mistakenly as a result of government imp
         $.each(data.sites, function(index, item) {
           additem(item);
         });
+        $('#categoryname').text("Sites in category \"" + data.name + "\"");
+        $('#blockcount').text(data.total_blocked_url_count + " blocked sites");
         $('#loading').hide();
     });
   }
   $('#nextpage').click(function() {
-    off = off+20;
+    off = off+1;
     $('#prevpage').show();
     getsites(catid);
   });
   $('#prevpage').click(function() {
-    off = off-20;
+    off = off-1;
     if (off == 0) {
         $('#prevpage').hide();
     }
