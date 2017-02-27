@@ -76,6 +76,10 @@ body {
   font-size: 14px;
 }
 
+.menu a.active {
+  color: #a00;
+}
+
 #categoryname {
   color: darkgray;
 }

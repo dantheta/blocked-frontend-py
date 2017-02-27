@@ -43,6 +43,8 @@
 {% endfor %}
 </table>
 
+{% if pastcount > 0 %}
+
 <div class="showmore">
   <a href="#">View past blocks for this site</a>
 </div>
@@ -70,6 +72,7 @@
 </table>
 
 </div>
+{% endif %}
 
 <div>
 <a href="/unblock?url={{url}}" class="btn btn-primary">Request unblock</a>

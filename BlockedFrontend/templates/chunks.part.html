@@ -54,3 +54,14 @@ _twitter_ _facebook_
 </div>
 
 {%endmacro%}
+
+{% macro main_menu() %}
+<a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
+<a class="{{ 'active' if request.path.startswith(
+('/blocked-sites','/site','/check','/unblock','/thanks')
+) else ''}}" href="/blocked-sites">Blocked Sites</a>
+<a class="{{ 'active' if request.path == '/about' else ''}}" href="/about">About</a>
+<a class="{{ 'active' if request.path == '/support' else ''}}" href="/support">Support</a>
+<a class="{{ 'active' if request.path == '/contact' else ''}}" href="/contact">Contact</a>
+
+{% endmacro %}
