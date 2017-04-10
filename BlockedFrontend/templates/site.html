@@ -29,7 +29,6 @@
   <th>ISP</th>
   <th>Last Checked</th>
   <th>Last Blocked</th>
-  <th></th>
 </tr>
 {% for item in results %}
 {% if item.status == 'blocked' %}
@@ -37,7 +36,6 @@
   <td>{{item.network_name}}</td>
   <td>{{item.status_timestamp|fmtime}}</td>
   <td>{{item.last_blocked_timestamp|fmtime}}</td>
-  <td></td>
 </tr>
 {% endif %}
 {% endfor %}
@@ -60,14 +58,14 @@
   <th></th>
 </tr>
 {% for item in results %}
-{% if not item.status == 'blocked' and item.last_blocked_timestamp %}
+  {% if not item.status == 'blocked' and item.last_blocked_timestamp %}
 <tr>
   <td>{{item.network_name}}</td>
   <td>{{item.status_timestamp|fmtime}}</td>
   <td>{{item.last_blocked_timestamp|fmtime}}</td>
   <td></td>
 </tr>
-{% endif %}
+  {% endif %}
 {% endfor %}
 </table>
 
@@ -75,7 +73,12 @@
 {% endif %}
 
 <div>
-<a href="/unblock?url={{url}}" class="btn btn-primary">Request unblock</a>
+
+{% if can_unblock == true %}
+<a href="{{ url_for('unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
+{% else %}
+<a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
+{% endif %}
 
 <a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
 </div>
@@ -84,7 +87,7 @@
 <div class="col-md-4">
 <h4>Tell us about this site</h4>
 <p>For example: is the link dead, or is the domain being squatted?
-<a href="/feedback?url={{url}}">Please let us know</a>
+<a href="{{ url_for('feedback', url=url) }}">Please let us know</a>
 </p>
 </div>
 </div>

@@ -13,9 +13,10 @@
 
 {%block page_menu%}
 
-<div><a href="/blocked-sites">Browse blocked sites by category</a></div>
-  <div><a href="/check">Check if a site is being blocked</a></div>
-  <div><a href="/unblock">Get a site unblocked</a></div>
+<div><a href="{{ url_for('blocked_sites') }}">Browse blocked sites by category</a></div>
+  <div><a href="{{ url_for('check') }}">Check if a site is being blocked</a></div>
+  <div><a href="{{ url_for('check') }}">Get a site unblocked</a></div>
+  <div><a href="{{ url_for('random') }}">Take action: Report sites</a></div>
 
 {% endblock %}
 
