@@ -1,11 +1,10 @@
 
 import os
 import sys
-import time
 import datetime
-import urlparse
 
 from api import ApiClient
+from utils import *
 
 from flask import Flask,render_template,request,jsonify,redirect,url_for,g
 app = Flask(__name__)
@@ -24,18 +23,6 @@ def fmtime(s):
         .strftime('%d %B, %Y at %H:%M')
     
 
-def get_domain(url):
-    p = urlparse.urlsplit(url)
-    return p.netloc
-
-def make_list(item):
-    if isinstance(item, list):
-        return item
-    else:
-        return [item]
-
-def get_timestamp():
-    return time.strftime('%Y-%m-%d %H:%M:%S')
 
 @app.route('/')
 @app.route('/<page>')
