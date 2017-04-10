@@ -31,7 +31,7 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div><a href="#">Check a specific website</a></div>
 
 </div>
-</div>
+</div> <!-- /.row -->
 
 <div class="row sitelistrow">
 <div class="col-md-12">
@@ -47,21 +47,26 @@ A great many websites are being blocked mistakenly as a result of government imp
     <a href="{{item.url}}" rel="nofollow" target="_blank">Visit Site</a>
     <a href="{{ url_for('site', url=item.url) }}">View site report</a>
   </td>
-  <td><a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a></td>
+  <td>
+  {% if item.last_reported == None %}
+  <a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a>
+  {% else %}
+  <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
+  {% endif %}
+  </td>
 </tr>
 {% endfor %}
 </table>
 <div id="paging">
 {% if page > 0 %}
-<a href="{{ url_for('blocked_sites', category=category, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page </a>
+<a href="{{ url_for('blocked_sites', category=category, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page</a>
 {% endif %}
-{{ page }}
 <a href="{{ url_for('blocked_sites', category=category, page=page+1) }}" class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></a>
 <div>
 
 
 </div>
-</div>
+</div> <!-- /.sitelistrow -->
 {% endblock %}
 
 {% block page_script %}
@@ -78,7 +83,6 @@ A great many websites are being blocked mistakenly as a result of government imp
 
   
   $(document).ready(function(){
-    $('#prevpage').hide();
     $('#category').select2({
       placeholder: "Search for a category...",
       minimumInputLength: 2,
