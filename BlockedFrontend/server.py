@@ -22,8 +22,7 @@ def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
     
-
-
+# static page routing
 @app.route('/')
 @app.route('/<page>')
 def index(page='index'):
@@ -45,8 +44,7 @@ def blocked_sites(category=1, page=0):
         'page': page,
         }
     req['signature'] = api.sign(req, ['id'])
-    data = api.GET('category/sites/'+str(category),
-        req)
+    data = api.GET('category/sites/'+str(category), req)
     return render_template('blocked-sites.html',data=data, page=page, category=category)
 
 @app.route('/apicategorysearch')
