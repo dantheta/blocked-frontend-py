@@ -14,4 +14,4 @@ def make_list(item):
         return [item]
 
 def get_timestamp():
-    return time.strftime('%Y-%m-%d %H:%M:%S')
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
