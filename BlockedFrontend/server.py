@@ -56,18 +56,19 @@ def apicategorysearch():
     data = api.GET('category/search', req, decode=False)
     return data
 
-@app.route('/apicategoryresults')
-def apicategoryresults():
+@app.route('/random')
+def random():
+    data = api.GET('ispreport/candidates',{'count':1})
+    return redirect(url_for('site', url=data['results'][0]))
+
+@app.route('/random-category')
+def random_category():
     req = {
-        'id': request.args['cat'],
-        'recurse': 1,
-        'active': 1,
-        'page': request.args.get('page', 0),
+        'count': 1
         }
-    req['signature'] = api.sign(req, ['id'])
-    data = api.GET('category/sites/'+request.args['cat'],
-        req, decode=False)
-    return data
+    req['signature'] = api.sign(req, ['count'])
+    data = api.GET('category/random', req)
+    return redirect(url_for('blocked_sites', category=data['id']))
 
 @app.route('/site')
 @app.route('/site/<path:url>')
@@ -81,10 +82,13 @@ def site(url=None):
     data = api.GET('status/url', req)
     activecount=0
     pastcount=0
+    can_unblock = False
     results = [x for x in data['results'] if x['isp_active'] ]
     for item in results:
         if item['status'] == 'blocked':
             activecount += 1
+            if not item['last_report_timestamp']:
+                can_unblock = True
         else:
             if item['last_blocked_timestamp']:
                 pastcount += 1
@@ -94,7 +98,8 @@ def site(url=None):
         results = results,
         activecount=activecount,
         pastcount=pastcount,
-        domain= get_domain(url),
+        can_unblock=can_unblock,
+        domain=get_domain(url),
         url = url
         )
 
@@ -148,6 +153,7 @@ def submit_unblock():
     req['auth']['signature'] = api.sign(req,  ['url','date'])
     print req
     data = api.POST_JSON('ispreport/submit', req)
+    print data
     if 'ORG' in form.get('networks',[]):
         return redirect('/thanks?f=1')
     else:
@@ -163,6 +169,7 @@ def thanks():
         f=request.args.get('f'),
         v=request.args.get('v'),
         )
+
         
 @app.route('/_refresh')
 @app.route('/_refresh/<remote>')
@@ -177,10 +184,6 @@ def refresh(remote='github'):
     proc.wait()
     return "OK"
 
-@app.route('/random')
-def random():
-    data = api.GET('ispreport/candidates',{'count':1})
-    return redirect(url_for('site', url=data['results'][0]))
 
 def run():
 
