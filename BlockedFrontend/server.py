@@ -10,6 +10,14 @@ from api import ApiClient
 from flask import Flask,render_template,request,jsonify,redirect,url_for,g
 app = Flask(__name__)
 
+app.config.from_object('BlockedFrontend.default_settings')
+app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
+
+api = ApiClient(
+    app.config['API_EMAIL'],
+    app.config['API_SECRET']
+    )
+
 @app.template_filter('fmtime')
 def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
@@ -175,10 +183,9 @@ def thanks():
 @app.route('/_refresh/<remote>')
 def refresh(remote='github'):
     import subprocess
-    if app.config['dev_key'] != request.args['key']:
+    if app.config['UPDATE_PASSWORD'] != request.args['key']:
         return "Refresh target forbidden", 403
 
-    print remote
     proc=subprocess.Popen(['git','pull',remote,'master'],
         cwd=os.path.dirname(os.path.abspath(sys.argv[0])),
         )
@@ -190,17 +197,6 @@ def random():
     data = api.GET('ispreport/candidates',{'count':1})
     return redirect(url_for('site', url=data['results'][0]))
 
-def run(config=None, dev=None):
-    global api
-    if config:
-        apiconf = dict(config.items('api'))
-        api = ApiClient(
-            apiconf['email'],
-            apiconf['secret']
-            )
-    else:
-        api = None
-    app.config['dev_key'] = dev
-    print dev
+def run():
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')

@@ -2,3 +2,4 @@
 frontend.live.ini
 *.swp
 .ssh
+config.py
