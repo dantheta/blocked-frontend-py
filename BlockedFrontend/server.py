@@ -30,7 +30,7 @@ def index(page='index'):
         return "Invalid page name", 400
     try:
         return render_template(page + '.html')
-    except:
+    except Exception as exc:
         return "Page not found", 404
 
 @app.route('/blocked-sites')
@@ -45,7 +45,13 @@ def blocked_sites(category=1, page=0):
         }
     req['signature'] = api.sign(req, ['id'])
     data = api.GET('category/sites/'+str(category), req)
-    return render_template('blocked-sites.html',data=data, page=page, category=category)
+    extra = {}
+    if data['total_blocked_url_count'] < 100:
+        data2 = api.GET('category/'+str(category), req)
+        extra['parentid'] =  data2['parents'][-1][0]
+        extra['parentname'] =  data2['parents'][-1][1]
+
+    return render_template('blocked-sites.html',data=data, page=page, category=category, **extra)
 
 @app.route('/apicategorysearch')
 def apicategorysearch():
@@ -151,9 +157,7 @@ def submit_unblock():
     if 'networks' in form:
         req['networks'] = make_list(form['networks'])
     req['auth']['signature'] = api.sign(req,  ['url','date'])
-    print req
     data = api.POST_JSON('ispreport/submit', req)
-    print data
     if 'ORG' in form.get('networks',[]):
         return redirect('/thanks?f=1')
     else:

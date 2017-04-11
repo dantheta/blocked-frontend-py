@@ -17,7 +17,6 @@ class ApiClient(object):
     def GET(self, url, data,decode=True):
         data['email'] = self.username
         req = requests.get(self.API + url, params=data)
-        print req.content
         if decode:
             return req.json()
         else:
