@@ -16,6 +16,8 @@ api = ApiClient(
     app.config['API_EMAIL'],
     app.config['API_SECRET']
     )
+if 'API' in app.config:
+    api.API = app.config['API']
 
 @app.template_filter('fmtime')
 def fmtime(s):
