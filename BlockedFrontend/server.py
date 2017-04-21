@@ -10,7 +10,8 @@ from flask import Flask,render_template,request,jsonify,redirect,url_for,g
 app = Flask(__name__)
 
 app.config.from_object('BlockedFrontend.default_settings')
-app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
+if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
+    app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
 
 api = ApiClient(
     app.config['API_EMAIL'],
