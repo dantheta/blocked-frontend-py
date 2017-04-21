@@ -28,6 +28,7 @@ class ApiClient(object):
             raise APIError(*exc.args)
 
     def POST(self, url, data):
+        data['email'] = self.username
         try:
             req = requests.post(self.API + url, data=data)
             return req.json()

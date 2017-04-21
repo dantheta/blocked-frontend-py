@@ -7,73 +7,87 @@
 {%endblock%}
 
 {%block page_menu%}
-  <div><a href="/sites">Browse more blocked sites</a></div>
-  <div><a href="/check">Check if a site is being blocked</a></div>
+  <div><a href="{{ url_for('blocked_sites') }}">Browse more blocked sites</a></div>
+  <div><a href="{{ url_for('check') }}">Check if a site is being blocked</a></div>
 {% endblock %}
 
 {% block page_script %}
   $(document).ready(function(){
     $('#pastblock').hide();
-    $('.showmore a').click(function() {
+    $('#allresults').hide();
+
+    $('#showpast').click(function() {
       $('#pastblock').slideDown();
+      return false;
+    });
+    $('#showallresults').click(function(){
+      $('#pastblock').slideDown();
+      $('#allresults').slideDown();
+      return false;
     });
   });
 {% endblock %}
+
+{%macro results_table(id, results, show_lastblocked=True, show_category=False) %}
+<table id="{{ id }}" class="table results-table">
+<tr>
+  <th>ISP</th>
+  <th>Last Checked</th>
+  {% if show_category %}
+    <th>Category</th>
+  {% else %}
+    {% if show_lastblocked %}
+    <th>Last Blocked</th>
+    {% else %}
+    <th></th>
+    {% endif %}
+    
+  {% endif %}
+</tr>
+{% for item in results %}
+<tr>
+  <td>{{item.network_name}}</td>
+  <td>{{item.status_timestamp|fmtime}}</td>
+  {% if show_category %}
+    <td>{{item.category}}</td>
+  {% else %}
+    <td>{{show_lastblocked and (item.last_blocked_timestamp|fmtime) or ''}}</td>
+  {% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{%endmacro%}
+
 
 {%block body %}
 
 <h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
 
-<table id="active" class="table">
-<tr>
-  <th>ISP</th>
-  <th>Last Checked</th>
-  <th>Last Blocked</th>
-</tr>
-{% for item in results %}
-{% if item.status == 'blocked' %}
-<tr>
-  <td>{{item.network_name}}</td>
-  <td>{{item.status_timestamp|fmtime}}</td>
-  <td>{{item.last_blocked_timestamp|fmtime}}</td>
-</tr>
-{% endif %}
-{% endfor %}
-</table>
+{{results_table('active', results_blocked, show_category=True) }}
 
 {% if pastcount > 0 %}
 
 <div class="showmore">
-  <a href="#">View past blocks for this site</a>
+  <a href="#" id="showpast">View past blocks for this site</a>
+  <a href="#" id="showallresults">Show all results</a>
 </div>
 
 <div id="pastblock">
 <h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
 
-<table id="past" class="table">
-<tr>
-  <th>ISP</th>
-  <th>Last Checked</th>
-  <th>Last Blocked</th>
-  <th></th>
-</tr>
-{% for item in results %}
-  {% if not item.status == 'blocked' and item.last_blocked_timestamp %}
-<tr>
-  <td>{{item.network_name}}</td>
-  <td>{{item.status_timestamp|fmtime}}</td>
-  <td>{{item.last_blocked_timestamp|fmtime}}</td>
-  <td></td>
-</tr>
-  {% endif %}
-{% endfor %}
-</table>
+{{ results_table('past', results_past) }}
 
 </div>
 {% endif %}
 
-<div>
+<div id="allresults">
+<h3>All results</h3>
 
+{{ results_table('all', results_all, False) }}
+</div>
+
+<div> <!-- actions -->
 {% if can_unblock == true %}
 <a href="{{ url_for('unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% else %}

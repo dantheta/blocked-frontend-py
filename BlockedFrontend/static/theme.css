@@ -152,9 +152,17 @@ margin-top: 2em;
     background-color: #ececec;
     }
 
+#allresults * td {
+    background-color: #edffed;
+    }
+
 .showmore {
     text-align: right;
 }
+
+.showmore a {
+    margin-left: 2em;
+    }
 
 .pagerole {
     margin-bottom: 0.5em;
@@ -210,3 +218,11 @@ input.form-control, textarea.form-control, input[type=checkbox] {
 #paging {
     margin-top: 1.5em;
     }
+
+.results-table th {
+    width: 30%;
+}
+
+.results-table th:first-child {
+    width: 40%;
+}
