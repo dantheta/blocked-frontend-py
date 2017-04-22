@@ -29,6 +29,8 @@ logging.basicConfig(level=logging.INFO)
 #blueprints
 from unblock import unblock_pages
 app.register_blueprint(unblock_pages)
+from reload import reload_blueprint
+app.register_blueprint(reload_blueprint)
 
 @app.before_request
 def hook_api():
@@ -168,18 +170,6 @@ def check_post():
 
 
         
-@app.route('/_refresh')
-@app.route('/_refresh/<remote>')
-def refresh(remote='github'):
-    import subprocess
-    if app.config['UPDATE_PASSWORD'] != request.args['key']:
-        return "Refresh target forbidden", 403
-
-    proc=subprocess.Popen(['git','pull',remote,'master'],
-        cwd=os.path.dirname(os.path.abspath(sys.argv[0])),
-        )
-    proc.wait()
-    return "OK"
 
 
 def run():
