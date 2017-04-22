@@ -118,6 +118,35 @@ def check_post():
     }
     req['signature'] = request.api.sign(req, ['url'])
     data = request.api.POST('submit/url', req)
-    print data
+    if data['queued'] == True:
+        return render_template('site.html',
+            results_blocked=[], results_past=[], results_all=[],
+            activecount=0,
+            pastcount=0,
+            can_unblock=None,
+            domain=get_domain(request.form['url']),
+            url=request.form['url'],
+            md5=data['hash'],
+            live=true
+            )
     return redirect(url_for('.site', url=request.form['url']))
+
+@category_pages.route('/stream-results')
+def stream_results():
+    from flask import Response
+    #hash = request.form['hash']
+    url = request.args['url']
+    
+    req = {
+        'url': url,
+        'timeout': 20,
+        }
+    req['date'] = request.api.timestamp()
+    req['signature'] = request.api.sign(req, ['url','date'])
+    return Response(
+        (row for row in request.api.GET(
+            'stream/results', req, _stream=True 
+            )
+        )
+    )
 

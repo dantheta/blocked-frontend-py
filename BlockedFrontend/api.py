@@ -1,6 +1,8 @@
 
 import json
 import logging
+import datetime
+
 from signing import RequestSigner
 
 import requests
@@ -19,14 +21,19 @@ class ApiClient(object):
         self.signer = RequestSigner(self.secret)
         self.sign = self.signer.get_signature
 
+    def timestamp(self):
+        return datetime.datetime.utcnow().strftime(
+            '%Y%m%d-%H:%M:%S'
+            )
 
-    def GET(self, url, data,decode=True):
+    def GET(self, url, data,decode=True, _stream=False):
         data['email'] = self.username
         try:
-            req = requests.get(self.API + url, params=data)
+            req = requests.get(self.API + url, params=data, stream=_stream)
             logger.info("Status: %s", req.status_code)
-            print repr(req.content)
-            if decode:
+            if _stream:
+                return req.iter_lines()
+            elif decode:
                 return req.json()
             else:
                 return req.content

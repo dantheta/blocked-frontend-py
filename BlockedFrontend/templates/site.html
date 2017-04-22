@@ -63,8 +63,8 @@
 
 
 {%block body %}
-
-<h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
+<h3><span id="activecount">{{activecount if activecount > 0 else 'No'}}</span> active block
+<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</span></h3>
 
 {{results_table('active', results_blocked, show_category=True) }}
 
@@ -78,7 +78,8 @@
 
 {% if pastcount > 0 %}
 <div id="pastblock">
-<h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
+<h3><span id="pastcount">{{pastcount if pastcount > 0 else 'No'}}</span> past block
+<span id="pastcountplural">{{ '' if pastcount == 1 else 's' }}</span></h3>
 
 {{ results_table('past', results_past) }}
 
