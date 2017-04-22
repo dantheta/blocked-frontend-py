@@ -8,9 +8,9 @@ category_pages = Blueprint('category', __name__)
 
 
 @category_pages.route('/check', methods=['GET'])
-@category_pages.route('/check/live', methods=['GET'])
-def check():
-    return render_template('check.html', live = (request.path == '/check/live'))
+@category_pages.route('/check/<mode>', methods=['GET'])
+def check(mode=None):
+    return render_template('check.html', live = (mode == 'live'))
 
 @category_pages.route('/blocked-sites')
 @category_pages.route('/blocked-sites/<int:category>')
@@ -81,12 +81,15 @@ def site(url=None):
     data = request.api.GET('status/url', req)
     activecount=0
     pastcount=0
-    can_unblock = False
+    can_unblock = None
     results = [x for x in data['results'] if x['isp_active'] ]
     for item in results:
         if item['status'] == 'blocked':
             activecount += 1
-            if not item['last_report_timestamp']:
+            if item['last_report_timestamp']:
+                if can_unblock is None:
+                    can_unblock = False
+            else:
                 can_unblock = True
         else:
             if item['last_blocked_timestamp']:

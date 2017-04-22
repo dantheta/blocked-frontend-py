@@ -13,6 +13,7 @@
 
 {% block page_script %}
   $(document).ready(function(){
+{% if activecount > 0 %}
     $('#pastblock').hide();
     $('#allresults').hide();
 
@@ -26,6 +27,7 @@
       return false;
     });
   });
+{% endif %}
 {% endblock %}
 
 {%macro results_table(id, results, show_lastblocked=True, show_category=False) %}
@@ -92,7 +94,7 @@
 <div> <!-- actions -->
 {% if can_unblock == true %}
 <a href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
-{% else %}
+{% elif can_unblock == false %}
 <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
 {% endif %}
 
