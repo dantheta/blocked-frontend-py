@@ -89,7 +89,7 @@
 
 <div> <!-- actions -->
 {% if can_unblock == true %}
-<a href="{{ url_for('unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
+<a href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% else %}
 <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
 {% endif %}
@@ -101,7 +101,7 @@
 <div class="col-md-4">
 <h4>Tell us about this site</h4>
 <p>For example: is the link dead, or is the domain being squatted?
-<a href="{{ url_for('feedback', url=url) }}">Please let us know</a>
+<a href="{{ url_for('unblock.feedback', url=url) }}">Please let us know</a>
 </p>
 </div>
 </div>

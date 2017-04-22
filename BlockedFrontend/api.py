@@ -25,11 +25,13 @@ class ApiClient(object):
         try:
             req = requests.get(self.API + url, params=data)
             logger.info("Status: %s", req.status_code)
+            print repr(req.content)
             if decode:
                 return req.json()
             else:
                 return req.content
         except Exception as exc:
+            raise
             raise APIError(*exc.args)
 
     def POST(self, url, data):

@@ -10,7 +10,7 @@
   </td>
   <td>
   {% if item.last_reported is none %}
-  <a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a>
+  <a class="btn btn-default" href="{{ url_for('unblock.unblock', url=item.url) }}">Request Unblock</a>
   {% else %}
   <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
   {% endif %}
