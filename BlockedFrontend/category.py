@@ -44,7 +44,7 @@ def sites_search(search, page=0):
 @category_pages.route('/sites', methods=['POST'])
 def sites_search_post():
     search = request.form['search']
-    return redirect(url_for('sites_search', search=search))
+    return redirect(url_for('.sites_search', search=search))
 
 @category_pages.route('/apicategorysearch')
 def apicategorysearch():
@@ -58,7 +58,7 @@ def apicategorysearch():
 @category_pages.route('/random')
 def random():
     data = request.api.GET('ispreport/candidates',{'count':1})
-    return redirect(url_for('site', url=data['results'][0]))
+    return redirect(url_for('.site', url=data['results'][0]))
 
 @category_pages.route('/random-category')
 def random_category():
@@ -67,7 +67,7 @@ def random_category():
         }
     req['signature'] = request.api.sign(req, ['count'])
     data = request.api.GET('category/random', req)
-    return redirect(url_for('blocked_sites', category=data['id']))
+    return redirect(url_for('.blocked_sites', category=data['id']))
 
 @category_pages.route('/site')
 @category_pages.route('/site/<path:url>')
@@ -109,12 +109,12 @@ def site(url=None):
 @category_pages.route('/check', methods=['POST'])
 def check_post():
     if request.form['submit'] == 'false':
-        return redirect(url_for('site', url=request.form['url']))
+        return redirect(url_for('.site', url=request.form['url']))
     req = {
         'url': request.form['url'],
     }
     req['signature'] = request.api.sign(req, ['url'])
     data = request.api.POST('submit/url', req)
     print data
-    return redirect(url_for('site', url=request.form['url']))
+    return redirect(url_for('.site', url=request.form['url']))
 

@@ -7,8 +7,8 @@
 {%endblock%}
 
 {%block page_menu%}
-  <div><a href="{{ url_for('blocked_sites') }}">Browse more blocked sites</a></div>
-  <div><a href="{{ url_for('check') }}">Check if a site is being blocked</a></div>
+  <div><a href="{{ url_for('.blocked_sites') }}">Browse more blocked sites</a></div>
+  <div><a href="{{ url_for('.check') }}">Check if a site is being blocked</a></div>
 {% endblock %}
 
 {% block page_script %}
