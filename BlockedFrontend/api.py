@@ -1,8 +1,12 @@
 
 import json
+import logging
 from signing import RequestSigner
 
 import requests
+
+
+logger = logging.getLogger('blocked.api')
 
 
 class ApiClient(object):
@@ -17,6 +21,7 @@ class ApiClient(object):
     def GET(self, url, data,decode=True):
         data['email'] = self.username
         req = requests.get(self.API + url, params=data)
+        logger.info("Status: %s", req.status_code)
         if decode:
             return req.json()
         else:

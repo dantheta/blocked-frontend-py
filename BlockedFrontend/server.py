@@ -1,6 +1,7 @@
 
 import os
 import sys
+import logging
 import datetime
 
 from api import ApiClient
@@ -18,6 +19,8 @@ api = ApiClient(
     )
 if 'API' in app.config:
     api.API = app.config['API']
+
+logging.basicConfig(level=logging.INFO)
 
 @app.template_filter('fmtime')
 def fmtime(s):
