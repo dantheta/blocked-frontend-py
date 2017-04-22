@@ -4,7 +4,6 @@ import sys
 import logging
 import datetime
 
-import jinja2
 from api import ApiClient
 from utils import *
 
@@ -29,10 +28,15 @@ logging.basicConfig(level=logging.INFO)
 #blueprints
 from category import category_pages
 app.register_blueprint(category_pages)
+
 from unblock import unblock_pages
 app.register_blueprint(unblock_pages)
+
 from reload import reload_blueprint
 app.register_blueprint(reload_blueprint)
+
+from cms import cms_pages
+app.register_blueprint(cms_pages)
 
 @app.before_request
 def hook_api():
@@ -45,19 +49,6 @@ def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
     
-# static page routing
-@app.route('/')
-@app.route('/<page>')
-def index(page='index'):
-    if '/' in page:
-        return "Invalid page name", 400
-    try:
-        return render_template(page + '.html')
-    except jinja2.TemplateNotFound:
-        abort(404)
-    except Exception as exc:
-        print repr(exc)
-        abort(500)
 
 def run():
 
