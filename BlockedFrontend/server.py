@@ -8,7 +8,9 @@ import jinja2
 from api import ApiClient
 from utils import *
 
-from flask import Flask,render_template,request,jsonify,redirect,url_for,g
+from flask import Flask, render_template, request, jsonify, redirect, \
+    url_for, g, abort
+
 app = Flask(__name__)
 
 app.config.from_object('BlockedFrontend.default_settings')
@@ -47,11 +49,11 @@ def index(page='index'):
         return "Invalid page name", 400
     try:
         return render_template(page + '.html')
+    except jinja2.TemplateNotFound:
+        abort(404)
     except Exception as exc:
         print repr(exc)
         abort(500)
-    except jinja2.TemplateNotFound:
-        abort(404)
 
 @app.route('/check', methods=['GET'])
 @app.route('/check/live', methods=['GET'])
