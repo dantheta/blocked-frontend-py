@@ -66,13 +66,15 @@
 
 {{results_table('active', results_blocked, show_category=True) }}
 
-{% if pastcount > 0 %}
 
 <div class="showmore">
+{% if pastcount > 0 %}
   <a href="#" id="showpast">View past blocks for this site</a>
+{% endif %}
   <a href="#" id="showallresults">Show all results</a>
 </div>
 
+{% if pastcount > 0 %}
 <div id="pastblock">
 <h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
 
