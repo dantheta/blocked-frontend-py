@@ -1,4 +1,5 @@
 {% extends "BasicPage.page.html" %}
+{% import "results.part.html" as results %}
 
 {%set pagetitle = "Websites being blocked by UK Internet Service Providers" %}
 
@@ -43,24 +44,8 @@ A great many websites are being blocked mistakenly as a result of government imp
 <p>To find more blocked sites, try the parent category, <a href="{{ url_for('blocked_sites', category=parentid) }}">{{ parentname }}</a></p>
 {% endif %}
 
-<table class="table table-hover" id="results">
-{% for item in data.sites %}
-<tr>
-  <td><h4>{{item.title}}</h4><div>{{item.url}}</div></td>
-  <td class="reveal">
-    <a href="{{item.url}}" rel="nofollow" target="_blank">Visit Site</a>
-    <a href="{{ url_for('site', url=item.url) }}">View site report</a>
-  </td>
-  <td>
-  {% if item.last_reported is none %}
-  <a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a>
-  {% else %}
-  <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
-  {% endif %}
-  </td>
-</tr>
-{% endfor %}
-</table>
+{{ results.results_table(data) }}
+
 <div id="paging">
 {% if page > 0 %}
 <a href="{{ url_for('blocked_sites', category=category, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page</a>

@@ -58,6 +58,20 @@ def blocked_sites(category=1, page=0):
 
     return render_template('blocked-sites.html',data=data, page=page, category=category, **extra)
 
+@app.route('/sites/<search>')
+@app.route('/sites/<search>/<int:page>')
+def sites_search(search, page=0):
+    req = {'q': search}
+    req['signature'] = api.sign(req, ['q'])
+    data = api.GET('search/url', req)
+    logging.info(data)
+    return render_template('site-search.html', data=data, page=page, search=search)
+
+@app.route('/sites', methods=['POST'])
+def sites_search_post():
+    search = request.form['search']
+    return redirect(url_for('sites_search', search=search))
+
 @app.route('/apicategorysearch')
 def apicategorysearch():
     req = {

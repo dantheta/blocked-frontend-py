@@ -1,0 +1,58 @@
+{% extends "BasicPage.page.html" %}
+{% import "results.part.html" as results %}
+
+{%set pagetitle = "Websites being blocked by UK Internet Service Providers" %}
+
+
+{%block banner_text %}
+
+A great many websites are being blocked mistakenly as a result of government imposed filters used by Internet Service Providers.  We need your help to check and unblock these websites.  This is something anyone with a web browser can assist with.
+
+{% endblock %}
+
+{% block body %}
+<!-- template BasicPage -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
+<div class="row">
+<div class="col-md-4">
+
+<form class="form category-form" action="{{ url_for('sites_search_post', _method='POST') }}" method="POST">
+<div class="form-group">
+<label for="category">Enter search keywords</label>
+<input type="text" name="search" value="{{ search }}" />
+<input type="submit" value="Search" class="btn btn-primary" />
+</div>
+</form>
+
+</div>
+<div class="pagemenu col-md-4 col-md-offset-4">
+
+<div><a href="{{ url_for('random_category') }}">Browse a random category</a></div>
+<div><a href="/check">Check a specific website</a></div>
+
+</div>
+</div> <!-- /.row -->
+
+<div class="row sitelistrow">
+<div class="col-md-12">
+
+<div id="categoryname">Blocked sites with keywords: "{{ search }}"</div>
+<div id="blockcount">{{ data.sites | length }} blocked sites</div>
+
+
+{{ results.results_table(data) }}
+
+<div id="paging">
+
+{% if page > 0 %}
+<a href="{{ url_for('sites_search', search=search, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page</a>
+{% endif %}
+<a href="{{ url_for('sites_search', search=search, page=page+1) }}" class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></a>
+<div>
+
+
+
+</div>
+</div> <!-- /.sitelistrow -->
+{% endblock %}
+

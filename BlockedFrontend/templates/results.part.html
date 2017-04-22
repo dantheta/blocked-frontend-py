@@ -1,0 +1,21 @@
+
+{% macro results_table(data) %}
+<table class="table table-hover" id="results">
+{% for item in data.sites %}
+<tr>
+  <td><h4>{{item.title}}</h4><div>{{item.url}}</div></td>
+  <td class="reveal">
+    <a href="{{item.url}}" rel="nofollow" target="_blank">Visit Site</a>
+    <a href="{{ url_for('site', url=item.url) }}">View site report</a>
+  </td>
+  <td>
+  {% if item.last_reported is none %}
+  <a class="btn btn-default" href="{{ url_for('unblock', url=item.url) }}">Request Unblock</a>
+  {% else %}
+  <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
+  {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table>
+{% endmacro %}
