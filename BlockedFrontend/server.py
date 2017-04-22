@@ -11,7 +11,8 @@ from flask import Flask,render_template,request,jsonify,redirect,url_for,g
 app = Flask(__name__)
 
 app.config.from_object('BlockedFrontend.default_settings')
-app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
+if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
+    app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
 
 api = ApiClient(
     app.config['API_EMAIL'],
@@ -24,6 +25,8 @@ logging.basicConfig(level=logging.INFO)
 
 @app.template_filter('fmtime')
 def fmtime(s):
+    if not s:
+        return ''
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
     
@@ -36,7 +39,13 @@ def index(page='index'):
     try:
         return render_template(page + '.html')
     except Exception as exc:
+        print repr(exc)
         return "Page not found", 404
+
+@app.route('/check', methods=['GET'])
+@app.route('/check/live', methods=['GET'])
+def check():
+    return render_template('check.html', live = (request.path == '/check/live'))
 
 @app.route('/blocked-sites')
 @app.route('/blocked-sites/<int:category>')
@@ -120,7 +129,10 @@ def site(url=None):
             
         
     return render_template('site.html',
-        results = results,
+        results_blocked = (result for result in results if result['status'] == 'blocked'),
+        results_past = (result for result in results if result['status'] != 'blocked' and result['last_blocked_timestamp']),
+        results_all = (result for result in results if result['status'] != 'blocked' and not result['last_blocked_timestamp']),
+
         activecount=activecount,
         pastcount=pastcount,
         can_unblock=can_unblock,
@@ -192,6 +204,19 @@ def thanks():
         f=request.args.get('f'),
         v=request.args.get('v'),
         )
+
+@app.route('/check', methods=['POST'])
+def check_post():
+    if request.form['submit'] == 'false':
+        return redirect(url_for('site', url=request.form['url']))
+    req = {
+        'url': request.form['url'],
+    }
+    req['signature'] = api.sign(req, ['url'])
+    data = api.POST('submit/url', req)
+    print data
+    return redirect(url_for('site', url=request.form['url']))
+
 
         
 @app.route('/_refresh')
