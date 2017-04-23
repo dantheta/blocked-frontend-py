@@ -13,7 +13,7 @@
 
 {% block page_script %}
   $(document).ready(function(){
-{% if activecount > 0 %}
+{% if activecount > 0 and not live %}
     $('#pastblock').hide();
     $('#allresults').hide();
 
@@ -26,7 +26,92 @@
       $('#allresults').slideDown();
       return false;
     });
+{% endif %}
+{% if live %}
+    StreamResults();
+{% endif %}
   });
+
+{% if live %}
+    $.ajax({
+        url: '/stream-results?url={{url|e}}',
+        dataType: "text",
+        xhrFields:{
+          onprogress: function(e) {
+            var this_response, response = e.currentTarget.response;
+            if (last_response_len === false) {
+              this_response = response;
+            } else {
+              this_response = response.substring(last_response_len);
+            }
+            last_response_len = response.length;
+            updateResultsTable(this_response);
+            has_progress = true;
+          }
+        }
+    })
+    .done(function (data, status, xhr) {
+      if (!has_progress) {
+        updateResultsTable(data);
+      }
+      $('#loading').remove();
+    });
+
+
+    function updateResultsTable(response) {
+      var jsonRows;
+
+      jsonRows = response.match(/['^\r\n]+/g);
+      $(jsonRows).each(function() {
+        notification = JSON.parse(this);
+
+        if (!notification.network_name) {
+            continue;
+        }
+        if (notification.status == 'blocked') {
+          destTable = '#active';
+        } elseif (notification.status == 'ok' and notification.last_blocked_timestamp != null) {
+          destTable = '#past';
+        } else {
+          destTable = '#all';
+        }
+
+        $(destTable + ' tr').each(function() {
+          var isp_name = $(this).find('td:first').html();
+          if (isp_name == notification.network_name) {
+            isp_tr = $(this);
+          }
+        });
+
+        if (typeof isp_tr == "undefined") {
+          isp_tr = $("<tr>");
+          isp_tr.appendTo($(destTable));
+        };
+
+        isp_tr.children().remove();
+        if (destTable == '#active') {
+            isp_tr.append(
+              "<td>" + notification.network_name + "</td>"
+              + "<td>" + notification.status_timestamp + "</td>"
+              + "<td>" + notification.category + "</td>"
+            );
+        } elseif (destTable == '#past') {
+            isp_tr.append(
+              "<td>" + notification.network_name + "</td>"
+              + "<td>" + notification.status_timestamp + "</td>"
+              + "<td>" + notification.last_blocked_timestamp + "</td>"
+            );
+        } else {
+            isp_tr.append(
+              "<td>" + notification.network_name + "</td>"
+              + "<td>" + notification.status_timestamp + "</td>"
+              + "<td></td>"
+            );
+        }
+
+
+      });
+    }
 {% endif %}
 {% endblock %}
 

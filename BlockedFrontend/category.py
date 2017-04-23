@@ -127,7 +127,7 @@ def check_post():
             domain=get_domain(request.form['url']),
             url=request.form['url'],
             md5=data['hash'],
-            live=true
+            live=True
             )
     return redirect(url_for('.site', url=request.form['url']))
 
