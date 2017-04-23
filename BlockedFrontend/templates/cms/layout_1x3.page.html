@@ -1,0 +1,27 @@
+{% extends "BasicPage.page.html" %}
+
+
+{% block body %}
+<div class="row">
+<div class="col-md-7">
+
+{% block col1_row1 %}
+{%endblock%}
+
+{% block col1_row2 %}
+{%endblock%}
+
+{% block col1_row3 %}
+{%endblock%}
+
+</div>
+</div>
+
+{{ chunks.contactForm() }}
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}

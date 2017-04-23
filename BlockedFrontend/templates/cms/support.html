@@ -1,4 +1,6 @@
-{% extends "support.page.html" %}
+{% extends "layout_2x3.page.html" %}
+
+{%set pagetitle = "Taking action against censorship from Internet Service Providers" %}
 
 {% block banner_text %}
 Blocked is a free tool.  It was generously funded by our sponsors and Open
@@ -6,8 +8,9 @@ Rights Group (ORG) supporters, and it was built by ORG volunteers.  We
 welcome support of this project, and there are lots of ways you can help.
 {% endblock %}
 
-{%block spread_the_word %}
+{%block col1_row1 %}
 
+<h3>Spread the word</h3>
 <p>We're really interested in hearing compelling stories about censored sites.
 If you're a site owner or you've been prevented from accessing important
 information, please tell us about it. We want as many people as possible to
@@ -18,22 +21,26 @@ please send them to this site.</p>
 {% endblock %}
 
 
-{%block write_to_your_mp %}
+{%block col2_row1 %}
 
+<h3>Write to your MP</h3>
 <p>Please write to your MP and tell them that you are concerned about the
 censorship caused by filters. Better still meet them in person. </p>
 
 {% endblock %}
 
 
-{%block donate %}
+{%block col2_row1 %}
 
+<h3>Donate</h3>
 <p>Sample Para</p>
 
 {% endblock %}
 
 
-{%block join_org %}
+{%block col2_row2 %}
+
+<h3>Join the Open Rights Group</h3>
 
 <p>By <a href="https://www.openrightsgroup.org/join/">joining the Open Rights
 Group (ORG)</a>, you can help us to continue to provide Blocked for free. We
@@ -44,7 +51,8 @@ discuss the issues and take action.</p>
 {% endblock %}
 
 
-{%block volunteer %}
+{%block col1_row3 %}
+<h3>Volunteer</h3>
 
 <p>The Blocked project relies on a brilliant group of technical and
 non-technical volunteers. We are always looking for new people to join the

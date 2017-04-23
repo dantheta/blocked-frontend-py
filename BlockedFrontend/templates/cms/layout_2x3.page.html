@@ -1,37 +1,32 @@
 {% extends "BasicPage.page.html" %}
 
-{%set pagetitle = "Taking action against censorship from Internet Service Providers" %}
 
 
 {% block body %}
 <!-- template BasicPage -->
 <div class="row">
 <div class="col-md-6">
-<h3>Spread the word</h3>
 
 
-{%block spread_the_word %}{%endblock%}
+{%block col1_row1 %}{%endblock%}
 
 
 </div>
 <div class="col-md-6">
-<h3>Write to your MP</h3>
 
-{% block write_to_your_mp %}{%endblock%}
+{% block col2_row1 %}{%endblock%}
 </div>
 </div>
 
 <div class="row">
 <div class="col-md-6">
-<h3>Donate</h3>
 
-{% block donate %}{%endblock%}
+{% block col1_row2 %}{%endblock%}
 
 </div>
 <div class="col-md-6">
-<h3>Join the Open Rights Group</h3>
 
-{% block join_org %}{%endblock%}
+{% block col2_row2 %}{%endblock%}
 
 </div>
 </div>
@@ -39,10 +34,12 @@
 
 <div class="row">
 <div class="col-md-6">
-<h3>Volunteer</h3>
 
-{% block volunteer %}{%endblock%}
+{% block col1_row3 %}{%endblock%}
 
+</div>
+<div class="col-md-6">
+{% block col2_row3 %}{%endblock%}
 </div>
 </div>
 
@@ -52,7 +49,5 @@
 <div class="row shaded-row">
 {{ chunks.contactChunk() }}
 </div>
-
-
 
 {% endblock %}

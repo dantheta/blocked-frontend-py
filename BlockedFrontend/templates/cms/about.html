@@ -1,23 +1,34 @@
-{% extends "about.page.html" %}
+{% extends "layout_1x3.page.html" %}
 
-{% block how_it_works_para %}
+{%set pagetitle = "Taking action against censorship from Internet Service Providers" %}
 
+{% block banner_text %}
+  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
+
+  <p>It is very possible that sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.</p>
+{% endblock %}
+
+{% block col1_row1 %}
+
+<h2>How blocked works</h2>
 <p>How it works paragraph</p>
 
 {% endblock %}
 
 
 
-{% block project_aims_para %}
+{% block col1_row2 %}
 
+<h3>Project aims</h3>
 <p>Project aims para</p>
 
 {% endblock %}
 
 
 
-{% block future_plans_para %}
+{% block col1_row3 %}
 
+<h3>Future plans</h3>
 <p>Future plans para</p>
 
 {% endblock %}
