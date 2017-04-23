@@ -10,7 +10,7 @@ from utils import *
 from flask import Flask, render_template, request,  \
     abort
 
-app = Flask(__name__)
+app = Flask("BlockedFrontend")
 
 app.config.from_object('BlockedFrontend.default_settings')
 if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
