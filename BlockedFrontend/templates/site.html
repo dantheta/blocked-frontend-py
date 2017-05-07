@@ -148,8 +148,8 @@
 
 
 {%block body %}
-<h3><span id="activecount">{{activecount if activecount > 0 else 'No'}}</span> active block
-<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</span></h3>
+<h3><span id="activecount">{{activecount if activecount > 0 else 'No'}}</span>
+active block<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</span></h3>
 
 {{results_table('active', results_blocked, show_category=True) }}
 

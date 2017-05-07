@@ -1,4 +1,6 @@
 
+import logging
+
 from flask import Blueprint, render_template, redirect, request, \
     jsonify, g, url_for
 
@@ -35,7 +37,7 @@ def blocked_sites(category=1, page=0):
 @category_pages.route('/sites/<search>')
 @category_pages.route('/sites/<search>/<int:page>')
 def sites_search(search, page=0):
-    req = {'q': search}
+    req = {'q': search, 'page': page}
     req['signature'] = request.api.sign(req, ['q'])
     data = request.api.GET('search/url', req)
     logging.info(data)
