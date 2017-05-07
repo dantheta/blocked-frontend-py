@@ -44,13 +44,8 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {{ results.results_table(data) }}
 
-<div id="paging">
+{{ results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search) }}
 
-{% if page > 0 %}
-<a href="{{ url_for('.sites_search', search=search, page=page-1) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page</a>
-{% endif %}
-<a href="{{ url_for('.sites_search', search=search, page=page+1) }}" class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></a>
-<div>
 
 
 

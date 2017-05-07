@@ -19,3 +19,15 @@
 {% endfor %}
 </table>
 {% endmacro %}
+
+{% macro paging(ctrl, page, pagesize, count) %}
+<div id="paging">
+{% if page > 0 %}
+<a href="{{ url_for(ctrl, page=page-1, **kwargs) }}" class="btn btn-primary" id="prevpage"><span class="glyphicon glyphicon-backward"></span> Previous Page</a>
+{% endif %}
+{% if page < ((count|float / pagesize|round(method='ceil'))-1) %}
+<a href="{{ url_for(ctrl, page=page+1, **kwargs) }}" class="btn btn-primary" id="nextpage">Next Page <span class="glyphicon glyphicon-forward"></span></a>
+{% endif %}
+<div>
+
+{% endmacro %}
