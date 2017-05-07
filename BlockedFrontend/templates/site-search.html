@@ -19,7 +19,7 @@ A great many websites are being blocked mistakenly as a result of government imp
 <form class="form category-form" action="{{ url_for('.sites_search_post', _method='POST') }}" method="POST">
 <div class="form-group">
 <label for="category">Enter search keywords</label>
-<input type="text" name="search" value="{{ search }}" />
+<input type="text" name="search" value="{{ search or '' }}" />
 <input type="submit" value="Search" class="btn btn-primary" />
 </div>
 </form>
@@ -29,10 +29,12 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 <div><a href="{{ url_for('.random_category') }}">Browse a random category</a></div>
 <div><a href="/check">Check a specific website</a></div>
+<div><a href="{{ url_for('category.sites_search') }}">Search sites by keyword</a></div>
 
 </div>
 </div> <!-- /.row -->
 
+{% if data %}
 <div class="row sitelistrow">
 <div class="col-md-12">
 
@@ -54,5 +56,6 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 </div>
 </div> <!-- /.sitelistrow -->
+{% endif %}
 {% endblock %}
 
