@@ -11,9 +11,11 @@ ADD BlockedFrontend /usr/local/blocked/BlockedFrontend
 ADD .git /usr/local/blocked/.git
 ADD .ssh /root/.ssh
 
-COPY frontend.live.ini /usr/local/blocked/config.ini
+COPY config.py /usr/local/blocked/config.py
+
+ENV BLOCKEDFRONTEND_CONFIG /usr/local/blocked/config.py
 
 EXPOSE 5000
 
-CMD /usr/bin/python /usr/local/blocked/server.py -c /usr/local/blocked/config.ini --dev
+CMD /usr/bin/python /usr/local/blocked/server.py
 
