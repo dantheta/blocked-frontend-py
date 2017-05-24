@@ -12,7 +12,7 @@ ADD .ssh /root/.ssh
 
 COPY config.py /usr/local/blocked/config.py
 
-ENV BLOCKEDFRONTEND_CONFIG /usr/local/blocked/config.py
+ENV BLOCKEDFRONTEND_SETTINGS /usr/local/blocked/config.py
 
 EXPOSE 5000
 
