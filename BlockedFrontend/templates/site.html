@@ -8,7 +8,7 @@
 
 {%block page_menu%}
   <div><a href="{{ url_for('.blocked_sites') }}">Browse more blocked sites</a></div>
-  <div><a href="{{ url_for('.check') }}">Check if a site is being blocked</a></div>
+  <div><a href="{{ url_for('.check',mode='live')}}">Check if a site is being blocked</a></div>
 {% endblock %}
 
 {% block page_script %}
@@ -28,90 +28,14 @@
     });
 {% endif %}
 {% if live %}
-    StreamResults();
+    StreamResults('{{url}}');
 {% endif %}
   });
+{% endblock %}
 
+{% block page_js_libs %}
 {% if live %}
-    $.ajax({
-        url: '/stream-results?url={{url|e}}',
-        dataType: "text",
-        xhrFields:{
-          onprogress: function(e) {
-            var this_response, response = e.currentTarget.response;
-            if (last_response_len === false) {
-              this_response = response;
-            } else {
-              this_response = response.substring(last_response_len);
-            }
-            last_response_len = response.length;
-            updateResultsTable(this_response);
-            has_progress = true;
-          }
-        }
-    })
-    .done(function (data, status, xhr) {
-      if (!has_progress) {
-        updateResultsTable(data);
-      }
-      $('#loading').remove();
-    });
-
-
-    function updateResultsTable(response) {
-      var jsonRows;
-
-      jsonRows = response.match(/['^\r\n]+/g);
-      $(jsonRows).each(function() {
-        notification = JSON.parse(this);
-
-        if (!notification.network_name) {
-            continue;
-        }
-        if (notification.status == 'blocked') {
-          destTable = '#active';
-        } elseif (notification.status == 'ok' and notification.last_blocked_timestamp != null) {
-          destTable = '#past';
-        } else {
-          destTable = '#all';
-        }
-
-        $(destTable + ' tr').each(function() {
-          var isp_name = $(this).find('td:first').html();
-          if (isp_name == notification.network_name) {
-            isp_tr = $(this);
-          }
-        });
-
-        if (typeof isp_tr == "undefined") {
-          isp_tr = $("<tr>");
-          isp_tr.appendTo($(destTable));
-        };
-
-        isp_tr.children().remove();
-        if (destTable == '#active') {
-            isp_tr.append(
-              "<td>" + notification.network_name + "</td>"
-              + "<td>" + notification.status_timestamp + "</td>"
-              + "<td>" + notification.category + "</td>"
-            );
-        } elseif (destTable == '#past') {
-            isp_tr.append(
-              "<td>" + notification.network_name + "</td>"
-              + "<td>" + notification.status_timestamp + "</td>"
-              + "<td>" + notification.last_blocked_timestamp + "</td>"
-            );
-        } else {
-            isp_tr.append(
-              "<td>" + notification.network_name + "</td>"
-              + "<td>" + notification.status_timestamp + "</td>"
-              + "<td></td>"
-            );
-        }
-
-
-      });
-    }
+<script src="/static/stream.js?c=2" type="application/javascript"></script>
 {% endif %}
 {% endblock %}
 
@@ -132,7 +56,7 @@
   {% endif %}
 </tr>
 {% for item in results %}
-<tr>
+<tr id="net_{{item.network_name|replace(' ','')}}">
   <td>{{item.network_name}}</td>
   <td>{{item.status_timestamp|fmtime}}</td>
   {% if show_category %}
@@ -148,8 +72,11 @@
 
 
 {%block body %}
-<h3><span id="activecount">{{activecount if activecount > 0 else 'No'}}</span>
-active block<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</span></h3>
+{% if live %}
+<h3>Active blocks</h3>
+{% else %}
+<h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
+{% endif %}
 
 {{results_table('active', results_blocked, show_category=True) }}
 
@@ -158,13 +85,18 @@ active block<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</
 {% if pastcount > 0 %}
   <a href="#" id="showpast">View past blocks for this site</a>
 {% endif %}
+{% if activecount > 0 %}
   <a href="#" id="showallresults">Show all results</a>
+{% endif %}
 </div>
 
-{% if pastcount > 0 %}
+{% if pastcount > 0 or live %}
 <div id="pastblock">
-<h3><span id="pastcount">{{pastcount if pastcount > 0 else 'No'}}</span> past block
-<span id="pastcountplural">{{ '' if pastcount == 1 else 's' }}</span></h3>
+{% if live %}
+<h3>Past blocks</h3>
+{% else %}
+<h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
+{% endif %}
 
 {{ results_table('past', results_past) }}
 
@@ -178,7 +110,7 @@ active block<span id="activecountplural">{{ '' if activecount == 1 else 's' }}</
 </div>
 
 <div> <!-- actions -->
-{% if can_unblock == true %}
+{% if can_unblock == true or live %}
 <a href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% elif can_unblock == false %}
 <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>

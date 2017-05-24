@@ -137,22 +137,73 @@ def check_post():
             )
     return redirect(url_for('.site', url=request.form['url']))
 
+@category_pages.route('/stream-results-dummy')
+def stream_results_dummy():
+    from hashlib import md5
+    from flask import Response
+    import json
+    import time
+
+    url = request.args['url']
+
+    def dummy():
+        networks = ['BT','Sky','TalkTalk','AAISP']
+        yield json.dumps({
+            'type': 'status',
+            'tag': 'dummy',
+            'hash': md5(url).hexdigest(),
+            'url': url
+            }) + "\r\n"
+
+        for network in networks:
+            yield json.dumps({
+                'network_name': network,
+                'status': 'ok',
+                'status_timestamp': get_timestamp(),
+                'last_blocked_timestamp': None,
+                'first_blocked_timestamp': None,
+                'category': None
+                }) + "\r\n"
+        oldts = get_timestamp()
+        time.sleep(2)
+        for network in networks:
+            yield json.dumps({
+                'network_name': network,
+                'status': 'blocked',
+                'status_timestamp': get_timestamp(),
+                'last_blocked_timestamp': get_timestamp(),
+                'first_blocked_timestamp': None,
+                'category': 'violence'
+                }) + "\r\n"
+            time.sleep(1)
+        for network in networks:
+            yield json.dumps({
+                'network_name': network,
+                'status': 'ok',
+                'status_timestamp': get_timestamp(),
+                'last_blocked_timestamp': oldts,
+                'first_blocked_timestamp': None,
+                'category': 'violence'
+                }) + "\r\n"
+            time.sleep(1)
+    return Response(dummy(), content_type='application/json')
+
+
 @category_pages.route('/stream-results')
 def stream_results():
-    from flask import Response
+    from flask import Response, stream_with_context
     #hash = request.form['hash']
     url = request.args['url']
     
-    req = {
-        'url': url,
-        'timeout': 20,
-        }
-    req['date'] = request.api.timestamp()
-    req['signature'] = request.api.sign(req, ['url','date'])
-    return Response(
-        (row for row in request.api.GET(
-            'stream/results', req, _stream=True 
-            )
-        )
-    )
+    def stream():
+        req = {
+            'url': url,
+            'timeout': 20,
+            }
+        req['date'] = request.api.timestamp()
+        req['signature'] = request.api.sign(req, ['url','date'])
+        for row in request.api.GET('stream/results', req, _stream=True):
+            print row
+            yield row+"\r\n"
+    return Response(stream_with_context(stream()))
 
