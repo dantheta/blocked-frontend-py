@@ -1,8 +1,7 @@
 
 FROM ubuntu:16.04
 
-RUN apt-get update
-RUN apt-get -y install python-flask python-requests git
+RUN apt-get update && apt-get -y install python-flask python-requests git
 
 RUN mkdir /usr/local/blocked
 VOLUME /usr/local/blocked
