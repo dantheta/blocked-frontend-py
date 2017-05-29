@@ -1,7 +1,9 @@
 
 FROM ubuntu:16.04
 
-RUN apt-get update && apt-get -y install python-flask python-requests git apache2 libapache2-mod-wsgi
+RUN apt-get update 
+RUN apt-get -y install python-flask python-requests git apache2 libapache2-mod-wsgi
+RUN apt-get clean
 
 RUN mkdir /usr/local/blocked
 VOLUME /usr/local/blocked
