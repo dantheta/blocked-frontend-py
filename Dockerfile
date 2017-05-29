@@ -1,7 +1,7 @@
 
 FROM ubuntu:16.04
 
-RUN apt-get update && apt-get -y install python-flask python-requests git
+RUN apt-get update && apt-get -y install python-flask python-requests git apache2 libapache2-mod-wsgi
 
 RUN mkdir /usr/local/blocked
 VOLUME /usr/local/blocked
@@ -11,10 +11,13 @@ ADD .git /usr/local/blocked/.git
 ADD .ssh /root/.ssh
 
 COPY config.py /usr/local/blocked/config.py
+COPY blocked.wsgi /usr/local/blocked/blocked.wsgi
+COPY docker/000-default.conf /etc/apache2/sites-enabled
 
 ENV BLOCKEDFRONTEND_SETTINGS /usr/local/blocked/config.py
 
-EXPOSE 5000
+EXPOSE 80
 
-CMD /usr/bin/python /usr/local/blocked/server.py
+
+CMD rm /run/apache2/apache2.pid ; /usr/sbin/apachectl -DFOREGROUND
 
