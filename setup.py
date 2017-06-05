@@ -14,6 +14,7 @@ setup(
     install_requires=[
         'flask>=0.10',
         'requests>=2.9'
-        ]
+        ],
+    zip_safe=False,
 )
     
