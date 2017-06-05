@@ -16,5 +16,12 @@ setup(
         'requests>=2.9'
         ],
     zip_safe=False,
+    package_data = {
+        '': [
+            'templates/*.html',
+            'templates/*/*.html',
+            'static/*',
+            ]
+        }
 )
     
