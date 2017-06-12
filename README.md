@@ -125,5 +125,20 @@ The main blocks for the page are defined:
 {% endblock %}
 ```
 
+## Chunks
+
+There are a few ready-packaged chunks of HTML available from the base
+template.  To place these into an HTML file, use:
+
+```
+{{ chunks.contactChunk() }}
+```
+
+Defined chunks are:
+
+* **contactChunk** - three column footer, with "Support the project", "Share
+  your story" and "Spread the word"
+
+* **contactForm** - The "contact us" form.
 
 

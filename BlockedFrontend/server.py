@@ -49,6 +49,9 @@ def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
     
+@app.errorhandler(Exception)
+def on_error(error):
+    return render_template('error.html'), 500
 
 def run():
 

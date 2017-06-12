@@ -1,0 +1,20 @@
+{% extends "BasicPage.page.html" %}
+
+{% set pagetitle = "Error" %}
+
+{% block banner_text %}
+An error has occurred.  Please try again later.
+{% endblock %}
+
+{% block body %}
+
+
+
+{{ chunks.contactForm() }}
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}
