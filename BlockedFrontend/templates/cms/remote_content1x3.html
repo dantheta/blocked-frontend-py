@@ -1,0 +1,24 @@
+{% extends "layout_1x3.page.html" %}
+
+{%set pagetitle = content.title %}
+
+{% block banner_text %}
+{{ content.banner_text |safe }}
+{% endblock %}
+
+{%block col1_row1 %}
+{{ content.TextAreaOne |safe }}
+{% endblock %}
+
+
+{%block col1_row2 %}
+{{ content.TextAreaTwo |safe }}
+{% endblock %}
+
+
+{%block col1_row3 %}
+{{ content.TextAreaThree |safe }}
+{% endblock %}
+
+
+

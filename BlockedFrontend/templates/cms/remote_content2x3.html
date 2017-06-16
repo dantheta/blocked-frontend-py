@@ -1,0 +1,34 @@
+{% extends "layout_2x3.page.html" %}
+
+{%set pagetitle = content.title %}
+
+{% block banner_text %}
+{{ content.banner_text |safe }}
+{% endblock %}
+
+{%block col1_row1 %}
+{{ content.TextAreaOne |safe }}
+{% endblock %}
+
+{%block col1_row2 %}
+{{ content.TextAreaTwo |safe }}
+{% endblock %}
+
+{%block col1_row3 %}
+{{ content.TextAreaThree |safe }}
+{% endblock %}
+
+
+
+{%block col2_row1 %}
+{{ content.TextAreaFour |safe }}
+{% endblock %}
+
+{%block col2_row2 %}
+{{ content.TextAreaFive |safe }}
+{% endblock %}
+
+{%block col2_row3 %}
+{{ content.TextAreaSix |safe }}
+{% endblock %}
+

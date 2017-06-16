@@ -16,6 +16,7 @@ app.config.from_object('BlockedFrontend.default_settings')
 if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
     app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
 
+
 api = ApiClient(
     app.config['API_EMAIL'],
     app.config['API_SECRET']
@@ -24,6 +25,8 @@ if 'API' in app.config:
     api.API = app.config['API']
 
 logging.basicConfig(level=logging.INFO)
+logging.info("API_EMAIL: %s", app.config['API_EMAIL'])
+logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
 from category import category_pages
@@ -51,6 +54,7 @@ def fmtime(s):
     
 @app.errorhandler(Exception)
 def on_error(error):
+    logging.warn("Exception: %s", repr(error))
     return render_template('error.html'), 500
 
 def run():
