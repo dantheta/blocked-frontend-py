@@ -64,12 +64,13 @@ def load_cms_pages():
             doc = et.fromstring(req.content)
             page_fields = {}
             for child in doc.iterchildren():
-                content = et.tostring(child)
-                start,end = content.find('>')+1, content.rfind('<')
+                content = child.text
+                if content is None:
+                    continue
 
                 if child.tag == 'region':
-                    page_fields[child.attrib['name']] = content[start:end]
+                    page_fields[child.attrib['name']] = content
                 else:
-                    page_fields[child.tag] = content[start:end]
+                    page_fields[child.tag] = content
             remote_content[page] = page_fields
 
