@@ -24,7 +24,12 @@ api = ApiClient(
 if 'API' in app.config:
     api.API = app.config['API']
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    datefmt="[%Y-%m-%dT%H:%M:%S]",
+    format="%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s"
+
+    )
 logging.info("API_EMAIL: %s", app.config['API_EMAIL'])
 logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 

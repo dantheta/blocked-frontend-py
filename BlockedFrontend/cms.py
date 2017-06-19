@@ -4,7 +4,11 @@ try:
 except ImportError:
     import xml.etree as et
 
+import os
+import time
 import logging
+import lockfile
+import contextlib
 import collections
 
 import jinja2
@@ -17,6 +21,7 @@ remote_content = collections.defaultdict(dict)
 
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
+
 # static page routing
 @cms_pages.route('/')
 @cms_pages.route('/<page>')
@@ -26,10 +31,10 @@ def index(page='index'):
     if page == 'favicon.ico':
         return "", 404
 
-    if current_app.config.get('REMOTE_RELOAD',False):
+
+    if page in current_app.config.get('REMOTE_PAGES', []):
         load_cms_pages()
 
-    if page in remote_content:
         logging.info("page content: %s", remote_content[page].keys())
         if set(remote_content[page].keys()).intersection(
             ['TextAreaFour','TextAreaFive','TextAreaSix']
@@ -50,27 +55,99 @@ def index(page='index'):
         print repr(exc)
         abort(500)
 
-@cms_pages.before_app_first_request
+#@cms_pages.before_app_first_request
 def load_cms_pages():
-    import pprint
-    logging.info("Running first_request")
     
-    if current_app.config['REMOTE_SRC']:
-        session = requests.session()
-        for page in current_app.config['REMOTE_PAGES']:
-            req = session.get(current_app.config['REMOTE_SRC'] + page + '.xml', 
-                auth=current_app.config['REMOTE_AUTH']
-                )
-            doc = et.fromstring(req.content)
-            page_fields = {}
-            for child in doc.iterchildren():
-                content = child.text
-                if content is None:
-                    continue
+    if not current_app.config.get('REMOTE_SRC',False):
+        return
+    logging.info("Running remote_src_fetch")
 
-                if child.tag == 'region':
-                    page_fields[child.attrib['name']] = content
-                else:
-                    page_fields[child.tag] = content
-            remote_content[page] = page_fields
+    cache = RemoteCache(
+        current_app.config.get('CACHE_PATH', '/tmp'),
+        current_app.config.get('CACHE_TIME', 3600)
+        )
+
+    session = requests.session()
+    for page in current_app.config['REMOTE_PAGES']:
+
+        valid = cache.valid(page)
+        if valid is True and current_app.config.get('REMOTE_RELOAD', False):
+            valid = False
+        logging.info("Cache %s valid: %s", page, valid)
+        if not valid:
+            try:
+                with cache.open(page, True) as cachefile:
+                    req = get_remote_content(page, session)
+                    page_fields = parse_remote_content(req.content)
+
+                    remote_content[page] = page_fields
+
+                    logging.info("writing content")
+                    cachefile.write(req.content)
+            except requests.RequestException, exc:
+                logging.warn("Fetch error: %s", repr(exc))
+                if valid is None:
+                    logging.warn("No cache file to fall back on")
+                    raise
+
+        logging.info("Using cached content: %s", page)
+        with cache.open(page) as cachefile:
+            remote_content[page] = parse_remote_content(cachefile.read())
+
+
+def get_remote_content(page, session):
+    req = session.get(
+        current_app.config['REMOTE_SRC'] + page + '.xml', 
+        auth=current_app.config['REMOTE_AUTH']
+        )
+    return req
+
+def parse_remote_content(content):
+    doc = et.fromstring(content)
+    page_fields = {}
+    for child in doc.iterchildren():
+        content = child.text
+        if content is None:
+            continue
+
+        if child.tag == 'region':
+            page_fields[child.attrib['name']] = content
+        else:
+            page_fields[child.tag] = content
+    return page_fields
+
+class RemoteCache(object):
+    def __init__(self, path, time):
+        self.path = path
+        self.time = time
+
+    def get_path(self, filename):
+        cachefile = os.path.join(self.path, filename)
+        return cachefile
+        
+    @contextlib.contextmanager
+    def open(self, filename, lock=False):
+        cachefile = self.get_path(filename)
+        with open(cachefile, 'a+') as fp:
+            fp.seek(0)
+            logging.info("Position: %s", fp.tell())
+            lock = lockfile.FileLock(cachefile)
+            logging.info("Locking: %s", cachefile)
+            with lock:
+                yield fp
+            logging.info("Releasing: %s", cachefile)
+
+    def stat(self, filename):
+        return os.stat(self.get_path(filename))
+
+    def valid(self, filename):
+        try:
+            return (time.time() - os.path.getmtime(
+                self.get_path(filename)
+                )) < self.time
+        except OSError,exc:
+            if exc.errno == 2:
+                return None
+            raise
+        
 
