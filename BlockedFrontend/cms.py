@@ -32,8 +32,8 @@ def index(page='index'):
         return "", 404
 
 
-    if page in current_app.config.get('REMOTE_PAGES', []):
-        load_cms_pages()
+    if page in current_app.config['REMOTE_PAGES']:
+        load_cms_page(page)
 
         logging.info("page content: %s", remote_content[page].keys())
         if set(remote_content[page].keys()).intersection(
@@ -55,44 +55,42 @@ def index(page='index'):
         print repr(exc)
         abort(500)
 
-#@cms_pages.before_app_first_request
-def load_cms_pages():
-    
-    if not current_app.config.get('REMOTE_SRC',False):
+def load_cms_page(page):
+    if not current_app.config['REMOTE_SRC']:
         return
     logging.info("Running remote_src_fetch")
 
     cache = RemoteCache(
-        current_app.config.get('CACHE_PATH', '/tmp'),
-        current_app.config.get('CACHE_TIME', 3600)
+        current_app.config['CACHE_PATH'],
+        current_app.config['CACHE_TIME']
         )
 
     session = requests.session()
-    for page in current_app.config['REMOTE_PAGES']:
 
-        valid = cache.valid(page)
-        if valid is True and current_app.config.get('REMOTE_RELOAD', False):
-            valid = False
-        logging.info("Cache %s valid: %s", page, valid)
-        if not valid:
-            try:
-                with cache.open(page, True) as cachefile:
-                    req = get_remote_content(page, session)
-                    page_fields = parse_remote_content(req.content)
+    valid = cache.valid(page)
+    if valid is True and current_app.config['REMOTE_RELOAD']:
+        valid = False
+    logging.info("Cache %s valid: %s", page, valid)
+    if not valid:
+        try:
+            with cache.open(page, True) as cachefile:
+                req = get_remote_content(page, session)
+                page_fields = parse_remote_content(req.content)
 
-                    remote_content[page] = page_fields
+                remote_content[page] = page_fields
 
-                    logging.info("writing content")
-                    cachefile.write(req.content)
-            except requests.RequestException, exc:
-                logging.warn("Fetch error: %s", repr(exc))
-                if valid is None:
-                    logging.warn("No cache file to fall back on")
-                    raise
+                logging.info("writing content")
+                cachefile.truncate()
+                cachefile.write(req.content)
+        except requests.RequestException, exc:
+            logging.warn("Fetch error: %s", repr(exc))
+            if valid is None:
+                logging.warn("No cache file to fall back on")
+                raise
 
-        logging.info("Using cached content: %s", page)
-        with cache.open(page) as cachefile:
-            remote_content[page] = parse_remote_content(cachefile.read())
+    logging.info("Using cached content: %s", page)
+    with cache.open(page) as cachefile:
+        remote_content[page] = parse_remote_content(cachefile.read())
 
 
 def get_remote_content(page, session):
