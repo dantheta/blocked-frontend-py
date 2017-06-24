@@ -1,4 +1,5 @@
 
+import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
@@ -80,6 +81,8 @@ def random_category():
 def site(url=None):
     if not url:
         url = request.args['url']
+    # workaround for apache folding // into /
+    url = re.sub(':/(?!/)','://', url)
     req = {
         'url': url,
         }
