@@ -1,3 +1,4 @@
+var blocks = {};
 
 function StreamResults(url) {
     var last_response_len = false;
@@ -24,6 +25,13 @@ function StreamResults(url) {
         updateResultsTable(data);
       }
       $('#loading').remove();
+      $.each(blocks, function(key, value) {
+          console.log("Checking block: " + key + " " + value);
+          if (value == 1) {
+              $('#unblockbtn').removeClass('btn-disabled');
+              $('#unblockbtn').removeAttr('disabled');
+          }
+      });
     });
 
 
@@ -44,10 +52,13 @@ function updateResultsTable(response) {
     trid = 'net_'+notification.network_name.replace(' ', '');
 
     if (notification.status == 'blocked') {
+      blocks[notification.network_name] = 1;
       destTable = '#active';
     } else if (notification.status == 'ok' && notification.last_blocked_timestamp != null) {
+      blocks[notification.network_name] = 0;
       destTable = '#past';
     } else {
+      blocks[notification.network_name] = 0;
       destTable = '#all';
     }
 

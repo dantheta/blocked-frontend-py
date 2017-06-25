@@ -28,6 +28,8 @@
     });
 {% endif %}
 {% if live %}
+    $('#unblockbtn').addClass('btn-disabled');
+    $('#unblockbtn').attr('disabled','disabled');
     StreamResults('{{url}}');
 {% endif %}
   });
@@ -35,7 +37,7 @@
 
 {% block page_js_libs %}
 {% if live %}
-<script src="/static/stream.js?c=2" type="application/javascript"></script>
+<script src="/static/stream.js?c=6" type="application/javascript"></script>
 {% endif %}
 {% endblock %}
 
@@ -111,7 +113,7 @@
 
 <div> <!-- actions -->
 {% if can_unblock == true or live %}
-<a href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
+<a id="unblockbtn" href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% elif can_unblock == false %}
 <a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
 {% endif %}
