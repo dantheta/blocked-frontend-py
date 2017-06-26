@@ -70,3 +70,25 @@ def thanks():
         f=request.args.get('f'),
         v=request.args.get('v'),
         )
+
+@unblock_pages.route('/verify')
+def verify():
+    f = request.args
+    req = {
+        'email': f['email'],
+        'token': f['token'],
+        'date': request.api.get_timestamp()
+        }
+
+    req['auth'] = request.api.sign(req, ['token','date'])
+
+    data = request.api.POST('verify/email', req)
+    if data['success'] == False:
+        return render_template('message.html',
+            message = "We have been unable to locate a user account with this link.  <br />Please check that you have the correct verification link from your email.",
+            title = 'Email validation',
+            )
+    else:
+        return redirect('/thanks?u=1&v=0')
+
+

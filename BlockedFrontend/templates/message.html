@@ -1,0 +1,19 @@
+{% extends "BasicPage.page.html" %}
+
+{% set pagetitle = title %}
+
+{% block banner_text %}
+{% endblock %}
+
+{% block body %}
+
+{{ message }}
+
+{{ chunks.contactForm() }}
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}
