@@ -9,6 +9,8 @@ DEBUG = False
 API_EMAIL = ''
 API_SECRET = ''
 
+SITE_URL="http://localhost:5000"
+
 UPDATE_PASSWORD = None
 
 REMOTE_SRC = None

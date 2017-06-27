@@ -210,3 +210,11 @@ def stream_results():
             yield row+"\r\n"
     return Response(stream_with_context(stream()))
 
+@category_pages.route('/sitemap.xml')
+def sitemap():
+    req = {'parent': 0}
+    req['signature'] = request.api.sign(req, ['parent'])
+    data = request.api.GET('category/0', req)
+
+    return render_template('sitemap_xml.j2', categories=data['categories'])
+
