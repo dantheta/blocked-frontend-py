@@ -8,13 +8,43 @@
 
 {%block body %}
 <div class="row">
-<div class="col-md-7">
+<div class="col-md-12">
 
-<form action="/submit-unblock" class="form" method="POST">
+<form action="/submit-unblock" class="form" id="unblockform" method="POST">
 <input type="hidden" name="url" value="{{data.url}}" />
 <input type="hidden" name="name" value="{{data.name}}" />
 <input type="hidden" name="email" value="{{data.email}}" />
 <input type="hidden" name="report_type" value="unblock" />
+
+{% for block in blocks %}
+{% if loop.first %}
+<h2>Site blocked on:</h2>
+<table id="active" class="table results-table">
+<tr>
+  <th>Network</th>
+  <th>Last Blocked</th>
+  <th>Last Reported</th>
+</tr>
+{% endif %}
+<tr class="{{ 'disabled' if block.last_blocked_timestamp < cutoff_time or block.last_report_timestamp != None else ''}}">
+  <td>{{ block.network_name }}</td>
+  <td>{{ block.last_blocked_timestamp | fmtime }}</td>
+  <td>{{ block.last_report_timestamp | fmtime }}</td>
+</tr>
+{% if loop.last %}
+</table>
+{% endif %}
+{% else %}
+<p>All of the recorded blocks for this site are too old or have already been reported.</p>
+{% endfor %}
+{% if valid_blocks == 0 %}
+<p>The recorded blocks are too old for overblocking to be reported.  Please re-check the site.</p>
+{% endif %}
+<div style="text-align: right">
+<a class="btn btn-default" id="recheck">Re-check site</a>
+</div>
+
+{% if valid_blocks > 0 %}
 <h2>About the site</h2>
 <div class="form-group">
   <label for="message">Please explain why this site should be unblocked</label>
@@ -45,6 +75,7 @@
 <div class="form-group">
 <input type="submit" class="btn btn-primary" value="Submit unblock request" />
 </div>
+{% endif %}
 
 </form>
 
@@ -52,3 +83,27 @@
 </div>
 
 {%endblock%}
+
+{% block page_script %}
+$(document).ready(function(){
+  
+  $('#recheck').click(function(){
+    $('#recheck').text('Checking...');
+    $('#recheck').attr('disabled','disabled'); 
+    $.get('/recheck?url={{url}}', function(){
+      setTimeout(function(){
+        window.location.href='/unblock2?url={{url}}';
+      }, 10000);
+    })
+  })
+
+  $('#unblockform').submit(function(){
+    if (!$('input[name=checkedsite]').prop('checked')) {
+      alert("Please confirm that you have visited the site and checked its contents");
+      $('input[name=checkedsite]').parent().addClass('alert-danger');
+      return false;
+    }
+  })
+
+})
+{% endblock %}

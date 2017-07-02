@@ -148,7 +148,7 @@ margin-top: 2em;
     background-color: #ffeded;
 }
 
-#past * td {
+#past * td, #active .disabled td {
     background-color: #ececec;
     }
 

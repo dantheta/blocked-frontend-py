@@ -1,5 +1,8 @@
 
-from flask import Blueprint, render_template, redirect, request
+import logging
+import datetime
+
+from flask import Blueprint, render_template, redirect, request, current_app, session
 from utils import *
 
 
@@ -11,16 +14,55 @@ def unblock():
     url = request.args['url']
     return render_template('unblock.html',
         url=url,
-        domain=get_domain(url)
+        domain=get_domain(url),
+        name=session.get('name',''),
+        email=session.get('email','')
         )
 
-@unblock_pages.route('/unblock2', methods=['POST'])
+@unblock_pages.route('/unblock2', methods=['POST','GET'])
 def unblock2():
-    data = request.form
+    def process_block(block):
+        block['last_blocked_timestamp'] = parse_timestamp(block['last_blocked_timestamp'])
+        block['last_report_timestamp'] = parse_timestamp(block['last_report_timestamp'])
+        return block
+
+    if request.method == 'POST':
+        data = request.form
+        for k in 'name','email':
+            session[k] = data[k]
+    else:
+        data = request.args.copy()
+        data['name'] = session['name']
+        data['email'] = session['email']
+
+    req = {
+        'url': data['url'],
+        }
+
+    req['signature'] = request.api.sign(req, ['url'])
+    urldata = request.api.GET('status/url', req)
+    logging.info("urldata: %s", urldata)
+
+    cutoff_time = datetime.datetime.now() - datetime.timedelta(current_app.config['BLOCKED_CUTOFF_DAYS'])
+    blocks = [ process_block(blk) for blk 
+        in urldata['results']
+        if blk['status'] == 'blocked' 
+            #and parse_timestamp(blk['last_blocked_timestamp']) >= cutoff_time
+        ]
+
+    valid_blocks = sum([
+        1 if blk['last_blocked_timestamp'] >= cutoff_time else 0
+        for blk 
+        in blocks
+        ])
+
     return render_template('unblock2.html',
         data=data,
         url=data['url'],
-        domain=get_domain(data['url'])
+        cutoff_time = cutoff_time,
+        blocks=blocks,
+        valid_blocks=valid_blocks,
+        domain=get_domain(data['url']), 
         )
 
 @unblock_pages.route('/feedback')
@@ -91,4 +133,14 @@ def verify():
     else:
         return redirect('/thanks?u=1&v=0')
 
+@unblock_pages.route('/recheck')
+def recheck():
+    url = request.args['url']
+    req = {
+        'url': url,
+        }
+    req['signature'] = request.api.sign(req, ['url'])
+    urldata = request.api.POST('submit/url', req)
+    logging.info("urldata: %s", urldata)
+    return "OK"
 

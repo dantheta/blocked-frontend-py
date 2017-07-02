@@ -24,6 +24,8 @@ api = ApiClient(
 if 'API' in app.config:
     api.API = app.config['API']
 
+app.secret_key = app.config['SESSION_KEY']
+
 logging.basicConfig(
     level=logging.INFO,
     datefmt="[%Y-%m-%dT%H:%M:%S]",
@@ -54,6 +56,8 @@ def hook_api():
 def fmtime(s):
     if not s:
         return ''
+    if isinstance(s, datetime.datetime):
+        return s.strftime('%d %B, %Y at %H:%M')
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
     
