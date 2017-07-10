@@ -18,7 +18,7 @@ REMOTE_AUTH = None
 REMOTE_PAGES = []
 REMOTE_RELOAD = False
 
-CACHE_PATH = '/tmp'
+CACHE_PATH = '/tmp/remotecontent.sqlite'
 CACHE_TIME = 3600
 
 BLOCKED_CUTOFF_DAYS = 28

@@ -26,7 +26,10 @@
 {%endmacro%}
 
 {%macro contactChunk() %}
-
+{% if g.remote_chunks.contactChunk %}
+{{ g.remote_chunks.contactChunk | safe }}
+{% else %}
+<!-- built-in -->
 <div class="col-md-4">
 <h3>Support the project</h3>
 
@@ -73,7 +76,7 @@
 		</div>
 
 </div>
-
+{% endif %}
 {%endmacro%}
 
 {% macro main_menu() %}
