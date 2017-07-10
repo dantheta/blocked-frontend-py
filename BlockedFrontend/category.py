@@ -3,7 +3,7 @@ import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
-    jsonify, g, url_for
+    jsonify, g, url_for, session
 
 from utils import *
 
@@ -13,12 +13,16 @@ category_pages = Blueprint('category', __name__)
 @category_pages.route('/check', methods=['GET'])
 @category_pages.route('/check/<mode>', methods=['GET'])
 def check(mode=None):
+    if 'route' in session:
+        del session['route']
     return render_template('check.html', live = (mode == 'live'))
 
 @category_pages.route('/blocked-sites')
 @category_pages.route('/blocked-sites/<int:category>')
 @category_pages.route('/blocked-sites/<int:category>/<int:page>')
 def blocked_sites(category=1, page=0):
+    session['route'] = 'category'
+    session['category'] = category
     req = {
         'id': category,
         'recurse': 1,
@@ -40,6 +44,8 @@ def blocked_sites(category=1, page=0):
 @category_pages.route('/sites/<search>/<int:page>')
 def sites_search(search=None, page=0):
     if search:
+        session['route'] = 'keyword'
+        session['keyword'] = search
         req = {'q': search, 'page': page}
         req['signature'] = request.api.sign(req, ['q'])
         data = request.api.GET('search/url', req)
