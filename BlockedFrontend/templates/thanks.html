@@ -15,8 +15,13 @@
   You will need to validate your email address before your unblocking requests are sent.<br />
   Please check your email and follow the validation link.
   {% else %}
+    {% if g.remote_chunks.unblockThanks %}
+    {{ g.remote_chunks.unblockThanks | safe }}
+    {% else %}
+  <!-- builtin -->
   Your unblock request was successfully submitted and 
   will be sent to the appropriate ISPs.
+    {% endif %}
   {% endif %}
 {% else %}
   Your feedback was successfully submitted.

@@ -22,7 +22,7 @@ def check(mode=None):
 @category_pages.route('/blocked-sites/<int:category>/<int:page>')
 def blocked_sites(category=1, page=0):
     session['route'] = 'category'
-    session['category'] = category
+    session['category'] = (category, page)
     req = {
         'id': category,
         'recurse': 1,
@@ -45,7 +45,7 @@ def blocked_sites(category=1, page=0):
 def sites_search(search=None, page=0):
     if search:
         session['route'] = 'keyword'
-        session['keyword'] = search
+        session['keyword'] = (search, page)
         req = {'q': search, 'page': page}
         req['signature'] = request.api.sign(req, ['q'])
         data = request.api.GET('search/url', req)
@@ -87,6 +87,12 @@ def random_category():
 def site(url=None):
     if not url:
         url = request.args['url']
+
+    try:
+        thanks = session.pop('thanks')
+    except KeyError:
+        thanks = False
+
     # workaround for apache folding // into /
     url = re.sub(':/(?!/)','://', url)
     req = {
@@ -120,7 +126,9 @@ def site(url=None):
         pastcount=pastcount,
         can_unblock=can_unblock,
         domain=get_domain(url),
-        url = url
+        url = url, 
+
+        thanks = thanks
         )
 
 

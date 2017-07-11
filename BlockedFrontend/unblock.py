@@ -1,8 +1,9 @@
 
+import random
 import logging
 import datetime
 
-from flask import Blueprint, render_template, redirect, request, current_app, session
+from flask import Blueprint, render_template, redirect, request, current_app, session, url_for
 from utils import *
 
 
@@ -97,12 +98,31 @@ def submit_unblock():
         req['networks'] = make_list(form['networks'])
     req['auth']['signature'] = request.api.sign(req,  ['url','date'])
     data = request.api.POST_JSON('ispreport/submit', req)
+    #data = {'verification_required':  False}
     if 'ORG' in form.get('networks',[]):
         return redirect('/thanks?f=1')
     else:
         if data['verification_required']:
             return redirect('/thanks?u=1&v=1')
         else:
+            if session.get('route') == 'category':
+                # get random/next site from category
+
+                pass
+            elif session.get('route') == 'keyword':
+                session['thanks'] = True # save under a rock for the /site page
+
+                logging.info("running search: %s", session['keyword'][0])
+                req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
+                req['signature'] = request.api.sign(req, ['q'])
+                searchdata = request.api.GET('search/url', req)
+                candidates = [ x['url'] for x in searchdata['sites']
+                    if x['last_reported'] is None and x['url'] != form['url']]
+                if len(candidates) > 0:
+                    nextsite = random.choice(candidates)
+                    return redirect(url_for('category.site', url=nextsite))
+                
+            # default response
             return redirect('/thanks?u=1&v=0')
 
 @unblock_pages.route('/thanks')

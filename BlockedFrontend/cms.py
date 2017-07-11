@@ -1,14 +1,12 @@
 
 
 import logging
-import collections
 
 import jinja2
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, abort, config, current_app
+    g, url_for, abort, config, current_app, session
 
-from .remotecontent import RemoteContent
 
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
@@ -21,7 +19,6 @@ def index(page='index'):
         return "Invalid page name", 400
     if page == 'favicon.ico':
         return "", 404
-
 
     if page in current_app.config['REMOTE_PAGES']:
         remote_content = g.remote.get_content(page)
@@ -46,22 +43,5 @@ def index(page='index'):
         print repr(exc)
         abort(500)
 
-
-
-@cms_pages.before_request
-def load_remote_data():
-    g.remote_content = collections.defaultdict(dict)
-    g.remote_chunks = collections.defaultdict(lambda: None)
-
-    if current_app.config.get('REMOTE_SRC'):
-        g.remote = RemoteContent(
-            current_app.config['REMOTE_SRC'],
-            current_app.config['REMOTE_AUTH'],
-            current_app.config['CACHE_PATH'],
-            current_app.config['REMOTE_RELOAD'],
-            )
-        logging.info("Loading chunks")
-        g.remote_chunks = g.remote.get_content('chunks')
-        logging.info("Got chunks: %s", g.remote_chunks.keys())
 
 

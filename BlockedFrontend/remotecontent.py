@@ -49,7 +49,9 @@ class RemoteContent(object):
             self.src + page + '.xml', 
             auth=self.auth
             )
-        logging.info("Retrieved %s; cache=%s", page, req.from_cache)
+        logging.info("Retrieved %s; cache=%s", page, 
+            req.from_cache if hasattr(req, 'from_cache') else None
+            )
             
         return req
 

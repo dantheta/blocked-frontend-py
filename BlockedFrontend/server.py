@@ -3,12 +3,14 @@ import os
 import sys
 import logging
 import datetime
+import collections
 
 from api import ApiClient
 from utils import *
+from .remotecontent import RemoteContent
 
 from flask import Flask, render_template, request,  \
-    abort
+    abort, g
 
 app = Flask("BlockedFrontend")
 
@@ -65,6 +67,24 @@ def fmtime(s):
 def on_error(error):
     logging.warn("Exception: %s", repr(error))
     return render_template('error.html'), 500
+
+@app.before_request
+def load_remote_data():
+    g.remote_content = collections.defaultdict(dict)
+    g.remote_chunks = collections.defaultdict(lambda: None)
+
+    if app.config.get('REMOTE_SRC'):
+        g.remote = RemoteContent(
+            app.config['REMOTE_SRC'],
+            app.config['REMOTE_AUTH'],
+            app.config['CACHE_PATH'],
+            app.config['REMOTE_RELOAD'],
+            )
+        logging.info("Loading chunks")
+        g.remote_chunks = g.remote.get_content('chunks')
+        logging.info("Got chunks: %s", g.remote_chunks.keys())
+
+
 
 def run():
 
