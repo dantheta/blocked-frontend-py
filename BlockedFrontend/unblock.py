@@ -97,8 +97,14 @@ def submit_unblock():
     if 'networks' in form:
         req['networks'] = make_list(form['networks'])
     req['auth']['signature'] = request.api.sign(req,  ['url','date'])
-    data = request.api.POST_JSON('ispreport/submit', req)
-    #data = {'verification_required':  False}
+
+    if current_app.config['DUMMY']:
+        # demo mode - don't really submit
+        logging.warn("Dummy mode: not really submitting")
+        data = {'verification_required':  False}
+    else:
+        data = request.api.POST_JSON('ispreport/submit', req)
+
     if 'ORG' in form.get('networks',[]):
         return redirect('/thanks?f=1')
     else:

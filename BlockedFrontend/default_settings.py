@@ -22,3 +22,5 @@ CACHE_PATH = '/tmp/remotecontent.sqlite'
 CACHE_TIME = 3600
 
 BLOCKED_CUTOFF_DAYS = 28
+
+DUMMY = False

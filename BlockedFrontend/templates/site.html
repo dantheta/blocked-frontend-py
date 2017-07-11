@@ -1,17 +1,29 @@
 {% extends "BasicPage.page.html" %}
 
+{% if not thanks %}
 {%set pagetitle = domain %}
 {%set pagerole = "Site blocking report" %}
+{% else %}
+{%set pagetitle = "Thank you!" %}
+{% endif %}
 
 {%block banner_text%}
-{% if thanks|default(False) %}
+{% if thanks %}
 {{ g.remote_chunks.unblockThanks | safe }}
 {% endif %}
 {%endblock%}
 
+{% block urllink %}
+{% if not thanks %}
+{{ super() }}
+{% endif %}
+{% endblock %}
+
 {%block page_menu%}
+{% if not thanks %}
   <div><a href="{{ url_for('.blocked_sites') }}">Browse more blocked sites</a></div>
   <div><a href="{{ url_for('.check',mode='live')}}">Check if a site is being blocked</a></div>
+{% endif %}
 {% endblock %}
 
 {% block page_script %}
@@ -77,6 +89,10 @@
 
 
 {%block body %}
+{% if thanks %}
+<h2>Unblock another site</h2>
+<h3>{{ domain }}</h3>
+{% endif %}
 {% if live %}
 <h3>Active blocks</h3>
 {% else %}

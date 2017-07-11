@@ -37,11 +37,13 @@
     <div class="col-md-7">
       <div class="pagerole">{{pagerole}}</div>
       <h1>{{ pagetitle }}</h1>
+      {% block urllink %}
       {% if url %}
       <div class="url"><a href="{{url}}" rel="nofollow" target="_blank">{{url}}</a>
       <span class="glyphicon glyphicon-share"></span>
       </div>
       {% endif %}
+      {% endblock %}
     </div>
 
     <div class="col-md-4 col-md-offset-1 pagemenu">
