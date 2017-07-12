@@ -145,6 +145,13 @@ def submit_unblock():
                 nextsite = selectnext(searchdata, form['url'])
                 if nextsite:
                     return redirect(url_for('category.site', url=nextsite))
+
+            elif session.get('route') == 'random':
+                session['thanks'] = True # save under a rock for the /site page
+                logging.info("Getting random site")
+                data = request.api.GET('ispreport/candidates',{'count':1})
+                return redirect(url_for('category.site', url=data['results'][0]))
+
                 
             # default response
             return redirect('/thanks?u=1&v=0')
