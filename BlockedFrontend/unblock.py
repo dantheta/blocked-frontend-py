@@ -74,6 +74,14 @@ def feedback():
         )
         
 
+def selectnext(searchdata, url):
+    candidates = [ x['url'] for x in searchdata['sites']
+        if x['last_reported'] is None and x['url'] != url]
+    if len(candidates) > 0:
+        return random.choice(candidates)
+
+
+
 @unblock_pages.route('/submit-unblock', methods=['POST'])
 def submit_unblock():
     if not request.form.get('checkedsite'):
@@ -112,9 +120,21 @@ def submit_unblock():
             return redirect('/thanks?u=1&v=1')
         else:
             if session.get('route') == 'category':
-                # get random/next site from category
+                session['thanks'] = True # save under a rock for the /site page
 
-                pass
+                # get random/next site from category
+                req = {
+                    'id': session['category'][0],
+                    'recurse': 1,
+                    'active': 1,
+                    'page': session['category'][1],
+                    }
+                req['signature'] = request.api.sign(req, ['id'])
+                searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
+                nextsite = selectnext(searchdata, form['url'])
+                if nextsite:
+                    return redirect(url_for('category.site', url=nextsite))
+
             elif session.get('route') == 'keyword':
                 session['thanks'] = True # save under a rock for the /site page
 
@@ -122,10 +142,8 @@ def submit_unblock():
                 req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
                 req['signature'] = request.api.sign(req, ['q'])
                 searchdata = request.api.GET('search/url', req)
-                candidates = [ x['url'] for x in searchdata['sites']
-                    if x['last_reported'] is None and x['url'] != form['url']]
-                if len(candidates) > 0:
-                    nextsite = random.choice(candidates)
+                nextsite = selectnext(searchdata, form['url'])
+                if nextsite:
                     return redirect(url_for('category.site', url=nextsite))
                 
             # default response
