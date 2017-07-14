@@ -4,6 +4,8 @@
 {%set pagetitle = savedlist.name %}
 
 {%block banner_text %}
+<h3>Share this list</h3>
+<div class="permalink">{{config.SITE_URL}}{{ url_for('.show_list', name=savedlist.name) }}</div>
 {% endblock %}
 
 {% block body %}
