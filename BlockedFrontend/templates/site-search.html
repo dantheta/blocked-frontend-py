@@ -36,11 +36,39 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {% if data %}
 <div class="row sitelistrow">
-<div class="col-md-12">
+<div class="col-md-9">
 
 <div id="categoryname">Blocked sites with keywords: "{{ search }}"</div>
 <div id="blockcount">{{ data.count }} blocked sites</div>
 
+</div>
+<div class="col-md-3" style="text-align: right">
+    <div class="dropdown">
+        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">Save list<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li style="padding: 1em">
+                <form action="/list" method="POST">
+                    <legend>Create a list of sites for later review</legend>
+                    <input type="hidden" name="search" value="{{ search }}" />
+                    <div class="form-group">
+                        <label for="title">List title:</label>
+                        <input type="text" class="form-control" name="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Your name:</label>
+                        <input type="text" class="form-control" name="username" />
+                    </div>
+                    <input type="submit" value="Save list" class="btn btn-primary" />
+                </form>
+            </li>
+        </ul>
+    </div>
+
+</div><!-- /.col -->
+</div> <!-- /.row -->
+
+<div class="row sitelistrow">
+<div class="col-md-12">
 
 {{ results.results_table(data) }}
 

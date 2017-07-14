@@ -47,6 +47,9 @@ app.register_blueprint(unblock_pages)
 from reload import reload_blueprint
 app.register_blueprint(reload_blueprint)
 
+from savedlists import list_pages
+app.register_blueprint(list_pages)
+
 from cms import cms_pages
 app.register_blueprint(cms_pages)
 

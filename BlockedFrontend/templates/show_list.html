@@ -1,0 +1,46 @@
+{% extends "BasicPage.page.html" %}
+{% import "forms.part.html" as forms %}
+
+{%set pagetitle = savedlist.name %}
+
+{%block banner_text %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-6">
+
+<form action="{{ url_for('.item_add') }}" method="POST">
+    <legend>Add a new site to this list<legend>
+    <input type="hidden" name="list_id" value="{{ savedlist.id }}" />
+    {{ forms.text_field('URL', 'url') }}
+    {{ forms.submit('Add') }}
+</form>
+
+    </div>
+</div>
+
+<div class="row sitelistrow">
+    <div class="col-md-12">
+
+<table class="table">
+    <tr>
+        <th>URL / Title</th>
+        <th></th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td><a href="{{item.url}}">{{item.url}}</a><br />
+            {{item.title}}
+        </td>
+        <td>
+            <a href="{{ url_for('.item_delete', id=item.id) }}"><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+    </div>
+</div>
+
+{% endblock %}

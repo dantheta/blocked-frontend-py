@@ -1,0 +1,11 @@
+
+{% macro text_field(label, name, value='') %}
+<div class="form-group">
+    <label for="{{name}}">{{label}}</label>
+    <input class="form-control" name="{{name}}" value="{{value}}" />
+</div>
+{% endmacro %}
+
+{% macro submit(text) %}
+<input type="submit" value="{{text}}" class="btn btn-primary" />
+{% endmacro %}
