@@ -1,4 +1,9 @@
 
+import psycopg2.extensions
+
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
+
 from NORM import DBObject
 
 class SavedList(DBObject):
@@ -8,8 +13,11 @@ class SavedList(DBObject):
             'name'
             ]
 
-    def get_items(self):
-        return Item.select(self.conn, list_id=self['id'], _orderby='url')
+    def get_items(self, **kw):
+        return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
+
+    def count_items(self):
+        return Item.count(self.conn, list_id=self['id'])
 
 
 class Item(DBObject):
