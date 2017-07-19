@@ -13,7 +13,7 @@ class APIError(Exception):
 logger = logging.getLogger('blocked.api')
 
 
-class ApiClient(object):
+class BaseApiClient(object):
     API = 'https://api.blocked.org.uk/1.2/'
     def __init__(self, username, secret):
         self.username = username
@@ -55,7 +55,21 @@ class ApiClient(object):
             headers={'Content-type': 'application/javascript'})
         return req.json()
 
+class ApiClient(BaseApiClient):
+    SIGNATURES = {
+        'search/url': ['q']
+        }
 
+    def _request(self, endpoint, req):
+        req['signature'] = self.sign(req, self.SIGNATURES[endpoint])
+        data = self.GET(endpoint, req)
+        return data
+
+    def search_url(self, search, page=0):
+        """Search sites by keyword"""
+
+        req = {'q': search, 'page': page}
+        return self._request('search/url', req)
 
 
 

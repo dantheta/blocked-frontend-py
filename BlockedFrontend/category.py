@@ -46,10 +46,8 @@ def sites_search(search=None, page=0):
     if search:
         session['route'] = 'keyword'
         session['keyword'] = (search, page)
-        req = {'q': search, 'page': page}
-        req['signature'] = request.api.sign(req, ['q'])
-        data = request.api.GET('search/url', req)
-        logging.info(data)
+        data = request.api.search_url(search, page)
+        logging.debug(data)
     else:
         data = None
     return render_template('site-search.html', data=data, page=page, search=search)
