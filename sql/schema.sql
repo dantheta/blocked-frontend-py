@@ -2,6 +2,7 @@
 CREATE TABLE savedlists(
     id serial primary key not null,
     username varchar not null,
+    name varchar not null,
     created timestamptz not null,
     last_updated timestamptz null
     );
