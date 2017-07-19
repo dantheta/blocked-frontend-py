@@ -20,7 +20,7 @@ class RemoteContent(object):
     def get_content(self, page):
         if not self.src:
             return
-        logging.info("Running remote_src_fetch")
+        logging.debug("Running remote_src_fetch")
 
         try:
             req = self.get_remote_content(page)
@@ -49,7 +49,8 @@ class RemoteContent(object):
             self.src + page + '.xml', 
             auth=self.auth
             )
-        logging.info("Retrieved %s; cache=%s", page, 
+        logging.info("Retrieved %s; cache=%s", 
+            page, 
             req.from_cache if hasattr(req, 'from_cache') else None
             )
             
