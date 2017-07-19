@@ -29,7 +29,7 @@ if 'API' in app.config:
 app.secret_key = app.config['SESSION_KEY']
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     datefmt="[%Y-%m-%dT%H:%M:%S]",
     format="%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s"
 
@@ -65,8 +65,17 @@ def fmtime(s):
         return s.strftime('%d %B, %Y at %H:%M')
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
+
+
+@app.template_filter('null')
+def null(s, default):
+    if s is None:
+        return default
+    if isinstance(s, (str,unicode)) and not s.strip():
+        return default
+    return s
     
-@app.errorhandler(Exception)
+#@app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))
     return render_template('error.html'), 500
@@ -83,9 +92,9 @@ def load_remote_data():
             app.config['CACHE_PATH'],
             app.config['REMOTE_RELOAD'],
             )
-        logging.info("Loading chunks")
+        logging.debug("Loading chunks")
         g.remote_chunks = g.remote.get_content('chunks')
-        logging.info("Got chunks: %s", g.remote_chunks.keys())
+        logging.debug("Got chunks: %s", g.remote_chunks.keys())
 
 
 
