@@ -1,9 +1,12 @@
 {% extends "BasicPage.page.html" %}
 {% import "forms.part.html" as forms %}
+{% import "results.part.html" as results %}
 
 {%set pagetitle = savedlist.name %}
 
 {%block banner_text %}
+<p>Created on {{savedlist.created|fmtime}} by {{savedlist.username}}</p>
+
 <h3>Share this list</h3>
 <div class="permalink">{{config.SITE_URL}}{{ url_for('.show_list', name=savedlist.name) }}</div>
 {% endblock %}
@@ -12,18 +15,22 @@
 <div class="row">
     <div class="col-md-6">
 
+{#
 <form action="{{ url_for('.item_add') }}" method="POST">
     <legend>Add a new site to this list<legend>
     <input type="hidden" name="list_id" value="{{ savedlist.id }}" />
     {{ forms.text_field('URL', 'url') }}
     {{ forms.submit('Add') }}
 </form>
+#}
 
     </div>
 </div>
 
 <div class="row sitelistrow">
     <div class="col-md-12">
+
+<h3>{{ itemcount }} {{ "entry" if itemcount == 1 else "entries" }}</h3>
 
 <table class="table">
     <tr>
@@ -32,15 +39,16 @@
     </tr>
     {% for item in items %}
     <tr>
-        <td><a href="{{item.url}}">{{item.url}}</a><br />
-            {{item.title}}
+        <td><a href="{{url_for('category.site', url=item.url)}}">{{item.url}}</a><br />
+            {{item.title|null('(no title)')}} <a href="{{item.url}}" title="Open in a new window" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-share"></span></a>
         </td>
         <td>
-            <a href="{{ url_for('.item_delete', id=item.id) }}"><span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
         </td>
     </tr>
     {% endfor %}
 </table>
+{{ results.paging('.show_list', page=page, pagesize=pagesize, count=itemcount, name=savedlist.name) }}
 
     </div>
 </div>

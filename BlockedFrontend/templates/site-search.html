@@ -12,7 +12,6 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {% block body %}
 <!-- template BasicPage -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
 <div class="row">
 <div class="col-md-4">
 
@@ -58,7 +57,8 @@ A great many websites are being blocked mistakenly as a result of government imp
                         <label for="title">Your name:</label>
                         <input type="text" class="form-control" name="username" />
                     </div>
-                    <input type="submit" value="Save list" class="btn btn-primary" />
+                    <input id="createlistbtn" type="submit" value="Save list" class="btn btn-primary" />
+                    <p>Creating a list can take a little while.  Please be patient!</p>
                 </form>
             </li>
         </ul>

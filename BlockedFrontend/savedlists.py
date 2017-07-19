@@ -28,18 +28,45 @@ def create_list():
         'username': f['username'],
         })
     newlist.store()
+    n = 0
+    page = 0
+    while True:
+
+        logging.info("Search page: %d", page)
+        data = request.api.search_url(f['search'], page)
+
+        for site in data['sites']:
+            newitem = models.Item(request.conn)
+            newitem.update({
+                'list_id': newlist['id'],
+                'title': site['title'],
+                'url': site['url']
+                })
+            newitem.store()
+
+        n += len(data['sites'])
+        if n >= data['count']:
+            break
+        page += 1
+
     request.conn.commit()
 
     return redirect(url_for('.show_list', name=f['name']))
 
 
 @list_pages.route('/list/<name>', methods=['GET'])
-def show_list(name):
+@list_pages.route('/list/<name>/<int:page>', methods=['GET'])
+def show_list(name, page=0):
+    pagesize=20
     savedlist = models.SavedList.select_one(request.conn, name=name)
-    items = savedlist.get_items()
+    itemcount = savedlist.count_items()
+    items = savedlist.get_items(_limit=(pagesize, page*pagesize))
 
     return render_template('show_list.html',
             savedlist = savedlist,
+            itemcount = itemcount,
+            page = page,
+            pagesize = pagesize,
             items = items
             )
 
