@@ -75,7 +75,7 @@ def null(s, default):
         return default
     return s
     
-#@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))
     return render_template('error.html'), 500
