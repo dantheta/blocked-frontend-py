@@ -20,6 +20,12 @@ def index(page='index'):
     if page == 'favicon.ico':
         return "", 404
 
+    if page == 'index':
+        try:
+            remote_content = g.remote.get_content('homepage-text')
+        except Exception:
+            remote_content = {}
+
     if page in current_app.config['REMOTE_PAGES']:
         remote_content = g.remote.get_content(page)
 
@@ -35,12 +41,11 @@ def index(page='index'):
             )
 
     try:
-        return render_template(page + '.html')
+        return render_template(page + '.html', remote_content=remote_content)
     except jinja2.TemplateNotFound:
         abort(404)
     except Exception as exc:
-        raise
-        print repr(exc)
+        logging.info("CMS Exception: %s", repr(exc))
         abort(500)
 
 

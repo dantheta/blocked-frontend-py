@@ -1,13 +1,18 @@
 {% extends "BasicPage.page.html" %}
 
 
-{%set pagetitle = "Take action against web censorship" %}
+{%set pagetitle = remote_content.title | default("Take action against web censorship") %}
 
 
 {%block banner_text%}
+{% if 'banner_text' in remote_content %}
+{{ remote_content.banner_text | safe }}
+{% else %}
+<!-- inbuilt -->
   <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
   
   <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
+{% endif %}
 
 {%endblock%}
 
