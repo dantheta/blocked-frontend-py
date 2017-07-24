@@ -1,0 +1,33 @@
+{% extends "layout_1x3.page.html" %}
+
+{%set pagetitle = remote_content.title if 'title' in remote_content
+    else "Seized domains" %}
+
+{% block col1_row1 %}
+{{ remote_content.TextAreaOne|safe }}
+{%endblock%}
+
+{% block col1_row2 %}
+{{ remote_content.TextAreaTwo|safe }}
+{%endblock%}
+
+{% block col1_row3 %}
+{{ remote_content.TextAreaThree|safe }}
+{%endblock%}
+
+{% block bodyrow2 %}
+<div class="row">
+<div class="col-md-12">
+
+<h2>Recent seized domains</h2>
+<table class="table table-striped">
+    <tr>
+        <th>URL</th>
+        <th>Network</th>
+        <th>Date</th>
+    </tr>
+</table>
+
+</div>
+</div>
+{% endblock %}

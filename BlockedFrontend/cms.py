@@ -11,6 +11,12 @@ from flask import Blueprint, render_template, redirect, request, \
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
 
+REMOTE_TEXT_CONTENT = {
+    'index': 'homepage-text',
+    'legal-blocks': 'legal-blocks',
+    'seized-domains': 'seized-domains'
+    }
+
 # static page routing
 @cms_pages.route('/')
 @cms_pages.route('/<page>')
@@ -20,15 +26,9 @@ def index(page='index'):
     if page == 'favicon.ico':
         return "", 404
 
-    if page == 'index':
+    if page in REMOTE_TEXT_CONTENT:
         try:
-            remote_content = g.remote.get_content('homepage-text')
-        except Exception:
-            remote_content = {}
-
-    if page == 'legal-blocks':
-        try:
-            remote_content = g.remote.get_content('legal-blocks')
+            remote_content = g.remote.get_content(REMOTE_TEXT_CONTENT[page])
         except Exception:
             remote_content = {}
 
