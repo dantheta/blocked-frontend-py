@@ -26,6 +26,12 @@ def index(page='index'):
         except Exception:
             remote_content = {}
 
+    if page == 'legal-blocks':
+        try:
+            remote_content = g.remote.get_content('legal-blocks')
+        except Exception:
+            remote_content = {}
+
     if page in current_app.config['REMOTE_PAGES']:
         remote_content = g.remote.get_content(page)
 
