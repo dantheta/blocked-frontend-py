@@ -96,6 +96,13 @@ def load_remote_data():
         g.remote_chunks = g.remote.get_content('chunks')
         logging.debug("Got chunks: %s", g.remote_chunks.keys())
 
+@app.before_request
+def check_user():
+    g.admin = False
+    if app.config['ADMIN_USER'] is None:
+        g.admin = True
+    if app.config['ADMIN_USER'] is not None and app.config['ADMIN_USER'] == request.environ.get('REMOTE_USER'):
+        g.admin = True
 
 
 def run():
