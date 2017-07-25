@@ -43,7 +43,9 @@
             {{item.title|null('(no title)')}} <a href="{{item.url}}" title="Open in a new window" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-share"></span></a>
         </td>
         <td>
+            {% if g.admin %}
             <a href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}

@@ -9,6 +9,8 @@ from utils import *
 
 import models
 
+class AdminPermissionException(Exception):
+    pass
 
 list_pages = Blueprint('list', __name__)
 
@@ -21,6 +23,9 @@ def setup_db():
 def create_list():
     """Create a saved list"""
     f = request.form
+
+    if not g.admin:
+        raise AdminPermissionException("Admin permissions are required to create a list")
 
     newlist = models.SavedList(request.conn)
     newlist.update({
@@ -73,6 +78,8 @@ def show_list(name, page=0):
 
 @list_pages.route('/list/delete/<int:id>')
 def item_delete(id):
+    if not g.admin:
+        raise AdminPermissionException("Admin permissions are required to delete list items")
     item = models.Item(request.conn, id=id)
     savedlist = item.get_list()
     item.delete()
@@ -82,6 +89,9 @@ def item_delete(id):
 @list_pages.route('/list/add', methods=['POST'])
 def item_add():
     f = request.form
+
+    if not g.admin:
+        raise AdminPermissionException("Admin permissions are required to add to a list")
 
     # search for URL, add to list if found
 
