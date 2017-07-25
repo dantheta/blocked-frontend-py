@@ -81,6 +81,14 @@ def on_error(error):
     return render_template('error.html'), 500
 
 @app.before_request
+def check_user():
+    g.admin = False
+    if app.config['ADMIN_USER'] is None:
+        g.admin = True
+    if app.config['ADMIN_USER'] is not None and app.config['ADMIN_USER'] == request.environ.get('REMOTE_USER'):
+        g.admin = True
+
+@app.before_request
 def load_remote_data():
     g.remote_content = collections.defaultdict(dict)
     g.remote_chunks = collections.defaultdict(lambda: None)
@@ -90,19 +98,12 @@ def load_remote_data():
             app.config['REMOTE_SRC'],
             app.config['REMOTE_AUTH'],
             app.config['CACHE_PATH'],
-            app.config['REMOTE_RELOAD'],
+            app.config['REMOTE_RELOAD'] and g.admin, # remote reload only available to admin users
             )
         logging.debug("Loading chunks")
         g.remote_chunks = g.remote.get_content('chunks')
         logging.debug("Got chunks: %s", g.remote_chunks.keys())
 
-@app.before_request
-def check_user():
-    g.admin = False
-    if app.config['ADMIN_USER'] is None:
-        g.admin = True
-    if app.config['ADMIN_USER'] is not None and app.config['ADMIN_USER'] == request.environ.get('REMOTE_USER'):
-        g.admin = True
 
 
 def run():

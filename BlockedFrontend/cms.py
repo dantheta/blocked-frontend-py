@@ -17,14 +17,25 @@ REMOTE_TEXT_CONTENT = {
     'seized-domains': 'seized-domains'
     }
 
-# static page routing
 @cms_pages.route('/')
+def index():
+    remote_content = g.remote.get_content('homepage-text')
+    return render_template('index.html', remote_content=remote_content)
+
+@cms_pages.route('/legal-blocks')
+def legal_blocks():
+    remote_content = g.remote.get_content('legal-blocks')
+    blocks = request.api.recent_blocks()['results']
+    return render_template('legal-blocks.html', remote_content=remote_content, blocks=blocks)
+
+# static page routing
 @cms_pages.route('/<page>')
-def index(page='index'):
+def wildcard(page='index'):
     if '/' in page:
         return "Invalid page name", 400
     if page == 'favicon.ico':
         return "", 404
+
 
     if page in REMOTE_TEXT_CONTENT:
         try:
@@ -33,6 +44,8 @@ def index(page='index'):
             remote_content = {}
 
     if page in current_app.config['REMOTE_PAGES']:
+        # page uses generic template from local filesystem, and pretty much requires
+        # remote content
         remote_content = g.remote.get_content(page)
 
         logging.info("page content: %s", remote_content.keys())
@@ -47,12 +60,9 @@ def index(page='index'):
             )
 
     try:
+        # template exists in local filesystem, but can accept remote content
         return render_template(page + '.html', remote_content=remote_content)
     except jinja2.TemplateNotFound:
         abort(404)
-    except Exception as exc:
-        logging.info("CMS Exception: %s", repr(exc))
-        abort(500)
-
 
 

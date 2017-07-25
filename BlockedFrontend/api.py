@@ -57,7 +57,8 @@ class BaseApiClient(object):
 
 class ApiClient(BaseApiClient):
     SIGNATURES = {
-        'search/url': ['q']
+        'search/url': ['q'],
+        'status/blocks': ['date']
         }
 
     def _request(self, endpoint, req):
@@ -71,5 +72,8 @@ class ApiClient(BaseApiClient):
         req = {'q': search, 'page': page}
         return self._request('search/url', req)
 
+    def recent_blocks(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/blocks', req)
 
 
