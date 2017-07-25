@@ -20,7 +20,8 @@ REMOTE_TEXT_CONTENT = {
 @cms_pages.route('/')
 def index():
     remote_content = g.remote.get_content('homepage-text')
-    return render_template('index.html', remote_content=remote_content)
+    stats = request.api.stats()
+    return render_template('index.html', remote_content=remote_content, stats=stats)
 
 @cms_pages.route('/legal-blocks')
 def legal_blocks():

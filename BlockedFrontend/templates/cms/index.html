@@ -29,7 +29,7 @@
 {%block body %}
 <!-- template BasicPage -->
 <div class="row shaded-row">
-<div class="col-md-7">
+<div class="col-md-12">
 <h2>The scale of the problem</h2>
 
 <p>Based on the <a href="#">100,000 most popular sites</a> according to Alexa, this is the scale of the censorship problem in the UK...</p>
@@ -39,11 +39,11 @@
 
 <div class="row shaded-row statsrow">
 <div class="col-md-4">
-<div class="pctlg">21%</div>
+    <div class="pctlg">{{ (stats.stats.blocked_sites_detected / stats.stats.blocked_sites_sample_size *100) | round(1) }}%</div>
 <div class="pctdesc">of sites are being blocked by strict ISP filters</div>
 </div>
 <div class="col-md-4">
-<div class="pctlg">12%</div>
+<div class="pctlg">{{ (stats.stats.blocked_sites_detected_default_filter / stats.stats.blocked_sites_sample_size *100) | round(1) }}%</div>
 <div class="pctdesc">of sites are being blocked by default ISP filters</div>
 </div>
 </div>
