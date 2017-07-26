@@ -1,4 +1,5 @@
 
+import math
 
 import logging
 
@@ -24,10 +25,14 @@ def index():
     return render_template('index.html', remote_content=remote_content, stats=stats)
 
 @cms_pages.route('/legal-blocks')
-def legal_blocks():
+@cms_pages.route('/legal-blocks/<int:page>')
+def legal_blocks(page=1):
     remote_content = g.remote.get_content('legal-blocks')
-    blocks = request.api.recent_blocks()['results']
-    return render_template('legal-blocks.html', remote_content=remote_content, blocks=blocks)
+    data = request.api.recent_blocks(page-1)
+    blocks = data['results']
+    count = data['count']
+    return render_template('legal-blocks.html', remote_content=remote_content, 
+            page=page, count=count, pagecount = int(math.ceil(count/25)+1), blocks=blocks)
 
 # static page routing
 @cms_pages.route('/<page>')

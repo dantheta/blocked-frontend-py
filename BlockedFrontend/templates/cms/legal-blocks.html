@@ -34,6 +34,23 @@
     </tr>
     {% endfor %}
 </table>
+<ul class="pagination">
+    <li class="{{ "disabled" if page == 1 else '' }}">
+      <a href="{{url_for('.legal_blocks', page=page-1)}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% set pagestart = 1 if page - 3 < 1 else page - 3 %}
+    {% set pageend = pagecount+1 if pagestart +7 > pagecount else pagestart+7 %}
+    {% for i in range(pagestart, pageend) %}
+    <li class="{{ 'active' if i == page  else '' }}"><a href="{{url_for('.legal_blocks', page=i)}}">{{i}}</a></li>
+    {% endfor %}
+    <li class="{{ 'disabled' if page == pagecount else '' }}">
+      <a href="{{url_for('.legal_blocks', page=page+1)}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+</ul>
 
 </div>
 </div>

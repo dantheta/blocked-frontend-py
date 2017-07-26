@@ -73,8 +73,8 @@ class ApiClient(BaseApiClient):
         req = {'q': search, 'page': page}
         return self._request('search/url', req)
 
-    def recent_blocks(self):
-        req = {'date': self.timestamp()}
+    def recent_blocks(self, page):
+        req = {'date': self.timestamp(), 'page': str(page)}
         return self._request('status/blocks', req)
 
     def stats(self):
