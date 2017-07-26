@@ -232,3 +232,11 @@ input.form-control, textarea.form-control, input[type=checkbox] {
     font-family: mono;
     background-color: lightgray;
 }
+
+td.num {
+    text-align: right;
+}
+
+th.num {
+    text-align: center;
+}

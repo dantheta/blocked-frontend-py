@@ -24,13 +24,15 @@
     <tr>
         <th>URL</th>
         <th>Network</th>
-        <th>Date</th>
+        <th>First Detected</th>
+        <th>Last Checked</th>
     </tr>
     {% for row in blocks %}
     <tr>
         <td>{{ row.url }}</td>
         <td>{{ row.network_name }}</td>
         <td>{{ row.first_blocked | fmtime }}</td>
+        <td>{{ row.last_blocked | fmtime }}</td>
     </tr>
     {% endfor %}
 </table>
