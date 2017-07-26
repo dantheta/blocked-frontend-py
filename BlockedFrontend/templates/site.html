@@ -141,7 +141,7 @@
 </div>
 
 <div class="row">
-<div class="col-md-4">
+<div class="col-md-5">
 <h4>Tell us about this site</h4>
 <p>For example: is the link dead, or is the domain being squatted?
 <a href="{{ url_for('unblock.feedback', url=url) }}">Please let us know</a>
@@ -149,6 +149,12 @@
 </div>
 </div>
 
+<div class="row ">
+    <div class="col-md-12">
+<h3>Share this result</h3>
+<div class="permalink">{{config.SITE_URL}}{{ url_for('.site', url=url) }}</div>
+    </div>
+</div>
 
 <div class="row shaded-row">
 {{chunks.contactChunk() }}
