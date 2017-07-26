@@ -8,7 +8,7 @@
 <div class="row">
 <div class="col-md-7">
 
-<p>Enter the URL of a website to find out if it is blocked by UK filters. Our tool will check instantly to see where it can be accessed. </p>
+    <div class="well-lg well">
 <form action="{{url_for('.check_post')}}" method="POST" class="form form-inline">
 <input type="hidden" name="submit" value="{{live | lower }}" />
 
@@ -16,7 +16,7 @@
   <label for="url">Website address</label>
   <div class="control-group">
     <div class="input-group">
-    <input style="width: 36em" type="text" placeholder="http://" name="url" id="url" class="form-control" />
+    <input type="text" placeholder="http://" name="url" id="url" class="form-control" />
     <span class="input-group-btn">
     <input type="submit" value="Check site" class="btn btn-primary" />
     </span>
@@ -25,7 +25,12 @@
 </div>
 
 </form>
-
+</div> <!-- /.well -->
+</div>
+</div> <!-- /.row -->
+<div class="row">
+<div class="col-md-12">
+    {{ remote_content.TextAreaOne|replace('<table','<table class="table"') | safe }}
 </div>
 </div>
 <div class="row shaded-row">

@@ -6,28 +6,41 @@
 
 {%block banner_text %}
 
+{% if 'banner_text' in remote_content %}
+{{ remote_content.banner_text | safe }}
+{% else %}
 A great many websites are being blocked mistakenly as a result of government imposed filters used by Internet Service Providers.  We need your help to check and unblock these websites.  This is something anyone with a web browser can assist with.
+{% endif %}
 
 {% endblock %}
 
 {% block body %}
 <!-- template BasicPage -->
 <div class="row">
-<div class="col-md-4">
+<div class="col-md-6">
 
+    <div class="well well-lg">
 <form class="form category-form" action="{{ url_for('.sites_search_post', _method='POST') }}" method="POST">
 <div class="form-group">
-<label for="category">Enter search keywords</label>
-<input type="text" name="search" value="{{ search or '' }}" />
-<input type="submit" value="Search" class="btn btn-primary" />
+  <label for="search">Enter search keywords</label>
+  <div class="control-group">
+    <div class="input-group">
+
+    <input class="form-control" type="text" name="search" value="{{ search or '' }}" />
+    <span class="input-group-btn">
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </span>
+    </div>
+  </div>
 </div>
 </form>
+    </div> <!-- /.well -->
 
 </div>
-<div class="pagemenu col-md-4 col-md-offset-4">
+<div class="pagemenu col-md-4 col-md-offset-2">
 
 <div><a href="{{ url_for('.random_category') }}">Browse a random category</a></div>
-<div><a href="/check">Check a specific website</a></div>
+<div><a href="{{ url_for('.check', mode='live') }}">Check a specific website</a></div>
 <div><a href="{{ url_for('category.sites_search') }}">Search sites by keyword</a></div>
 
 </div>

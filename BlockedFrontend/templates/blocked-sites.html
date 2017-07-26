@@ -6,7 +6,11 @@
 
 {%block banner_text %}
 
+{% if 'banner_text' in remote_content %}
+{{ remote_content.banner_text | safe }}
+{% else %}
 A great many websites are being blocked mistakenly as a result of government imposed filters used by Internet Service Providers.  We need your help to check and unblock these websites.  This is something anyone with a web browser can assist with.
+{% endif %}
 
 {% endblock %}
 

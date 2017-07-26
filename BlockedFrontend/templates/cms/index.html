@@ -32,7 +32,11 @@
 <div class="col-md-12">
 <h2>The scale of the problem</h2>
 
+{% if 'TextAreaOne' in remote_content %}
+{{ remote_content.TextAreaOne |safe }}
+{% else %}
 <p>Based on the <a href="#">100,000 most popular sites</a> according to Alexa, this is the scale of the censorship problem in the UK...</p>
+{% endif %}
 
 </div>
 </div>
@@ -48,12 +52,17 @@
 </div>
 </div>
 
+
 <div class="row shaded-row">
 <div class="col-md-12">
 
+{% if 'TextAreaTwo' in remote_content %}
+{{ remote_content.TextAreaTwo |safe}}
+{% else %}
 <p>For more information on ISP filters, see our <a href="#">FAQ</a>.</p>
 
 <p>See a breakdown of these numbers <a href="#">by Internet Service Provider.</a></p>
+{% endif %}
 </div>
 </div>
 
