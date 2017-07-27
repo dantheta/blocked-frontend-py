@@ -168,7 +168,6 @@ def thanks():
 def verify():
     f = request.args
     req = {
-        'email': f['email'],
         'token': f['token'],
         'date': request.api.get_timestamp()
         }
