@@ -172,7 +172,7 @@ def verify():
         'date': request.api.timestamp()
         }
 
-    req['auth'] = request.api.sign(req, ['token','date'])
+    req['signature'] = request.api.sign(req, ['token','date'])
 
     data = request.api.POST('verify/email', req)
     if data['success'] == False:
