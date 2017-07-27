@@ -169,7 +169,7 @@ def verify():
     f = request.args
     req = {
         'token': f['token'],
-        'date': request.api.get_timestamp()
+        'date': request.api.timestamp()
         }
 
     req['auth'] = request.api.sign(req, ['token','date'])
