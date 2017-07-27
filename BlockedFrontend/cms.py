@@ -24,6 +24,11 @@ def index():
     stats = request.api.stats()
     return render_template('index.html', remote_content=remote_content, stats=stats)
 
+@cms_pages.route('/personal-stories')
+def personal_stories():
+    remote_content = g.remote.get_content('personal-stories')
+    return render_template('personal-stories.html', remote_content=remote_content)
+
 @cms_pages.route('/legal-blocks')
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):

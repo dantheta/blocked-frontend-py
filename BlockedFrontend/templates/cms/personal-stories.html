@@ -1,0 +1,21 @@
+{% extends "BasicPage.page.html" %}
+
+{% set pagetitle = remote_content.title %}
+
+{% block banner_text %}
+{{ remote_content.banner_text|safe}}
+{% endblock %}
+
+{% block body %}
+
+{{remote_content.mainContent|replace('"assets','"https://www.blocked.org.uk/assets')|safe}}
+
+
+{{ chunks.contactForm() }}
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}
