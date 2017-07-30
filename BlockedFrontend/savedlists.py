@@ -3,11 +3,12 @@ import logging
 import psycopg2
 
 from flask import Blueprint, render_template, redirect, request, \
-    jsonify, g, url_for, session, current_app
+    jsonify, g, url_for, session, current_app, Response
 
 from utils import *
 
 import models
+import NORM.exceptions
 
 class AdminPermissionException(Exception):
     pass
@@ -105,3 +106,38 @@ def item_add():
     newitem.store()
     request.conn.commit()
     return redirect(url_for('.show_list', name=savedlist['name']))
+
+@list_pages.route('/list/<name>/export')
+def export_list(name):
+    import csv
+    import tempfile
+    try:
+        savedlist = models.SavedList.select_one(request.conn, name=name)
+    except NORM.exceptions.ObjectNotFound:
+        abort(404)
+
+    tmpfile = tempfile.SpooledTemporaryFile('w+')
+    writer = csv.writer(tmpfile)
+    writer.writerow(['#', "Title: " + savedlist['name']])
+    writer.writerow(['#', "List saved from blocked.org.uk"])
+    writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.show_list', name=name) ])
+    writer.writerow([])
+    writer.writerow(['URL','Report URL'])
+    for item in savedlist.get_items():
+        writer.writerow([item['url'], current_app.config['SITE_URL']+ url_for('category.site', url=item['url']) ])
+
+    tmpfile.flush()
+    length = tmpfile.tell()
+    tmpfile.seek(0)
+
+    def returnvalue(*args):
+        for line in tmpfile:
+            yield line
+
+    return Response(returnvalue(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename='+name+'.csv',
+        'Content-length': str(length)
+        })
+    
+
+
