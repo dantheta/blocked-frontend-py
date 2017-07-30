@@ -69,10 +69,10 @@ class ApiClient(BaseApiClient):
         data = self.GET(endpoint, req)
         return data
 
-    def search_url(self, search, page=0):
+    def search_url(self, search, page=0, exclude_adult=0):
         """Search sites by keyword"""
 
-        req = {'q': search, 'page': page}
+        req = {'q': search, 'page': page, 'exclude_adult': exclude_adult}
         return self._request('search/url', req)
 
     def recent_blocks(self, page):

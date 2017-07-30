@@ -54,7 +54,9 @@ def sites_search(search=None, page=0):
     if search:
         session['route'] = 'keyword'
         session['keyword'] = (search, page)
-        data = request.api.search_url(search, page)
+
+        exclude_adult = request.args.get('exclude_adult', 0)
+        data = request.api.search_url(search, page, exclude_adult)
         logging.debug(data)
     else:
         data = None
@@ -66,7 +68,8 @@ def sites_search(search=None, page=0):
 @category_pages.route('/sites', methods=['POST'])
 def sites_search_post():
     search = request.form['search']
-    return redirect(url_for('.sites_search', search=search))
+    exclude_adult = request.form.get('exclude_adult', '0')
+    return redirect(url_for('.sites_search', search=search, exclude_adult=exclude_adult))
 
 @category_pages.route('/apicategorysearch')
 def apicategorysearch():

@@ -31,6 +31,11 @@ A great many websites are being blocked mistakenly as a result of government imp
     </span>
     </div>
   </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" name="exclude_adult" value="1" {{ 'checked="1"' if request.args.exclude_adult|default('1') != '0' else '' }} /> Exclude likely pornographic &amp; adult services sites
+    </label>
+  </div>
 </div>
 </form>
 
@@ -85,7 +90,7 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {{ results.results_table(data) }}
 
-{{ results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search) }}
+{{ results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search, exclude_adult=request.args.exclude_adult|default('0')) }}
 
 
 
