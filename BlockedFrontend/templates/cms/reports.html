@@ -2,7 +2,7 @@
 {% import "paging.part.html" as paging %}
 
 {%set pagetitle = remote_content.title if 'title' in remote_content
-    else "Website blocking through legal means" %}
+    else "Recently reported sites" %}
 
 {% block col1_row1 %}
 {{ remote_content.TextAreaOne|safe }}
@@ -20,25 +20,31 @@
 <div class="row">
 <div class="col-md-12">
 
-<h2>Recent legally-blocked sites</h2>
+<h2>Incorrectly blocked sites reported to ISPs</h2>
 <table class="table table-striped">
     <tr>
         <th>URL</th>
         <th>Network</th>
-        <th>First Detected</th>
-        <th>Last Checked</th>
+        <th>Reported at</th>
+        <th>Status</th>
     </tr>
-    {% for row in blocks %}
+    {% for row in reports %}
     <tr>
         <td>{{ row.url }}</td>
         <td>{{ row.network_name }}</td>
-        <td>{{ row.first_blocked | fmtime }}</td>
-        <td>{{ row.last_blocked | fmtime }}</td>
+        <td>{{ row.created | fmtime }}</td>
+        <td>
+            {% if row.unblocked %}
+            <span class="label label-success">Unblocked</span>
+            {% else %}
+            <span class="label label-default">Blocked</span>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>
 
-{{ paging.page_list('.legal_blocks', page, pagecount) }}
+{{ paging.page_list('.reported_sites', page, pagecount) }}
 
 </div>
 </div>

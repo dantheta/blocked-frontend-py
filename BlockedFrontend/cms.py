@@ -39,6 +39,16 @@ def legal_blocks(page=1):
     return render_template('legal-blocks.html', remote_content=remote_content, 
             page=page, count=count, pagecount = int(math.ceil(count/25)+1), blocks=blocks)
 
+@cms_pages.route('/reported-sites')
+@cms_pages.route('/reported-sites/<int:page>')
+def reported_sites(page=1):
+    data = request.api.reports(page-1)
+    count = data['count']
+    return render_template('reports.html',
+            page=page, count=count, pagecount = int(math.ceil(count/25)+1), 
+            remote_content = {},
+            reports=data['reports'])
+
 # static page routing
 @cms_pages.route('/<page>')
 def wildcard(page='index'):
@@ -48,11 +58,12 @@ def wildcard(page='index'):
         return "", 404
 
 
+    remote_content = {}
     if page in REMOTE_TEXT_CONTENT:
         try:
             remote_content = g.remote.get_content(REMOTE_TEXT_CONTENT[page])
         except Exception:
-            remote_content = {}
+            pass
 
     if page in current_app.config['REMOTE_PAGES']:
         # page uses generic template from local filesystem, and pretty much requires

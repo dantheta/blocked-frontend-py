@@ -78,6 +78,8 @@ def null(s, default):
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))
+    if app.config['DEBUG']:
+        raise
     return render_template('error.html'), 500
 
 @app.before_request

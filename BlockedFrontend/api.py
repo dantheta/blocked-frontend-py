@@ -34,6 +34,7 @@ class BaseApiClient(object):
             if _stream:
                 return req.iter_lines()
             elif decode:
+                logger.debug("Return: %s", req.content)
                 return req.json()
             else:
                 return req.content
@@ -59,6 +60,7 @@ class ApiClient(BaseApiClient):
     SIGNATURES = {
         'search/url': ['q'],
         'status/blocks': ['date'],
+        'status/ispreports': ['date'],
         'status/stats': ['date'],
         }
 
@@ -81,3 +83,6 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/stats', req)
 
+    def reports(self, page):
+        req = {'date': self.timestamp(), 'page': str(page)}
+        return self._request('status/ispreports', req)
