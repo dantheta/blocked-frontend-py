@@ -66,6 +66,7 @@ A great many websites are being blocked mistakenly as a result of government imp
                 <form action="/list" method="POST">
                     <legend>Create a list of sites for later review</legend>
                     <input type="hidden" name="search" value="{{ search }}" />
+                    <input type="hidden" name="exclude_adult" value="{{ request.args.exclude_adult|default('0') }}" />
                     <div class="form-group">
                         <label for="title">List title:</label>
                         <input type="text" class="form-control" name="name" />

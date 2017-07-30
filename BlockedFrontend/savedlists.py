@@ -39,7 +39,7 @@ def create_list():
     while True:
 
         logging.info("Search page: %d", page)
-        data = request.api.search_url(f['search'], page)
+        data = request.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'))
 
         for site in data['sites']:
             newitem = models.Item(request.conn)
@@ -122,7 +122,7 @@ def export_list(name):
     writer.writerow(['#', "List saved from blocked.org.uk"])
     writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.show_list', name=name) ])
     writer.writerow([])
-    writer.writerow(['URL','Report URL'])
+    writer.writerow(['URL', 'Report URL'])
     for item in savedlist.get_items():
         writer.writerow([item['url'], current_app.config['SITE_URL']+ url_for('category.site', url=item['url']) ])
 
