@@ -83,6 +83,8 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/stats', req)
 
-    def reports(self, page):
+    def reports(self, page, isp=None):
         req = {'date': self.timestamp(), 'page': str(page)}
+        if isp:
+            req['isp'] = isp
         return self._request('status/ispreports', req)

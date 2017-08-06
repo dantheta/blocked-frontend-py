@@ -26,3 +26,12 @@ BLOCKED_CUTOFF_DAYS = 28
 DUMMY = False
 
 ADMIN_USER = None
+
+ISPS = [
+    'BT',
+    'Sky',
+    'TalkTalk',
+    'O2',
+    'EE',
+    'Vodafone'
+    ]

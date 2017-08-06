@@ -41,13 +41,25 @@ def legal_blocks(page=1):
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
-def reported_sites(page=1):
-    data = request.api.reports(page-1)
+@cms_pages.route('/reported-sites/<isp>')
+@cms_pages.route('/reported-sites/<isp>/<int:page>')
+def reported_sites(isp=None, page=1):
+    data = request.api.reports(page-1, isp=isp)
     count = data['count']
     return render_template('reports.html',
+            current_isp=isp,
             page=page, count=count, pagecount = int(math.ceil(count/25)+1), 
             remote_content = {},
             reports=data['reports'])
+
+@cms_pages.route('/reported-sites', methods=["POST"])
+def reported_sites_post():
+    f = request.form
+    isp = f['isp']
+    if isp:
+        return redirect( url_for('.reported_sites', isp=isp) )
+    else:
+        return redirect( url_for('.reported_sites') )
 
 # static page routing
 @cms_pages.route('/<page>')
