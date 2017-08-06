@@ -227,13 +227,6 @@ input.form-control, textarea.form-control, input[type=checkbox] {
     width: 40%;
 }
 
-.permalink {
-    border: 1px solid #111111;
-    font-family: mono;
-    background-color: #efeeee;
-    padding: 4px;
-}
-
 td.num {
     text-align: right;
 }
