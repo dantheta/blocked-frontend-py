@@ -44,11 +44,22 @@ def legal_blocks(page=1):
 @cms_pages.route('/reported-sites/<isp>')
 @cms_pages.route('/reported-sites/<isp>/<int:page>')
 def reported_sites(isp=None, page=1):
+    if isp:
+        if isp not in current_app.config['ISPS']:
+            # search for case insensitive match and redirect
+            for _isp in current_app.config['ISPS']:
+                if _isp.lower() == isp.lower():
+                    return redirect( url_for('.reported_sites', isp=_isp) )
+            # otherwise, return a 404
+            abort(404)
     data = request.api.reports(page-1, isp=isp)
     count = data['count']
+    pagecount = int(math.ceil(count/25)+1)
+    if page > pagecount or page < 1:
+        abort(404)
     return render_template('reports.html',
             current_isp=isp,
-            page=page, count=count, pagecount = int(math.ceil(count/25)+1), 
+            page=page, count=count, pagecount=pagecount, 
             remote_content = {},
             reports=data['reports'])
 
