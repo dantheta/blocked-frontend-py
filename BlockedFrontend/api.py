@@ -62,6 +62,8 @@ class ApiClient(BaseApiClient):
         'status/blocks': ['date'],
         'status/ispreports': ['date'],
         'status/stats': ['date'],
+        'status/isp-stats': ['date'],
+        'status/category-stats': ['date'],
         }
 
     def _request(self, endpoint, req):
@@ -88,3 +90,11 @@ class ApiClient(BaseApiClient):
         if isp:
             req['isp'] = isp
         return self._request('status/ispreports', req)
+
+    def isp_stats(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/isp-stats', req)
+
+    def category_stats(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/category-stats', req)

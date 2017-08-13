@@ -1,0 +1,94 @@
+{% extends "BasicPage.page.html" %}
+
+{%set pagetitle = 'Internet Filtering Statistics' %}
+
+{% block banner_text %}
+
+{% endblock %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+<h2>Alexa top 100,000 sites</h2>
+<p>Blocked sites as a proportion of total sites checked</p>
+<canvas id="alexa100k" width="100%" height="40"></canvas>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+<h2>Blocked sites by ISP Category</h2>
+<canvas id="category" width="100%" height="60"></canvas>
+</div>
+</div>
+
+{% endblock %}
+
+{% block page_js_libs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+{% endblock %}
+
+
+{% block page_script %}
+$(document).ready(function(){
+  var ctx = document.getElementById("alexa100k").getContext('2d');
+
+  var isps = {{ isps | tojson }}
+
+  var alexa100k = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: isps,
+        datasets: [
+            {
+                label: "Blocked Sites",
+                data: {{ blocked | tojson  }},
+                backgroundColor: 'red',
+            },
+            {
+                label: "Total sites checked",
+                data: {{ total | tojson }},
+                backgroundColor: 'lightgray',
+            }
+        ]
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+        
+  var ctx = document.getElementById("category").getContext('2d');
+  var category_chart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: {{ categories | tojson }},
+        datasets:[
+          {
+              label: "Blocked Sites",
+              data: {{ category_stats| map(attribute='count') | list | tojson }},
+              backgroundColor: 'red'
+          },
+
+        ]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+  });
+
+});
+{% endblock %}
