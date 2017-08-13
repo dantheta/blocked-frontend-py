@@ -13,7 +13,7 @@ def index():
 
     category_stats = request.api.category_stats()
 
-    return render_template('index.html',
+    return render_template('stats.html',
         ispstats=ispstats,
         isps=isps,
         total=[ ispstats[x]['total'] - ispstats[x]['blocked'] for x in isps ],
