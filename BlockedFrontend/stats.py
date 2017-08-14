@@ -16,7 +16,7 @@ def index():
     return render_template('stats.html',
         ispstats=ispstats,
         isps=isps,
-        total=[ ispstats[x]['total'] - ispstats[x]['blocked'] for x in isps ],
+        total=[ ispstats[x]['total']  for x in isps ],
         blocked=[ ispstats[x]['blocked'] for x in isps ],
         category_stats=category_stats['stats'],
         categories = ["{1} ({0})".format(x['network_name'], x['category']) for x in category_stats['stats']]
