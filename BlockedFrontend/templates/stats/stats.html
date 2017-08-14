@@ -22,6 +22,20 @@
 </div>
 </div>
 
+<div class="row">
+<div class="col-md-12">
+<h2>ISP Blocks by domain</h2>
+</div>
+</div>
+<div class="row">
+{% for group, stats in domain_isp_stats.stats|groupby('description') %}
+<div class="col-lg-4 col-md-6">
+  <h3>{{ group }}</h3>
+  <canvas id="domain{{loop.index0}}" width="100%" height="50"></canvas>
+
+</div>
+{% endfor %}
+</div>
 {% endblock %}
 
 {% block page_js_libs %}
@@ -89,6 +103,35 @@ $(document).ready(function(){
       }
     }
   });
+
+  {% for name,stats in domain_isp_stats.stats|groupby('name') %}
+  var ctx = document.getElementById("domain{{loop.index0}}").getContext('2d');
+  var category_chart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: {{ stats |sort(attribute='network_name')| map(attribute='network_name') | list |tojson }},
+        datasets:[
+          {
+              label: "Blocked Sites",
+              data: {{ stats | sort(attribute='network_name') | map(attribute='block_count') | list | tojson }},
+              backgroundColor: 'red'
+          },
+
+        ]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: false
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+  });
+    
+  {% endfor %}
 
 });
 {% endblock %}
