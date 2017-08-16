@@ -65,6 +65,7 @@ class ApiClient(BaseApiClient):
         'status/isp-stats': ['date'],
         'status/category-stats': ['date'],
         'status/domain-isp-stats': ['date'],
+        'status/domain-stats': ['date'],
         }
 
     def _request(self, endpoint, req):
@@ -99,6 +100,10 @@ class ApiClient(BaseApiClient):
     def category_stats(self):
         req = {'date': self.timestamp()}
         return self._request('status/category-stats', req)
+
+    def domain_stats(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/domain-stats', req)
 
     def domain_isp_stats(self):
         req = {'date': self.timestamp()}

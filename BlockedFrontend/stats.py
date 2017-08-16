@@ -21,6 +21,8 @@ def index():
         category_stats=category_stats['stats'],
         categories = ["{1} ({0})".format(x['network_name'], x['category']) for x in category_stats['stats']],
 
+        domain_stats = request.api.domain_stats(),
+
         domain_isp_stats = request.api.domain_isp_stats()
         
         )

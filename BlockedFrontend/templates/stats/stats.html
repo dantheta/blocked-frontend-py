@@ -24,6 +24,15 @@
 
 <div class="row">
 <div class="col-md-12">
+<h2>Blocked sites by Domain</h2>
+<canvas id="domain" width="100%" height="60"></canvas>
+
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-12">
 <h2>ISP Blocks by domain</h2>
 </div>
 </div>
@@ -103,6 +112,39 @@ $(document).ready(function(){
       }
     }
   });
+
+
+  var ctx = document.getElementById("domain").getContext('2d');
+  var domain_chart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: {{ domain_stats.stats | map(attribute='description') | list | tojson }},
+        datasets:[
+          {
+              label: "Blocked Sites",
+              data: {{ domain_stats.stats| map(attribute='block_count') | list | tojson }},
+              backgroundColor: 'red'
+          },
+          {
+              label: "Total Sites",
+              data: {{ domain_stats.stats| map(attribute='total') | list | tojson }},
+              backgroundColor: 'lightgray'
+          },
+
+        ]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: false
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+  });
+
 
   {% for name,stats in domain_isp_stats.stats|groupby('name') %}
   var ctx = document.getElementById("domain{{loop.index0}}").getContext('2d');
