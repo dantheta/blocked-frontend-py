@@ -7,6 +7,7 @@ Behaviour variables:
 title_width: width of title block, default 7
 menu_block(bool): show menu block, default true
 banner_text_columns(int): width of banner block, default 7
+banner_text_block(bool): show banner text block, default true
 
 #}
 <!DOCTYPE html>
@@ -64,11 +65,13 @@ banner_text_columns(int): width of banner block, default 7
     {% endif %}
     </div>
 
+    {% if banner_text_block | default(True) %}
     <div class="row">
     <div class="col-md-{{ banner_text_columns | default('6') }}">
       <p {{rmt.remote_style('banner_text')}}>{%block banner_text%}{% endblock %}</p>
     </div>
     </div>
+    {% endif %}
 
 
     {% block body %}{%endblock%}
