@@ -1,5 +1,14 @@
 {%import "chunks.part.html" as chunks %}
 {%import "remotecontent.part.html" as rmt %}
+{#
+
+Behaviour variables:
+
+title_width: width of title block, default 7
+menu_block(bool): show menu block, default true
+banner_text_columns(int): width of banner block, default 7
+
+#}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,7 +45,7 @@
     </div>
     
     <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-{{ title_width | default(7) }}">
       <div class="pagerole">{{pagerole}}</div>
       <h1>{{ pagetitle }}</h1>
       {% block urllink %}
@@ -48,9 +57,11 @@
       {% endblock %}
     </div>
 
+    {% if menu_block| default(True) %}
     <div class="col-md-4 col-md-offset-1 pagemenu">
       {% block page_menu %}{% endblock %}
     </div>
+    {% endif %}
     </div>
 
     <div class="row">

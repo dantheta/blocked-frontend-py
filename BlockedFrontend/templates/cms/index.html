@@ -1,55 +1,102 @@
 {% extends "BasicPage.page.html" %}
 {%import "remotecontent.part.html" as rmt %}
 
-
 {%set pagetitle = g.remote_content.title | default("Take action against web censorship") %}
-
+{% set title_width = 12 %}
+{% set menu_block = false %}
 
 {%block banner_text%}
-{% call rmt.remote('banner_text') %}
-  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
-  
-  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
-{% endcall %}
 {%endblock%}
 
 {%block page_menu%}
-
+{#
   <div><a href="{{ url_for('category.check') }}/live">Check if a site is being blocked</a></div>
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search sites by keyword</a></div>
   <div><a href="{{ url_for('category.check') }}">Get a site unblocked</a></div>
   <div><a href="{{ url_for('category.random') }}">Take action: Report sites</a></div>
-
+#}
 {% endblock %}
 
 {%block body %}
-<!-- template BasicPage -->
-<div class="row shaded-row">
-<div class="col-md-12">
-<h2>The scale of the problem</h2>
 
-{% call rmt.remote('TextAreaOne') %}
-<p>Based on the <a href="#">100,000 most popular sites</a> according to Alexa, this is the scale of the censorship problem in the UK...</p>
+{% call rmt.remote('banner_text') %}
+  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
+  
+  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
 {% endcall %}
 
+
+<!-- template BasicPage -->
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+<h3 style="text-align: center">For example,</h3>
+
+<div class="well" style="text-align: center">
+<div style="font-size: 125%"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
+<p>{{site.title|null('no title')}}</p>
+is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using filters.
+
+<div class="row">
+<div class="col-md-4">
+<div>Has this site been blocked in error?</div>
+<a href="{{url_for('unblock.unblock', url=site.url)}}" class="btn btn-lg btn-primary">Request unblock</a>
+</div>
+
+<div class="col-md-4">
+<div>&nbsp;</div>
+<a href="{{ url_for('category.site', url=site.url) }}" class="btn btn-lg btn-default">View full results</a>
+</div>
+
+<div class="col-md-4">
+<div>&nbsp;</div>
+<a href="/" class="btn btn-lg btn-default">See another blocked site</a>
 </div>
 </div>
 
-<div class="row shaded-row statsrow">
-<div class="col-md-4">
-    <div class="pctlg">{{ (stats.stats.blocked_sites_detected / stats.stats.blocked_sites_sample_size *100) | round(1) }}%</div>
-<div class="pctdesc">of sites are being blocked by strict ISP filters</div>
-</div>
-<div class="col-md-4">
-<div class="pctlg">{{ (stats.stats.blocked_sites_detected_default_filter / stats.stats.blocked_sites_sample_size *100) | round(1) }}%</div>
-<div class="pctdesc">of sites are being blocked by default ISP filters</div>
+</div> <!--/.well-->
+
+
 </div>
 </div>
 
+<div class="row">
+<div class="col-md-12">
+<h3>More ways to check blocked sites</h3>
+  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
+  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
+
+</div>
+</div>
 
 <div class="row shaded-row">
-<div class="col-md-12">
+<div class="col-md-9">
+<h3>Check a website</h3>
+
+<form action="{{ url_for('category.check_post') }}" method="POSt">
+<input type="hidden" name="submit" value="{{live | lower }}" />
+
+<div class="form-group">
+  <label for="url">Website address</label>
+  <div class="control-group">
+    <div class="input-group">
+    <input type="text"  placeholder="http://" name="url" id="url" class="form-control" />
+    <span class="input-group-btn">
+    <input type="submit" value="Check site" class="btn btn-primary" />
+    </span>
+    </div>
+  </div>
+</div>
+
+</form>
+<p>Blocked will check if a site is being blocked by instantly running tests on major fixed line ISPs and mobile networks.</p>
+
+</div>
+</div> <!--/.row -->
+
+{#
+<div class="row shaded-row">
+<div class="col-md-12" {{rmt.remote_style('TextAreaTwo')}}>
 
 {% call rmt.remote('TextAreaTwo') %}
 <p>For more information on ISP filters, see our <a href="#">FAQ</a>.</p>
@@ -58,6 +105,7 @@
 {% endcall %}
 </div>
 </div>
+#}
 
 <div class="row">
 {{chunks.contactChunk() }}

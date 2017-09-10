@@ -21,8 +21,13 @@ REMOTE_TEXT_CONTENT = {
 @cms_pages.route('/')
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
-    stats = request.api.stats()
-    return render_template('index.html', stats=stats)
+    #stats = request.api.stats()
+    randomsite = request.api.GET('ispreport/candidates',{'count':1})
+    site = request.api.status_url(randomsite['results'][0])
+    blockednetworks = [ x['network_id'] for x in site['results']
+        if x['status'] == 'blocked' ]
+    return render_template('index.html', randomsite=randomsite, site=site, 
+        blockednetworks=blockednetworks)
 
 @cms_pages.route('/personal-stories')
 def personal_stories():

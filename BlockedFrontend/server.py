@@ -78,6 +78,14 @@ def null(s, default):
     if isinstance(s, (str,unicode)) and not s.strip():
         return default
     return s
+
+@app.template_filter('join_en')
+def join_en(ls):
+    if len(ls) == 1:
+        return ls[0]
+    elif len(ls) >= 2:
+        return ", ".join(ls[:-1]) + " and " + ls[-1]
+    return ''
     
 @app.errorhandler(Exception)
 def on_error(error):

@@ -109,8 +109,7 @@ def site(url=None):
     req = {
         'url': url,
         }
-    req['signature'] = request.api.sign(req, ['url'])
-    data = request.api.GET('status/url', req)
+    data = request.api.status_url(url)
     activecount=0
     pastcount=0
     can_unblock = None

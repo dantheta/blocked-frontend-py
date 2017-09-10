@@ -59,6 +59,7 @@ class BaseApiClient(object):
 class ApiClient(BaseApiClient):
     SIGNATURES = {
         'search/url': ['q'],
+        'status/url': ['url'],
         'status/blocks': ['date'],
         'status/ispreports': ['date'],
         'status/stats': ['date'],
@@ -108,3 +109,7 @@ class ApiClient(BaseApiClient):
     def domain_isp_stats(self):
         req = {'date': self.timestamp()}
         return self._request('status/domain-isp-stats', req)
+
+    def status_url(self, url):
+        req = {'url': url}
+        return self._request('status/url', req)
