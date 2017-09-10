@@ -1,4 +1,5 @@
 {%import "chunks.part.html" as chunks %}
+{%import "remotecontent.part.html" as rmt %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -54,7 +55,7 @@
 
     <div class="row">
     <div class="col-md-{{ banner_text_columns | default('6') }}">
-      <p>{%block banner_text%}{% endblock %}</p>
+      <p {{rmt.remote_style('banner_text')}}>{%block banner_text%}{% endblock %}</p>
     </div>
     </div>
 

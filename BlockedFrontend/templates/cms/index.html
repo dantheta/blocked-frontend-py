@@ -1,19 +1,16 @@
 {% extends "BasicPage.page.html" %}
+{%import "remotecontent.part.html" as rmt %}
 
 
-{%set pagetitle = remote_content.title | default("Take action against web censorship") %}
+{%set pagetitle = g.remote_content.title | default("Take action against web censorship") %}
 
 
 {%block banner_text%}
-{% if 'banner_text' in remote_content %}
-{{ remote_content.banner_text | safe }}
-{% else %}
-<!-- inbuilt -->
+{% call rmt.remote('banner_text') %}
   <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
   
   <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
-{% endif %}
-
+{% endcall %}
 {%endblock%}
 
 {%block page_menu%}
@@ -32,11 +29,9 @@
 <div class="col-md-12">
 <h2>The scale of the problem</h2>
 
-{% if 'TextAreaOne' in remote_content %}
-{{ remote_content.TextAreaOne |safe }}
-{% else %}
+{% call rmt.remote('TextAreaOne') %}
 <p>Based on the <a href="#">100,000 most popular sites</a> according to Alexa, this is the scale of the censorship problem in the UK...</p>
-{% endif %}
+{% endcall %}
 
 </div>
 </div>
@@ -56,13 +51,11 @@
 <div class="row shaded-row">
 <div class="col-md-12">
 
-{% if 'TextAreaTwo' in remote_content %}
-{{ remote_content.TextAreaTwo |safe}}
-{% else %}
+{% call rmt.remote('TextAreaTwo') %}
 <p>For more information on ISP filters, see our <a href="#">FAQ</a>.</p>
 
 <p>See a breakdown of these numbers <a href="#">by Internet Service Provider.</a></p>
-{% endif %}
+{% endcall %}
 </div>
 </div>
 

@@ -15,10 +15,9 @@ category_pages = Blueprint('category', __name__)
 def check(mode=None):
     if 'route' in session:
         del session['route']
-    remote_content = g.remote.get_content('check')
+    g.remote_content = g.remote.get_content('check')
     return render_template('check.html',
             live = (mode == 'live'),
-            remote_content=remote_content
             )
 
 @category_pages.route('/blocked-sites')
@@ -41,10 +40,9 @@ def blocked_sites(category=1, page=0):
         extra['parentid'] =  data2['parents'][-1][0]
         extra['parentname'] =  data2['parents'][-1][1]
 
-    remote_content = g.remote.get_content('category-search')
+    g.remote_content = g.remote.get_content('category-search')
     return render_template('blocked-sites.html',
             data=data, page=page, category=category, 
-            remote_content = remote_content,
             **extra)
 
 @category_pages.route('/sites')
@@ -60,10 +58,10 @@ def sites_search(search=None, page=0):
         logging.debug(data)
     else:
         data = None
-    remote_content = g.remote.get_content('keyword-search')
+    g.remote_content = g.remote.get_content('keyword-search')
     return render_template('site-search.html', 
             data=data, page=page, search=search,
-            remote_content=remote_content)
+            )
 
 @category_pages.route('/sites', methods=['POST'])
 def sites_search_post():

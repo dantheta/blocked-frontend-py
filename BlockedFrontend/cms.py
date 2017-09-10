@@ -20,23 +20,23 @@ REMOTE_TEXT_CONTENT = {
 
 @cms_pages.route('/')
 def index():
-    remote_content = g.remote.get_content('homepage-text')
+    g.remote_content = g.remote.get_content('homepage-text')
     stats = request.api.stats()
-    return render_template('index.html', remote_content=remote_content, stats=stats)
+    return render_template('index.html', stats=stats)
 
 @cms_pages.route('/personal-stories')
 def personal_stories():
-    remote_content = g.remote.get_content('personal-stories')
-    return render_template('personal-stories.html', remote_content=remote_content)
+    g.remote_content = g.remote.get_content('personal-stories')
+    return render_template('personal-stories.html')
 
 @cms_pages.route('/legal-blocks')
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):
-    remote_content = g.remote.get_content('legal-blocks')
+    g.remote_content = g.remote.get_content('legal-blocks')
     data = request.api.recent_blocks(page-1)
     blocks = data['results']
     count = data['count']
-    return render_template('legal-blocks.html', remote_content=remote_content, 
+    return render_template('legal-blocks.html',
             page=page, count=count, pagecount = int(math.ceil(count/25)+1), blocks=blocks)
 
 @cms_pages.route('/reported-sites')
@@ -60,7 +60,6 @@ def reported_sites(isp=None, page=1):
     return render_template('reports.html',
             current_isp=isp,
             page=page, count=count, pagecount=pagecount, 
-            remote_content = {},
             reports=data['reports'])
 
 @cms_pages.route('/reported-sites', methods=["POST"])
@@ -81,32 +80,32 @@ def wildcard(page='index'):
         return "", 404
 
 
-    remote_content = {}
+    g.remote_content = {}
     if page in REMOTE_TEXT_CONTENT:
         try:
-            remote_content = g.remote.get_content(REMOTE_TEXT_CONTENT[page])
+            g.remote_content = g.remote.get_content(REMOTE_TEXT_CONTENT[page])
         except Exception:
             pass
 
     if page in current_app.config['REMOTE_PAGES']:
         # page uses generic template from local filesystem, and pretty much requires
         # remote content
-        remote_content = g.remote.get_content(page)
+        g.remote_content = g.remote.get_content(page)
 
-        logging.info("page content: %s", remote_content.keys())
-        if set(remote_content.keys()).intersection(
+        logging.info("page content: %s", g.remote_content.keys())
+        if set(g.remote_content.keys()).intersection(
             ['TextAreaFour','TextAreaFive','TextAreaSix']
             ):
             return render_template('remote_content2x3.html',
-                content=remote_content
+                content=g.remote_content
                 )
         return render_template('remote_content1x3.html',    
-            content=remote_content
+            content=g.remote_content
             )
 
     try:
         # template exists in local filesystem, but can accept remote content
-        return render_template(page + '.html', remote_content=remote_content)
+        return render_template(page + '.html')
     except jinja2.TemplateNotFound:
         abort(404)
 

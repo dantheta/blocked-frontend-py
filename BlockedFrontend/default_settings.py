@@ -27,6 +27,8 @@ DUMMY = False
 
 ADMIN_USER = None
 
+REMOTE_CONTENT_STYLE = 'style="background-color: light-blue"'
+
 ISPS = [
     'BT',
     'Sky',
