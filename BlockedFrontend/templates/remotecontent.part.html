@@ -1,0 +1,13 @@
+{%- macro remote_style(name) -%}
+{%- if g.remote_content is defined and g.admin and name in g.remote_content -%}
+{{ config.REMOTE_CONTENT_STYLE |safe}}
+{%- endif -%}
+{%- endmacro -%}
+
+{% macro remote(name) %}
+{% if g.remote_content is defined and name in g.remote_content %}
+{{ g.remote_content[name] |safe }}
+{% else %}
+{{ caller() }}
+{% endif %}
+{% endmacro %}
