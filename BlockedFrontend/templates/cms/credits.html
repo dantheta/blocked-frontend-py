@@ -1,0 +1,44 @@
+{% extends "BasicPage.page.html" %}
+
+{%set pagetitle = g.remote_content.title %}
+{% set banner_text_block = False %}
+
+{%block banner_text%}{%endblock%}
+
+{% block body %}
+
+<div class="row">
+<div class="col-md-4">
+{{ g.remote_content.TextAreaOne |safe }}
+</div>
+<div class="col-md-4">
+{{ g.remote_content.TextAreaFour |safe }}
+</div>
+<div class="col-md-4">
+{{ g.remote_content.TextAreaTwo |safe }}
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+{{ g.remote_content.TextAreaFive |safe }}
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+
+<h2>Our sponsors</h2>
+
+{{ g.remote_content.TextAreaThree |safe }}
+
+{{ g.remote_content.TextAreaSix |safe }}
+</div>
+</div>
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}

@@ -34,6 +34,11 @@ def personal_stories():
     g.remote_content = g.remote.get_content('personal-stories')
     return render_template('personal-stories.html')
 
+@cms_pages.route('/credits')
+def credits():
+    g.remote_content = g.remote.get_content('credits')
+    return render_template('credits.html')
+
 @cms_pages.route('/legal-blocks')
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):
