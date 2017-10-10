@@ -95,6 +95,7 @@ def random_category():
 
 @category_pages.route('/site')
 @category_pages.route('/site/<path:url>')
+@category_pages.route('/results')
 def site(url=None):
     if not url:
         url = request.args['url']
