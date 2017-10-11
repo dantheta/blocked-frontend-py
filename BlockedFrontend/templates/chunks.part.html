@@ -75,14 +75,16 @@
 {%endmacro%}
 
 {% macro menu_link(title, url) %}
-<a class="{{ 'active' if request.path == url else ''}}" href="{{url}}">{{title}}</a>
+<a class="{{ 'active' if request.path.startswith(url) else ''}}" href="{{url}}">{{title}}</a>
 {% endmacro %}
 
 
 {% macro main_menu() %}
-{{ menu_link('Home', '/') }}
+<a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
 <a class="{{ 'active' if request.path.startswith( ('/blocked-sites','/site','/check','/unblock','/thanks')) else ''}}" href="/blocked-sites">Blocked Sites</a>
-{{ menu_link(" Reported Sites", '/reported-sites') }}
+{{ menu_link("Reported Sites", '/reported-sites') }}
+{{ menu_link("Legal Blocks", '/legal-blocks') }}
+<br />
 {{ menu_link("About", '/about') }}
 {{ menu_link("Support" ,'/support') }}
 {{ menu_link("Credits" ,'/credits') }}
