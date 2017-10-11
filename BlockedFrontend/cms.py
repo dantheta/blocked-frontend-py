@@ -62,6 +62,7 @@ def reported_sites(isp=None, page=1):
                     return redirect( url_for('.reported_sites', isp=_isp) )
             # otherwise, return a 404
             abort(404)
+    g.remote_content = g.remote.get_content('reported-sites')
     data = request.api.reports(page-1, isp=isp)
     count = data['count']
     pagecount = int(math.ceil(count/25)+1)

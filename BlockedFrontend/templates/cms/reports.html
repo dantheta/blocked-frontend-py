@@ -1,19 +1,19 @@
 {% extends "layout_1x3.page.html" %}
 {% import "paging.part.html" as paging %}
 
-{%set pagetitle = remote_content.title if 'title' in remote_content
+{%set pagetitle = g.remote_content.title if 'title' in g.remote_content
     else "Recently reported sites" %}
 
 {% block col1_row1 %}
-{{ remote_content.TextAreaOne|safe }}
+{{ g.remote_content.TextAreaOne|safe }}
 {%endblock%}
 
 {% block col1_row2 %}
-{{ remote_content.TextAreaTwo|safe }}
+{{ g.remote_content.TextAreaTwo|safe }}
 {%endblock%}
 
 {% block col1_row3 %}
-{{ remote_content.TextAreaThree|safe }}
+{{ g.remote_content.TextAreaThree|safe }}
 {%endblock%}
 
 {% block bodyrow2 %}

@@ -20,7 +20,7 @@ class RemoteContent(object):
     def get_content(self, page):
         if not self.src:
             return
-        logging.debug("Running remote_src_fetch")
+        logging.debug("Running remote_src_fetch: %s", self.src + page + '.xml')
 
         try:
             req = self.get_remote_content(page)
