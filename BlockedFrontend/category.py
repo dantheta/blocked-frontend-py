@@ -145,10 +145,14 @@ def site(url=None):
 
 @category_pages.route('/check', methods=['POST'])
 def check_post():
+    url = request.form['url']
+    if not url.lower().startswith(('http://','https://')):
+        url = 'http://' + url
+
     if request.form['submit'] == 'false':
-        return redirect(url_for('.site', url=request.form['url']))
+        return redirect(url_for('.site', url=url))
     req = {
-        'url': request.form['url'],
+        'url': url,
     }
     req['signature'] = request.api.sign(req, ['url'])
     data = request.api.POST('submit/url', req)
@@ -158,12 +162,12 @@ def check_post():
             activecount=0,
             pastcount=0,
             can_unblock=None,
-            domain=get_domain(request.form['url']),
-            url=request.form['url'],
+            domain=get_domain(url),
+            url=url,
             md5=data['hash'],
             live=True
             )
-    return redirect(url_for('.site', url=request.form['url']))
+    return redirect(url_for('.site', url=url))
 
 @category_pages.route('/stream-results-dummy')
 def stream_results_dummy():
