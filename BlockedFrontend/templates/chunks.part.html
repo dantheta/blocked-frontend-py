@@ -74,14 +74,18 @@
 {% endif %}
 {%endmacro%}
 
+{% macro menu_link(title, url) %}
+<a class="{{ 'active' if request.path == url else ''}}" href="{{url}}">{{title}}</a>
+{% endmacro %}
+
+
 {% macro main_menu() %}
-<a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
-<a class="{{ 'active' if request.path.startswith(
-('/blocked-sites','/site','/check','/unblock','/thanks')
-) else ''}}" href="/blocked-sites">Blocked Sites</a>
-<a class="{{ 'active' if request.path == '/about' else ''}}" href="/about">About</a>
-<a class="{{ 'active' if request.path == '/support' else ''}}" href="/support">Support</a>
-<a class="{{ 'active' if request.path == '/credits' else ''}}" href="/credits">Credits</a>
+{{ menu_link('Home', '/') }}
+<a class="{{ 'active' if request.path.startswith( ('/blocked-sites','/site','/check','/unblock','/thanks')) else ''}}" href="/blocked-sites">Blocked Sites</a>
+{{ menu_link(" Reported Sites", '/reported-sites') }}
+{{ menu_link("About", '/about') }}
+{{ menu_link("Support" ,'/support') }}
+{{ menu_link("Credits" ,'/credits') }}
 <a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
 
 {% endmacro %}
