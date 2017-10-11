@@ -23,6 +23,9 @@ CACHE_TIME = 3600
 
 BLOCKED_CUTOFF_DAYS = 28
 
+# disable PIWIK by default, enable on live site
+PIWIK = False
+
 DUMMY = False
 
 ADMIN_USER = None

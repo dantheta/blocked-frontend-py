@@ -91,3 +91,19 @@
 <a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
 
 {% endmacro %}
+
+{% macro piwik() %}
+    <!-- piwik -->
+{% if config.PIWIK %}
+<script type="text/javascript"> var pkBaseURL = (("https:" == document.location.protocol) ? "https://bug.openrightsgroup.org/piwik/" : "https://bug.openrightsgroup.org/piwik/"); document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E")); </script><script type="text/javascript">
+
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 14);
+piwikTracker.disableCookies();
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script>
+{% endif %}
+    <!-- end piwik -->
+{% endmacro %}
