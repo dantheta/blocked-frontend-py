@@ -13,7 +13,7 @@ def admin():
 
     return render_template('admin.html')
 
-@admin_pages.route('/admin', methods=['POST'])
+@admin_pages.route('/control', methods=['POST'])
 def admin_post():
     if not (current_app.config.get('ADMIN_USER') and current_app.config.get('ADMIN_PASSWORD')):
         abort(403)
@@ -26,7 +26,7 @@ def admin_post():
 
     return render_template('login.html', message='Incorrect username or password')
 
-@admin_pages.route('/admin/logout')
+@admin_pages.route('/control/logout')
 def logout():
     del session['admin']
     return redirect(url_for('.admin'))
