@@ -29,6 +29,7 @@ PIWIK = False
 DUMMY = False
 
 ADMIN_USER = None
+ADMIN_PASSWORD = None
 
 REMOTE_CONTENT_STYLE = 'style="background-color: light-blue"'
 

@@ -6,6 +6,13 @@
 </div>
 {% endmacro %}
 
+{% macro password_field(label, name, value='', placeholder='') %}
+<div class="form-group">
+    <label for="{{name}}">{{label}}</label>
+    <input class="form-control" type="password" name="{{name}}" value="{{value}}" placehholder="{{placeholder}}"/>
+</div>
+{% endmacro %}
+
 {% macro submit(text) %}
 <input type="submit" value="{{text}}" class="btn btn-primary" />
 {% endmacro %}

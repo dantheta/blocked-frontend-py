@@ -10,7 +10,7 @@ from utils import *
 from .remotecontent import RemoteContent
 
 from flask import Flask, render_template, request,  \
-    abort, g
+    abort, g, session
 
 app = Flask("BlockedFrontend")
 
@@ -56,6 +56,9 @@ app.register_blueprint(stats_pages)
 from cms import cms_pages
 app.register_blueprint(cms_pages)
 
+from admin import admin_pages
+app.register_blueprint(admin_pages)
+
 
 @app.before_request
 def hook_api():
@@ -96,10 +99,8 @@ def on_error(error):
 
 @app.before_request
 def check_user():
-    g.admin = False
+    g.admin = session.get('admin', False)
     if app.config['ADMIN_USER'] is None:
-        g.admin = True
-    if app.config['ADMIN_USER'] is not None and app.config['ADMIN_USER'] == request.environ.get('REMOTE_USER'):
         g.admin = True
 
 @app.before_request

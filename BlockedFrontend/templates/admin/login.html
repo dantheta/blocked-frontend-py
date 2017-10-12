@@ -1,0 +1,27 @@
+{% extends "BasicPage.page.html" %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Administrator Login" %}
+
+
+{% block body %}
+<div class="row">
+<div class="col-md-6">
+
+{% if message %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endif %}
+
+<form class = "form form-vertical" method="POST" action="{{ url_for('.admin_post') }}">
+
+{{ forms.text_field('Username:', 'username') }}
+{{ forms.password_field('Password:', 'password') }}
+{{ forms.submit('Login') }}
+
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}
