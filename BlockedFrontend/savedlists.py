@@ -3,7 +3,7 @@ import logging
 import psycopg2
 
 from flask import Blueprint, render_template, redirect, request, \
-    jsonify, g, url_for, session, current_app, Response
+    jsonify, g, url_for, session, current_app, Response, abort
 
 from utils import *
 
@@ -64,7 +64,10 @@ def create_list():
 @list_pages.route('/list/<name>/<int:page>', methods=['GET'])
 def show_list(name, page=0):
     pagesize=20
-    savedlist = models.SavedList.select_one(request.conn, name=name)
+    try:
+        savedlist = models.SavedList.select_one(request.conn, name=name)
+    except NORM.exceptions.ObjectNotFound:
+        abort(404)
     itemcount = savedlist.count_items()
     items = savedlist.get_items(_limit=(pagesize, page*pagesize))
 
