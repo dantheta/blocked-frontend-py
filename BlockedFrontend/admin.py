@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, redirect, request, \
 
 admin_pages = Blueprint('admin', __name__, template_folder='templates/admin')
 
-@admin_pages.route('/admin', methods=['GET'])
+@admin_pages.route('/control', methods=['GET'])
 def admin():
     if not g.admin:
         return render_template('login.html')
