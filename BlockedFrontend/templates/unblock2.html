@@ -21,13 +21,17 @@
 <h2>Site blocked on:</h2>
 <table id="active" class="table results-table">
 <tr>
-  <th>Network</th>
+  <th>Network (category)</th>
   <th>Last Blocked</th>
   <th>Last Reported</th>
 </tr>
 {% endif %}
 <tr class="{{ 'disabled' if block.last_blocked_timestamp < cutoff_time or block.last_report_timestamp != None else ''}}">
-  <td>{{ block.network_name }}</td>
+  <td>{{ block.network_name }}
+  {% if block.category and block.category != block.network_name %}
+    <span class="category" style="padding-left: 0.5em"><em>({{ block.category |title}})</em></span>
+  {% endif %}
+  </td>
   <td>{{ block.last_blocked_timestamp | fmtime }}</td>
   <td>{{ block.last_report_timestamp | fmtime }}</td>
 </tr>
