@@ -44,13 +44,15 @@
     <tr>
         <th>URL</th>
         <th>Network</th>
+        <th></th>
         <th>Reported at</th>
         <th>Status</th>
     </tr>
     {% for row in reports %}
     <tr>
-        <td><a href="{{ url_for('category.site', url=row.url) }}">{{ row.url }}</a></td>
+        <td><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a></td>
         <td>{{ row.network_name }}</td>
+        <td><a href="{{ url_for('category.site', url=row.url) }}">View site report</a></td>
         <td>{{ row.created | fmtime }}</td>
         <td>
             {% if row.unblocked %}
