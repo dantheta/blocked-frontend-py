@@ -159,6 +159,9 @@ margin-top: 2em;
 #allresults * td {
     background-color: #edffed;
     }
+#allresults tr.error td {
+    background-color: #ffffed;
+    }
 
 .showmore {
     text-align: right;

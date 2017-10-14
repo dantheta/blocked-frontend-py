@@ -41,3 +41,11 @@ ISPS = [
     'EE',
     'Vodafone'
     ]
+
+STATUS_NAMES = {
+    'error': 'Error',
+    'dnserror': 'DNS Error',
+    'sslerror': 'SSL Error',
+    'ok': 'OK',
+    
+    }

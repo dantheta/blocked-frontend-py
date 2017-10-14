@@ -1,5 +1,9 @@
 {% extends "BasicPage.page.html" %}
 
+{% macro status_names(status) %}
+{{ config.STATUS_NAMES.get(status, status) }}
+{% endmacro %}
+
 {% if not thanks %}
 {%set pagetitle = domain %}
 {%set pagerole = "Site blocking report" %}
@@ -61,30 +65,31 @@
 {% endif %}
 {% endblock %}
 
-{%macro results_table(id, results, show_lastblocked=True, show_category=False) %}
+{%macro results_table(id, results, show_lastblocked=True, show_category=False, show_status=False) %}
 <table id="{{ id }}" class="table results-table">
 <tr>
   <th>ISP</th>
   <th>Last Checked</th>
   {% if show_category %}
     <th>Category</th>
-  {% else %}
-    {% if show_lastblocked %}
+  {% elif show_lastblocked %}
     <th>Last Blocked</th>
-    {% else %}
+  {% elif show_status %}
+    <th>Status</th>
+  {% else %}
     <th></th>
-    {% endif %}
-    
   {% endif %}
 </tr>
 {% for item in results %}
-<tr id="net_{{item.network_name|replace(' ','')}}">
+<tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if show_status and item.status in ('error','dnserror','sslerror') else ''}}">
   <td>{{item.network_name}}</td>
   <td>{{item.status_timestamp|fmtime}}</td>
   {% if show_category %}
     <td>{{item.category}}</td>
-  {% else %}
-    <td>{{show_lastblocked and (item.last_blocked_timestamp|fmtime) or ''}}</td>
+  {% elif show_lastblocked %}
+    <td>{{(item.last_blocked_timestamp|fmtime) or ''}}</td>
+  {% elif show_status %}
+    <td>{{ status_names(item.status) }}</td>
   {% endif %}
 </tr>
 {% endfor %}
@@ -132,7 +137,7 @@
 <div id="allresults">
 <h3>All results</h3>
 
-{{ results_table('all', results_all, False) }}
+{{ results_table('all', results_all, show_lastblocked = False, show_status=True) }}
 </div>
 
 <div> <!-- actions -->
