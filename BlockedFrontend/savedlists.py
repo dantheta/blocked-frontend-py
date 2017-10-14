@@ -1,5 +1,4 @@
 import re
-import math
 import logging
 import psycopg2
 
@@ -79,7 +78,7 @@ def show_list(name, page=1):
             itemcount = itemcount,
             page = page,
             pagesize = pagesize,
-            pagecount = int(math.ceil(itemcount/pagesize)+1), 
+            pagecount = get_pagecount(itemcount, pagesize), 
             items = items
             )
 

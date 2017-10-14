@@ -23,14 +23,15 @@ def check(mode=None):
 @category_pages.route('/blocked-sites')
 @category_pages.route('/blocked-sites/<int:category>')
 @category_pages.route('/blocked-sites/<int:category>/<int:page>')
-def blocked_sites(category=1, page=0):
+def blocked_sites(category=1, page=1):
     session['route'] = 'category'
     session['category'] = (category, page)
+    pagesize = 20 # defined in API
     req = {
         'id': category,
         'recurse': 1,
         'active': 1,
-        'page': page,
+        'page': page-1,
         }
     req['signature'] = request.api.sign(req, ['id'])
     data = request.api.GET('category/sites/'+str(category), req)
@@ -42,25 +43,29 @@ def blocked_sites(category=1, page=0):
 
     g.remote_content = g.remote.get_content('category-search')
     return render_template('blocked-sites.html',
+            pagecount=get_pagecount(data['total_blocked_url_count'], pagesize),
             data=data, page=page, category=category, 
             **extra)
 
 @category_pages.route('/sites')
 @category_pages.route('/sites/<search>')
 @category_pages.route('/sites/<search>/<int:page>')
-def sites_search(search=None, page=0):
+def sites_search(search=None, page=1):
     if search:
         session['route'] = 'keyword'
         session['keyword'] = (search, page)
 
         exclude_adult = request.args.get('exclude_adult', 0)
-        data = request.api.search_url(search, page, exclude_adult)
+        data = request.api.search_url(search, page-1, exclude_adult)
         logging.debug(data)
+        pagesize = 20 # defined in API
+        pagecount = get_pagecount(data['count'], pagesize)
     else:
         data = None
+        pagecount = 0
     g.remote_content = g.remote.get_content('keyword-search')
     return render_template('site-search.html', 
-            data=data, page=page, search=search,
+            data=data, page=page, search=search, pagecount=pagecount
             )
 
 @category_pages.route('/sites', methods=['POST'])

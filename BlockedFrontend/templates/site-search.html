@@ -1,6 +1,7 @@
 {% extends "BasicPage.page.html" %}
 {% import "results.part.html" as results %}
 {%import "remotecontent.part.html" as rmt %}
+{%import "paging.part.html" as paging %}
 
 {%set pagetitle = "Websites being blocked by UK Internet Service Providers" %}
 
@@ -88,7 +89,8 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {{ results.results_table(data) }}
 
-{{ results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search, exclude_adult=request.args.exclude_adult|default('0')) }}
+{# results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search, exclude_adult=request.args.exclude_adult|default('0')) #}
+{{ paging.page_list('.sites_search', page=page, pagecount=pagecount, pagesize=pagesize, search=search, exclude_adult=request.args.exclude_adult|default('0') ) }}
 
 
 

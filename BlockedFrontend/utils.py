@@ -1,8 +1,9 @@
+import math
 import time
 import datetime
 import urlparse
 
-__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp']
+__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount']
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
@@ -21,3 +22,6 @@ def parse_timestamp(s):
     if s == "" or s is None:
         return None
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') 
+
+def get_pagecount(count, pagesize):
+    return int(math.ceil(count/pagesize)+1)

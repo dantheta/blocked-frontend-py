@@ -1,6 +1,4 @@
 
-import math
-
 import logging
 
 import jinja2
@@ -8,6 +6,7 @@ import jinja2
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
+from utils import *
 
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
@@ -49,7 +48,8 @@ def legal_blocks(page=1):
     urlcount = data['urlcount']
     return render_template('legal-blocks.html',
             page=page, count=count, blocks=blocks, urlcount=urlcount,
-            pagecount = int(math.ceil(count/25)+1) )
+            pagecount = get_pagecount(count, 25)
+            )
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
@@ -67,7 +67,7 @@ def reported_sites(isp=None, page=1):
     g.remote_content = g.remote.get_content('reported-sites')
     data = request.api.reports(page-1, isp=isp)
     count = data['count']
-    pagecount = int(math.ceil(count/25)+1)
+    pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
         abort(404)
     return render_template('reports.html',
