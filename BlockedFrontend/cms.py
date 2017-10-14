@@ -46,8 +46,10 @@ def legal_blocks(page=1):
     data = request.api.recent_blocks(page-1)
     blocks = data['results']
     count = data['count']
+    urlcount = data['urlcount']
     return render_template('legal-blocks.html',
-            page=page, count=count, pagecount = int(math.ceil(count/25)+1), blocks=blocks)
+            page=page, count=count, blocks=blocks, urlcount=urlcount,
+            pagecount = int(math.ceil(count/25)+1) )
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
