@@ -1,6 +1,6 @@
 {% extends "BasicPage.page.html" %}
 {% import "forms.part.html" as forms %}
-{% import "results.part.html" as results %}
+{% import "paging.part.html" as paging %}
 
 {%set pagetitle = savedlist.name %}
 
@@ -8,7 +8,7 @@
 <p>Created on {{savedlist.created|fmtime}} by {{savedlist.username}}</p>
 
 <h3>Share this list</h3>
-<div class="permalink">{{config.SITE_URL}}{{ url_for('.show_list', name=savedlist.name) }}</div>
+{{ forms.permalink(config.SITE_URL + url_for('.show_list', name=savedlist.name) ) }}
 {% endblock %}
 
 {% block body %}
@@ -52,15 +52,30 @@
         </td>
         <td>
             {% if g.admin %}
-            <a href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="deletebtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
             {% endif %}
         </td>
     </tr>
     {% endfor %}
 </table>
-{{ results.paging('.show_list', page=page, pagesize=pagesize, count=itemcount, name=savedlist.name) }}
+{{ paging.page_list('.show_list',  page, pagecount, pagesize, name=savedlist.name ) }}
 
     </div>
 </div>
+
+{% endblock %}
+
+{% block page_script %}
+
+$(document).ready(function(){
+    $('.deletebtn').click(function(){
+        var deletebtn = this;
+        $.post('/list/delete/'+$(this).attr('data-id'), {}, function(data, status, xhr){
+            $(deletebtn).parent().parent().children().animate({padding:0}).wrapInner('<div/>').children().slideUp(function(){ $(this).closest('tr').remove()});
+        });
+        return false;
+    });
+    {{ forms.permalink_js() }}
+});
 
 {% endblock %}

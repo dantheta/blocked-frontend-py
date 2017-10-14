@@ -1,4 +1,5 @@
 import re
+import math
 import logging
 import psycopg2
 
@@ -62,25 +63,28 @@ def create_list():
 
 @list_pages.route('/list/<name>', methods=['GET'])
 @list_pages.route('/list/<name>/<int:page>', methods=['GET'])
-def show_list(name, page=0):
+def show_list(name, page=1):
     pagesize=20
+    if page < 1:
+        return redirect(url_for('.show_list', name=name))
     try:
         savedlist = models.SavedList.select_one(request.conn, name=name)
     except NORM.exceptions.ObjectNotFound:
         abort(404)
     itemcount = savedlist.count_items()
-    items = savedlist.get_items(_limit=(pagesize, page*pagesize))
+    items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
 
     return render_template('show_list.html',
             savedlist = savedlist,
             itemcount = itemcount,
             page = page,
             pagesize = pagesize,
+            pagecount = int(math.ceil(itemcount/pagesize)+1), 
             items = items
             )
 
 
-@list_pages.route('/list/delete/<int:id>')
+@list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])
 def item_delete(id):
     if not g.admin:
         raise AdminPermissionException("Admin permissions are required to delete list items")
@@ -88,6 +92,9 @@ def item_delete(id):
     savedlist = item.get_list()
     item.delete()
     request.conn.commit()
+    if request.method == 'POST':
+        return jsonify(success=True,listid=savedlist['id'])
+
     return redirect(url_for('.show_list', name=savedlist['name']))
 
 @list_pages.route('/list/add', methods=['POST'])

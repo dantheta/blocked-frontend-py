@@ -16,3 +16,26 @@
 {% macro submit(text) %}
 <input type="submit" value="{{text}}" class="btn btn-primary" />
 {% endmacro %}
+
+{% macro permalink(url) %}
+    <form class="form-horizontal">
+      <div class="form-group">
+        <div class="col-sm-12">
+          <div class="input-group">
+            <input class="form-control" type="text" id="permalink" name="permalink" value="{{ url }}">
+            <span class="input-group-btn">
+              <button title="Copy this permalink to the clipboard" id="copybtn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-copy"></span></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+{% endmacro %}
+
+{% macro permalink_js() %}
+    $('#copybtn').click(function(){
+      $('#permalink').select();
+      document.execCommand('copy');
+
+    });
+{% endmacro %}

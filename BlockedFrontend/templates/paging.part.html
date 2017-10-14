@@ -2,29 +2,46 @@
 {% macro page_list(base, page, pagecount, pagesize) %}
 <ul class="pagination">
     <li class="{{ "disabled" if page == 1 else '' }}">
-      <a href="{{url_for(base, page=1)}}" aria-label="First">
+      {% if page == 1 %}
+        <span aria-hidden="true">&laquo;</span>
+      {% else %}
+      <a href="{{url_for(base, page=1, **kwargs)}}" aria-label="First">
         <span aria-hidden="true">&laquo;</span>
       </a>
+      {% endif %}
     </li>
     <li class="{{ "disabled" if page == 1 else '' }}">
-      <a href="{{url_for(base, page=page-1)}}" aria-label="Previous">
+      {% if page == 1 %}
+        <span aria-hidden="true">&lsaquo;</span>
+      {% else %}
+      <a href="{{url_for(base, page=page-1, **kwargs)}}" aria-label="Previous">
         <span aria-hidden="true">&lsaquo;</span>
       </a>
+      {% endif %}
     </li>
     {% set pagestart = 1 if page - 3 < 1 else page - 3 %}
     {% set pageend = pagecount+1 if pagestart +7 > pagecount else pagestart+7 %}
     {% for i in range(pagestart, pageend) %}
-    <li class="{{ 'active' if i == page  else '' }}"><a href="{{url_for(base, page=i)}}">{{i}}</a></li>
+    <li class="{{ 'active' if i == page  else '' }}"><a href="{{url_for(base, page=i, **kwargs)}}">{{i}}</a></li>
     {% endfor %}
     <li class="{{ 'disabled' if page == pagecount else '' }}">
-      <a href="{{url_for(base, page=page+1)}}" aria-label="Next">
+      {% if page == pagecount %}
+        <span aria-hidden="true">&rsaquo;</span>
+      {% else %}
+      <a href="{{url_for(base, page=page+1, **kwargs)}}" aria-label="Next">
         <span aria-hidden="true">&rsaquo;</span>
       </a>
+      {% endif %}
     </li>
     <li class="{{ 'disabled' if page == pagecount else '' }}">
-      <a href="{{url_for(base, page=pagecount)}}" aria-label="Last">
+      {% if page == pagecount %}
+        <span aria-hidden="true">&raquo;</span>
+      {% else %}
+      <a href="{{url_for(base, page=pagecount, **kwargs)}}" aria-label="Last">
         <span aria-hidden="true">&raquo;</span>
       </a>
+      {% endif %}
     </li>
 </ul>
 {% endmacro %}
+
