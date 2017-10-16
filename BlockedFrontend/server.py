@@ -89,6 +89,17 @@ def join_en(ls):
     elif len(ls) >= 2:
         return ", ".join(ls[:-1]) + " and " + ls[-1]
     return ''
+
+@app.template_filter('domain')
+def domain(url):
+    """Shorten a URL to just the domain"""
+    import urlparse
+    try:
+        parts = urlparse.urlparse(url)
+        return parts.netloc
+    except Exception as exc:
+        logging.warn("filter.domain exception: %s", repr(exc))
+        return url
     
 @app.errorhandler(Exception)
 def on_error(error):

@@ -30,11 +30,12 @@
 
 <!-- template BasicPage -->
 <div class="row">
-<div class="col-md-10 col-md-offset-1">
+<div class="col-lg-10 col-lg-offset-1 col-md-12">
 <h3 style="text-align: center">For example,</h3>
 
 <div class="well" style="text-align: center">
-<div style="font-size: 125%"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
+<div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
+<div  class="randomurl hidden-sm"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
 <p>{{site.title|null('no title')}}</p>
 is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using filters.
 

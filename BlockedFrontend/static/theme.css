@@ -108,6 +108,10 @@ form {
 margin-top: 2em;
 }
 
+.randomurl {
+font-size: 125%;
+}
+
 #results * a {
     text-decoration: none;
     }
