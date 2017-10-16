@@ -23,7 +23,6 @@ def index():
     #stats = request.api.stats()
     randomsite = request.api.GET('ispreport/candidates',{'count':1})
     site = request.api.status_url(randomsite['results'][0])
-    site['url'] = "http://somethingreallyquitelong.com/with/a/really-long-in-fact-implausibly-long.url"
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
     return render_template('index.html', randomsite=randomsite, site=site, 
