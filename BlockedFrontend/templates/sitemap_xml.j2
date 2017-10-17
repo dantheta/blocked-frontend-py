@@ -1,6 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0">
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% for cat in categories %}
   <url><loc>{{config.SITE_URL}}/blocked-sites/{{ cat['id'] }}</loc></url>
 {% endfor %}
+  <url><loc>{{config.SITE_URL}}{{ url_for('cms.reported_sites') }}</loc></url>
 </urlset>
