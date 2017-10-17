@@ -97,6 +97,7 @@ def submit_unblock():
         'report_type': ",".join(make_list(form['report_type'])),
         'date': get_timestamp(),
         'send_updates': 1 if form.get('send_updates') else 0,
+        'allow_publish': 1 if form.get('allow_publish') else 0,
         'auth': {
             'email': request.api.username,
             'signature': '',
