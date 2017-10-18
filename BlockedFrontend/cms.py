@@ -20,6 +20,7 @@ REMOTE_TEXT_CONTENT = {
 @cms_pages.route('/')
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
+    session['route'] = 'random'
     #stats = request.api.stats()
     randomsite = request.api.GET('ispreport/candidates',{'count':1})
     site = request.api.status_url(randomsite['results'][0])
