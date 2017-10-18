@@ -47,8 +47,11 @@
     </tr>
     {% for item in items %}
     <tr>
-        <td><a href="{{url_for('category.site', url=item.url)}}">{{item.url}}</a><br />
-            {{item.title|null('(no title)')}} <a href="{{item.url}}" title="Open in a new window" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-share"></span></a>
+        <td><a href="{{item.url}}" rel="nofollow" target="_blank" title="Open site in a new window">{{item.url}}</a><br />
+            {{item.title|null('(no title)')}} 
+        </td>
+        <td>
+          <a href="{{url_for('category.site', url=item.url)}}">View site report</a>
         </td>
         <td>
             {% if g.admin %}
