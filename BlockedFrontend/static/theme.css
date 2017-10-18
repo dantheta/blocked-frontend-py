@@ -128,11 +128,15 @@ font-size: 125%;
     display: none;
 }
 
-#results * tr td a {
+#results * tr td a, .sitereport {
     padding-right: 0.75em;
     text-decoration: underline;
     text-transform: uppercase;
 }
+
+.sitereport {
+    width: 15%;
+    }
 
 #results * tr:hover td.reveal a {
     display: inline-block;

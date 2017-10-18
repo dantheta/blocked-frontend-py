@@ -40,7 +40,7 @@
 <div class="row sitelistrow">
     <div class="col-md-12">
 
-<table class="table">
+<table class="table savedlist">
     <tr>
         <th>URL / Title</th>
         <th></th>
@@ -50,7 +50,7 @@
         <td><a href="{{item.url}}" rel="nofollow" target="_blank" title="Open site in a new window">{{item.url}}</a><br />
             {{item.title|null('(no title)')}} 
         </td>
-        <td>
+        <td class="sitereport">
           <a href="{{url_for('category.site', url=item.url)}}">View site report</a>
         </td>
         <td>
