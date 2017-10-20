@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
+from models import *
 
 admin_pages = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -30,3 +31,20 @@ def admin_post():
 def logout():
     del session['admin']
     return redirect(url_for('.admin'))
+
+@admin_pages.before_request
+def setup_db():
+    request.conn = psycopg2.connect(current_app.config['DB'])
+
+@admin_pages.route('/control/savedlists')
+def savedlists():
+    return render_template('listindex.html',
+        lists=SavedList.select(request.conn, _orderby='name')
+        )
+
+@admin_pages.route('/control/savedlists/delete/<int:id>')
+def savedlist_delete(id):
+    savedlist = SavedList(request.conn, id=id)
+    savedlist.delete()
+    request.conn.commit()
+    return redirect(url_for('.savedlists'))

@@ -80,6 +80,41 @@ def selectnext(searchdata, url):
     if len(candidates) > 0:
         return random.choice(candidates)
 
+def nextsite(current_url):
+    logging.info("Route: %s", session.get('route'))
+    if session.get('route') == 'category':
+        session['thanks'] = True # save under a rock for the /site page
+
+        # get random/next site from category
+        req = {
+            'id': session['category'][0],
+            'recurse': 1,
+            'active': 1,
+            'page': session['category'][1],
+            }
+        req['signature'] = request.api.sign(req, ['id'])
+        searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
+        nextsite = selectnext(searchdata, current_url)
+        if nextsite:
+            return redirect(url_for('category.site', url=nextsite))
+
+    elif session.get('route') == 'keyword':
+        session['thanks'] = True # save under a rock for the /site page
+
+        logging.info("running search: %s", session['keyword'][0])
+        req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
+        req['signature'] = request.api.sign(req, ['q'])
+        searchdata = request.api.GET('search/url', req)
+        nextsite = selectnext(searchdata, current_url)
+        if nextsite:
+            return redirect(url_for('category.site', url=nextsite))
+
+    elif session.get('route') == 'random':
+        session['thanks'] = True # save under a rock for the /site page
+        logging.info("Getting random site")
+        data = request.api.GET('ispreport/candidates',{'count':1})
+        return redirect(url_for('category.site', url=data['results'][0]))
+
 
 
 @unblock_pages.route('/submit-unblock', methods=['POST'])
@@ -115,44 +150,17 @@ def submit_unblock():
         data = request.api.POST_JSON('ispreport/submit', req)
 
     if 'ORG' in form.get('networks',[]):
+        ret = nextsite(form['url'])
+        if ret is not None:
+            return ret
         return redirect('/thanks?f=1')
     else:
         if data['verification_required']:
             return redirect('/thanks?u=1&v=1')
         else:
-            if session.get('route') == 'category':
-                session['thanks'] = True # save under a rock for the /site page
-
-                # get random/next site from category
-                req = {
-                    'id': session['category'][0],
-                    'recurse': 1,
-                    'active': 1,
-                    'page': session['category'][1],
-                    }
-                req['signature'] = request.api.sign(req, ['id'])
-                searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
-                nextsite = selectnext(searchdata, form['url'])
-                if nextsite:
-                    return redirect(url_for('category.site', url=nextsite))
-
-            elif session.get('route') == 'keyword':
-                session['thanks'] = True # save under a rock for the /site page
-
-                logging.info("running search: %s", session['keyword'][0])
-                req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
-                req['signature'] = request.api.sign(req, ['q'])
-                searchdata = request.api.GET('search/url', req)
-                nextsite = selectnext(searchdata, form['url'])
-                if nextsite:
-                    return redirect(url_for('category.site', url=nextsite))
-
-            elif session.get('route') == 'random':
-                session['thanks'] = True # save under a rock for the /site page
-                logging.info("Getting random site")
-                data = request.api.GET('ispreport/candidates',{'count':1})
-                return redirect(url_for('category.site', url=data['results'][0]))
-
+            ret = nextsite(form['url'])
+            if ret is not None:
+                return ret
                 
             # default response
             return redirect('/thanks?u=1&v=0')

@@ -1,0 +1,34 @@
+{% extends "admin.page.html" %}
+
+{% set pagetitle = "Saved Lists Admin" %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+
+<h1>{{pagetitle}}</h1>
+
+<table class="table">
+<tr>
+  <th>Name</th>
+  <th>Creator</th>
+  <th></th>
+</tr>
+{% for lst in lists %}
+<tr>
+  <td><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a></td>
+  <td>{{ lst.username }}</td>
+  <td>
+  <a href="{{ url_for('.savedlist_delete', id=lst.id) }}"><span class="glyphicon glyphicon-trash"></span></a>
+  </td>
+</tr>
+
+{% endfor %}
+</table>
+
+</div>
+</div>
+
+{% endblock %}
+
+
