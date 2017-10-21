@@ -10,7 +10,8 @@ class SavedList(DBObject):
     TABLE = 'savedlists'
     FIELDS = [
             'username',
-            'name'
+            'name',
+            'public'
             ]
 
     def get_items(self, **kw):

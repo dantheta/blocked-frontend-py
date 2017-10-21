@@ -53,3 +53,21 @@ def savedlist_delete(id):
     savedlist.delete()
     request.conn.commit()
     return redirect(url_for('.savedlists'))
+
+@admin_pages.route('/control/savedlists/show/<int:id>')
+@check_admin
+def savedlist_show(id):
+    savedlist = SavedList(request.conn, id=id)
+    savedlist['public'] = True
+    savedlist.store()
+    request.conn.commit()
+    return redirect(url_for('.savedlists'))
+
+@admin_pages.route('/control/savedlists/hide/<int:id>')
+@check_admin
+def savedlist_hide(id):
+    savedlist = SavedList(request.conn, id=id)
+    savedlist['public'] = False
+    savedlist.store()
+    request.conn.commit()
+    return redirect(url_for('.savedlists'))

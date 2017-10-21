@@ -16,10 +16,15 @@
 </tr>
 {% for lst in lists %}
 <tr>
-  <td><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a></td>
-  <td>{{ lst.username }}</td>
+  <td><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> {% if not lst.public %}(hidden){% endif %}</td>
+  <td>{{ lst.username }} </td>
   <td>
-  <a href="{{ url_for('.savedlist_delete', id=lst.id) }}"><span class="glyphicon glyphicon-trash"></span></a>
+  {% if lst.public == True %}
+  <a href="{{ url_for('.savedlist_hide', id=lst.id) }}" title="List is public; click to hide"><span class="glyphicon glyphicon-eye-close"></span></a>
+  {% else %}
+  <a href="{{ url_for('.savedlist_show', id=lst.id) }}" title="List is hidden; click to make public"><span class="glyphicon glyphicon-eye-open"></span></a>
+  {% endif %}
+  <a href="{{ url_for('.savedlist_delete', id=lst.id) }}" title="Delete list and all entries"><span class="glyphicon glyphicon-trash"></span></a>
   </td>
 </tr>
 

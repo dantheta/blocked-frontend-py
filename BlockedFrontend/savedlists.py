@@ -29,6 +29,7 @@ def create_list():
     newlist.update({
         'name': f['name'],
         'username': f['username'],
+        'public': True,
         })
     newlist.store()
     n = 0
@@ -67,6 +68,9 @@ def show_list(name, page=1):
         savedlist = models.SavedList.select_one(request.conn, name=name)
     except NORM.exceptions.ObjectNotFound:
         abort(404)
+    if not (savedlist['public'] or g.admin):
+        abort(403)
+   
     itemcount = savedlist.count_items()
     items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
 
