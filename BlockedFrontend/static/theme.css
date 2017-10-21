@@ -242,6 +242,10 @@ input.form-control, textarea.form-control, input[type=checkbox] {
     width: 40%;
 }
 
+.btn-primary[disabled] {
+    background-color: #808080 !important;
+}
+
 td.num {
     text-align: right;
 }
