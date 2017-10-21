@@ -115,10 +115,13 @@ def site(url=None):
     req = {
         'url': url,
         }
+
     data = request.api.status_url(url)
     activecount=0
     pastcount=0
     can_unblock = None
+    prev_report_type = None
+
     results = [x for x in data['results'] if x['isp_active'] ]
     for item in results:
         if item['status'] == 'blocked':
@@ -126,11 +129,20 @@ def site(url=None):
             if item['last_report_timestamp']:
                 if can_unblock is None:
                     can_unblock = False
+                    prev_unblock_type = 'unblock'
             else:
                 can_unblock = True
         else:
             if item['last_blocked_timestamp']:
                 pastcount += 1
+
+    report_types = set()
+    for report in data['reports']:
+        if report['report_type'] != 'unblock':
+            can_unblock = False
+            prev_unblock_type = 'flag'
+            report_types.update( report['report_type'].split(',') )
+
             
         
     return render_template('site.html',
@@ -143,6 +155,7 @@ def site(url=None):
         can_unblock=can_unblock,
         domain=get_domain(url),
         url = url, 
+        report_types = report_types, 
 
         networks = g.remote.get_networks(),
         thanks = thanks

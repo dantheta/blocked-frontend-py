@@ -144,7 +144,13 @@
 {% if can_unblock == true or live %}
 <a id="unblockbtn" href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% elif can_unblock == false %}
-<a class="btn btn-primary btn-disabled" disabled rel="nofollow">Unblock Requested</a>
+<a class="btn btn-primary btn-disabled" disabled rel="nofollow">
+{%- if prev_unblock_type == 'unblock' -%}
+Unblock Requested
+{%- else -%}
+Site has been flagged
+{%- endif -%}
+</a>
 {% endif %}
 
 <a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
@@ -153,10 +159,16 @@
 <div class="row">
 
   <div class="col-md-6">
+    {% if report_types %}
+    <h4>This site has been flagged</h4>
+    <p>This site has been flagged as: <strong>{{ report_types | sort | join(", ") }}</strong></p>
+      <div><a href="{{ url_for('unblock.feedback', url=url) }}">Tell us more about this site</a></div>
+    {% else %}
     <h4>Tell us about this site</h4>
     <p>For example: is the link dead, or is the domain being squatted?
       <div><a href="{{ url_for('unblock.feedback', url=url) }}">Please let us know</a></div>
     </p>
+    {% endif %}
   </div>
 
   <div class="col-md-6">
