@@ -10,8 +10,7 @@ from utils import *
 import models
 import NORM.exceptions
 
-class AdminPermissionException(Exception):
-    pass
+from auth import *
 
 list_pages = Blueprint('list', __name__)
 
@@ -21,12 +20,10 @@ def setup_db():
 
 
 @list_pages.route('/list', methods=['POST'])
+@check_admin
 def create_list():
     """Create a saved list"""
     f = request.form
-
-    if not g.admin:
-        raise AdminPermissionException("Admin permissions are required to create a list")
 
     newlist = models.SavedList(request.conn)
     newlist.update({
@@ -84,9 +81,8 @@ def show_list(name, page=1):
 
 
 @list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])
+@check_admin
 def item_delete(id):
-    if not g.admin:
-        raise AdminPermissionException("Admin permissions are required to delete list items")
     item = models.Item(request.conn, id=id)
     savedlist = item.get_list()
     item.delete()
@@ -97,11 +93,9 @@ def item_delete(id):
     return redirect(url_for('.show_list', name=savedlist['name']))
 
 @list_pages.route('/list/add', methods=['POST'])
+@check_admin
 def item_add():
     f = request.form
-
-    if not g.admin:
-        raise AdminPermissionException("Admin permissions are required to add to a list")
 
     # search for URL, add to list if found
 
