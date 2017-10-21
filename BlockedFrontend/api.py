@@ -35,7 +35,10 @@ class BaseApiClient(object):
                 return req.iter_lines()
             elif decode:
                 logger.debug("Return: %s", req.content)
-                return req.json()
+                json = req.json()
+                if 'success' in json and json['success'] != True:
+                    raise APIError(json['error'])
+                return json
             else:
                 return req.content
         except Exception as exc:
