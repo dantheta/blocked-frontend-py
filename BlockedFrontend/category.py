@@ -156,6 +156,7 @@ def site(url=None):
         domain=get_domain(url),
         url = url, 
         report_types = report_types, 
+        prev_unblock_type = prev_unblock_type,
 
         networks = g.remote.get_networks(),
         thanks = thanks
