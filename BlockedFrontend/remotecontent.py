@@ -32,6 +32,18 @@ class RemoteContent(object):
             logging.warn("Fetch error: %s", repr(exc))
             raise
 
+    def get_networks(self):
+        req = self.get_remote_content('network-descriptions')
+        doc = et.fromstring(req.content)
+        networks = {}
+        for child in doc.iterchildren():
+            content = child.text
+            if content is None:
+                continue
+
+            if child.tag == 'network':
+                networks[child.attrib['name']] = content
+        return networks
 
     def get_session(self):
         if self.reload:

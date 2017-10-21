@@ -144,6 +144,7 @@ def site(url=None):
         domain=get_domain(url),
         url = url, 
 
+        networks = g.remote.get_networks(),
         thanks = thanks
         )
 
