@@ -120,7 +120,7 @@ def site(url=None):
     activecount=0
     pastcount=0
     can_unblock = None
-    prev_report_type = None
+    prev_unblock_type = None
 
     results = [x for x in data['results'] if x['isp_active'] ]
     for item in results:
