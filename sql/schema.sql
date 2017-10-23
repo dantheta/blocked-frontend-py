@@ -19,3 +19,5 @@ CREATE TABLE items (
 
 ALTER TABLE items ADD foreign key (list_id) references savedlists(id) ON DELETE CASCADE;
 
+CREATE UNIQUE INDEX savedlists_name ON savedlists(name);
+CREATE UNIQUE INDEX items_listid_url ON items(list_id, url);
