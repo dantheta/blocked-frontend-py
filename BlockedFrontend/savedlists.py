@@ -31,7 +31,15 @@ def create_list():
         'username': f['username'],
         'public': True,
         })
-    newlist.store()
+    try:
+        newlist.store()
+    except NORM.exceptions.ObjectExists:
+        # actually an integrityerror in disguise
+        request.conn.rollback()
+        return render_template('message.html', 
+            title="List creation error",
+            message="A list with this name already exists.  Please try again with a different list name.")
+
     n = 0
     page = 0
     while True:
