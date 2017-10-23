@@ -77,6 +77,7 @@ def feedback():
 def selectnext(searchdata, url):
     candidates = [ x['url'] for x in searchdata['sites']
         if x['last_reported'] is None and x['url'] != url]
+    logging.info("Candidates found: %s", len(candidates))
     if len(candidates) > 0:
         return random.choice(candidates)
 
@@ -101,7 +102,7 @@ def nextsite(current_url):
     elif session.get('route') == 'keyword':
         session['thanks'] = True # save under a rock for the /site page
 
-        logging.info("running search: %s", session['keyword'][0])
+        logging.info("running search: %s", session['keyword'])
         req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
         req['signature'] = request.api.sign(req, ['q'])
         searchdata = request.api.GET('search/url', req)
@@ -152,6 +153,7 @@ def submit_unblock():
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])
         if ret is not None:
+            session['thanksmsg'] = 'flag'
             return ret
         return redirect('/thanks?f=1')
     else:
@@ -160,6 +162,7 @@ def submit_unblock():
         else:
             ret = nextsite(form['url'])
             if ret is not None:
+                session['thanksmsg'] = 'unblock'
                 return ret
                 
             # default response

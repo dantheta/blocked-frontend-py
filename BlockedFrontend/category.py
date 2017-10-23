@@ -25,7 +25,7 @@ def check(mode=None):
 @category_pages.route('/blocked-sites/<int:category>/<int:page>')
 def blocked_sites(category=1, page=1):
     session['route'] = 'category'
-    session['category'] = (category, page)
+    session['category'] = (category, page-1)
     pagesize = 20 # defined in API
     req = {
         'id': category,
@@ -53,7 +53,7 @@ def blocked_sites(category=1, page=1):
 def sites_search(search=None, page=1):
     if search:
         session['route'] = 'keyword'
-        session['keyword'] = (search, page)
+        session['keyword'] = (search, page-1)
 
         exclude_adult = request.args.get('exclude_adult', 0)
         data = request.api.search_url(search, page-1, exclude_adult)
@@ -109,6 +109,10 @@ def site(url=None):
         thanks = session.pop('thanks')
     except KeyError:
         thanks = False
+    try:
+        thanksmsg = session.pop('thanksmsg')
+    except KeyError:
+        thanksmsg = None
 
     # workaround for apache folding // into /
     url = re.sub(':/(?!/)','://', url)
@@ -159,7 +163,8 @@ def site(url=None):
         prev_unblock_type = prev_unblock_type,
 
         networks = g.remote.get_networks(),
-        thanks = thanks
+        thanks = thanks,
+        thanksmsg = thanksmsg
         )
 
 

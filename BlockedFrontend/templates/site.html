@@ -12,8 +12,11 @@
 {% endif %}
 
 {%block banner_text%}
-{% if thanks %}
+{% if thanks and thanksmsg|default('unblock') in ('unblock',None) %}
 {{ g.remote_chunks.unblockThanks | safe }}
+{% elif thanks and thanksmsg|default('unblock') == 'flag' %}
+Your feedback was successfully submitted.
+{% else %}
 {% endif %}
 {%endblock%}
 
