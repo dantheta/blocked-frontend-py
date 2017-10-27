@@ -44,25 +44,15 @@ def unblock2():
     urldata = request.api.GET('status/url', req)
     logging.info("urldata: %s", urldata)
 
-    cutoff_time = datetime.datetime.now() - datetime.timedelta(current_app.config['BLOCKED_CUTOFF_DAYS'])
     blocks = [ process_block(blk) for blk 
         in urldata['results']
         if blk['status'] == 'blocked' 
-            #and parse_timestamp(blk['last_blocked_timestamp']) >= cutoff_time
         ]
-
-    valid_blocks = sum([
-        1 if blk['last_blocked_timestamp'] >= cutoff_time else 0
-        for blk 
-        in blocks
-        ])
 
     return render_template('unblock2.html',
         data=data,
         url=data['url'],
-        cutoff_time = cutoff_time,
         blocks=blocks,
-        valid_blocks=valid_blocks,
         domain=get_domain(data['url']), 
         )
 
@@ -149,6 +139,8 @@ def submit_unblock():
         data = {'verification_required':  False}
     else:
         data = request.api.POST_JSON('ispreport/submit', req)
+
+    logging.info("Submission: %s", data)
 
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])

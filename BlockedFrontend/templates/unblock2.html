@@ -26,7 +26,7 @@
   <th>Last Reported</th>
 </tr>
 {% endif %}
-<tr class="{{ 'disabled' if block.last_blocked_timestamp < cutoff_time or block.last_report_timestamp != None else ''}}">
+<tr class="{{ 'disabled' if block.last_report_timestamp != None else ''}}">
   <td>{{ block.network_name }}
   {% if block.category and block.category != block.network_name %}
     <span class="category" style="padding-left: 0.5em"><em>({{ block.category |title}})</em></span>
@@ -39,30 +39,14 @@
 </table>
 {% endif %}
 {% else %}
-<p>All of the recorded blocks for this site are too old or have already been reported.</p>
+<p>All of the recorded blocks for this site have already been reported.</p>
 {% endfor %}
-{% if valid_blocks == 0 %}
-  {% if request.method == 'POST' %}
-    <p>The recorded blocks are too old for unblocking to be requested.  Please re-check the site.</p>
-  {% else %}
-    <div>Unfortunately, we have not been able to re-check this site.  Please try again later.</div>
-    <div>In the meantime, you can:
-      <ul>
-        <li><a href="{{ url_for('category.check')}}">Check another site</a></li>
-        <li><a href="{{ url_for('category.random')}}">Check a random site</a></li>
-        <li><a href="{{ url_for('category.sites_search')}}">Search for sites by keyword</a></li>
-        <li><a href="{{ url_for('category.blocked_sites')}}">Search for sites by category</a></li>
-      </ul>
-    </div>
-  {% endif %}
-{% endif %}
-{% if not (valid_blocks == 0 and request.method == 'GET') %}
+
 <div style="text-align: right">
 <a class="btn btn-default" id="recheck">Re-check site</a>
 </div>
-{% endif %}
 
-{% if valid_blocks > 0 %}
+
 <h2>About the site</h2>
 <div class="form-group">
   <label for="message">Please explain why this site should be unblocked</label>
@@ -103,7 +87,6 @@
 <div class="form-group">
 <input type="submit" class="btn btn-primary" value="Submit unblock request" />
 </div>
-{% endif %}
 
 </form>
 
