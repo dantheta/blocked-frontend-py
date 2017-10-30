@@ -53,7 +53,7 @@
         <td><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a></td>
         <td>{{ row.network_name }}</td>
         <td><a href="{{ url_for('category.site', url=row.url) }}">View site report</a></td>
-        <td>{{ row.created | fmtime }}</td>
+        <td>{{ row.submitted | fmtime if row.submitted else "On hold" }}</td>
         <td>
             {% if row.unblocked %}
             <span class="label label-success">Unblocked</span>
