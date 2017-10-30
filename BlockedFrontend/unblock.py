@@ -106,7 +106,12 @@ def nextsite(current_url):
         data = request.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('category.site', url=data['results'][0]))
 
-
+@unblock_pages.route('/next')
+def browse_next():
+    ret = nextsite('')
+    if ret:
+        return ret
+    abort(500)
 
 @unblock_pages.route('/submit-unblock', methods=['POST'])
 def submit_unblock():

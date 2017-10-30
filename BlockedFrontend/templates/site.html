@@ -157,6 +157,9 @@ Site has been flagged
 {% endif %}
 
 <a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
+{% if session.route is defined %}
+<a href="{{url_for('unblock.browse_next') }}" target="_blank" class="btn btn-primary">Try another site</a>
+{% endif %}
 </div>
 
 <div class="row">

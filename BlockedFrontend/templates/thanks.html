@@ -29,7 +29,11 @@
 
 </p>
 
+{% if session.route is defined %}
+<div><a href="{{ url_for('unblock.browse_next') }}">Unblock another site</a></div>
+{% else %}
 <div><a href="/blocked-sites">Unblock another site</a></div>
+{% endif %}
 <div><a href="/random">Unblock a random site</a></div>
 </div>
 </div>
