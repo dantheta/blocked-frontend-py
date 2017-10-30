@@ -74,7 +74,6 @@ def selectnext(searchdata, url):
 def nextsite(current_url):
     logging.info("Route: %s", session.get('route'))
     if session.get('route') == 'category':
-        session['thanks'] = True # save under a rock for the /site page
 
         # get random/next site from category
         req = {
@@ -90,7 +89,6 @@ def nextsite(current_url):
             return redirect(url_for('category.site', url=nextsite))
 
     elif session.get('route') == 'keyword':
-        session['thanks'] = True # save under a rock for the /site page
 
         logging.info("running search: %s", session['keyword'])
         req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
@@ -101,7 +99,6 @@ def nextsite(current_url):
             return redirect(url_for('category.site', url=nextsite))
 
     elif session.get('route') == 'random':
-        session['thanks'] = True # save under a rock for the /site page
         logging.info("Getting random site")
         data = request.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('category.site', url=data['results'][0]))
@@ -150,6 +147,7 @@ def submit_unblock():
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])
         if ret is not None:
+            session['thanks'] = True # save under a rock for the /site page
             session['thanksmsg'] = 'flag'
             return ret
         return redirect('/thanks?f=1')
@@ -159,6 +157,7 @@ def submit_unblock():
         else:
             ret = nextsite(form['url'])
             if ret is not None:
+                session['thanks'] = True # save under a rock for the /site page
                 session['thanksmsg'] = 'unblock'
                 return ret
                 
