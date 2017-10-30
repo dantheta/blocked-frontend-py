@@ -5,7 +5,8 @@
 {% endmacro %}
 
 {% if not thanks %}
-{%set pagetitle = "Site report: " + domain %}
+{%set titletag = "Site report: " + domain %}
+{%set pagetitle = domain %}
 {%set pagerole = "Site blocking report" %}
 {% else %}
 {%set pagetitle = "Thank you!" %}
