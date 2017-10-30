@@ -119,8 +119,10 @@ def nextsite(current_url):
             return redirect(url_for('category.site', url=item['url']))
 
 @unblock_pages.route('/next')
-def browse_next():
-    ret = nextsite('')
+@unblock_pages.route('/next/<path:url>')
+def browse_next(url=None):
+    url = re.sub(':/(?!/)','://', url)
+    ret = nextsite(url)
     if ret:
         return ret
     abort(500)
