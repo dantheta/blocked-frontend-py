@@ -113,11 +113,14 @@ def nextsite(current_url):
         pagesize = 20
         page = session['savedlist'][1]
         savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
-        items = savedlist.get_items(_limit=(pagesize, (page)*pagesize))
-        for item in items:
-            if item['url'] == current_url:
-                continue
-            return redirect(url_for('category.site', url=item['url']))
+        items = [item['url'] 
+                 for item 
+                 in savedlist.get_items(_limit=(pagesize, (page)*pagesize)) 
+                 if item['url'] != current_url
+                 ]
+        if len(items):
+            nexturl = random.choice(items)    
+            return redirect(url_for('category.site', url=nexturl))
 
 @unblock_pages.route('/next')
 @unblock_pages.route('/next/<path:url>')
