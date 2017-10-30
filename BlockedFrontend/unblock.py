@@ -1,4 +1,5 @@
 
+import re
 import random
 import logging
 import psycopg2
