@@ -70,6 +70,8 @@ def create_list():
 @list_pages.route('/list/<name>/<int:page>', methods=['GET'])
 def show_list(name, page=1):
     pagesize=20
+    session['route'] = 'savedlist'
+    session['savedlist'] = (name, page-1)
     if page < 1:
         return redirect(url_for('.show_list', name=name))
     try:

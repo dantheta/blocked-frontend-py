@@ -1,14 +1,19 @@
 
 import random
 import logging
+import psycopg2
 import datetime
 
 from flask import Blueprint, render_template, redirect, request, current_app, session, url_for
 from utils import *
+from models import *
 
 
 unblock_pages = Blueprint('unblock', __name__)
 
+@unblock_pages.before_request
+def setup_db():
+    request.conn = psycopg2.connect(current_app.config['DB'])
 
 @unblock_pages.route('/unblock')
 def unblock():
@@ -102,6 +107,16 @@ def nextsite(current_url):
         logging.info("Getting random site")
         data = request.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('category.site', url=data['results'][0]))
+
+    elif session.get('route') == 'savedlist':
+        pagesize = 20
+        page = session['savedlist'][1]
+        savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
+        items = savedlist.get_items(_limit=(pagesize, (page)*pagesize))
+        for item in items:
+            if item['url'] == current_url:
+                continue
+            return redirect(url_for('category.site', url=item['url']))
 
 @unblock_pages.route('/next')
 def browse_next():
