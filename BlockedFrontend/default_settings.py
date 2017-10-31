@@ -37,7 +37,8 @@ ISPS = [
     'TalkTalk',
     'O2',
     'EE',
-    'Vodafone'
+    'Vodafone',
+    'VirginMedia'
     ]
 
 STATUS_NAMES = {
