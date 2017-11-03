@@ -1,10 +1,12 @@
 
 import psycopg2.extensions
+from psycopg2.extras import DictCursor
 
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 from NORM import DBObject
+
 
 class SavedList(DBObject):
     TABLE = 'savedlists'
@@ -32,3 +34,15 @@ class Item(DBObject):
 
     def get_list(self):
         return SavedList.select_one(self.conn, self['list_id'])
+
+    @classmethod
+    def get_frontpage_random(cls, conn):
+        c = conn.cursor(cursor_factory = DictCursor)
+        c.execute("""select items.* 
+            from items 
+            inner join savedlists on list_id = savedlists.id
+            where frontpage = true
+            order by random()""")
+        for row in c:
+            yield cls(data=row)
+        c.close()

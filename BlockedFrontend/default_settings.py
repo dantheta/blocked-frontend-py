@@ -48,3 +48,5 @@ STATUS_NAMES = {
     'ok': 'OK',
     
     }
+
+RANDOMSITE = 'frontpagelists'

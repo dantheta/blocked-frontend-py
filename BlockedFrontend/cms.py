@@ -1,12 +1,13 @@
 
 import logging
-
+import psycopg2
 import jinja2
 
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
 from utils import *
+from models import Item
 
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
@@ -17,13 +18,28 @@ REMOTE_TEXT_CONTENT = {
     'seized-domains': 'seized-domains'
     }
 
+def frontpage_lists():
+    conn = psycopg2.connect(current_app.config['DB'])
+    for item in Item.get_frontpage_random(conn):
+        site = request.api.status_url(item['url'])
+        return site
+        
+def frontpage_random():
+    randomsite = request.api.GET('ispreport/candidates',{'count':1})
+    site = request.api.status_url(randomsite['results'][0])
+    return site
+
 @cms_pages.route('/')
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
     session['route'] = 'random'
     #stats = request.api.stats()
-    randomsite = request.api.GET('ispreport/candidates',{'count':1})
-    site = request.api.status_url(randomsite['results'][0])
+
+    if current_app.config['RANDOMSITE'] == 'frontpagerandom':
+        site = frontpage_random()
+    elif current_app.config['RANDOMSITE'] == 'frontpagelists':
+        site = frontpage_lists()
+
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
     return render_template('index.html', randomsite=randomsite, site=site, 
