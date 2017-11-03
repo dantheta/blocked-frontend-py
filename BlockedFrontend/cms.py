@@ -42,8 +42,7 @@ def index():
 
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
-    return render_template('index.html', randomsite=randomsite, site=site, 
-        blockednetworks=blockednetworks)
+    return render_template('index.html', site=site, blockednetworks=blockednetworks)
 
 @cms_pages.route('/personal-stories')
 def personal_stories():
