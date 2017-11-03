@@ -1,5 +1,6 @@
 {% extends "layout_1x3.page.html" %}
 {% import "paging.part.html" as paging %}
+{% from "network_description.part.html" import isp_info %}
 
 {%set pagetitle = g.remote_content.title if 'title' in g.remote_content
     else "Recently reported sites" %}
@@ -51,7 +52,9 @@
     {% for row in reports %}
     <tr>
         <td><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a></td>
-        <td>{{ row.network_name }}</td>
+        <td>
+          {{ isp_info(row.description, networks) }}
+        </td>
         <td><a href="{{ url_for('category.site', url=row.url) }}">View site report</a></td>
         <td>{{ row.submitted | fmtime if row.submitted else "On hold" }}</td>
         <td>
@@ -69,4 +72,10 @@
 
 </div>
 </div>
+{% endblock %}
+
+{% block page_script %}
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover({'html':true});
+  });
 {% endblock %}

@@ -88,6 +88,7 @@ def reported_sites(isp=None, page=1):
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
+            networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
             reports=data['reports'])
 
