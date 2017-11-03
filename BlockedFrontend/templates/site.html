@@ -1,4 +1,5 @@
 {% extends "BasicPage.page.html" %}
+{% from "network_description.part.html" import isp_info %}
 
 {% macro status_names(status) %}
 {{ config.STATUS_NAMES.get(status, status) }}
@@ -60,6 +61,7 @@ Your feedback was successfully submitted.
       document.execCommand('copy');
 
     });
+    $('[data-toggle="popover"]').popover({'html':true});
   });
 {% endblock %}
 
@@ -86,7 +88,9 @@ Your feedback was successfully submitted.
 </tr>
 {% for item in results %}
 <tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if show_status and item.status in ('error','dnserror','sslerror') else ''}}">
-  <td title="{{ networks.get(item.network_name, '') }}">{{item.network_name}}</td>
+  <td >
+    {{ isp_info(item.network_name, networks) }}
+  </td>
   <td>{{item.status_timestamp|fmtime}}</td>
   {% if show_category %}
     <td>{{item.category}}</td>

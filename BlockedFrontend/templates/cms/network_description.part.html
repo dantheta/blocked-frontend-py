@@ -1,0 +1,4 @@
+
+{% macro isp_info(name, networks) %}
+<a href="#" role="popover" tabindex="0" data-trigger="focus" data-toggle="popover" title="{{name}}" data-content="{{ networks.get(name, '') }}">{{name}}<span style="padding-left: 0.5em" class="glyphicon glyphicon-info-sign"></span></a>
+{% endmacro %}
