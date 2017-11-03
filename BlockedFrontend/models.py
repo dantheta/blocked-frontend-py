@@ -44,5 +44,5 @@ class Item(DBObject):
             where frontpage = true
             order by random()""")
         for row in c:
-            yield cls(data=row)
+            yield cls(conn, data=row)
         c.close()
