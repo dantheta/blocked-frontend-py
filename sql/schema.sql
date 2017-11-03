@@ -4,6 +4,7 @@ CREATE TABLE savedlists(
     username varchar not null,
     name varchar not null,
     public bool default true,
+    frontpage bool default false,
     created timestamptz not null,
     last_updated timestamptz null
     );

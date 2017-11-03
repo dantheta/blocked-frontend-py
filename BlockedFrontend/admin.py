@@ -71,3 +71,12 @@ def savedlist_hide(id):
     savedlist.store()
     request.conn.commit()
     return redirect(url_for('.savedlists'))
+
+@admin_pages.route('/control/savedlists/<int:id>/frontpage/<int:state>')
+@check_admin
+def savedlist_frontpage(id, state):
+    savedlist = SavedList(request.conn, id=id)
+    savedlist['frontpage'] = bool(state)
+    savedlist.store()
+    request.conn.commit()
+    return redirect(url_for('.savedlists'))

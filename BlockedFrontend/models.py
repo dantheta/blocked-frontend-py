@@ -11,7 +11,8 @@ class SavedList(DBObject):
     FIELDS = [
             'username',
             'name',
-            'public'
+            'public',
+            'frontpage'
             ]
 
     def get_items(self, **kw):

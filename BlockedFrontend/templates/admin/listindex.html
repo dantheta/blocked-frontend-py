@@ -12,18 +12,29 @@
 <tr>
   <th>Name</th>
   <th>Creator</th>
-  <th></th>
+  <th style="width: 15%">Frontpage</th>
+  <th style="width: 15%">Public</th>
+  <th style="width: 15%"></th>
 </tr>
 {% for lst in lists %}
 <tr>
-  <td><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> {% if not lst.public %}(hidden){% endif %}</td>
+  <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
   <td>{{ lst.username }} </td>
   <td>
-  {% if lst.public == True %}
-  <a href="{{ url_for('.savedlist_hide', id=lst.id) }}" title="List is public; click to hide"><span class="glyphicon glyphicon-eye-close"></span></a>
+  {% if lst.frontpage %}
+  <a class="btn btn-info active" href="{{ url_for('.savedlist_frontpage', id=lst.id, state=0) }}" title="List contents are cycled on the frontpage"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;On</a>
   {% else %}
-  <a href="{{ url_for('.savedlist_show', id=lst.id) }}" title="List is hidden; click to make public"><span class="glyphicon glyphicon-eye-open"></span></a>
+  <a class="btn btn-default" href="{{ url_for('.savedlist_frontpage', id=lst.id, state=1) }}" title="List contents are not cycled on the frontpage">Off</a>
   {% endif %}
+  </td>
+  <td>
+  {% if lst.public == True %}
+  <a class="btn btn-info active" href="{{ url_for('.savedlist_hide', id=lst.id) }}" title="List is public; click to hide"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;Public</a>
+  {% else %}
+  <a class="btn btn-default" href="{{ url_for('.savedlist_show', id=lst.id) }}" title="List is hidden; click to make public"><span class="glyphicon glyphicon-eye-close"></span>&nbsp;Hidden</a>
+  {% endif %}
+  </td>
+  <td>
   <a href="{{ url_for('.savedlist_delete', id=lst.id) }}" title="Delete list and all entries"><span class="glyphicon glyphicon-trash"></span></a>
   </td>
 </tr>
