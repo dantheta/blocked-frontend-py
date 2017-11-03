@@ -86,7 +86,7 @@ def nextsite(current_url):
             'id': session['category'][0],
             'recurse': 1,
             'active': 1,
-            'page': session['category'][1],
+            'page': random.randrange(0, session['category'][1]), # select a random page; api pages are zero-based
             }
         req['signature'] = request.api.sign(req, ['id'])
         searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
@@ -97,7 +97,7 @@ def nextsite(current_url):
     elif session.get('route') == 'keyword':
 
         logging.info("running search: %s", session['keyword'])
-        req = {'q': session['keyword'][0], 'page': session['keyword'][1]}
+        req = {'q': session['keyword'][0], 'page': random.randrange(0, session['keyword'][1])}
         req['signature'] = request.api.sign(req, ['q'])
         searchdata = request.api.GET('search/url', req)
         nextsite = selectnext(searchdata, current_url)
@@ -111,7 +111,7 @@ def nextsite(current_url):
 
     elif session.get('route') == 'savedlist':
         pagesize = 20
-        page = session['savedlist'][1]
+        page = random.randrange(0, session['savedlist'][1])
         savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
         items = [item['url'] 
                  for item 

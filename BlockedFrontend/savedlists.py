@@ -71,7 +71,6 @@ def create_list():
 def show_list(name, page=1):
     pagesize=20
     session['route'] = 'savedlist'
-    session['savedlist'] = (name, page-1)
     if page < 1:
         return redirect(url_for('.show_list', name=name))
     try:
@@ -82,6 +81,7 @@ def show_list(name, page=1):
         abort(403)
    
     itemcount = savedlist.count_items()
+    session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
     items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
 
     return render_template('show_list.html',
