@@ -109,27 +109,29 @@ def nextsite(current_url):
         data = request.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('category.site', url=data['results'][0]))
 
-    elif session.get('route') == 'savedlist':
-        pagesize = 20
-        page = random.randrange(0, session['savedlist'][1])
-        savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
-        items = [item['url'] 
-                 for item 
-                 in savedlist.get_items(_limit=(pagesize, (page)*pagesize)) 
-                 if item['url'] != current_url
-                 ]
-        if len(items):
-            nexturl = random.choice(items)    
-            return redirect(url_for('category.site', url=nexturl))
+    # use savedlists if there's no other route defined
+    pagesize = 20
+    page = random.randrange(0, session['savedlist'][1])
+    savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
+    items = [item['url'] 
+             for item 
+             in savedlist.get_items(_limit=(pagesize, (page)*pagesize)) 
+             if item['url'] != current_url
+             ]
+    if len(items):
+        nexturl = random.choice(items)    
+        return redirect(url_for('category.site', url=nexturl))
 
 @unblock_pages.route('/next')
 @unblock_pages.route('/next/<path:url>')
 def browse_next(url=None):
-    url = re.sub(':/(?!/)','://', url)
+    if url is not None:
+        url = re.sub(':/(?!/)','://', url)
     ret = nextsite(url)
     if ret:
         return ret
-    abort(500)
+    # redirect to front page if no nextsite is found
+    return redirect(url_for('cms.index'))
 
 @unblock_pages.route('/submit-unblock', methods=['POST'])
 def submit_unblock():
