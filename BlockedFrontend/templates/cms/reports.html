@@ -1,6 +1,6 @@
 {% extends "layout_1x3.page.html" %}
 {% import "paging.part.html" as paging %}
-{% from "network_description.part.html" import isp_info %}
+{% from "network_description.part.html" import isp_info, popover_js %}
 
 {%set pagetitle = g.remote_content.title if 'title' in g.remote_content
     else "Recently reported sites" %}
@@ -76,6 +76,6 @@
 
 {% block page_script %}
   $(document).ready(function(){
-    $('[data-toggle="popover"]').popover({'html':true});
+    {{ popover_js() }}
   });
 {% endblock %}

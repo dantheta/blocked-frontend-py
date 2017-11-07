@@ -1,5 +1,5 @@
 {% extends "BasicPage.page.html" %}
-{% from "network_description.part.html" import isp_info %}
+{% from "network_description.part.html" import isp_info, popover_js %}
 
 {% macro status_names(status) %}
 {{ config.STATUS_NAMES.get(status, status) }}
@@ -61,7 +61,7 @@ Your feedback was successfully submitted.
       document.execCommand('copy');
 
     });
-    $('[data-toggle="popover"]').popover({'html':true});
+    {{ popover_js() }}
   });
 {% endblock %}
 

@@ -5,7 +5,7 @@ import logging
 import psycopg2
 import datetime
 
-from flask import Blueprint, render_template, redirect, request, current_app, session, url_for, abort
+from flask import Blueprint, render_template, redirect, request, current_app, session, url_for, abort, g
 from utils import *
 from models import *
 
@@ -59,6 +59,7 @@ def unblock2():
         data=data,
         url=data['url'],
         blocks=blocks,
+        networks = g.remote.get_networks(),
         domain=get_domain(data['url']), 
         )
 

@@ -1,4 +1,5 @@
 {% extends "BasicPage.page.html" %}
+{% from "network_description.part.html" import isp_info, popover_js %}
 
 {%set pagetitle = domain %}
 {%set pagerole = "Request a site be unblocked" %}
@@ -27,7 +28,8 @@
 </tr>
 {% endif %}
 <tr class="{{ 'disabled' if block.last_report_timestamp != None else ''}}">
-  <td>{{ block.network_name }}
+  <td>
+    {{ isp_info(block.network_name, networks) }}
   {% if block.category and block.category != block.network_name %}
     <span class="category" style="padding-left: 0.5em"><em>({{ block.category |title}})</em></span>
   {% endif %}
@@ -115,6 +117,8 @@ $(document).ready(function(){
       return false;
     }
   })
+
+  {{ popover_js() }}
 
 })
 {% endblock %}
