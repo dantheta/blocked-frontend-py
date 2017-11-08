@@ -1,0 +1,36 @@
+{% extends "BasicPage.page.html" %}
+
+{% set pagetitle = "Saved Lists" %}
+
+{% block banner_text %}
+{% if g.remote_content.banner_text %}
+{{ g.remote_content.banner_text|safe }}
+{% else %}
+
+Blocked sites listed by topic.  These lists have been compiled by ORG staff and volunteers.
+
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+
+<table class="table">
+<tr>
+  <th>Name</th>
+</tr>
+{% for lst in lists %}
+<tr>
+  <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
+</tr>
+
+{% endfor %}
+</table>
+
+</div>
+</div>
+
+{% endblock %}
+
+
