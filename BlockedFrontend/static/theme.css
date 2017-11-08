@@ -253,3 +253,18 @@ td.num {
 th.num {
     text-align: center;
 }
+
+.topstrip {
+    background-color: black;
+    color: #dfdfdf;
+    font-family: 'Poppins', sans-serif;
+}
+
+.topstrip .row {
+    text-align: right;
+    padding-bottom: 0.5em;
+}
+
+.topstrip .row a {
+    margin-left: 0.25em;
+}
