@@ -8,12 +8,17 @@
 
 <h1>{{pagetitle}}</h1>
 
+<form action="{{ url_for('.savedlist_merge') }}" method="POST">
+<div style="text-align: right">
+  <input type="submit" class="btn btn-warning" value="Merge selected" />
+</div>
 <table class="table">
 <tr>
   <th>Name</th>
   <th>Creator</th>
   <th style="width: 15%">Frontpage</th>
   <th style="width: 15%">Public</th>
+  <th style="width: 10%">Merge</th>
   <th style="width: 15%"></th>
 </tr>
 {% for lst in lists %}
@@ -35,12 +40,16 @@
   {% endif %}
   </td>
   <td>
+    <input type="checkbox" name="merge" value="{{ lst.id }}"
+  </td>
+  <td>
   <a href="{{ url_for('.savedlist_delete', id=lst.id) }}" title="Delete list and all entries"><span class="glyphicon glyphicon-trash"></span></a>
   </td>
 </tr>
 
 {% endfor %}
 </table>
+</form>
 
 </div>
 </div>
