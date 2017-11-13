@@ -4,7 +4,7 @@ import psycopg2
 import jinja2
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, abort, config, current_app, session
+    g, url_for, abort, config, current_app, session, Response
 
 from utils import *
 from models import Item
@@ -101,6 +101,50 @@ def reported_sites_post():
     else:
         return redirect( url_for('.reported_sites') )
 
+@cms_pages.route('/legal-blocks/export')
+def export_blocks():
+    import csv
+    import tempfile
+    import itertools
+
+    tmpfile = tempfile.SpooledTemporaryFile('w+')
+    writer = csv.writer(tmpfile)
+    writer.writerow(['#', "Title: Legal blocks"])
+    writer.writerow(['#', "List saved from blocked.org.uk"])
+    writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks') ])
+    writer.writerow([])
+    writer.writerow(['URL', 'Report URL', 'Networks'])
+
+    def get_legal_blocks():
+        page = 0
+        while True:
+            data = request.api.recent_blocks(page)
+            
+            for item in data['results']:
+                yield item['url'], item['network_name']
+            page += 1
+            if page > get_pagecount(data['count'], 25):
+                break
+
+    for url, networkiter in itertools.groupby(get_legal_blocks(), lambda row: row[0]):
+        networklist = [x[1] for x in networkiter]
+        networklist.sort()
+        writer.writerow([url, current_app.config['SITE_URL']+ url_for('category.site', url=url) ] + networklist)
+
+    tmpfile.flush()
+    length = tmpfile.tell()
+    tmpfile.seek(0)
+
+    def returnvalue(*args):
+        for line in tmpfile:
+            yield line
+
+    return Response(returnvalue(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename=legal-blocks.csv',
+        'Content-length': str(length)
+        })
+
+
 # static page routing
 @cms_pages.route('/<page>')
 def wildcard(page='index'):
@@ -138,5 +182,4 @@ def wildcard(page='index'):
         return render_template(page + '.html')
     except jinja2.TemplateNotFound:
         abort(404)
-
 
