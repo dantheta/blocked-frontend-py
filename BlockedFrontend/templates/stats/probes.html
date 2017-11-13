@@ -1,0 +1,40 @@
+{% extends "BasicPage.page.html" %}
+
+{%set pagetitle = 'Probe status' %}
+
+{% block banner_text %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+
+<table class="table">
+<tr>
+  <th>Network</th>
+  <th>Status</th>
+  <th>Last Seen</th>
+</tr>
+{% for d in data.status %}
+<tr>
+  <td>{{d.description}}</td>
+  <td>
+    {% if d.status == 'down' or d.lastseen == None %}
+    <span class="label label-danger">Offline</span>
+    {% elif d.age.days > 1 %}
+    <span class="label label-warning">Unknown</span>
+    {% else %}
+    <span class="label label-success">Online</span>
+    {% endif %}
+  </td>
+  <td>{{d.parsed_timestamp|fmtime}}</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+</div>
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+{% endblock %}

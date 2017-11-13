@@ -1,8 +1,13 @@
+import datetime
+
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
+from utils import *
+
 stats_pages = Blueprint('stats', __name__,
     template_folder='templates/stats')
+
 
 @stats_pages.route('/stats')
 def index():
@@ -25,4 +30,19 @@ def index():
 
         domain_isp_stats = request.api.domain_isp_stats()
         
+        )
+
+@stats_pages.route('/stats/probes')
+def probe_stats():
+    data = request.api.status_probes()
+    now = datetime.datetime.now()
+    for d in data['status']:
+        d['parsed_timestamp'] = parse_timestamp(d['lastseen'])
+        if d['parsed_timestamp']:
+            d['age'] = now - d['parsed_timestamp']
+        else:
+            d['age'] = None
+
+    return render_template('probes.html',
+        data=data
         )

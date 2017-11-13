@@ -77,6 +77,9 @@
 {% macro menu_link(title, url) %}
 <a class="{{ 'active' if request.path.startswith(url) else ''}}" href="{{url}}">{{title}}</a>
 {% endmacro %}
+{% macro menu_link_eq(title, url) %}
+<a class="{{ 'active' if request.path == url else ''}}" href="{{url}}">{{title}}</a>
+{% endmacro %}
 
 
 {% macro main_menu() %}
@@ -88,6 +91,8 @@
 {{ menu_link("About", '/about') }}
 {{ menu_link("Support" ,'/support') }}
 {{ menu_link("Credits" ,'/credits') }}
+{{ menu_link_eq("Statistics", '/stats') }}
+{{ menu_link("Status", '/stats/probes') }}
 <a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
 
 {% endmacro %}
