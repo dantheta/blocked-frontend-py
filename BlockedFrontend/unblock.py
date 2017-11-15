@@ -168,6 +168,13 @@ def submit_unblock():
 
     logging.info("Submission: %s", data)
 
+    if data['success'] == False:
+        return render_template('message.html',
+            title="This site is blacklisted.",
+            message="Blocked is not able to report blacklisted sites for unblocking."
+            )
+            
+
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])
         if ret is not None:
