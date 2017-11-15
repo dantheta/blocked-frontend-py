@@ -53,6 +53,15 @@ class BaseApiClient(object):
             return req.json()
         except Exception as exc:
             raise APIError(*exc.args)
+
+    def DELETE(self, url, data):
+        data['email'] = self.username
+        try:
+            req = requests.delete(self.API + url, params=data)
+            logger.info("Status: %s", req.status_code)
+            return req.json()
+        except Exception as exc:
+            raise APIError(*exc.args)
     
     def POST_JSON(self, url, data):
         req = requests.post(self.API + url, data=json.dumps(data),
@@ -71,6 +80,7 @@ class ApiClient(BaseApiClient):
         'status/category-stats': ['date'],
         'status/domain-isp-stats': ['date'],
         'status/domain-stats': ['date'],
+        'ispreport/blacklist': ['date'],
         }
 
     def _request(self, endpoint, req):
@@ -121,3 +131,21 @@ class ApiClient(BaseApiClient):
     def status_probes(self):
         req = {'date':self.timestamp()}
         return self._request('status/probes', req)
+
+
+    def blacklist_insert(self, domain):
+        req = {'date': self.timestamp(), 'domain': domain}
+        req['signature'] = self.sign(req, ['date','domain'])
+        return self.POST('ispreport/blacklist', req)
+
+    def blacklist_select(self):
+        req = {'date': self.timestamp()}
+        return self._request('ispreport/blacklist', req)
+
+
+    def blacklist_delete(self, domain):
+        req = {'date': self.timestamp(), 'domain': domain}
+        req['signature'] = self.sign(req, ['date','domain'])
+        return self.DELETE('ispreport/blacklist', req)
+
+

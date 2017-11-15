@@ -129,6 +129,7 @@ def site(url=None):
     can_unblock = None
     prev_unblock_type = None
 
+
     results = [x for x in data['results'] if x['isp_active'] ]
     for item in results:
         if item['status'] == 'blocked':
@@ -150,6 +151,10 @@ def site(url=None):
             prev_unblock_type = 'flag'
             report_types.update( report['report_type'].split(',') )
 
+    if data.get('blacklisted') in (True,'true'):
+        can_unblock = False
+        logging.info("Site is blacklisted")
+        prev_unblock_type = 'blacklist'
             
         
     return render_template('site.html',

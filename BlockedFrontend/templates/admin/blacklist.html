@@ -1,0 +1,46 @@
+{% extends "admin.page.html" %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Domain Blacklist Admin" %}
+
+{%block body %}
+<div class="row">
+<div class="col-md-8">
+<h1>{{pagetitle}}</h1>
+
+<h3>Domains added to the blacklist cannot be reported to ISPs</h3>
+
+</div>
+<div class="col-md-4">
+
+<div class="well">
+<form class="form" method="POST" action="{{url_for('.blacklist_post')}}">
+<legend>Add new blacklist entry</legend>
+
+{{ forms.text_field('Domain', 'domain') }}
+
+<p class="hint">Start the domain pattern with '//.*' to match subdomains as well.</p>
+
+{{ forms.submit('Add') }}
+
+</form>
+</div>
+
+</div>
+</div>
+
+<table class="table">
+  <tr>
+    <th>Domain (regex)</th>
+    <th></th>
+  </tr>
+  {% for e in entries.blacklist %}
+  <tr>
+    <td>{{ e }}</td>
+    <td><a href="{{ url_for('.blacklist_delete', domain=e) }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+

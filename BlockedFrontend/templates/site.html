@@ -155,6 +155,8 @@ Your feedback was successfully submitted.
 <a class="btn btn-primary btn-disabled" disabled rel="nofollow">
 {%- if prev_unblock_type == 'unblock' -%}
 Unblock Requested
+{%- elif prev_unblock_type == 'blacklist' -%}
+Site is blacklisted
 {%- else -%}
 Site has been flagged
 {%- endif -%}

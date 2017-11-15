@@ -121,6 +121,25 @@ def savedlist_merge():
     flash("Selected lists have been merged into '{}'".format(first['name']))
     return redirect(url_for('.savedlists'))
                 
+@admin_pages.route('/control/blacklist', methods=['GET'])
+@check_admin
+def blacklist_select():
+    entries = request.api.blacklist_select()
+
+    return render_template('blacklist.html',
+        entries = entries
+        )
 
 
+@admin_pages.route('/control/blacklist', methods=['POST'])
+@check_admin
+def blacklist_post():
+    request.api.blacklist_insert(request.form['domain'])
+    return redirect(url_for('.blacklist_select'))
 
+
+@admin_pages.route('/control/blacklist/delete', methods=['GET'])
+@check_admin
+def blacklist_delete():
+    request.api.blacklist_delete(request.args['domain'])
+    return redirect(url_for('.blacklist_select'))
