@@ -93,7 +93,11 @@ Your feedback was successfully submitted.
   </td>
   <td>{{item.status_timestamp|fmtime}}</td>
   {% if show_category %}
-    <td>{{item.category}}</td>
+    <td>{{item.category}}
+    {% if item.blocktype == 'COPYRIGHT' %}
+    <p><i>This site has been blocked by court order.</i></p>
+    {% endif %}
+    </td>
   {% elif show_lastblocked %}
     <td>{{(item.last_blocked_timestamp|fmtime) or ''}}</td>
   {% elif show_status %}
