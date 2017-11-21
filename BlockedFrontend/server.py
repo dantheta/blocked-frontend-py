@@ -83,11 +83,16 @@ def null(s, default):
     return s
 
 @app.template_filter('join_en')
-def join_en(ls):
+def join_en(ls, markup=False):
+    if markup:
+        tag = lambda x: "<span>{0}</span>".format(x)
+    else:
+        tag = lambda x: x
+
     if len(ls) == 1:
-        return ls[0]
+        return tag(ls[0])
     elif len(ls) >= 2:
-        return ", ".join(ls[:-1]) + " and " + ls[-1]
+        return ", ".join([tag(x) for x in ls[:-1]]) + " and " + tag(ls[-1])
     return ''
 
 @app.template_filter('domain')

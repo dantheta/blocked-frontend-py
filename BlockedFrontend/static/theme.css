@@ -268,3 +268,11 @@ th.num {
 .topstrip .row a {
     margin-left: 0.25em;
 }
+
+.sendisps {
+    margin-top: 0.5em;
+}
+
+.sendisps span {
+    font-weight: bold;
+}

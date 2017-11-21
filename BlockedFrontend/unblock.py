@@ -59,6 +59,8 @@ def unblock2():
         data=data,
         url=data['url'],
         blocks=blocks,
+        block_names = [ block['network_name'] for block in blocks ],
+
         networks = g.remote.get_networks(),
         domain=get_domain(data['url']), 
         )
@@ -162,7 +164,7 @@ def submit_unblock():
     if current_app.config['DUMMY']:
         # demo mode - don't really submit
         logging.warn("Dummy mode: not really submitting")
-        data = {'verification_required':  False}
+        data = {'verification_required':  False, 'success': True}
     else:
         data = request.api.POST_JSON('ispreport/submit', req)
 
