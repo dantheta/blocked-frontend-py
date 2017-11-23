@@ -15,6 +15,7 @@
 You can now:
 <ul>
 <li>Create saved lists</li>
+<li>Amend the domain blacklist</li>
 </ul>
 </p>
 
@@ -22,6 +23,19 @@ You can now:
 </div>
 
 </div>
+<div class="col-md-6">
+<div class="well">
+<h2>Cached CMS content</h2>
+
+<p>Last update: {% if cmsdate == None %}(no cache){% else %}{{cmsdate|fmtime}}{%endif%}</p>
+<div>
+<form action="{{url_for('.cacheclear')}}" method="POST">
+<input type="submit" class="btn btn-warning" value="Clear Cache" />
+</form>
+</div>
+
+</div><!-- /.well -->
+</div><!-- /.col -->
 </div>
 
 {% endblock %}

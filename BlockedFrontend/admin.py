@@ -1,5 +1,7 @@
 
+import os
 import logging
+import datetime
 
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, flash
@@ -20,7 +22,24 @@ def admin():
     if not g.admin:
         return render_template('login.html')
 
-    return render_template('admin.html')
+    try:
+        cmsdate = datetime.datetime.fromtimestamp(os.path.getmtime(current_app.config['CACHE_PATH']+'.sqlite'))
+    except Exception as exc:
+        logging.warn("Error getting cache time: %s", exc)
+        cmsdate = None
+
+    return render_template('admin.html', cmsdate=cmsdate)
+
+@admin_pages.route('/control/cacheclear', methods=['POST'])
+@check_admin
+def cacheclear():
+    try:
+        os.unlink(current_app.config['CACHE_PATH']+'.sqlite')
+    except Exception as exc:
+        abort(500)
+
+    return redirect(url_for('.admin'))
+
 
 @admin_pages.route('/control', methods=['POST'])
 def admin_post():
