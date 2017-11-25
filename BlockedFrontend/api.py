@@ -26,11 +26,11 @@ class BaseApiClient(object):
             '%Y%m%d-%H:%M:%S'
             )
 
-    def GET(self, url, data,decode=True, _stream=False):
+    def GET(self, url, data, decode=True, _stream=False):
         data['email'] = self.username
         try:
             req = requests.get(self.API + url, params=data, stream=_stream)
-            logger.info("Status: %s", req.status_code)
+            logger.debug("Status: %s", req.status_code)
             if _stream:
                 return req.iter_lines()
             elif decode:
