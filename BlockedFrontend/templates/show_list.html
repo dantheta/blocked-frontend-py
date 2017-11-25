@@ -57,10 +57,19 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
         <td><a href="{{item.url}}" rel="nofollow" target="_blank" title="Open site in a new window">{{item.url}}</a><br />
             {{item.title|null('(no title)')}} 
         </td>
+        <td>
+          {% if item.blocked == False %}
+          <span class="label label-success">Unblocked</span>
+          {% endif %}
+          {% if item.reported %}
+          <span class="label label-default">Reported</span>
+          {% endif %}
+        </td>
         <td class="sitereport">
           <a href="{{url_for('category.site', url=item.url)}}">View site report</a>
         </td>
         <td>
+
             {% if g.admin %}
             <a class="deletebtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
             {% endif %}

@@ -128,7 +128,7 @@ font-size: 125%;
     display: none;
 }
 
-#results * tr td a, .sitereport {
+#results * tr td a, .sitereport a {
     padding-right: 0.75em;
     text-decoration: underline;
     text-transform: uppercase;
