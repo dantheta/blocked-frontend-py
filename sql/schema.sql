@@ -14,8 +14,11 @@ CREATE TABLE items (
     list_id int not null,
     url varchar not null,
     title varchar not null,
+    reported bool default false not null,
+    blocked bool null,
     created timestamptz not null,
-    last_updated timestamptz null
+    last_updated timestamptz null,
+    last_checked timestamptz null
     );
 
 ALTER TABLE items ADD foreign key (list_id) references savedlists(id) ON DELETE CASCADE;
