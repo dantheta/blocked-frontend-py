@@ -1,5 +1,5 @@
 #!/usr/bin/python2
 
-import BlockedFrontend
+import BlockedFrontend.server
 
-BlockedFrontend.run()
+BlockedFrontend.server.run()
