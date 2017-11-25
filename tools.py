@@ -1,9 +1,8 @@
 
 import os
 import logging
-import argparse
 
-from flask import Flask, app, g
+from flask import Flask
 
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect
