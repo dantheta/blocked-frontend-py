@@ -29,7 +29,10 @@ class Item(DBObject):
     FIELDS = [
             'list_id',
             'url',
-            'title'
+            'title',
+            'blocked',
+            'reported',
+            'last_checked',
             ]
 
     def get_list(self):
@@ -41,7 +44,7 @@ class Item(DBObject):
         c.execute("""select items.* 
             from items 
             inner join savedlists on list_id = savedlists.id
-            where frontpage = true
+            where frontpage = true and blocked = true and reported = false
             order by random()""")
         for row in c:
             yield cls(conn, data=row)
