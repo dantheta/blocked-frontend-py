@@ -22,6 +22,33 @@ def check(mode=None):
             )
 
 
+@site_pages.route('/check', methods=['POST'])
+def check_post():
+    url = request.form['url']
+    if not url.lower().startswith(('http://', 'https://')):
+        url = 'http://' + url
+
+    if request.form['submit'] == 'false':
+        return redirect(url_for('.site', url=url))
+    req = {
+        'url': url,
+    }
+    req['signature'] = request.api.sign(req, ['url'])
+    data = request.api.POST('submit/url', req)
+    if data['queued'] == True:
+        return render_template('site.html',
+                               results_blocked=[], results_past=[], results_all=[],
+                               activecount=0,
+                               pastcount=0,
+                               can_unblock=None,
+                               domain=get_domain(url),
+                               url=url,
+                               md5=data['hash'],
+                               live=True
+                               )
+    return redirect(url_for('.site', url=url))
+
+
 @site_pages.route('/site')
 @site_pages.route('/site/<path:url>')
 @site_pages.route('/results')
@@ -101,28 +128,3 @@ def site(url=None):
                            )
 
 
-@site_pages.route('/check', methods=['POST'])
-def check_post():
-    url = request.form['url']
-    if not url.lower().startswith(('http://', 'https://')):
-        url = 'http://' + url
-
-    if request.form['submit'] == 'false':
-        return redirect(url_for('.site', url=url))
-    req = {
-        'url': url,
-    }
-    req['signature'] = request.api.sign(req, ['url'])
-    data = request.api.POST('submit/url', req)
-    if data['queued'] == True:
-        return render_template('site.html',
-                               results_blocked=[], results_past=[], results_all=[],
-                               activecount=0,
-                               pastcount=0,
-                               can_unblock=None,
-                               domain=get_domain(url),
-                               url=url,
-                               md5=data['hash'],
-                               live=True
-                               )
-    return redirect(url_for('.site', url=url))

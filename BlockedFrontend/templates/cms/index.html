@@ -11,10 +11,10 @@
 
 {%block page_menu%}
 {#
-  <div><a href="{{ url_for('category.check') }}/live">Check if a site is being blocked</a></div>
+  <div><a href="{{ url_for('site.check') }}/live">Check if a site is being blocked</a></div>
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search sites by keyword</a></div>
-  <div><a href="{{ url_for('category.check') }}">Get a site unblocked</a></div>
+  <div><a href="{{ url_for('site.check') }}">Get a site unblocked</a></div>
   <div><a href="{{ url_for('category.random') }}">Take action: Report sites</a></div>
 #}
 {% endblock %}
@@ -47,7 +47,7 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 
 <div class="col-md-4">
 <div>&nbsp;</div>
-<a href="{{ url_for('category.site', url=site.url) }}" class="btn btn-lg btn-default">View full results</a>
+<a href="{{ url_for('site.site', url=site.url) }}" class="btn btn-lg btn-default">View full results</a>
 </div>
 
 <div class="col-md-4">
@@ -79,7 +79,7 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 <div class="col-md-9">
 <h3>Check a website</h3>
 
-<form action="{{ url_for('category.check_post') }}" method="POSt">
+<form action="{{ url_for('site.check_post') }}" method="POSt">
 <input type="hidden" name="submit" value="{{live | lower }}" />
 
 <div class="form-group">

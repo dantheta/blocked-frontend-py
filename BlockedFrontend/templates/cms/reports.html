@@ -55,7 +55,7 @@
         <td>
           {{ isp_info(row.description, networks) }}
         </td>
-        <td><a href="{{ url_for('category.site', url=row.url) }}">View site report</a></td>
+        <td><a href="{{ url_for('site.site', url=row.url) }}">View site report</a></td>
         <td>{{ row.submitted | fmtime if row.submitted else "On hold" }}</td>
         <td>
             {% if row.unblocked %}

@@ -95,7 +95,7 @@ def nextsite(current_url):
         searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
-            return redirect(url_for('category.site', url=nextsite))
+            return redirect(url_for('site.site', url=nextsite))
 
     elif session.get('route') == 'keyword':
 
@@ -105,12 +105,12 @@ def nextsite(current_url):
         searchdata = request.api.GET('search/url', req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
-            return redirect(url_for('category.site', url=nextsite))
+            return redirect(url_for('site.site', url=nextsite))
 
     elif session.get('route') == 'random':
         logging.info("Getting random site")
         data = request.api.GET('ispreport/candidates',{'count':1})
-        return redirect(url_for('category.site', url=data['results'][0]))
+        return redirect(url_for('site.site', url=data['results'][0]))
 
     # use savedlists if there's no other route defined
     pagesize = 20
@@ -123,7 +123,7 @@ def nextsite(current_url):
              ]
     if len(items):
         nexturl = random.choice(items)    
-        return redirect(url_for('category.site', url=nexturl))
+        return redirect(url_for('site.site', url=nexturl))
 
 @unblock_pages.route('/next')
 @unblock_pages.route('/next/<path:url>')

@@ -132,7 +132,7 @@ def export_blocks():
     for url, networkiter in itertools.groupby(get_legal_blocks(), lambda row: row[0]):
         networklist = [x[1] for x in networkiter]
         networklist.sort()
-        writer.writerow([url, current_app.config['SITE_URL']+ url_for('category.site', url=url) ] + networklist)
+        writer.writerow([url, current_app.config['SITE_URL']+ url_for('site.site', url=url) ] + networklist)
 
     tmpfile.flush()
     length = tmpfile.tell()

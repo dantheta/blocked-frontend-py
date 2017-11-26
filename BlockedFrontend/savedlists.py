@@ -151,7 +151,7 @@ def export_list(name):
     writer.writerow([])
     writer.writerow(['URL', 'Report URL'])
     for item in savedlist.get_items():
-        writer.writerow([item['url'], current_app.config['SITE_URL']+ url_for('category.site', url=item['url']) ])
+        writer.writerow([item['url'], current_app.config['SITE_URL']+ url_for('site.site', url=item['url']) ])
 
     tmpfile.flush()
     length = tmpfile.tell()

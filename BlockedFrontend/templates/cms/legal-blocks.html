@@ -49,7 +49,7 @@
     {% for row in blocks %}
     <tr>
         <td>{{ row.url }}
-        <div class="sitereport"><a href="{{ url_for('category.site', url=row.url) }}">Site report</a></div>
+        <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
         </td>
         <td class="networklist">
             <ul>

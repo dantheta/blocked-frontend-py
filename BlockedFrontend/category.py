@@ -81,7 +81,7 @@ def apicategorysearch():
 def random():
     session['route'] = 'random'
     data = request.api.GET('ispreport/candidates',{'count':1})
-    return redirect(url_for('.site', url=data['results'][0]))
+    return redirect(url_for('site.site', url=data['results'][0]))
 
 @category_pages.route('/random-category')
 def random_category():

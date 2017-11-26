@@ -8,7 +8,7 @@
     <a class="reveal" href="{{item.url}}" rel="nofollow" target="_blank">Visit Site</a>
   </td>
   <td>
-  <a class="" href="{{ url_for('.site', url=item.url) }}">View site report</a>
+  <a class="" href="{{ url_for('site.site', url=item.url) }}">View site report</a>
   {% if item.last_reported is none %}
   <a class="btn btn-default" href="{{ url_for('unblock.unblock', url=item.url) }}">Request Unblock</a>
   {% else %}
