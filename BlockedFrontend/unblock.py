@@ -10,7 +10,8 @@ from utils import *
 from models import *
 
 
-unblock_pages = Blueprint('unblock', __name__)
+unblock_pages = Blueprint('unblock', __name__,
+                          template_folder='templates/unblock')
 
 @unblock_pages.before_request
 def setup_db():
