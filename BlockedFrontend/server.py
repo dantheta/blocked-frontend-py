@@ -41,6 +41,9 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 from category import category_pages
 app.register_blueprint(category_pages)
 
+from site_results import site_pages
+app.register_blueprint(site_pages)
+
 from unblock import unblock_pages
 app.register_blueprint(unblock_pages)
 
