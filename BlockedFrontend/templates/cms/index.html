@@ -29,6 +29,7 @@
 
 
 <!-- template BasicPage -->
+{% if config.MODULE_UNBLOCK %}
 <div class="row">
 <div class="col-lg-10 col-lg-offset-1 col-md-12">
 <h3 style="text-align: center">For example,</h3>
@@ -66,6 +67,7 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 </div>
 </div>
 
+
 <div class="row">
 <div class="col-md-12">
 <h3>More ways to check blocked sites</h3>
@@ -74,6 +76,7 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 
 </div>
 </div>
+{% endif %}
 
 <div class="row shaded-row">
 <div class="col-md-9">

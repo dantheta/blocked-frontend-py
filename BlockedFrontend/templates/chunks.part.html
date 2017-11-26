@@ -84,8 +84,12 @@
 
 {% macro main_menu() %}
 <a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
+{% if config.MODULE_CATEGORY %}
 <a class="{{ 'active' if request.path.startswith( ('/blocked-sites','/site','/check','/unblock','/thanks')) else ''}}" href="/sites">Blocked Sites</a>
+{% endif %}
+{% if config.MODULE_UNBLOCK %}
 {{ menu_link("Reported Sites", '/reported-sites') }}
+{% endif %}
 {{ menu_link("Legal Blocks", '/legal-blocks') }}
 <br />
 {{ menu_link("About", '/about') }}
