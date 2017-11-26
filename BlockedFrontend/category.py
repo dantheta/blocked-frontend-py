@@ -119,9 +119,6 @@ def site(url=None):
 
     # workaround for apache folding // into /
     url = re.sub(':/(?!/)','://', url)
-    req = {
-        'url': url,
-        }
 
     data = request.api.status_url(url)
     activecount=0
@@ -155,7 +152,12 @@ def site(url=None):
         can_unblock = False
         logging.info("Site is blacklisted")
         prev_unblock_type = 'blacklist'
-            
+
+    if session.get('route') == 'savedlist':
+        logging.info("Selecting savedlist")
+        savedlist = SavedList.select_one(db_connect(), name=session['savedlist'][0])
+    else:
+        savedlist = None
         
     return render_template('site.html',
         results_blocked = (result for result in results if result['status'] == 'blocked'),
@@ -169,6 +171,7 @@ def site(url=None):
         url = url, 
         report_types = report_types, 
         prev_unblock_type = prev_unblock_type,
+        savedlist = savedlist,
 
         networks = g.remote.get_networks(),
         thanks = thanks,
