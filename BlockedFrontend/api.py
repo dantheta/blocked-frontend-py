@@ -26,11 +26,11 @@ class BaseApiClient(object):
             '%Y%m%d-%H:%M:%S'
             )
 
-    def GET(self, url, data, decode=True, _stream=False):
+    def GET(self, url, data,decode=True, _stream=False):
         data['email'] = self.username
         try:
             req = requests.get(self.API + url, params=data, stream=_stream)
-            logger.debug("Status: %s", req.status_code)
+            logger.info("Status: %s", req.status_code)
             if _stream:
                 return req.iter_lines()
             elif decode:
@@ -84,7 +84,13 @@ class ApiClient(BaseApiClient):
         }
 
     def _request(self, endpoint, req):
-        req['signature'] = self.sign(req, self.SIGNATURES[endpoint])
+        try:
+            req['signature'] = self.sign(req, self.SIGNATURES[endpoint])
+        except KeyError:
+            for k,v in self.SIGNATURES.iteritems():
+                if endpoint.startswith(k):
+                    req['signature'] = self.sign(req, v)
+                    break
         data = self.GET(endpoint, req)
         return data
 
@@ -94,9 +100,9 @@ class ApiClient(BaseApiClient):
         req = {'q': search, 'page': page, 'exclude_adult': exclude_adult}
         return self._request('search/url', req)
 
-    def recent_blocks(self, page, format='networkrow', sort='url'):
+    def recent_blocks(self, page, region, format='networkrow', sort='url'):
         req = {'date': self.timestamp(), 'page': str(page), 'format': format, 'sort': sort}
-        return self._request('status/blocks', req)
+        return self._request('status/blocks/'+region, req)
 
     def stats(self):
         req = {'date': self.timestamp()}

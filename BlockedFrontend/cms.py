@@ -61,7 +61,7 @@ def credits():
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):
     g.remote_content = g.remote.get_content('legal-blocks')
-    data = request.api.recent_blocks(page-1, 'urlrow', request.args.get('sort','url'))
+    data = request.api.recent_blocks(page-1, current_app.config['DEFAULT_REGION'], 'urlrow', request.args.get('sort','url'))
     blocks = data['results']
     count = data['count']
     urlcount = data['urlcount']
@@ -121,7 +121,7 @@ def export_blocks():
     def get_legal_blocks():
         page = 0
         while True:
-            data = request.api.recent_blocks(page)
+            data = request.api.recent_blocks(page, current_app.config['DEFAULT_REGION'])
             
             for item in data['results']:
                 yield item['url'], item['network_name']
