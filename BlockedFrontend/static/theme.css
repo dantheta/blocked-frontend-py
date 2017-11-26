@@ -134,9 +134,13 @@ font-size: 125%;
     text-transform: uppercase;
 }
 
-.sitereport {
+td.sitereport {
     width: 15%;
     }
+
+div.sitereport {
+    margin-top: 0.25em;
+}
 
 #results * tr:hover td.reveal a {
     display: inline-block;
