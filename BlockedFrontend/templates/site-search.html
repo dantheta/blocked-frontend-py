@@ -40,10 +40,10 @@ A great many websites are being blocked mistakenly as a result of government imp
 </div>
 <div class="pagemenu col-md-4 col-md-offset-2">
 
-<div><a href="{{ url_for('.check', mode='live') }}">Check a specific website</a></div>
+<div><a href="{{ url_for('site.check', mode='live') }}">Check a specific website</a></div>
 <div><a href="{{ url_for('category.blocked_sites') }}">Search sites by category</a></div>
 <div><a href="{{ url_for('.random_category') }}">Browse a random category</a></div>
-<div><a href="{{ url_for('category.show_lists') }}">Browse site lists</a></div>
+<div><a href="{{ url_for('list.show_lists') }}">Browse site lists</a></div>
 
 </div>
 </div> <!-- /.row -->
