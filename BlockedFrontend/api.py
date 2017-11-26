@@ -94,8 +94,8 @@ class ApiClient(BaseApiClient):
         req = {'q': search, 'page': page, 'exclude_adult': exclude_adult}
         return self._request('search/url', req)
 
-    def recent_blocks(self, page):
-        req = {'date': self.timestamp(), 'page': str(page)}
+    def recent_blocks(self, page, format='networkrow', sort='url'):
+        req = {'date': self.timestamp(), 'page': str(page), 'format': format, 'sort': sort}
         return self._request('status/blocks', req)
 
     def stats(self):

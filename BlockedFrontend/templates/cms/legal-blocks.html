@@ -33,22 +33,36 @@
 
 <table class="table table-striped">
     <tr>
-        <th>URL</th>
-        <th>Network</th>
+        <th><a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
+        {% if sortorder == 'url' %}
+            <span class="glyphicon glyphicon-chevron-down"></span>
+        {% endif %}
+        </th>
+        <th>Networks</th>
         <th>First Detected</th>
-        <th>Last Checked</th>
+        <th><a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
+        {% if sortorder == 'last_blocked' %}
+            <span class="glyphicon glyphicon-chevron-down"></span>
+        {% endif %}
+        </th>
     </tr>
     {% for row in blocks %}
     <tr>
-        <td>{{ row.url }}</td>
-        <td>{{ row.network_name }}</td>
+        <td><a href="{{ url_for('category.site', url=row.url) }}">{{ row.url }}</a></td>
+        <td class="networklist">
+            <ul>
+            {% for net in row.networks|sort %}
+                <li>{{ net }}</li>
+            {% endfor %}
+            </ul>
+        </td>
         <td>{{ row.first_blocked | fmtime }}</td>
         <td>{{ row.last_blocked | fmtime }}</td>
     </tr>
     {% endfor %}
 </table>
 
-{{ paging.page_list('.legal_blocks', page, pagecount) }}
+{{ paging.page_list('.legal_blocks', page, pagecount, sort=sortorder) }}
 
 </div>
 </div>

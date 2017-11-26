@@ -58,12 +58,12 @@ def credits():
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):
     g.remote_content = g.remote.get_content('legal-blocks')
-    data = request.api.recent_blocks(page-1)
+    data = request.api.recent_blocks(page-1, 'urlrow', request.args.get('sort','url'))
     blocks = data['results']
     count = data['count']
     urlcount = data['urlcount']
     return render_template('legal-blocks.html',
-            page=page, count=count, blocks=blocks, urlcount=urlcount,
+            page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
             pagecount = get_pagecount(count, 25)
             )
 

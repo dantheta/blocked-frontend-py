@@ -276,3 +276,14 @@ th.num {
 .sendisps span {
     font-weight: bold;
 }
+
+.networklist ul {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.networklist ul li {
+    list-style: none;
+    margin-left: 0px;
+    padding-left: 0px;
+}
