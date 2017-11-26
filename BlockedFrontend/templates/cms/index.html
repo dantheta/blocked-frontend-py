@@ -54,7 +54,11 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 <div>&nbsp;</div>
 <a href="/" class="btn btn-lg btn-default">See another blocked site</a>
 </div>
-</div>
+</div> <!-- /.row -->
+
+{% if savedlist %}
+<div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
+{% endif %}
 
 </div> <!--/.well-->
 

@@ -22,7 +22,8 @@ def frontpage_lists():
     conn = psycopg2.connect(current_app.config['DB'])
     for item in Item.get_frontpage_random(conn):
         site = request.api.status_url(item['url'])
-        return site
+        savedlist = item.get_list()
+        return site, savedlist
         
 def frontpage_random():
     randomsite = request.api.GET('ispreport/candidates',{'count':1})
@@ -37,12 +38,14 @@ def index():
 
     if current_app.config['RANDOMSITE'] == 'frontpagerandom':
         site = frontpage_random()
+        savedlist = None
     elif current_app.config['RANDOMSITE'] == 'frontpagelists':
-        site = frontpage_lists()
+        site, savedlist = frontpage_lists()
 
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
-    return render_template('index.html', site=site, blockednetworks=blockednetworks)
+    return render_template('index.html', site=site, savedlist=savedlist,
+                           blockednetworks=blockednetworks)
 
 @cms_pages.route('/personal-stories')
 def personal_stories():
