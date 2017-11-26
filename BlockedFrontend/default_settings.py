@@ -10,6 +10,7 @@ API_EMAIL = ''
 API_SECRET = ''
 
 SITE_URL="http://localhost:5000"
+SITE_THEME='blocked-uk'
 
 # module flags
 MODULE_UNBLOCK = True
