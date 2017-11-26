@@ -67,7 +67,7 @@ def legal_blocks(page=1):
     urlcount = data['urlcount']
     return render_template('legal-blocks.html',
             page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
-            pagecount = get_pagecount(count, 25)
+            pagecount = get_pagecount(urlcount, 25)
             )
 
 @cms_pages.route('/reported-sites')
