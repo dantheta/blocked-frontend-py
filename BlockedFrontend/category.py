@@ -9,7 +9,8 @@ from utils import *
 from models import SavedList
 from db import *
 
-category_pages = Blueprint('category', __name__)
+category_pages = Blueprint('category', __name__,
+                           template_folder='templates/category')
 
 
 
