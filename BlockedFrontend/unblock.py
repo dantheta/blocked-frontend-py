@@ -119,7 +119,7 @@ def nextsite(current_url):
     items = [item['url'] 
              for item 
              in savedlist.get_items(_limit=(pagesize, (page)*pagesize)) 
-             if item['url'] != current_url
+             if item['url'] != current_url and item['blocked'] is True and item['reported'] is False
              ]
     if len(items):
         nexturl = random.choice(items)    
