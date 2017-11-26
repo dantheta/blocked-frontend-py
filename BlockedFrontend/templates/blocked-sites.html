@@ -31,9 +31,9 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div class="pagemenu col-md-4 col-md-offset-4">
 
 <div><a href="{{ url_for('.random_category') }}">Browse a random category</a></div>
-<div><a href="/check">Check a specific website</a></div>
+<div><a href="{{ url_for('site.check') }}">Check a specific website</a></div>
 <div><a href="{{ url_for('.sites_search') }}">Search sites by keyword</a></div>
-<div><a href="{{ url_for('category.show_lists') }}">Browse site lists</a></div>
+<div><a href="{{ url_for('list.show_lists') }}">Browse site lists</a></div>
 
 </div>
 </div> <!-- /.row -->
