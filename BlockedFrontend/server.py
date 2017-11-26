@@ -38,29 +38,33 @@ logging.info("API_EMAIL: %s", app.config['API_EMAIL'])
 logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
-from category import category_pages
-app.register_blueprint(category_pages)
-
 from site_results import site_pages
 app.register_blueprint(site_pages)
 
-from unblock import unblock_pages
-app.register_blueprint(unblock_pages)
+if app.config['MODULE_CATEGORY']:
+    from category import category_pages
+    app.register_blueprint(category_pages)
+
+if app.config['MODULE_UNBLOCK']:
+    from unblock import unblock_pages
+    app.register_blueprint(unblock_pages)
+
+if app.config['MODULE_SAVEDLIST']:
+    from savedlists import list_pages
+    app.register_blueprint(list_pages)
+
+if app.config['MODULE_ADMIN']:
+    from admin import admin_pages
+    app.register_blueprint(admin_pages)
 
 from reload import reload_blueprint
 app.register_blueprint(reload_blueprint)
-
-from savedlists import list_pages
-app.register_blueprint(list_pages)
 
 from stats import stats_pages
 app.register_blueprint(stats_pages)
 
 from cms import cms_pages
 app.register_blueprint(cms_pages)
-
-from admin import admin_pages
-app.register_blueprint(admin_pages)
 
 
 @app.before_request
@@ -139,7 +143,5 @@ def load_remote_data():
         logging.debug("Got chunks: %s", g.remote_chunks.keys())
 
 
-
 def run():
-
     app.run(host='0.0.0.0')

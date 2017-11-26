@@ -11,6 +11,12 @@ API_SECRET = ''
 
 SITE_URL="http://localhost:5000"
 
+# module flags
+MODULE_UNBLOCK = True
+MODULE_CATEGORY = True
+MODULE_SAVEDLIST = True
+MODULE_ADMIN = True
+
 UPDATE_PASSWORD = None
 
 REMOTE_SRC = None
@@ -51,3 +57,5 @@ STATUS_NAMES = {
     }
 
 RANDOMSITE = 'frontpagelists'
+
+DEFAULT_REGION = 'gb'
