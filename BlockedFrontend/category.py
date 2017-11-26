@@ -3,7 +3,7 @@ import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
-    jsonify, g, url_for, session
+    g, url_for, session
 
 from utils import *
 from models import SavedList
@@ -284,10 +284,3 @@ def sitemap():
     return render_template('sitemap_xml.j2', categories=data['categories'])
 
 
-@category_pages.route('/lists')
-def show_lists():
-    conn = db_connect()
-    g.remote_content = g.remote.get_content('lists')
-    return render_template('lists.html',
-        lists=SavedList.select(conn, public='t', _orderby='name')
-        )

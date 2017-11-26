@@ -12,11 +12,13 @@ import NORM.exceptions
 
 from auth import *
 
-list_pages = Blueprint('list', __name__)
+list_pages = Blueprint('list', __name__,
+                       template_folder='templates/savedlists')
 
 @list_pages.before_request
 def setup_db():
     request.conn = psycopg2.connect(current_app.config['DB'])
+
 
 
 @list_pages.route('/list', methods=['POST'])
@@ -92,6 +94,14 @@ def show_list(name, page=1):
             pagecount = get_pagecount(itemcount, pagesize), 
             items = items
             )
+
+
+@list_pages.route('/lists')
+def show_lists():
+    g.remote_content = g.remote.get_content('lists')
+    return render_template('lists.html',
+        lists=models.SavedList.select(request.conn, public='t', _orderby='name')
+        )
 
 
 @list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])
