@@ -107,10 +107,8 @@ def site(url=None):
         savedlist = SavedList.select_one(db_connect(), name=session['savedlist'][0])
     else:
         try:
-            item = Item.select_one(db_connect(), url=url)
+            item = Item.get_public_list_item(db_connect(), url)
             savedlist = item.get_list()
-            if not savedlist['public']:
-                savedlist = None
         except ObjectNotFound:
             savedlist = None
 

@@ -49,3 +49,18 @@ class Item(DBObject):
         for row in c:
             yield cls(conn, data=row)
         c.close()
+
+    @classmethod
+    def get_public_list_item(cls, conn, url):
+        c = conn.cursor(cursor_factory = DictCursor)
+        c.execute("""select items.*
+                     from items
+                     inner join savedlists on list_id = savedlists.id
+                     where frontpage = true and url = %s""",
+                     [url])
+        row = c.fetchone()
+        if row is None:
+            raise ObjectNotFound
+        c.close()
+        return cls(conn, data=row)
+
