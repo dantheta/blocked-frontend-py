@@ -109,6 +109,8 @@ def site(url=None):
         try:
             item = Item.select_one(db_connect(), url=url)
             savedlist = item.get_list()
+            if not savedlist['public']:
+                savedlist = None
         except ObjectNotFound:
             savedlist = None
 
