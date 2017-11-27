@@ -108,23 +108,17 @@ def nextsite(current_url):
         if nextsite:
             return redirect(url_for('site.site', url=nextsite))
 
-    elif session.get('route') == 'random':
+    elif session.get('route') == 'oldrandom':
         logging.info("Getting random site")
         data = request.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('site.site', url=data['results'][0]))
 
+
     # use savedlists if there's no other route defined
-    pagesize = 20
-    page = random.randrange(0, session['savedlist'][1])
-    savedlist = SavedList.select_one(request.conn, name=session['savedlist'][0])
-    items = [item['url'] 
-             for item 
-             in savedlist.get_items(_limit=(pagesize, (page)*pagesize)) 
-             if item['url'] != current_url and item['blocked'] is True and item['reported'] is False
-             ]
-    if len(items):
-        nexturl = random.choice(items)    
-        return redirect(url_for('site.site', url=nexturl))
+    logging.info("Getting savedlist random site")
+    for item in Item.get_frontpage_random(request.conn):
+        return redirect(url_for('site.site', url=item['url']))
+
 
 @unblock_pages.route('/next')
 @unblock_pages.route('/next/<path:url>')

@@ -5,8 +5,10 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session
 
 from utils import *
-from models import SavedList
+from models import SavedList, Item
 from db import *
+
+from NORM.exceptions import ObjectNotFound
 
 site_pages = Blueprint('site', __name__,
                        template_folder='templates/site')
@@ -104,7 +106,11 @@ def site(url=None):
         logging.info("Selecting savedlist")
         savedlist = SavedList.select_one(db_connect(), name=session['savedlist'][0])
     else:
-        savedlist = None
+        try:
+            item = Item.select_one(db_connect(), url=url)
+            savedlist = item.get_list()
+        except ObjectNotFound:
+            savedlist = None
 
     return render_template('site.html',
                            results_blocked=(result for result in results if result['status'] == 'blocked'),

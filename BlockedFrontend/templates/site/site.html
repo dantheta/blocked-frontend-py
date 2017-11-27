@@ -114,9 +114,6 @@ Your feedback was successfully submitted.
 {% if thanks %}
 <h2>Unblock another site</h2>
 <h3><a href="{{url}}" target="_blank" rel="nofollow">{{ domain }}</a></h3>
-{% if savedlist %}
-<div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
-{% endif %}
 {% endif %}
 
 {% if live %}
@@ -206,6 +203,10 @@ Site has been flagged
         </div>
       </div>
     </form>
+    {% if savedlist and not live %}
+    <div>This site appears on the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> user-created list.</div>
+    {% endif %}
+
   </div>
 
 </div> <!-- /.row -->
