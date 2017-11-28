@@ -6,6 +6,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 from NORM import DBObject
+from NORM.exceptions import ObjectNotFound
 
 
 class SavedList(DBObject):
