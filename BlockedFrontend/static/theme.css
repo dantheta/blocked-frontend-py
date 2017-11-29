@@ -298,12 +298,12 @@ th.num {
 
     color: #bf2026;
     display: block;
-    line-height: 120%;
+    line-height: 1.1em;
 }
 
 .stats div {
-    line-height: 100%;
-    font-size: 16pt;
+    line-height: 1.2em;
+    font-size: 14pt;
     margin-bottom: 1.0em;
 }
 
