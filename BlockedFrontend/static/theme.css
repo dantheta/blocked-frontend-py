@@ -288,13 +288,12 @@ th.num {
 }
 
 .stats {
-    padding-top: 1.2em;
     text-align: right;
     font-family: 'Roboto', sans-serif;
 }
 
 .stats div span {
-    font-size: 34pt;
+    font-size: 26pt;
     font-family: 'Poppins', sans-serif;
 
     color: #bf2026;
@@ -303,7 +302,13 @@ th.num {
 }
 
 .stats div {
-    line-height: 110%;
+    line-height: 100%;
     font-size: 16pt;
-    margin-bottom: 1.2em;
+    margin-bottom: 1.0em;
+}
+
+.frontpage-text p {
+    margin-bottom: 1em;
+
+    line-height: 1.4;
 }

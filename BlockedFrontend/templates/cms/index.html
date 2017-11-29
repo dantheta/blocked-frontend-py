@@ -21,12 +21,28 @@
 
 {%block body %}
 
+<div class="row">
+
+  <div class="col-md-9 frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
 {% call rmt.remote('banner_text') %}
   <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
   
   <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
 {% endcall %}
+  </div>
+  <div class="col-md-3 stats">
 
+    <div><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
+    <div><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
+    <div><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
+    <div><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of sites blocked
+      <div style="font-size: smaller; line-height: 1.4em">based on the Alexa top 100,000.</div>
+    </div>
+
+
+  </div>
+
+</div><!-- /.row -->
 
 <!-- template BasicPage -->
 {% if config.MODULE_UNBLOCK %}
@@ -73,7 +89,7 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 <div class="col-md-7">
 <h3>Check a website</h3>
 
-<form action="{{ url_for('site.check_post') }}" method="POSt">
+<form action="{{ url_for('site.check_post') }}" method="POST">
 <input type="hidden" name="submit" value="{{live | lower }}" />
 
 <div class="form-group">
@@ -91,17 +107,14 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 </form>
 <p>Blocked will check if a site is being blocked by instantly running tests on major fixed line ISPs and mobile networks.</p>
 
-  <h3>More ways to check blocked sites</h3>
-  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
-  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
 
 
 </div>
-  <div class="col-md-4 col-md-offset-1  stats">
+  <div class="col-md-5 ">
 
-    <div><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
-    <div><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
-    <div><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of sites blocked, <br />based on the Alexa top 100,000.</div>
+  <h3 style="margin-bottom: 2em">More ways to check blocked sites</h3>
+  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
+  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
 
   </div>
 </div> <!--/.row -->
