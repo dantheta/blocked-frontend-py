@@ -29,7 +29,7 @@ banner_text_block(bool): show banner text block, default true
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/theme.css?cb=6" />
+    <link rel="stylesheet" href="/static/theme.css?cb=9" />
   </head>
   <body>
     {{ chunks.piwik() }}
@@ -38,7 +38,9 @@ banner_text_block(bool): show banner text block, default true
 
     <div class="row menurow">
     <div class="col-md-5">
-        <a href="/" title="Return to homepage"><img width="100%" src="/static/img/blocked-logo.svg" alt="Blocked logo" /></a>
+        <a href="/" title="Return to homepage">
+          <div style="width: 100%; height: 4em; font-family: 'Poppins', sans-serif; font-size: 24pt; padding: 0.8em; text-align: center; background-color: #d0d0d0; line-height: 1.2em" class="">Netblocked.eu Alpha</div>
+        </a>
     </div>
     <div class="col-md-7 menu">
       {{ chunks.main_menu() }}
