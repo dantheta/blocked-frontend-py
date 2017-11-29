@@ -34,7 +34,7 @@ def frontpage_random():
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
     session['route'] = 'random'
-    #stats = request.api.stats()
+    stats = request.api.stats()
 
     if current_app.config['RANDOMSITE'] == 'frontpagerandom':
         site = frontpage_random()
@@ -45,6 +45,7 @@ def index():
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
     return render_template('index.html', site=site, savedlist=savedlist,
+                           stats=stats['stats'],
                            blockednetworks=blockednetworks)
 
 @cms_pages.route('/personal-stories')

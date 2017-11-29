@@ -53,11 +53,6 @@ body {
   margin-bottom: 3em;
 }
 
-.statsrow {
-  padding-top: 4em;
-  padding-bottom: 4em;
-}
-
 .row {
   padding-top: 0.5em;
   padding-bottom: 2em;
@@ -290,4 +285,25 @@ th.num {
     list-style: none;
     margin-left: 0px;
     padding-left: 0px;
+}
+
+.stats {
+    padding-top: 1.2em;
+    text-align: right;
+    font-family: 'Roboto', sans-serif;
+}
+
+.stats div span {
+    font-size: 34pt;
+    font-family: 'Poppins', sans-serif;
+
+    color: #bf2026;
+    display: block;
+    line-height: 120%;
+}
+
+.stats div {
+    line-height: 110%;
+    font-size: 16pt;
+    margin-bottom: 1.2em;
 }

@@ -30,11 +30,11 @@
 
 <!-- template BasicPage -->
 {% if config.MODULE_UNBLOCK %}
-<div class="row">
-<div class="col-lg-10 col-lg-offset-1 col-md-12">
-<h3 style="text-align: center">For example,</h3>
+<div class="row shaded-row" style="margin-top: 2.8em">
+<div class="col-md-12">
+<h3>For example&#x2026;</h3>
 
-<div class="well" style="text-align: center">
+<div  style="text-align: center">
 <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
 <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
 <p>{{site.title|null('no title')}}</p>
@@ -61,25 +61,16 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 <div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
 {% endif %}
 
-</div> <!--/.well-->
+</div> <!--/.center-->
 
 
 </div>
 </div>
 
-
-<div class="row">
-<div class="col-md-12">
-<h3>More ways to check blocked sites</h3>
-  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
-  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
-
-</div>
-</div>
 {% endif %}
 
-<div class="row shaded-row">
-<div class="col-md-9">
+<div class="row" style="margin-top: 2em">
+<div class="col-md-7">
 <h3>Check a website</h3>
 
 <form action="{{ url_for('site.check_post') }}" method="POSt">
@@ -100,7 +91,19 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 </form>
 <p>Blocked will check if a site is being blocked by instantly running tests on major fixed line ISPs and mobile networks.</p>
 
+  <h3>More ways to check blocked sites</h3>
+  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
+  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
+
+
 </div>
+  <div class="col-md-4 col-md-offset-1  stats">
+
+    <div><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
+    <div><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
+    <div><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of sites blocked, <br />based on the Alexa top 100,000.</div>
+
+  </div>
 </div> <!--/.row -->
 
 {#
