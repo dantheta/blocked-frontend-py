@@ -111,10 +111,11 @@ is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using fil
 
 </div>
   <div class="col-md-5 ">
-
+  {% if config.MODULE_CATEGORY %}
   <h3 style="margin-bottom: 2em">More ways to check blocked sites</h3>
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
+  {% endif %}
 
   </div>
 </div> <!--/.row -->
