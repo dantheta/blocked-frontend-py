@@ -127,6 +127,11 @@ font-size: 125%;
     padding-right: 0.75em;
     text-decoration: underline;
     text-transform: uppercase;
+    vertical-align: bottom;
+}
+
+a.btn-default, a.btn-primary {
+    text-decoration: none;
 }
 
 td.sitereport {

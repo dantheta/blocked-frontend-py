@@ -57,7 +57,7 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
         <td><a href="{{item.url}}" rel="nofollow" target="_blank" title="Open site in a new window">{{item.url}}</a><br />
             {{item.title|null('(no title)')}} 
         </td>
-        <td>
+        <td style="text-align: right">
           {% if item.blocked == False %}
           <span class="label label-success">Unblocked</span>
           {% endif %}
@@ -66,7 +66,20 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
           {% endif %}
         </td>
         <td class="sitereport">
-          <a href="{{url_for('site.site', url=item.url)}}">View site report</a>
+          <a class="btn" href="{{url_for('site.site', url=item.url)}}">View site report</a>
+        </td>
+        <td class="sitereport">
+            {% if not item.blocked or item.reported %}
+            <a class="btn btn-primary disabled" href="">
+                {% if item.reported %}
+                Unblock requested
+                {% else %}
+                Request Unblock
+                {% endif %}
+            </a>
+            {% else %}
+            <a class="btn btn-primary" href="{{url_for('unblock.unblock',url=item.url)}}">Request Unblock</a>
+            {% endif %}
         </td>
         <td>
 
