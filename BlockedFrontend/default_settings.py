@@ -25,6 +25,8 @@ REMOTE_AUTH = None
 REMOTE_PAGES = []
 REMOTE_RELOAD = False
 
+CACHEBUST = 'b'
+
 CACHE_PATH = '/tmp/remotecontent.sqlite'
 CACHE_TIME = 3600
 
