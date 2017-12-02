@@ -30,7 +30,9 @@ Your feedback was successfully submitted.
 
 {%block page_menu%}
 {% if not thanks %}
+  {% if config.MODULE_CATEGORY %}
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse more blocked sites</a></div>
+  {% endif %}
   <div><a href="{{ url_for('.check',mode='live')}}">Check if a site is being blocked</a></div>
 {% endif %}
 {% endblock %}
@@ -114,6 +116,9 @@ Your feedback was successfully submitted.
 {% if thanks %}
 <h2>Unblock another site</h2>
 <h3><a href="{{url}}" target="_blank" rel="nofollow">{{ domain }}</a></h3>
+{% if savedlist and config.MODULE_SAVEDLIST %}
+<div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
+{% endif %}
 {% endif %}
 
 {% if live %}
@@ -154,6 +159,7 @@ Your feedback was successfully submitted.
 </div>
 
 <div> <!-- actions -->
+  {% if config.MODULE_UNBLOCK %}
 {% if can_unblock == true or live %}
 <a id="unblockbtn" href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% elif can_unblock == false %}
@@ -167,9 +173,10 @@ Site has been flagged
 {%- endif -%}
 </a>
 {% endif %}
+  {% endif %}
 
 <a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
-{% if session.route is defined %}
+{% if session.route is defined and config.MODULE_UNBLOCK%}
 <a href="{{url_for('unblock.browse_next',url=url) }}" class="btn btn-primary">Try another site</a>
 {% endif %}
 </div>
@@ -177,6 +184,7 @@ Site has been flagged
 <div class="row">
 
   <div class="col-md-6">
+    {% if  MODULE_UNBLOCK  %}
     {% if reports %}
       {% if report_types %}
       <h4>This site has been flagged</h4>
@@ -192,6 +200,7 @@ Site has been flagged
     <p>For example: is the link dead, or is the domain being squatted?
       <div><a href="{{ url_for('unblock.feedback', url=url) }}">Please let us know</a></div>
     </p>
+    {% endif %}
     {% endif %}
   </div>
 
@@ -209,7 +218,7 @@ Site has been flagged
         </div>
       </div>
     </form>
-    {% if savedlist and not live %}
+    {% if savedlist and not live and config.MODULE_SAVEDLIST %}
     <div>This site appears on the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> user-created list.</div>
     {% endif %}
 
