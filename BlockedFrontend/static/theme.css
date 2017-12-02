@@ -317,3 +317,11 @@ th.num {
 
     line-height: 1.4;
 }
+
+p.report-message {
+    margin-top: 0.5em;
+
+}
+p.report-message span {
+    color: #a0a0a0;
+}

@@ -51,7 +51,11 @@
     </tr>
     {% for row in reports %}
     <tr>
-        <td><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a></td>
+        <td style="width: 40%"><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a>
+        {% if row.message %}
+            <p class="report-message"><span>&ldquo;</span>{{ row.message | strip('"') }}<span>&rdquo;</span></p>
+        {% endif %}
+        </td>
         <td>
           {{ isp_info(row.description, networks) }}
         </td>

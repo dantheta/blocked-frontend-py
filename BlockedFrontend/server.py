@@ -94,6 +94,10 @@ def null(s, default):
         return default
     return s
 
+@app.template_filter('strip')
+def strip(s, chars):
+    return s.strip(chars)
+
 @app.template_filter('join_en')
 def join_en(ls, markup=False):
     if markup:
