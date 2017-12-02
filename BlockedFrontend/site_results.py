@@ -125,6 +125,7 @@ def site(url=None):
                            domain=get_domain(url),
                            url=url,
                            report_types=report_types,
+                           reports=data.get('reports',[]),
                            prev_unblock_type=prev_unblock_type,
                            savedlist=savedlist,
 

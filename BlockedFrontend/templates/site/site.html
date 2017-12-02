@@ -177,10 +177,16 @@ Site has been flagged
 <div class="row">
 
   <div class="col-md-6">
-    {% if report_types %}
-    <h4>This site has been flagged</h4>
-    <p>This site has been flagged as: <strong>{{ report_types | sort | join(", ") }}</strong></p>
-      <div><a href="{{ url_for('unblock.feedback', url=url) }}">Tell us more about this site</a></div>
+    {% if reports %}
+      {% if report_types %}
+      <h4>This site has been flagged</h4>
+      <p>This site has been flagged as: <strong>{{ report_types | sort | join(", ") }}</strong></p>
+        <div><a href="{{ url_for('unblock.feedback', url=url) }}">Tell us more about this site</a></div>
+      {% else %}
+        <h4>This site has been submitted for unblocking</h4>
+        <p>Reported on {{reports[0].created|fmtime}}</p>
+        <p class="report-message"><span>&ldquo;</span>{{ reports[0].message }}<span>&rdquo;</span></p>
+      {% endif %}
     {% else %}
     <h4>Tell us about this site</h4>
     <p>For example: is the link dead, or is the domain being squatted?
