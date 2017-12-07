@@ -59,6 +59,20 @@ STATUS_NAMES = {
     
     }
 
+SITE_CATEGORIES = [
+    'anonymizers',
+    'dating',
+    'drugs',
+    'weapons',
+    'pornography',
+    'suicide',
+    'alcohol',
+    'violence',
+    'blood & gore',
+    'gambling',
+    'tobacco'
+]
+
 RANDOMSITE = 'frontpagelists'
 
 DEFAULT_REGION = 'gb'

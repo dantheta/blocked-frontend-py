@@ -30,8 +30,14 @@
 <div class="checkbox">
   <label>
     <input type="checkbox" value="adult" name="report_type" />
-    Site is adult in nature and is correctly blocked
+    Site is appropriately blocked, and belongs in this category:
   </label>
+  <select name="site_category">
+    {% for cat in config.SITE_CATEGORIES|sort %}
+    <option value="{{ cat|lower }}">{{cat|title}}</option>
+    {% endfor %}
+    <option value="other">Other</option>
+  </select>
 </div>
 </div>
 <div class="form-group">

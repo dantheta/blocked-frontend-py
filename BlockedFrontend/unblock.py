@@ -143,6 +143,7 @@ def submit_unblock():
             'email': form['email'],
             },
         'message': form['message'],
+        'category': form['site_category'],
         'report_type': ",".join(make_list(form['report_type'])),
         'date': get_timestamp(),
         'send_updates': 1 if form.get('send_updates') else 0,
