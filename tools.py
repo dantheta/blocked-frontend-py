@@ -1,11 +1,13 @@
 
 import os
 import logging
+import datetime
 
 from flask import Flask
 
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect
+from BlockedFrontend.utils import parse_timestamp
 
 
 conn = None
@@ -31,8 +33,6 @@ logging.basicConfig(
     )
 
 
-
-
 @app.cli.command()
 def run_submit():
     conn = db_connect()
@@ -50,6 +50,7 @@ def run_submit():
     c.close()
     conn.disconnect()
 
+
 @app.cli.command()
 def run_update():
     conn = db_connect()
@@ -58,11 +59,16 @@ def run_update():
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
                where frontpage=true \
                order by last_checked nulls first limit 50")
+
+    # only evaluate based on test results from the last two weeks
+    cutoff = datetime.datetime.now() - datetime.timedelta(14)
     for row in c:
         try:
             data = api.status_url(row['url'])
-            #logging.debug("Response: %s", data)
-            blocked = any([ x['status'] == 'blocked' for x in data['results']])
+
+            # decide if site is still blocked, for the purposes of frontend list selection
+            blocked = any([ (x['status'] == 'blocked' and parse_timestamp(x['status_timestamp']) > cutoff)
+                            for x in data['results']])
             reported = len(data['reports']) > 0
 
             logging.info("Status: %s, blocked=%s, reported=%s", row['url'], blocked, reported)
@@ -73,5 +79,6 @@ def run_update():
             if 'UrlLookupError' in exc.args[0]:
                 # URL no longer present on the backend?
                 c2.execute("delete from items where url = %s", [row['url']])
+        break
     c.close()
     conn.commit()
