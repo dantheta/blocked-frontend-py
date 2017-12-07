@@ -107,7 +107,7 @@ margin-top: 2em;
 font-size: 125%;
 }
 
-#results * a {
+#results * a.btn {
     text-decoration: none;
     }
 
@@ -127,7 +127,6 @@ font-size: 125%;
     padding-right: 0.75em;
     text-decoration: underline;
     text-transform: uppercase;
-    vertical-align: bottom;
 }
 
 a.btn-default, a.btn-primary {
