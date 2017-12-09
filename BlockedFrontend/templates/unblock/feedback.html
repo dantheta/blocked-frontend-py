@@ -32,9 +32,9 @@
     <input type="checkbox" value="adult" name="report_type" />
     Site is appropriately blocked, and belongs in this category:
   </label>
-  <select style="margin-left: 1.5em" name="site_category">
-    {% for cat in config.SITE_CATEGORIES|sort %}
-    <option value="{{ cat|lower }}">{{cat|title}}</option>
+  <select style="margin-left: 1.5em" class="form-control" name="site_category">
+    {% for cat, desc in config.SITE_CATEGORIES.iteritems()|sort %}
+    <option value="{{ cat }}">{{desc}}</option>
     {% endfor %}
     <option value="other">Other</option>
   </select>

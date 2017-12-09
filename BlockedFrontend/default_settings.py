@@ -59,19 +59,18 @@ STATUS_NAMES = {
     
     }
 
-SITE_CATEGORIES = [
-    'anonymizers',
-    'dating',
-    'drugs',
-    'weapons',
-    'pornography',
-    'suicide',
-    'alcohol',
-    'violence',
-    'blood & gore',
-    'gambling',
-    'tobacco'
-]
+SITE_CATEGORIES = {
+    'anonymizers': "Anonymizers",
+    'dating': "Dating and/or chat",
+    'drugs': "Drugs",
+    'weapons': "Weapons and/or violence",
+    'pornography': "Pornography and adult sexual content",
+    'suicide': "Suicide",
+    'alcohol': "Alcohol brand promotion",
+    'blood & gore': "Blood and gore",
+    'gambling': "Gambling",
+    'tobacco': "Tobacco"
+}
 
 RANDOMSITE = 'frontpagelists'
 
