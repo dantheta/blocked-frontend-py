@@ -9,14 +9,14 @@
 
 <h2>Your feedback</h2>
 
-<form action="/submit-unblock" method="POST">
+<form class="form" action="/submit-unblock" method="POST">
 <input type="hidden" name="url" value="{{url}}" />
 <input type="hidden" name="networks" value="ORG" />
 <input type="hidden" name="email" value="user@blocked.org.uk" />
 <input type="hidden" name="name" value="website user" />
 <input type="hidden" name="checkedsite" value="checkedsite" />
 
-<p>Please check all that apply to this site</p>
+<p>Please check all that apply to this site:</p>
 
 <div class="form-group">
 <div class="checkbox">
@@ -32,12 +32,13 @@
     <input type="checkbox" value="adult" name="report_type" />
     Site is appropriately blocked, and belongs in this category:
   </label>
-  <select style="margin-left: 1.5em" class="form-control" name="site_category">
+  <select style="margin-left: 1.75em; margin-top: 0.5em" class="form-control" name="site_category">
     {% for cat, desc in config.SITE_CATEGORIES.iteritems()|sort %}
     <option value="{{ cat }}">{{desc}}</option>
     {% endfor %}
     <option value="other">Other</option>
   </select>
+  <div class="alert alert-info" style="margin-left: 1.5em; margin-top: 0.75em">Websites for restaurants, pubs or vineyards should not be blocked in the  <i>Alcohol brand promotion</i> category.</div>
 </div>
 </div>
 <div class="form-group">
