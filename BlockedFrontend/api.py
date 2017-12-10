@@ -81,6 +81,8 @@ class ApiClient(BaseApiClient):
         'status/domain-isp-stats': ['date'],
         'status/domain-stats': ['date'],
         'ispreport/blacklist': ['date'],
+        'ispreport/flag': ['date','url'],
+        'list/users': ['date']
         }
 
     def _request(self, endpoint, req):
@@ -108,10 +110,12 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/stats', req)
 
-    def reports(self, page, isp=None):
+    def reports(self, page, isp=None, admin=False):
         req = {'date': self.timestamp(), 'page': str(page)}
         if isp:
             req['isp'] = isp
+        if admin:
+            req['admin'] = 1
         return self._request('status/ispreports', req)
 
     def isp_stats(self):
@@ -148,10 +152,17 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('ispreport/blacklist', req)
 
-
     def blacklist_delete(self, domain):
         req = {'date': self.timestamp(), 'domain': domain}
         req['signature'] = self.sign(req, ['date','domain'])
         return self.DELETE('ispreport/blacklist', req)
 
+    def reports_flag(self, url, status='abuse'):
+        req = {'date':self.timestamp(), 'url': url, 'status': status}
+        req['signature'] = self.sign(req, ['date','url'])
+        self.POST('ispreport/flag', req)
+
+    def list_users(self):
+        req = {'date': self.timestamp()}
+        return self._request('list/users', req)
 

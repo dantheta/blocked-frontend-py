@@ -1,0 +1,38 @@
+{% extends "admin.page.html" %}
+
+{% set pagetitle = "User Admin" %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+
+<h1>{{pagetitle}}</h1>
+
+<table class="table">
+<tr>
+  <th>Name</th>
+  <th>Created</th>
+  <th>Status</th>
+</tr>
+{% for user in users.users %}
+<tr>
+  <td><a name="{{user.email}}"></a><a href="{{ url_for('list.show_list', name=user.email) }}">{{ user.email }}</a>
+  <br />
+    {{ user.fullname }}
+  </td>
+  <td>{{ user.createdat }} </td>
+  <td>
+    {{ user.status }}
+  </td>
+
+</tr>
+
+{% endfor %}
+</table>
+
+</div>
+</div>
+
+{% endblock %}
+
+

@@ -1,0 +1,60 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "ISP Report Admin" %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-12">
+
+<h1>{{pagetitle}}</h1>
+
+<table class="table">
+<tr>
+  <th>URL</th>
+  <th>Email</th>
+  <th>Network</th>
+  <th>Created</th>
+  <th>Status</th>
+  <th></th>
+</tr>
+{% for report in reports.reports %}
+<tr>
+  <td>{{report.url}}</td>
+  <td>{{report.email}}</td>
+  <td>{{report.network_name}}</td>
+  <td>{{ report.created | fmtime }}</td>
+  <td>
+    {% if report.unblocked %}
+      <span class="label label-success">Unblocked</span>
+    {% endif %}
+
+    {% if report.status == 'abuse' %}
+    <span class="label label-danger">Abuse</span>
+    {% elif report.status == 'sent' %}
+    <span class="label label-success">Sent</span>
+    {% else %}
+    <span class="label label-default">{{ report.status|title }}</span>
+    {% endif %}
+  </td>
+  <td>
+
+    {% if report.status == 'pending' %}
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled')}}" class="btn btn-warning">Cancel</a>
+    {% elif report.status != 'abuse' %}
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse')}}" class="btn btn-warning">Flag</a>
+    {% endif %}
+  </td>
+</tr>
+
+{% endfor %}
+</table>
+
+  {{ paging.page_list('.ispreports', page, pagecount, 25) }}
+
+</div>
+</div>
+
+{% endblock %}
+
+

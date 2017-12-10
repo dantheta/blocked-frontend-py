@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, redirect, request, \
 
 from models import *
 from auth import *
+from utils import *
 
 from NORM.exceptions import ObjectNotFound,ObjectExists
 
@@ -162,3 +163,25 @@ def blacklist_post():
 def blacklist_delete():
     request.api.blacklist_delete(request.args['domain'])
     return redirect(url_for('.blacklist_select'))
+
+@admin_pages.route('/control/user')
+@check_admin
+def users():
+    users = request.api.list_users()
+    return render_template('users.html', users=users)
+
+@admin_pages.route('/control/ispreports')
+@check_admin
+def ispreports():
+    page = int(request.args.get('page',1))
+    reports = request.api.reports(page-1, admin=True)
+    return render_template('ispreports.html', reports=reports,
+                           page=page,
+                           pagecount = get_pagecount(reports['count'], 25))
+
+@admin_pages.route('/control/ispreports/flag/<path:url>')
+@check_admin
+def ispreports_flag(url):
+    request.api.reports_flag(url, request.args.get('status','abuse'))
+    return redirect(url_for('.ispreports'))
+
