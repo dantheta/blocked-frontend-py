@@ -162,7 +162,7 @@ class ApiClient(BaseApiClient):
     def reports_flag(self, url, status='abuse'):
         req = {'date':self.timestamp(), 'url': url, 'status': status}
         req['signature'] = self.sign(req, ['date','url'])
-        self.POST('ispreport/flag', req)
+        return self.POST('ispreport/flag', req)
 
     def list_users(self):
         req = {'date': self.timestamp()}
