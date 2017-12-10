@@ -82,7 +82,8 @@ class ApiClient(BaseApiClient):
         'status/domain-stats': ['date'],
         'ispreport/blacklist': ['date'],
         'ispreport/flag': ['date','url'],
-        'list/users': ['date']
+        'list/users': ['date'],
+        'courtorders': ['date']
         }
 
     def _request(self, endpoint, req):
@@ -166,3 +167,6 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('list/users', req)
 
+    def courtorders(self):
+        req = {'date': self.timestamp()}
+        return self._request('courtorders', req)
