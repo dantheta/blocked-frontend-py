@@ -1,0 +1,64 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Court Order Admin" %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-8">
+
+    <h1>{{pagetitle}}</h1>
+
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+<form action="{{url_for('.courtorders_add')}}" method="POST">
+  <legend>Add new court order</legend>
+  {{forms.text_field('Name','name')}}
+  {{forms.text_field('Date (yyyy-mm-dd)','date')}}
+  {{forms.text_field('URL','url')}}
+  {{forms.submit('Add')}}
+</form>
+    </div>
+  </div>
+</div>
+<div class="row">
+
+<table class="table">
+<tr>
+  <th>Name</th>
+  <th>Date</th>
+  <th>URL</th>
+
+  <th></th>
+</tr>
+{% for order in orders.courtorders %}
+<tr>
+  <td>
+    <a href="{{ url_for('.courtorders_view', name=order.name) }}">
+    {{order.name}}
+    </a>
+  </td>
+  <td>{{order.date}}</td>
+  <td>{{order.url}}</td>
+  <td>
+    <a href="{{ url_for('.courtorders_delete', name=order.name)}}" class="btn btn-danger">
+      <span class="glyphicon glyphicon-trash"></span>
+      Delete</a>
+  </td>
+</tr>
+
+{% endfor %}
+</table>
+
+  {# {{ paging.page_list('.courtorders', page, pagecount, 25) }} #}
+
+
+
+</div>
+</div>
+
+{% endblock %}
+
+

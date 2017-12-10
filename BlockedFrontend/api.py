@@ -83,7 +83,8 @@ class ApiClient(BaseApiClient):
         'ispreport/blacklist': ['date'],
         'ispreport/flag': ['date','url'],
         'list/users': ['date'],
-        'courtorders': ['date']
+        'courtorders': ['date'],
+        'courtorders/sites': ['date']
         }
 
     def _request(self, endpoint, req):
@@ -170,3 +171,27 @@ class ApiClient(BaseApiClient):
     def courtorders(self):
         req = {'date': self.timestamp()}
         return self._request('courtorders', req)
+
+    def courtorders_view(self, name):
+        req = {'date': self.timestamp()}
+        return self._request('courtorders/'+name, req)
+
+    def courtorders_insert(self, name, date, url):
+        req = {'order_date': date, 'name': name, 'url': url, 'date': self.timestamp()}
+        req['signature'] = self.sign(req, ['date'])
+        return self.POST('courtorders', req)
+
+    def courtorders_delete(self, name ):
+        req = {'name': name, 'date': self.timestamp()}
+        req['signature'] = self.sign(req, ['date'])
+        return self.DELETE('courtorders', req)
+
+    def courtorders_add_url(self, name, url):
+        req = {'name': name, 'url': url, 'date': self.timestamp()}
+        req['signature'] = self.sign(req, ['date'])
+        return self.POST('courtorders/sites', req)
+
+    def courtorders_delete_url(self, name, url):
+        req = {'name': name, 'url': url, 'date': self.timestamp()}
+        req['signature'] = self.sign(req, ['date'])
+        return self.DELETE('courtorders/sites', req)

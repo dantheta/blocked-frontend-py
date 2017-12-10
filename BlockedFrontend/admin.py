@@ -185,3 +185,51 @@ def ispreports_flag(url):
     request.api.reports_flag(url, request.args.get('status','abuse'))
     return redirect(url_for('.ispreports'))
 
+@admin_pages.route('/control/courtorders')
+@check_admin
+def courtorders():
+    page = int(request.args.get('page',1))
+    reports = request.api.courtorders()
+    return render_template('courtorders.html', orders=reports)
+
+@admin_pages.route('/control/courtorders/insert', methods=['POST'])
+@check_admin
+def courtorders_add():
+    f = request.form
+    request.api.courtorders_insert(f['name'],
+                                   f['date'],
+                                   f['url'])
+    return redirect(url_for('.courtorders'))
+
+@admin_pages.route('/control/courtorders/delete/<name>')
+@check_admin
+def courtorders_delete(name):
+    request.api.courtorders_delete(name)
+    return redirect(url_for('.courtorders'))
+
+@admin_pages.route('/control/courtorders/<name>')
+@check_admin
+def courtorders_view(name):
+    order = request.api.courtorders_view(name)
+    return render_template('courtorders_view.html',
+                           order=order['courtorder'],
+                           urls=order['urls'])
+
+@admin_pages.route('/control/courtorders/sites', methods=['POST'])
+@check_admin
+def courtorders_add_url():
+    req = request.api.courtorders_add_url(request.form['name'], request.form['url'])
+    if req['success'] == False:
+        flash('Error adding "{0}":  {1}'.format(request.form['url'],
+                                                req['error']))
+    return redirect(url_for('.courtorders_view', name=request.form['name']))
+
+@admin_pages.route('/control/courtorders/delete-sites', methods=['POST'])
+@check_admin
+def courtorders_delete_url():
+    req = request.api.courtorders_delete_url(request.form['name'], request.form['url'])
+    if req['success'] == False:
+        flash('Unable to locate "{0}" in Blocked DB'.format(request.form['url']))
+    return redirect(url_for('.courtorders_view', name=request.form['name']))
+
+
