@@ -186,7 +186,7 @@ def ispreports_flag(url):
     req = request.api.reports_flag(url, request.args.get('status','abuse'))
     if req['success'] != True:
         flash("An error occurred flagging \"{0}\": \"{1}\"".format(url, req['error']))
-    return redirect(url_for('.ispreports'))
+    return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
 @admin_pages.route('/control/courtorders')
 @check_admin

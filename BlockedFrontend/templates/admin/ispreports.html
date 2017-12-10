@@ -40,9 +40,9 @@
   <td>
 
     {% if report.status == 'pending' %}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled')}}" class="btn btn-warning">Cancel</a>
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning">Cancel</a>
     {% elif report.status != 'abuse' %}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse')}}" class="btn btn-warning">Flag</a>
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning">Flag</a>
     {% endif %}
   </td>
 </tr>
