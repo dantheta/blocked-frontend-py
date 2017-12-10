@@ -1,9 +1,10 @@
+import re
 import math
 import time
 import datetime
 import urlparse
 
-__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount']
+__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount','fix_path']
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
@@ -25,3 +26,6 @@ def parse_timestamp(s):
 
 def get_pagecount(count, pagesize):
     return int(math.ceil(count/pagesize)+1)
+
+def fix_path(url):
+    return re.sub(':/(?!/)', '://', url)

@@ -1,5 +1,4 @@
 
-import re
 import random
 import logging
 import psycopg2
@@ -124,7 +123,7 @@ def nextsite(current_url):
 @unblock_pages.route('/next/<path:url>')
 def browse_next(url=None):
     if url is not None:
-        url = re.sub(':/(?!/)','://', url)
+        url = fix_path(url)
     ret = nextsite(url)
     if ret:
         return ret

@@ -1,4 +1,3 @@
-import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
@@ -68,7 +67,7 @@ def site(url=None):
         thanksmsg = None
 
     # workaround for apache folding // into /
-    url = re.sub(':/(?!/)', '://', url)
+    url = fix_path(url)
 
     data = request.api.status_url(url)
     activecount = 0
