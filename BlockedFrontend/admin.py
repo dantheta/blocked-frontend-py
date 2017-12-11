@@ -199,9 +199,15 @@ def courtorders():
 @check_admin
 def courtorders_add():
     f = request.form
-    request.api.courtorders_insert(f['name'],
+    req = request.api.courtorders_insert(f['name'],
                                    f['date'],
-                                   f['url'])
+                                   f['url'],
+                                   f['judgment'],
+                                   f['judgment_date'],
+                                   f['judgment_url'],
+                                   )
+    if req['success'] == False:
+        flash("Error adding court order: {0}".format(req['error']))
     return redirect(url_for('.courtorders'))
 
 @admin_pages.route('/control/courtorders/delete/<name>')

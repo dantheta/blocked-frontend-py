@@ -176,8 +176,15 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('courtorders/'+name, req)
 
-    def courtorders_insert(self, name, date, url):
-        req = {'order_date': date, 'name': name, 'url': url, 'date': self.timestamp()}
+    def courtorders_insert(self, name, date, url, judgment, judgment_date, judgment_url):
+        req = {'date': self.timestamp(),
+               'order_date': date,
+               'name': name,
+               'url': url,
+               'judgment': judgment,
+               'judgment_date': judgment_date,
+               'judgment_url': judgment_url
+               }
         req['signature'] = self.sign(req, ['date'])
         return self.POST('courtorders', req)
 

@@ -14,11 +14,17 @@
   <div class="col-md-4">
     <div class="well">
 <form action="{{url_for('.courtorders_add')}}" method="POST">
-  <legend>Add new court order</legend>
+  <legend>Add new court order <a href="#" onclick="$(this).parent().next().show()"><span class="glyphicon glyphicon-chevron-down"></span></a> </legend>
+
+  <div style="display: none">
   {{forms.text_field('Name','name')}}
   {{forms.text_field('Date (yyyy-mm-dd)','date')}}
-  {{forms.text_field('URL','url')}}
+  {{forms.text_field('Wiki URL','url')}}
+  {{forms.text_field('Judgment','judgment')}}
+  {{forms.text_field('Judgment Date (yyyy-mm-dd)','judgment_date')}}
+  {{forms.text_field('Judgment URL','judgment_url')}}
   {{forms.submit('Add')}}
+  </div>
 </form>
     </div>
   </div>
