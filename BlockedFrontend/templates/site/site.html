@@ -97,7 +97,14 @@ Your feedback was successfully submitted.
   {% if show_category %}
     <td>{{item.category}}
     {% if item.blocktype == 'COPYRIGHT' %}
-    <p><i>This site has been blocked by court order.</i></p>
+    <p><i>This site has been
+      {% if item.final_url %}
+      <a href="{{item.final_url}}" rel="nofollow" target="_blank" title="View ISP court order information">blocked by court order</a>
+      {% else %}
+      blocked by court order
+      {% endif %}
+      .
+    </i></p>
     {% endif %}
     </td>
   {% elif show_lastblocked %}
