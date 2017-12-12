@@ -9,12 +9,12 @@
   <div class="col-md-8">
 
     <h1>{{pagetitle}}</h1>
-      <h2>{{ order.name}}</h2>
+      <h2>{{ order.name}} <a href="" class="btn btn-primary btn-sm">Edit (not enabled yet)</a></h2>
       <h3>{{ order.date }}</h3>
       <p>{{ order.url }}</p>
-      <p>{{ order.judgment }}</p>
-      <p>{{ order.judgment_date }}</p>
-      <p>{{ order.judgment_url }}</p>
+    <p><b>Judgment: </b>{{ order.judgment }}</p>
+    <p><b>Judgment Date: </b>{{ order.judgment_date }}</p>
+    <p><b>Judgment URL: </b>{{ order.judgment_url }}</p>
 
   </div>
   <div class="col-md-4">
@@ -34,7 +34,7 @@
 <table class="table">
 <tr>
 
-  <th>URL</th>
+  <th>Blocked site URLs</th>
 
   <th></th>
 </tr>
