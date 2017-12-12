@@ -44,5 +44,6 @@ def probe_stats():
             d['age'] = None
 
     return render_template('probes.html',
-        data=data
+        data=data,
+        networks=g.remote.get_networks(),
         )

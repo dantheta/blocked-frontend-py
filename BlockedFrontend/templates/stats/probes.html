@@ -1,24 +1,58 @@
 {% extends "BasicPage.page.html" %}
+{% from "network_description.part.html" import isp_info, popover_js %}
 
 {%set pagetitle = 'Probe status' %}
 
 {% block banner_text %}
 {% endblock %}
 
+{% block page_script %}
+{{ popover_js() }}
+{% endblock %}
+
 {% block body %}
 <div class="row">
 <div class="col-md-12">
+<div style="text-align: right; padding-bottom: 1em">
+  {% if request.args.get('show_retired') %}
+  <a class="btn btn-default active" href="{{ request.path }}">Hide retired probes</a>
+  {% else %}
+  <a class="btn btn-default" href="{{ request.path }}?show_retired=1">Show retired probes</a>
+  {% endif %}
+
+</div>
 
 <table class="table">
 <tr>
   <th>Network</th>
+  <th>Filter level</th>
+  <th>Supplied by</th>
   <th>Status</th>
   <th>Last Seen</th>
+  <th style="text-align: right">Tests run</th>
 </tr>
 {% for d in data.status %}
+  {% if d.probe_status != 'retired' or request.args.get('show_retired') %}
 <tr>
-  <td>{{d.description}}</td>
   <td>
+    {% if d.name.startswith('BT-') %}
+    {{ d.name.split('-')[0] }}
+    {% else %}
+    {{ d.name }}
+    {% endif %}
+
+  </td>
+  <td>
+    {% if d.filter_level %}
+    {{d.filter_level|title}}
+    {% else %}
+    <i>Unfiltered</i>
+    {% endif %}
+    {{ isp_info(d.description, networks, '') }}
+  </td>
+  <td>{{d.location}}</td>
+  <td>
+    {% if d.probe_status == 'active' %}
     {% if d.status == 'down' or d.lastseen == None %}
     <span class="label label-danger">Offline</span>
     {% elif d.age.days > 1 %}
@@ -26,9 +60,14 @@
     {% else %}
     <span class="label label-success">Online</span>
     {% endif %}
+    {% else %}
+    <span class="label label-default">{{d.probe_status|title}}</span>
+    {% endif %}
   </td>
   <td>{{d.parsed_timestamp|fmtime}}</td>
+  <td style="text-align: right">{{ d.tests_run }}</td>
 </tr>
+  {% endif %}
 {% endfor %}
 </table>
 
