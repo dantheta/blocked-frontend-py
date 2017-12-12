@@ -6,6 +6,18 @@
 </div>
 {% endmacro %}
 
+{% macro select_field(label, name, value=None, options=[]) %}
+<div class="form-group">
+    <label for="{{name}}">{{label}}</label>
+    <select class="form-control" name="{{ name}}">
+        {% for opt in options %}
+        <option value="{{opt}}" {{'checked' if opt == value else ''}}>{{opt}}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+
 {% macro password_field(label, name, value='', placeholder='') %}
 <div class="form-group">
     <label for="{{name}}">{{label}}</label>

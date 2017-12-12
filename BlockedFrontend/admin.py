@@ -170,6 +170,12 @@ def users():
     users = request.api.list_users()
     return render_template('users.html', users=users)
 
+#
+# ISP Report admin
+# ------------------
+#
+
+
 @admin_pages.route('/control/ispreports')
 @check_admin
 def ispreports():
@@ -187,6 +193,12 @@ def ispreports_flag(url):
     if req['success'] != True:
         flash("An error occurred flagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
+
+#
+# Court Order admin
+# ------------------
+#
+
 
 @admin_pages.route('/control/courtorders')
 @check_admin
@@ -222,7 +234,8 @@ def courtorders_view(name):
     order = request.api.courtorders_view(name)
     return render_template('courtorders_view.html',
                            order=order['courtorder'],
-                           urls=order['urls'])
+                           urls=order['urls'],
+                           infourls=order['isp_urls'])
 
 @admin_pages.route('/control/courtorders/sites', methods=['POST'])
 @check_admin
@@ -242,3 +255,19 @@ def courtorders_delete_url():
     return redirect(url_for('.courtorders_view', name=request.form['name']))
 
 
+@admin_pages.route('/control/courtorders/isp-sites', methods=['POST'])
+@check_admin
+def courtorders_add_isp_url():
+    req = request.api.courtorders_add_isp_url(request.form['name'], request.form['network_name'], request.form['url'])
+    if req['success'] == False:
+        flash('Error adding "{0}":  {1}'.format(request.form['url'],
+                                                req['error']))
+    return redirect(url_for('.courtorders_view', name=request.form['name']))
+
+@admin_pages.route('/control/courtorders/delete-isp-sites', methods=['POST'])
+@check_admin
+def courtorders_delete_isp_url():
+    req = request.api.courtorders_delete_isp_url(request.form['name'], request.form['network_name'])
+    if req['success'] == False:
+        flash('Unable to locate "{0}" in Blocked DB'.format(request.form['url']))
+    return redirect(url_for('.courtorders_view', name=request.form['name']))

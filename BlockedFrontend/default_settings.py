@@ -51,6 +51,12 @@ ISPS = [
     'Three',
     ]
 
+ALL_ISPS = ISPS + [
+    'Uno',
+    'AAISP',
+    'Plusnet',
+]
+
 STATUS_NAMES = {
     'error': 'Error',
     'dnserror': 'DNS Error',

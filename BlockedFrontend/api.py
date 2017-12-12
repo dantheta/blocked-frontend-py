@@ -202,3 +202,15 @@ class ApiClient(BaseApiClient):
         req = {'name': name, 'url': url, 'date': self.timestamp()}
         req['signature'] = self.sign(req, ['date'])
         return self.DELETE('courtorders/sites', req)
+
+    def courtorders_add_isp_url(self, name, network, url):
+        req = {'name': name, 'url': url, 'network_name': network, 'date': self.timestamp() }
+        req['signature'] = self.sign(req, ['date'])
+        return self.POST('courtorders/isp_urls', req)
+
+    def courtorders_delete_isp_url(self, name, network, ):
+        req = {'name': name, 'network_name': network, 'date': self.timestamp()}
+        req['signature'] = self.sign(req, ['date'])
+        return self.DELETE('courtorders/isp_urls', req)
+
+
