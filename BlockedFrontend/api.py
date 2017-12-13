@@ -82,6 +82,7 @@ class ApiClient(BaseApiClient):
         'status/domain-stats': ['date'],
         'ispreport/blacklist': ['date'],
         'ispreport/flag': ['date','url'],
+        'ispreport/unflag': ['date','url'],
         'list/users': ['date'],
         'courtorders': ['date'],
         'courtorders/sites': ['date']
@@ -163,6 +164,11 @@ class ApiClient(BaseApiClient):
         req = {'date':self.timestamp(), 'url': url, 'status': status}
         req['signature'] = self.sign(req, ['date','url'])
         return self.POST('ispreport/flag', req)
+
+    def reports_unflag(self, url):
+        req = {'date':self.timestamp(), 'url': url}
+        req['signature'] = self.sign(req, ['date','url'])
+        return self.POST('ispreport/unflag', req)
 
     def list_users(self):
         req = {'date': self.timestamp()}

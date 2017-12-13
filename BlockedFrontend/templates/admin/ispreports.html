@@ -43,6 +43,8 @@
     <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning">Cancel</a>
     {% elif report.status != 'abuse' %}
     <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning">Flag</a>
+    {% elif report.status == 'abuse' %}
+    <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning">Unflag</a>
     {% endif %}
   </td>
 </tr>

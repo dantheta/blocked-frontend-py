@@ -194,6 +194,16 @@ def ispreports_flag(url):
         flash("An error occurred flagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
+@admin_pages.route('/control/ispreports/unflag/<path:url>')
+@check_admin
+def ispreports_unflag(url):
+    url = fix_path(url)
+    req = request.api.reports_unflag(url)
+    if req['success'] != True:
+        flash("An error occurred unflagging \"{0}\": \"{1}\"".format(url, req['error']))
+    return redirect(url_for('.ispreports',page=request.args.get('page',1)))
+
+
 #
 # Court Order admin
 # ------------------
@@ -222,11 +232,35 @@ def courtorders_add():
         flash("Error adding court order: {0}".format(req['error']))
     return redirect(url_for('.courtorders'))
 
+@admin_pages.route('/control/courtorders/update', methods=['POST'])
+@check_admin
+def courtorders_update():
+    f = request.form
+    req = request.api.courtorders_insert(f['name'],
+                                   f['date'],
+                                   f['url'],
+                                   f['judgment'],
+                                   f['judgment_date'],
+                                   f['judgment_url'],
+                                   )
+    if req['success'] == False:
+        flash("Error adding court order: {0}".format(req['error']))
+    return redirect(url_for('.courtorders'))
+
 @admin_pages.route('/control/courtorders/delete/<name>')
 @check_admin
 def courtorders_delete(name):
     request.api.courtorders_delete(name)
     return redirect(url_for('.courtorders'))
+
+@admin_pages.route('/control/courtorders/<name>/edit')
+@check_admin
+def courtorders_edit(name):
+    order = request.api.courtorders_view(name)
+    return render_template('courtorders_edit.html',
+                           order=order['courtorder'],
+                           urls=order['urls'],
+                           infourls=order['isp_urls'])
 
 @admin_pages.route('/control/courtorders/<name>')
 @check_admin
