@@ -65,7 +65,7 @@
     {% endif %}
   </td>
   <td>{{d.parsed_timestamp|fmtime}}</td>
-  <td style="text-align: right">{{ d.tests_run }}</td>
+  <td style="text-align: right">{{ "{:,}".format(d.tests_run) }}</td>
 </tr>
   {% endif %}
 {% endfor %}
