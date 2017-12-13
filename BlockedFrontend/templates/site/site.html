@@ -80,6 +80,7 @@ Your feedback was successfully submitted.
   <th>Last Checked</th>
   {% if show_category %}
     <th>Category</th>
+    <th></th>
   {% elif show_lastblocked %}
     <th>Last Blocked</th>
   {% elif show_status %}
@@ -106,6 +107,12 @@ Your feedback was successfully submitted.
       .
     </i></p>
     {% endif %}
+    </td>
+
+    <td>
+      {% if item.final_url %}
+        <a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a>
+      {% endif %}
     </td>
   {% elif show_lastblocked %}
     <td>{{(item.last_blocked_timestamp|fmtime) or ''}}</td>
