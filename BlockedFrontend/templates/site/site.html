@@ -5,6 +5,7 @@
 {{ config.STATUS_NAMES.get(status, status) }}
 {% endmacro %}
 
+
 {% if not thanks %}
 {%set titletag = "Site report: " + domain %}
 {%set pagetitle = domain %}
@@ -12,6 +13,22 @@
 {% else %}
 {%set pagetitle = "Thank you!" %}
 {% endif %}
+
+{% block og %}
+<meta property="og:site_name" content="Report mobile and Internet Service Providers blocking sites" />
+<meta property="og:type" content="article" />
+<meta property="article:author" content="https://www.openrightsgroup.org" />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:title" name="twitter:title" content="{{pagetitle}}" />
+<meta name="twitter:site" content="" />
+<meta name="twitter:site:id" content="" />
+<meta property="og:url" name="twitter:url" content="{{request.url}}" />
+<meta property="og:description" name="twitter:description" content="Report incorrectly blocked sites on UK ISP and mobile networks" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:image" property="og:image" content="https://www.blocked.org.uk/assets/images/blocked/socialmedia/blocked_result.jpg" />
+
+{% endblock %}
+
 
 {%block banner_text%}
 {% if thanks and thanksmsg|default('unblock') in ('unblock',None) %}
