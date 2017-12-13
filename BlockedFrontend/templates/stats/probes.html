@@ -26,6 +26,7 @@
 <tr>
   <th>Network</th>
   <th>Filter level</th>
+  <th>Filters Enabled</th>
   <th>Supplied by</th>
   <th>Status</th>
   <th>Last Seen</th>
@@ -49,6 +50,13 @@
     <i>Unfiltered</i>
     {% endif %}
     {{ isp_info(d.description, networks, '') }}
+  </td>
+  <td>
+    {% if d.filter_enabled == True %}
+    <span class="label label-success">Enabled</span>
+    {% elif d.filter_enabled == False %}
+    <span class="label label-warning">Not enabled</span>
+    {% endif %}
   </td>
   <td>{{d.location}}</td>
   <td>
