@@ -9,7 +9,7 @@
   <div class="col-md-8">
 
     <h1>{{pagetitle}}</h1>
-      <h2>{{ order.name}} <a href="" class="btn btn-primary btn-sm">Edit (not enabled yet)</a></h2>
+      <h2>{{ order.name}} <a class="btn btn-primary btn-sm" href="{{ url_for('.courtorders_edit', name=order.name) }}">Edit</a></h2>
       <h3>{{ order.date }}</h3>
       <p>{{ order.url }}</p>
     <p><b>Judgment: </b>{{ order.judgment }}</p>

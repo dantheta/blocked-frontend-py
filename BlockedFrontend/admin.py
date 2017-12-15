@@ -236,7 +236,8 @@ def courtorders_add():
 @check_admin
 def courtorders_update():
     f = request.form
-    req = request.api.courtorders_insert(f['name'],
+    req = request.api.courtorders_update(f['old_name'],
+                                   f['name'],
                                    f['date'],
                                    f['url'],
                                    f['judgment'],

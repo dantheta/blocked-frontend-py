@@ -194,6 +194,19 @@ class ApiClient(BaseApiClient):
         req['signature'] = self.sign(req, ['date'])
         return self.POST('courtorders', req)
 
+    def courtorders_update(self, original_name, name, date, url, judgment, judgment_date, judgment_url):
+        req = {'date': self.timestamp(),
+               'order_date': date,
+               'name': name,
+               'original_name': original_name,
+               'url': url,
+               'judgment': judgment,
+               'judgment_date': judgment_date,
+               'judgment_url': judgment_url
+               }
+        req['signature'] = self.sign(req, ['date'])
+        return self.POST('courtorders/'+ original_name, req)
+
     def courtorders_delete(self, name ):
         req = {'name': name, 'date': self.timestamp()}
         req['signature'] = self.sign(req, ['date'])

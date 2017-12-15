@@ -9,44 +9,53 @@
   <div class="col-md-8">
 
     <h1>{{pagetitle}}</h1>
-      <h2>{{ order.name}}</h2>
-      <h3>{{ order.date }}</h3>
-      <p>{{ order.url }}</p>
-      <p>{{ order.judgment }}</p>
-      <p>{{ order.judgment_date }}</p>
-      <p>{{ order.judgment_url }}</p>
-
-  </div>
-  <div class="col-md-4">
-    <div class="well">
-<form action="{{url_for('.courtorders_add_url')}}" method="POST">
-  <legend>Add URL</legend>
-    <input type="hidden" name="name" value="{{ order.name }}" />
-  {{forms.text_field('URL','url')}}
-  {{forms.submit('Add')}}
-</form>
+    <form action="{{url_for('.courtorders_update')}}" method="POST">
+  <legend>Edit {{ order.name}}</legend>
+  <input type="hidden" name="old_name" value="{{ order.name }}" />
+  <div class="row">
+    <div class="col-md-6">
+  {{forms.text_field('Name','name', order.name)}}
+  {{forms.text_field('Date (yyyy-mm-dd)','date', order.date)}}
+  {{forms.text_field('Wiki URL','url', order.url)}}
+      {{forms.submit('Update')}}
+    </div>
+    <div class="col-md-6">
+  {{forms.text_field('Judgment','judgment', order.judgment)}}
+  {{forms.text_field('Judgment Date (yyyy-mm-dd)','judgment_date', order.judgment_date)}}
+  {{forms.text_field('Judgment URL','judgment_url', order.judgment_url)}}
     </div>
   </div>
+
+
+</form>
+
+
+  </div>
 </div>
+<h2>ISP Info URLs</h2>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-8">
 
 <table class="table">
 <tr>
 
+  <th>Network</th>
   <th>URL</th>
 
   <th></th>
 </tr>
-{% for url in urls %}
+{% for url in infourls %}
 <tr>
+  <td>
+    {{url.network_name}}
+  </td>
   <td>
     {{url.url}}
   </td>
   <td>
-      <form method="POST" action="{{ url_for('.courtorders_delete_url')}}">
+      <form method="POST" action="{{ url_for('.courtorders_delete_isp_url')}}">
       <input type="hidden" name="name" value="{{order.name}}" />
-      <input type="hidden" name="url" value="{{url.url}}" />
+      <input type="hidden" name="network_name" value="{{url.network_name}}" />
 
       <input type="submit" class="btn btn-danger" value="Delete" />
     </form>
@@ -56,9 +65,24 @@
 {% endfor %}
 </table>
 
+
 {#  {{ paging.page_list('.courtorders', page, pagecount, 25) }} #}
 
 </div>
+<div class="col-md-4">
+  <div class="well">
+<form action="{{ url_for('.courtorders_add_isp_url') }}" method="POST" class="form">
+  <legend>Add ISP Info URL</legend>
+  {{ forms.select_field('ISP Name','network_name', None, config.ISPS) }}
+  {{ forms.text_field('URL', 'url') }}
+  <input type="hidden" name="name" value="{{order.name}}" />
+  {{ forms.submit('Add URL') }}
+
+</form>
+  </div>
+  </div>
+
+
 </div>
 
 
