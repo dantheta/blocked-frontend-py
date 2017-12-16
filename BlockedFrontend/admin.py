@@ -297,7 +297,7 @@ def courtorders_add_isp_url():
     if req['success'] == False:
         flash('Error adding "{0}":  {1}'.format(request.form['url'],
                                                 req['error']))
-    return redirect(url_for('.courtorders_view', name=request.form['name']))
+    return redirect(url_for('.courtorders_edit', name=request.form['name']))
 
 @admin_pages.route('/control/courtorders/delete-isp-sites', methods=['POST'])
 @check_admin
@@ -305,4 +305,4 @@ def courtorders_delete_isp_url():
     req = request.api.courtorders_delete_isp_url(request.form['name'], request.form['network_name'])
     if req['success'] == False:
         flash('Unable to locate "{0}" in Blocked DB'.format(request.form['url']))
-    return redirect(url_for('.courtorders_view', name=request.form['name']))
+    return redirect(url_for('.courtorders_edit', name=request.form['name']))

@@ -50,6 +50,7 @@ class BaseApiClient(object):
         try:
             req = requests.post(self.API + url, data=data)
             logger.info("Status: %s", req.status_code)
+            logger.debug("Return: %s", req.content)
             return req.json()
         except Exception as exc:
             raise APIError(*exc.args)
