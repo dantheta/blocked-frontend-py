@@ -19,6 +19,8 @@ def setup_db():
 @unblock_pages.route('/unblock')
 def unblock():
     url = request.args['url']
+    if 'email' in session and 'name' in session and not request.args.get('update'):
+        return redirect(url_for('.unblock2', url=url))
     return render_template('unblock.html',
         url=url,
         domain=get_domain(url),

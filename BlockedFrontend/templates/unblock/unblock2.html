@@ -48,6 +48,9 @@
 <a class="btn btn-default" id="recheck">Re-check site</a>
 </div>
 
+<h2>About you</h2>
+  <p>Logged in as: {{ session.name }} ({{session.email}}) <a class="" href="{{ url_for('.unblock', url=url, update=1) }}">Change name/email</a></p>
+
 <h2>About the site</h2>
 <div class="form-group">
   <label for="message">Please explain why this site should be unblocked</label>
