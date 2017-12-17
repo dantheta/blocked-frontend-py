@@ -100,6 +100,15 @@ class ApiClient(BaseApiClient):
         data = self.GET(endpoint, req)
         return data
 
+    def submit_url(self, url, force=0):
+        req = {
+            'url': url,
+        }
+        if force:
+            req['force'] = force
+        req['signature'] = self.sign(req, ['url'])
+        return self.POST('submit/url', req)
+
     def search_url(self, search, page=0, exclude_adult=0):
         """Search sites by keyword"""
 

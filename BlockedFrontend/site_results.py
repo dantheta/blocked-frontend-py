@@ -31,11 +31,9 @@ def check_post():
 
     if request.form['submit'] == 'false':
         return redirect(url_for('.site', url=url))
-    req = {
-        'url': url,
-    }
-    req['signature'] = request.api.sign(req, ['url'])
-    data = request.api.POST('submit/url', req)
+
+    data = request.api.submit_url(url)
+
     if data['queued'] == True:
         return render_template('site.html',
                                results_blocked=[], results_past=[], results_all=[],

@@ -51,6 +51,7 @@ def admin_post():
         current_app.config['ADMIN_PASSWORD'] == request.form['password']:
 
         session['admin'] = True
+        flash("Admin login successful")
         return redirect(url_for('.admin'))
 
     return render_template('login.html', message='Incorrect username or password')
@@ -61,6 +62,15 @@ def logout():
     del session['admin']
     return redirect(url_for('.admin'))
 
+@admin_pages.route('/control/url/submit', methods=['POST'])
+@check_admin
+def forcecheck():
+    data = request.api.submit_url(request.form['url'], force=1)
+    if data['success']:
+        flash("URL submitted successfully")
+    else:
+        flash("Error submitting result")
+    return redirect(url_for('.admin'))
 
 @admin_pages.route('/control/savedlists')
 @check_admin
