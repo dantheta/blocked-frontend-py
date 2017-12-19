@@ -107,6 +107,18 @@ margin-top: 2em;
 font-size: 125%;
 }
 
+.randomaction {
+    text-align: right;
+}
+
+.fpaction  .row {
+    padding-bottom: 0.5em !important;
+}
+
+.fpaction {
+    padding-bottom: 0.5em;
+}
+
 /* search results */
 
 #results * a.btn {
@@ -304,8 +316,11 @@ th.num {
 }
 
 .stats {
-    text-align: right;
     font-family: 'Roboto', sans-serif;
+}
+
+.stats .row {
+    padding-bottom: 0.5em;
 }
 
 .stats div span {
