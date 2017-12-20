@@ -107,16 +107,26 @@ margin-top: 2em;
 font-size: 125%;
 }
 
-.randomaction {
-    text-align: right;
+.fpaction  div {
+    padding-bottom: 0.5em ;
 }
 
-.fpaction  .row {
-    padding-bottom: 0.5em !important;
+.fpaction .site {
+    background-color: #f8f8f8;
+    padding: 0.5em;
+    margin-bottom: 0.5em
+}
+
+.fpaction .site div {
+    padding-bottom: 0px;
 }
 
 .fpaction {
     padding-bottom: 0.5em;
+}
+
+.fpaction .buttonlist {
+padding-left: 2em;
 }
 
 /* search results */

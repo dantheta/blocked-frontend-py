@@ -34,36 +34,30 @@
   {% if config.MODULE_UNBLOCK %}
 
 <div class="col-md-5 shaded-row fpaction">
-<h3>For example&#x2026;</h3>
+<h3>Has this site been blocked in error?</h3>
 
-<div style="background-color: #f8f8f8; padding: 0.5em">
+<div class="site" >
   <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
   <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
   <p>{{site.title|null('no title')}}</p>
-  </div>
-  <div style="text-align: right; padding-bottom: 0.5em">
-    &#x2026;is blocked for <strong>{{blockednetworks|join_en }}</strong> customers using filters.
+</div>
+
+  <div style="padding-bottom: 1em">
+    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
   </div>
 
-  <div class="row">
-    <div class="col-md-7">Has this site been blocked in error?</div>
-    <div class="col-md-5 randomaction">
+  <div class="buttonlist">
+  <div class="">
     <a href="{{url_for('unblock.unblock', url=site.url)}}" class="btn  btn-primary">Request unblock</a>
-    </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-7"></div>
-    <div class="col-md-5 randomaction">
+  <div class="">
       <a href="{{ url_for('site.site', url=site.url) }}" class="btn  btn-default">View full results</a>
-    </div>
   </div>
 
-  <div class="row" >
-    <div class="col-md-6"></div>
-    <div class="col-md-6 randomaction">
+  <div class="" >
       <a href="/" class="btn btn-default">See another blocked site</a>
-    </div>
+  </div>
   </div>
 
   {% if savedlist %}
