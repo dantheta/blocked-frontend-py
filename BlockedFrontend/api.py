@@ -85,8 +85,6 @@ class ApiClient(BaseApiClient):
         'ispreport/flag': ['date','url'],
         'ispreport/unflag': ['date','url'],
         'list/users': ['date'],
-        'courtorders': ['date'],
-        'courtorders/sites': ['date']
         }
 
     def _request(self, endpoint, req):
@@ -183,63 +181,5 @@ class ApiClient(BaseApiClient):
     def list_users(self):
         req = {'date': self.timestamp()}
         return self._request('list/users', req)
-
-    def courtorders(self):
-        req = {'date': self.timestamp()}
-        return self._request('courtorders', req)
-
-    def courtorders_view(self, name):
-        req = {'date': self.timestamp()}
-        return self._request('courtorders/'+name, req)
-
-    def courtorders_insert(self, name, date, url, judgment, judgment_date, judgment_url):
-        req = {'date': self.timestamp(),
-               'order_date': date,
-               'name': name,
-               'url': url,
-               'judgment': judgment,
-               'judgment_date': judgment_date,
-               'judgment_url': judgment_url
-               }
-        req['signature'] = self.sign(req, ['date'])
-        return self.POST('courtorders', req)
-
-    def courtorders_update(self, original_name, name, date, url, judgment, judgment_date, judgment_url):
-        req = {'date': self.timestamp(),
-               'order_date': date,
-               'name': name,
-               'original_name': original_name,
-               'url': url,
-               'judgment': judgment,
-               'judgment_date': judgment_date,
-               'judgment_url': judgment_url
-               }
-        req['signature'] = self.sign(req, ['date'])
-        return self.POST('courtorders/'+ original_name, req)
-
-    def courtorders_delete(self, name ):
-        req = {'name': name, 'date': self.timestamp()}
-        req['signature'] = self.sign(req, ['date'])
-        return self.DELETE('courtorders', req)
-
-    def courtorders_add_url(self, name, url):
-        req = {'name': name, 'url': url, 'date': self.timestamp()}
-        req['signature'] = self.sign(req, ['date'])
-        return self.POST('courtorders/sites', req)
-
-    def courtorders_delete_url(self, name, url):
-        req = {'name': name, 'url': url, 'date': self.timestamp()}
-        req['signature'] = self.sign(req, ['date'])
-        return self.DELETE('courtorders/sites', req)
-
-    def courtorders_add_isp_url(self, name, network, url):
-        req = {'name': name, 'url': url, 'network_name': network, 'date': self.timestamp() }
-        req['signature'] = self.sign(req, ['date'])
-        return self.POST('courtorders/isp_urls', req)
-
-    def courtorders_delete_isp_url(self, name, network, ):
-        req = {'name': name, 'network_name': network, 'date': self.timestamp()}
-        req['signature'] = self.sign(req, ['date'])
-        return self.DELETE('courtorders/isp_urls', req)
 
 

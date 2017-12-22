@@ -65,3 +65,29 @@ class Item(DBObject):
         c.close()
         return cls(conn, data=row)
 
+class CourtJudgment(DBObject):
+    TABLE = 'court_judgments'
+    FIELDS = ['name','url','date']
+
+    @classmethod
+    def view_summary(cls, conn):
+        c = conn.cursor(cursor_factory = DictCursor)
+        c.execute("""select j.id, j.name, j.date, j.url
+            from court_judgments j
+            order by name""")
+        for row in c:
+            yield row
+        c.close()
+
+    def get_court_orders(self):
+        for obj in CourtOrder.select(self.conn, judgment_id = self['id'], _orderby='name'):
+            yield obj
+
+
+class CourtOrder(DBObject):
+    TABLE = 'court_orders'
+    FIELDS = ['name','network_name','judgment_id','date','url']
+
+class CourtOrderURL(DBObject):
+    TABLE = 'court_order_urls'
+    FIELDS = ['court_order_id','urlid']

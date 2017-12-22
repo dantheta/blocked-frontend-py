@@ -223,96 +223,53 @@ def ispreports_unflag(url):
 @admin_pages.route('/control/courtorders')
 @check_admin
 def courtorders():
-    page = int(request.args.get('page',1))
-    reports = request.api.courtorders()
+    reports = CourtJudgment.select(request.conn, _orderby='name')
     return render_template('courtorders.html', orders=reports)
 
-@admin_pages.route('/control/courtorders/insert', methods=['POST'])
+@admin_pages.route('/control/courtorders/edit/<int:id>')
 @check_admin
-def courtorders_add():
-    f = request.form
-    req = request.api.courtorders_insert(f['name'],
-                                   f['date'],
-                                   f['url'],
-                                   f['judgment'],
-                                   f['judgment_date'],
-                                   f['judgment_url'],
-                                   )
-    if req['success'] == False:
-        flash("Error adding court order: {0}".format(req['error']))
-    return redirect(url_for('.courtorders'))
-
-@admin_pages.route('/control/courtorders/update', methods=['POST'])
-@check_admin
-def courtorders_update():
-    f = request.form
-    req = request.api.courtorders_update(f['old_name'],
-                                   f['name'],
-                                   f['date'],
-                                   f['url'],
-                                   f['judgment'],
-                                   f['judgment_date'],
-                                   f['judgment_url'],
-                                   )
-    if req['success'] == False:
-        flash("Error adding court order: {0}".format(req['error']))
-    return redirect(url_for('.courtorders'))
-
-@admin_pages.route('/control/courtorders/delete/<name>')
-@check_admin
-def courtorders_delete(name):
-    request.api.courtorders_delete(name)
-    return redirect(url_for('.courtorders'))
-
-@admin_pages.route('/control/courtorders/<name>/edit')
-@check_admin
-def courtorders_edit(name):
-    order = request.api.courtorders_view(name)
+def courtorders_edit(id):
+    obj = CourtJudgment(request.conn, id)
     return render_template('courtorders_edit.html',
-                           order=order['courtorder'],
-                           urls=order['urls'],
-                           infourls=order['isp_urls'])
+                           obj=obj,
+                           orders=obj.get_court_orders())
 
-@admin_pages.route('/control/courtorders/<name>')
+
+@admin_pages.route('/control/courtorders/update/<int:id>', methods=['POST'])
+@admin_pages.route('/control/courtorders/add', methods=['POST'])
 @check_admin
-def courtorders_view(name):
-    order = request.api.courtorders_view(name)
-    return render_template('courtorders_view.html',
-                           order=order['courtorder'],
-                           urls=order['urls'],
-                           infourls=order['isp_urls'])
+def courtorders_update(id=None):
+    f = request.form
+    obj = CourtJudgment(request.conn, id)
+    obj.update({
+        'name': f['name'],
+        'date': f['date'],
+        'url': f['url']
+    })
+    obj.store()
+    request.conn.commit()
+    return redirect(url_for('.courtorders'))
 
-@admin_pages.route('/control/courtorders/sites', methods=['POST'])
+
+@admin_pages.route('/control/courtorders/delete/<int:id>')
 @check_admin
-def courtorders_add_url():
-    req = request.api.courtorders_add_url(request.form['name'], request.form['url'])
-    if req['success'] == False:
-        flash('Error adding "{0}":  {1}'.format(request.form['url'],
-                                                req['error']))
-    return redirect(url_for('.courtorders_view', name=request.form['name']))
+def courtorders_delete(id):
+    obj = CourtJudgment(request.conn, id)
+    obj.delete()
+    request.conn.commit()
+    return redirect(url_for('.courtorders'))
 
-@admin_pages.route('/control/courtorders/delete-sites', methods=['POST'])
+@admin_pages.route('/control/courtorders/add_order/<int:judgment_id>', methods=['POST'])
 @check_admin
-def courtorders_delete_url():
-    req = request.api.courtorders_delete_url(request.form['name'], request.form['url'])
-    if req['success'] == False:
-        flash('Unable to locate "{0}" in Blocked DB'.format(request.form['url']))
-    return redirect(url_for('.courtorders_view', name=request.form['name']))
-
-
-@admin_pages.route('/control/courtorders/isp-sites', methods=['POST'])
-@check_admin
-def courtorders_add_isp_url():
-    req = request.api.courtorders_add_isp_url(request.form['name'], request.form['network_name'], request.form['url'])
-    if req['success'] == False:
-        flash('Error adding "{0}":  {1}'.format(request.form['url'],
-                                                req['error']))
-    return redirect(url_for('.courtorders_edit', name=request.form['name']))
-
-@admin_pages.route('/control/courtorders/delete-isp-sites', methods=['POST'])
-@check_admin
-def courtorders_delete_isp_url():
-    req = request.api.courtorders_delete_isp_url(request.form['name'], request.form['network_name'])
-    if req['success'] == False:
-        flash('Unable to locate "{0}" in Blocked DB'.format(request.form['url']))
-    return redirect(url_for('.courtorders_edit', name=request.form['name']))
+def courtorders_add_order(judgment_id):
+    f = request.form
+    obj = CourtOrder(request.conn)
+    obj.update({
+        'name': f['name'],
+        'date': f['date'],
+        'judgment_id': judgment_id,
+        'network_name': f['network_name']
+    })
+    obj.store()
+    request.conn.commit()
+    return redirect(url_for('.courtorders_edit', id=judgment_id ))

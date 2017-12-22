@@ -9,24 +9,20 @@
   <div class="col-md-6">
 
     <h1>{{pagetitle}}</h1>
+    <h2>Court Judgments</h2>
 
   </div>
   <div class="col-md-6">
     <div class="well">
-<form action="{{url_for('.courtorders_add')}}" method="POST">
-  <legend>Add new court order <a href="#" onclick="$(this).parent().next().show()"><span class="glyphicon glyphicon-chevron-down"></span></a> </legend>
+<form action="{{url_for('.courtorders_update')}}" method="POST">
+  <legend>Add new court judgment <a href="#" onclick="$(this).parent().next().show()"><span class="glyphicon glyphicon-chevron-down"></span></a> </legend>
 
   <div style="display: none" class="row">
     <div class="col-md-6">
   {{forms.text_field('Name','name')}}
   {{forms.text_field('Date (yyyy-mm-dd)','date')}}
   {{forms.text_field('Wiki URL','url')}}
-      {{forms.submit('Add')}}
-    </div>
-    <div class="col-md-6">
-  {{forms.text_field('Judgment','judgment')}}
-  {{forms.text_field('Judgment Date (yyyy-mm-dd)','judgment_date')}}
-  {{forms.text_field('Judgment URL','judgment_url')}}
+  {{forms.submit('Add')}}
     </div>
   </div>
 
@@ -44,17 +40,18 @@
 
   <th></th>
 </tr>
-{% for order in orders.courtorders %}
+{% for order in orders %}
 <tr>
   <td>
-    <a href="{{ url_for('.courtorders_view', name=order.name) }}">
     {{order.name}}
-    </a>
   </td>
   <td>{{order.date}}</td>
   <td>{{order.url}}</td>
   <td>
-    <a href="{{ url_for('.courtorders_delete', name=order.name)}}" class="btn btn-danger">
+    <a href="{{ url_for('.courtorders_edit', id=order.id)}}" class="btn btn-primary">
+      <span class="glyphicon glyphicon-edit"></span>
+      Edit</a>
+    <a href="{{ url_for('.courtorders_delete', id=order.id)}}" class="btn btn-danger">
       <span class="glyphicon glyphicon-trash"></span>
       Delete</a>
   </td>
