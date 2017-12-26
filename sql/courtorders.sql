@@ -1,5 +1,5 @@
 
-create table court_judgments(id serial primary key, judgment_id int not null, network_name varchar(64), name varchar, date date, url varchar, created timestamptz, last_updated timestamptz);
+create table court_judgments(id serial primary key, name varchar, date date, url varchar, created timestamptz, last_updated timestamptz);
 create table court_orders(id serial primary key, judgment_id int not null, network_name varchar(64), name varchar, date date, url varchar, created timestamptz, last_updated timestamptz);
 create table court_order_urls(id serial primary key, court_order_id int, urlid int, created timestamptz, last_updated timestamptz);
 
