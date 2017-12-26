@@ -27,41 +27,55 @@
   </div>
 
 </form>
-    </div>
-  </div>
+    </div> <!-- /.well -->
+  </div> <!-- /.col -->
 </div>
 <div class="row">
+    <div class="col-md-12">
 
-<table class="table">
-<tr>
-  <th>Name</th>
-  <th>Date</th>
-  <th>URL</th>
+{% for judgment, orderlist in orders %}
+    <div class="row">
+    <div class="col-md-4">
+        <h2>{{judgment.name}}</h2>
+        <div><strong>Date:</strong> {{judgment.date}}</div>
+        <div><strong>URL:</strong> <a href="{{judgment.url}}" rel="nofollow" target="_blank">{{judgment.url}}</a></div>
 
-  <th></th>
-</tr>
-{% for order in orders %}
-<tr>
-  <td>
-    {{order.name}}
-  </td>
-  <td>{{order.date}}</td>
-  <td>{{order.url}}</td>
-  <td>
-    <a href="{{ url_for('.courtorders_edit', id=order.id)}}" class="btn btn-primary">
-      <span class="glyphicon glyphicon-edit"></span>
-      Edit</a>
-    <a href="{{ url_for('.courtorders_delete', id=order.id)}}" class="btn btn-danger">
-      <span class="glyphicon glyphicon-trash"></span>
-      Delete</a>
-  </td>
-</tr>
+        <div style="margin-top: 1em">
+        <a href="{{ url_for('.courtorders_edit', id=judgment.id)}}" class="btn btn-primary btn-sm">
+          <span class="glyphicon glyphicon-edit"></span>
+          Edit</a>
+        <a href="{{ url_for('.courtorders_delete', id=judgment.id)}}" class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-trash"></span>
+          Delete</a>
+        </div>
+    </div>
+    <div class="col-md-8">
 
-{% endfor %}
-</table>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Network</th>
+                <th>Date</th>
+                <th>URL</th>
+            </tr>
+    {% for order in orderlist %}
+            {% if order.order_name != None %}
+            <tr>
+            <td style="padding-left: 2em">{{ order.order_name }}</td>
+            <td>{{ order.network_name }}</td>
+            <td>{{ order.order_date }}</td>
+            <td>{{ order.order_url }}</td>
+
+            </tr>
+            {% endif %}
+    {% endfor %}
+        </table>
+    </div>
+</div>
+    <hr />
+    {% endfor %}
 
   {# {{ paging.page_list('.courtorders', page, pagecount, 25) }} #}
-
 
 
 </div>

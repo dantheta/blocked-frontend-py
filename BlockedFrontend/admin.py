@@ -223,7 +223,7 @@ def ispreports_unflag(url):
 @admin_pages.route('/control/courtorders')
 @check_admin
 def courtorders():
-    reports = CourtJudgment.select(request.conn, _orderby='name')
+    reports = CourtJudgment.view_summary(request.conn)
     return render_template('courtorders.html', orders=reports)
 
 @admin_pages.route('/control/courtorders/edit/<int:id>')

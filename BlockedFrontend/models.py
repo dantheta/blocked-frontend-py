@@ -1,4 +1,5 @@
 
+import itertools
 import psycopg2.extensions
 from psycopg2.extras import DictCursor
 
@@ -71,11 +72,13 @@ class CourtJudgment(DBObject):
 
     @classmethod
     def view_summary(cls, conn):
+        """Yields groupby iterator, of judgment_id->courtorders"""
         c = conn.cursor(cursor_factory = DictCursor)
-        c.execute("""select j.id, j.name, j.date, j.url
+        c.execute("""select j.id, j.name, j.date, j.url, o.id as order_id, o.name as order_name, o.url as order_url, o.network_name, o.date as order_date
             from court_judgments j
-            order by name""")
-        for row in c:
+            left join court_orders o on judgment_id = j.id
+            order by j.name, o.name""")
+        for row in itertools.groupby(c, lambda row: {x: row[x] for x in ['id','name','date','url']}):
             yield row
         c.close()
 
