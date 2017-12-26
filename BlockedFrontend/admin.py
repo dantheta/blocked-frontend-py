@@ -267,6 +267,7 @@ def courtorders_add_order(judgment_id):
     obj.update({
         'name': f['name'],
         'date': f['date'],
+        'url': f['url'],
         'judgment_id': judgment_id,
         'network_name': f['network_name']
     })
