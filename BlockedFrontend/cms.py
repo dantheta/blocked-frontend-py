@@ -18,6 +18,12 @@ REMOTE_TEXT_CONTENT = {
     'seized-domains': 'seized-domains'
     }
 
+def custom_routing(site):
+    if site == 'blocked-eu':
+        cms_pages.add_url_rule('/', 'legal_blocks', legal_blocks)
+    else:
+        cms_pages.add_url_rule('/', 'index', index)
+
 def frontpage_lists():
     conn = psycopg2.connect(current_app.config['DB'])
     for item in Item.get_frontpage_random(conn):
@@ -30,7 +36,6 @@ def frontpage_random():
     site = request.api.status_url(randomsite['results'][0])
     return site
 
-@cms_pages.route('/')
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
     session['route'] = 'random'

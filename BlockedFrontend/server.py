@@ -43,6 +43,11 @@ logging.info("API_EMAIL: %s", app.config['API_EMAIL'])
 logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
+
+from cms import cms_pages, custom_routing
+custom_routing(app.config['SITE_THEME'])
+app.register_blueprint(cms_pages)
+
 from site_results import site_pages
 app.register_blueprint(site_pages)
 
@@ -67,9 +72,6 @@ app.register_blueprint(reload_blueprint)
 
 from stats import stats_pages
 app.register_blueprint(stats_pages)
-
-from cms import cms_pages
-app.register_blueprint(cms_pages)
 
 
 @app.before_request
