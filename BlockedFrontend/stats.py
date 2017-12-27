@@ -34,7 +34,7 @@ def index():
 
 @stats_pages.route('/stats/probes')
 def probe_stats():
-    data = request.api.status_probes()
+    data = request.api.status_probes(current_app.config['DEFAULT_REGION'])
     now = datetime.datetime.now()
     for d in data['status']:
         d['parsed_timestamp'] = parse_timestamp(d['lastseen'])

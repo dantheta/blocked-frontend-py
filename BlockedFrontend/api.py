@@ -149,9 +149,9 @@ class ApiClient(BaseApiClient):
         req = {'url': url}
         return self._request('status/url', req)
 
-    def status_probes(self):
+    def status_probes(self, region):
         req = {'date':self.timestamp()}
-        return self._request('status/probes', req)
+        return self._request('status/probes/'+region, req)
 
 
     def blacklist_insert(self, domain):
