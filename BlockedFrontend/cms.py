@@ -91,12 +91,14 @@ def reported_sites(isp=None, page=1):
             abort(404)
     g.remote_content = g.remote.get_content('reported-sites')
     data = request.api.reports(page-1, isp=isp)
+    data2 = request.api.ispreport_stats()
     count = data['count']
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
+            stats=data2['unblock-stats'],
             networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
             reports=data['reports'])

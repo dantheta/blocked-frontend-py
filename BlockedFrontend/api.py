@@ -81,6 +81,7 @@ class ApiClient(BaseApiClient):
         'status/category-stats': ['date'],
         'status/domain-isp-stats': ['date'],
         'status/domain-stats': ['date'],
+        'status/ispreport-stats': ['date'],
         'ispreport/blacklist': ['date'],
         'ispreport/flag': ['date','url'],
         'ispreport/unflag': ['date','url'],
@@ -145,6 +146,10 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/domain-isp-stats', req)
 
+    def ispreport_stats(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/ispreport-stats', req)
+
     def status_url(self, url):
         req = {'url': url}
         return self._request('status/url', req)
@@ -152,7 +157,6 @@ class ApiClient(BaseApiClient):
     def status_probes(self, region):
         req = {'date':self.timestamp()}
         return self._request('status/probes/'+region, req)
-
 
     def blacklist_insert(self, domain):
         req = {'date': self.timestamp(), 'domain': domain}

@@ -18,6 +18,38 @@
 {%endblock%}
 
 {% block bodyrow2 %}
+
+<table class="table">
+    <tr>
+        <th>ISP</th>
+        <th class="num">Reports Sent</th>
+        <th class="num">Sites Unblocked</th>
+        <th class="num">Avg response time (days)</th>
+    </tr>
+    <tr>
+        <td>All<br />
+            <a id="reveal" href="#"><span class="glyphicon glyphicon-chevron-down"></span> Show all ISPs </a>
+        </td>
+        <td class="num">{{ stats['all'].sent }}</td>
+        <td class="num">{{ stats['all'].unblocked }}</td>
+        <td class="num">{{ "%0.1f" | format(stats['all'].avg_unblock_time) }}</td>
+    </tr>
+    {% for isp, stat in stats.iteritems() %}
+    {% if isp != 'all' %}
+    <tr style="display: none" class="reveal">
+        <td>{{ isp }}</td>
+        <td class="num">{{ stat.sent }}</td>
+        <td class="num">{{ stat.unblocked }}</td>
+        <td class="num">{% if stat.unblocked %}
+            {{ "%0.1f" | format(stat.avg_unblock_time|float) }}
+            {% endif %}
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+
+</table>
+
 <div class="row">
 <div class="col-lg-8">
   <h2>Incorrectly blocked sites reported to ISPs</h2>
@@ -81,5 +113,9 @@
 {% block page_script %}
   $(document).ready(function(){
     {{ popover_js() }}
+    $('#reveal').click(function() {
+        $('.reveal').toggle();
+        return false;
+    });
   });
 {% endblock %}
