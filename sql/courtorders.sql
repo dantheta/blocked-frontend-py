@@ -48,13 +48,26 @@ alter table court_orders add foreign key (judgment_id) references court_judgment
 create table court_judgment_urls(
     id serial primary key not null,
     judgment_id int not null,
-    url varchar,
+    url varchar not null,
+    group_id int,
     created timestamptz,
     last_updated timestamptz
 );
 
 create unique index on court_judgment_urls(judgment_id, url);
 alter table court_judgment_urls add foreign key (judgment_id) references court_judgments(id) on delete cascade;
+alter table court_judgment_urls add foreign key (group_id) references court_judgment_url_groups(id) on delete set null;
+
+create table court_judgment_url_groups (
+    id serial primary key,
+    judgment_id int not null,
+    name varchar not null,
+    created timestamptz,
+    last_updated timestamptz
+);
+
+create unique index on court_judgment_url_groups(judgment_id, name);
+alter table court_judgment_url_groups add foreign key (judgment_id) references court_judgments(id) on delete cascade;
 
 
 insert into court_powers(name, legislation) values

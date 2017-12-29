@@ -49,12 +49,12 @@ ISPS = [
     'Vodafone',
     'VirginMedia',
     'Three',
+    'Plusnet'
     ]
 
 ALL_ISPS = ISPS + [
     'Uno',
     'AAISP',
-    'Plusnet',
 ]
 
 STATUS_NAMES = {

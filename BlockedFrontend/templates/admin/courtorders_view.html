@@ -9,8 +9,7 @@
   <div class="col-md-6">
 
     <h1>{{pagetitle}}</h1>
-    <h2>Court Judgments</h2>
-    <h3>{{ judgment.name }}</h3>
+    <h2>{{ judgment.name }}</h2>
   </div>
 
 </div>
@@ -63,27 +62,58 @@
             </div>
         </div>
 
-        <h3>Targeted sites:</h3>
+        <h2>Targeted sites</h2>
         <div class="row">
             <div class="col-md-6">
-        <ul>
-        {% for site in sites %}
-            <li>{{site['url']}}</li>
-        {% endfor %}
-        </ul>
+                <form method="POST" action="{{url_for('.courtorders_site_group')}}">
+                    <ul>
+                    {% for site in sites %}
+                        <li><input type="checkbox" name="site_id" value="{{site.id}}" /> {{site.url}}</li>
+                    {% endfor %}
+                    </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+                            {{forms.select_field('Add to Group','group_id', None, groups) }}
+                            <input type="submit" class="btn btn-primary btn-sm" value="Add selected sites to group" />
+                        </div>
+                    </div>
+                </form>
             </div>
+
             <div class="col-md-6">
-        <form class="form form-inline" method="POST" action="{{url_for('.courtorders_site_add')}}">
-            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-            <label for="url">Add URL:</label>
-            <div class="control-group">
-                <input class="form-control" type="text" name="url" />
-                <input class="btn btn-default" type="submit" value="Add" />
-            </div>
-        </form>
+                <div class="row">
+                    <div class="col-md-12 well">
+                        <form class="form form-inline" method="POST" action="{{url_for('.courtorders_site_add')}}">
+                            <legend>Add site</legend>
+                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+                            <label for="url">URL:</label>
+                            <div class="control-group">
+                                <input class="form-control" type="text" name="url" />
+                                <input class="btn btn-default" type="submit" value="Add" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2em">
+                    <div class="col-md-12 well">
+                        <form class="form form-inline" method="POST" action="{{url_for('.courtorders_group_add')}}">
+                            <legend>Add Group</legend>
+                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+                            <label for="url">Name:</label>
+                            <div class="control-group">
+                                <input class="form-control" type="text" name="name" />
+                                <input class="btn btn-default" type="submit" value="Add" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 {% endblock %}
+
+
+

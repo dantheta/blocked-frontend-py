@@ -6,7 +6,7 @@ from psycopg2.extras import DictCursor
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
-from NORM import DBObject
+from NORM import DBObject,Query
 from NORM.exceptions import ObjectNotFound
 
 
@@ -94,9 +94,26 @@ class CourtJudgment(DBObject):
     def get_urls(self):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
+    def get_grouped_urls(self):
+        q = NORM.Query(self.conn, """select u.*, g.name as group_name
+            from court_judgment_urls u
+            left join court_judgment_url_groups g on g.id = u.group_id
+            order by g.name, u.url
+            """)
+        urliter = (CourtJudgmentURL(self.conn, data=row) for row in q)
+        return itertools.groupby(urliter, lambda row: row['group_name'])
+
+
+    def get_url_groups(self):
+        return CourtJudgmentURLGroup.select(self.conn, judgment_id=self['id'], _orderby='name')
+
 class CourtJudgmentURL(DBObject):
     FIELDS = ['judgment_id','url']
     TABLE = 'court_judgment_urls'
+
+class CourtJudgmentURLGroup(DBObject):
+    TABLE = 'court_judgment_url_groups'
+    FIELDS = ['name']
 
 class CourtOrder(DBObject):
     TABLE = 'court_orders'

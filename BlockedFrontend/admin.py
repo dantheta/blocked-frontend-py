@@ -233,7 +233,8 @@ def courtorders_view(id):
     return render_template('courtorders_view.html',
                            judgment=obj,
                            orders=obj.get_court_orders(),
-                           sites=obj.get_urls()
+                           sites=obj.get_urls(),
+                           groups=[(grp['id'],grp['name']) for grp in obj.get_url_groups()]
                            )
 
 @admin_pages.route('/control/courtorders/edit/<int:id>')
@@ -296,3 +297,23 @@ def courtorders_site_add():
     obj.store()
     request.conn.commit()
     return redirect(url_for('.courtorders_view', id=f['judgment_id']))
+
+@admin_pages.route('/control/courtorders/site/group', methods=['POST'])
+@check_admin
+def courtorders_site_group():
+    for site_id in request.form.getlist('site_id'):
+        obj = CourtJudgmentURL(request.conn, site_id)
+        obj['group_id'] = request.form['group_id']
+        obj.store()
+    request.conn.commit()
+    return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
+
+@admin_pages.route('/control/courtorders/site/group/add', methods=['POST'])
+@check_admin
+def courtorders_group_add():
+    obj = CourtJudgmentURLGroup(request.conn)
+    obj['judgment_id'] = request.form['judgment_id']
+    obj['name'] = request.form['name']
+    obj.store()
+    request.conn.commit()
+    return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
