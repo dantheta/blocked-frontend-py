@@ -59,12 +59,36 @@
 
   {{forms.text_field('Injunction obtained by','injunction_obtained_by', obj.injunction_obtained_by)}}
   {{forms.text_field('Injunction represented by','injunction_represented_by', obj.injunction_represented_by)}}
-  {{forms.select_field('Injunction applies to','injunction_instructs', obj.injunction_instructs,
-      [
-        ('',''),
-        ('all_uk_isps','All UK ISPS'),
-      ])
-  }}
+
+  <h3>Injunction applies to</h3>
+      <div class="row">
+  {% for order in orders | sort %}
+      <input type="hidden" name="order_id" value="{{order.id}}" />
+      <input type="hidden" name="network_name" value="{{order.network_name}}" />
+        <div class="col-md-3">
+      {{ forms.check_field(order.network_name, 'applies', order.network_name, True) }}
+        </div>
+        <div class="col-md-9">
+      {{ forms.text_field('Injunction URL', 'applies_url', order['url']) }}
+        </div>
+  {% endfor %}
+    </div>
+    <div class="row">
+  {% for isp in config.ISPS | sort %}
+      {% if isp not in order_networks %}
+      <input type="hidden" name="order_id" value="" />
+      <input type="hidden" name="network_name" value="{{isp}}" />
+        <div class="col-md-3">
+      {{ forms.check_field(isp, 'applies', isp) }}
+        </div>
+        <div class="col-md-9">
+      {{ forms.text_field('Injunction URL', 'applies_url', '') }}
+        </div>
+      {% endif %}
+  {% endfor %}
+    </div>
+
+  <h3>Additional information</h3>
 
   {{forms.textarea_field('Other docs (html)','other_docs', obj.other_docs)}}
   {{forms.textarea_field('Affected sites description (html)','sites_description', obj.sites_description)}}

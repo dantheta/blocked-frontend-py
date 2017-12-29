@@ -28,6 +28,16 @@
 </div>
 {% endmacro %}
 
+{% macro check_field(label, name, value, checked=False) %}
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
+    {{ label }}
+  </label>
+</div>
+</div>
+{% endmacro %}
 
 {% macro password_field(label, name, value='', placeholder='') %}
 <div class="form-group">

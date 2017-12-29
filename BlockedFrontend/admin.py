@@ -236,7 +236,9 @@ def courtorders_edit(id=None):
                            powers=[ (x['id'], x['name'])
                                     for x in
                                     CourtPowers.select(request.conn, _orderby='name')
-                                    ]
+                                    ],
+                           orders = obj.get_court_orders(),
+                           order_networks = obj.get_court_order_networks()
                            )
 
 
@@ -244,13 +246,28 @@ def courtorders_edit(id=None):
 @admin_pages.route('/control/courtorders/insert', methods=['POST'])
 @check_admin
 def courtorders_update(id=None):
-    f = request.form
-    obj = CourtJudgment(request.conn, id)
-    obj.update({x: None if f[x] == '' else f[x] for x in CourtJudgment.FIELDS})
-    obj.store()
-    request.conn.commit()
-    return redirect(url_for('.courtorders'))
+    try:
+        f = request.form
+        obj = CourtJudgment(request.conn, id)
+        obj.update({x: None if f[x] == '' else f[x] for x in CourtJudgment.FIELDS})
+        obj.store()
 
+        applies = f.getlist('applies')
+        for order_id, network_name, url in zip(f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url')):
+            order = CourtOrder(request.conn, order_id or None)
+            if network_name in applies:
+                order.update({'url': url, 'judgment_id': obj['id']})
+            else:
+                if order_id:
+                    order.delete()
+                continue
+            order.update({'network_name': network_name, 'url': url, 'judgment_id': obj['id']})
+            order.store()
+        request.conn.commit()
+        return redirect(url_for('.courtorders'))
+    except KeyError as exc:
+        logging.warn("Key error: %s", exc.args)
+        raise
 
 @admin_pages.route('/control/courtorders/delete/<int:id>')
 @check_admin

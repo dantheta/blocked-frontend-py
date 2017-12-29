@@ -78,10 +78,19 @@ class CourtJudgment(DBObject):
               'court_authority',
               'injunction_obtained_by',
               'injunction_represented_by',
-              'injunction_instructs',
               'other_docs',
               'sites_description',
               ]
+
+    def get_court_orders(self):
+        return CourtOrder.select(self.conn, judgment_id=self['id'], _orderby='network_name')
+
+    def get_court_order_networks(self):
+        return [x['network_name'] for x in self.get_court_orders()]
+
+class CourtOrder(DBObject):
+    TABLE = 'court_orders'
+    FIELDS = ['judgment_id', 'network_name','url']
 
 class CourtPowers(DBObject):
     TABLE = 'court_powers'
