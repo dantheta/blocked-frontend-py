@@ -3,6 +3,7 @@ create table court_judgments(
     id serial primary key,
 	name varchar,
 	date date,
+	judgment_url varchar,
 	url varchar,
     citation varchar,
     case_number varchar,
@@ -43,6 +44,18 @@ create table court_orders(
 
 create unique index on court_orders(network_name, judgment_id);
 alter table court_orders add foreign key (judgment_id) references court_judgments(id) on delete cascade;
+
+create table court_judgment_urls(
+    id serial primary key not null,
+    judgment_id int not null,
+    url varchar,
+    created timestamptz,
+    last_updated timestamptz
+);
+
+create unique index on court_judgment_urls(judgment_id, url);
+alter table court_judgment_urls add foreign key (judgment_id) references court_judgments(id) on delete cascade;
+
 
 insert into court_powers(name, legislation) values
 ('Copyright, Designs and Patents Act, Section 97A','http://www.legislation.gov.uk/ukpga/1988/48/section/97A'),

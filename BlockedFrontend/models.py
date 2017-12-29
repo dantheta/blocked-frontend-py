@@ -68,7 +68,10 @@ class Item(DBObject):
 
 class CourtJudgment(DBObject):
     TABLE = 'court_judgments'
-    FIELDS = ['name','url','date',
+    FIELDS = ['name',
+              'judgment_url',
+              'url',
+              'date',
               'citation',
               'case_number',
               'restriction_type',
@@ -87,6 +90,13 @@ class CourtJudgment(DBObject):
 
     def get_court_order_networks(self):
         return [x['network_name'] for x in self.get_court_orders()]
+
+    def get_urls(self):
+        return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
+
+class CourtJudgmentURL(DBObject):
+    FIELDS = ['judgment_id','url']
+    TABLE = 'court_judgment_urls'
 
 class CourtOrder(DBObject):
     TABLE = 'court_orders'

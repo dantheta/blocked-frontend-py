@@ -89,7 +89,7 @@ def fmtime(s):
 
 
 @app.template_filter('null')
-def null(s, default):
+def null(s, default=''):
     if s is None:
         return default
     if isinstance(s, (str,unicode)) and not s.strip():

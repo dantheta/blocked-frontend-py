@@ -226,6 +226,16 @@ def courtorders():
     reports = CourtJudgment.select(request.conn, _orderby='name')
     return render_template('courtorders.html', judgments=reports)
 
+@admin_pages.route('/control/courtorders/<int:id>')
+@check_admin
+def courtorders_view(id):
+    obj = CourtJudgment(request.conn, id)
+    return render_template('courtorders_view.html',
+                           judgment=obj,
+                           orders=obj.get_court_orders(),
+                           sites=obj.get_urls()
+                           )
+
 @admin_pages.route('/control/courtorders/edit/<int:id>')
 @admin_pages.route('/control/courtorders/add')
 @check_admin
@@ -277,3 +287,12 @@ def courtorders_delete(id):
     request.conn.commit()
     return redirect(url_for('.courtorders'))
 
+@admin_pages.route('/control/courtorders/site/add', methods=['POST'])
+@check_admin
+def courtorders_site_add():
+    f = request.form
+    obj = CourtJudgmentURL(request.conn)
+    obj.update({'url':f['url'],'judgment_id':f['judgment_id']})
+    obj.store()
+    request.conn.commit()
+    return redirect(url_for('.courtorders_view', id=f['judgment_id']))

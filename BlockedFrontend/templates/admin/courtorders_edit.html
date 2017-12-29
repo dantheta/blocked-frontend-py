@@ -16,6 +16,7 @@
 
   {{forms.text_field('Name','name', obj.name)}}
   {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date)}}
+  {{forms.text_field('Judgment URL','judgment_url', obj.judgment_url)}}
   {{forms.text_field('Wiki URL','url', obj.url)}}
   {{forms.text_field('Citation','citation', obj.citation)}}
   {{forms.text_field('Case Number','case_number', obj.case_number)}}
@@ -62,7 +63,7 @@
 
   <h3>Injunction applies to</h3>
       <div class="row">
-  {% for order in orders | sort %}
+  {% for order in orders %}
       <input type="hidden" name="order_id" value="{{order.id}}" />
       <input type="hidden" name="network_name" value="{{order.network_name}}" />
         <div class="col-md-3">
