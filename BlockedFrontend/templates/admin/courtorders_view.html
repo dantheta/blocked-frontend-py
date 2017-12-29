@@ -66,18 +66,25 @@
         <div class="row">
             <div class="col-md-6">
                 <form method="POST" action="{{url_for('.courtorders_site_group')}}">
+                    {% for sitegrp, grpsites in sites %}
+                    <h4 style="padding: 0.25em; background-color: {{'lightblue' if sitegrp else 'lightgray'}}">
+                        {{sitegrp or 'Uncategorized'}}
+                    </h4>
                     <ul>
-                    {% for site in sites %}
+                    {% for site in grpsites %}
                         <li><input type="checkbox" name="site_id" value="{{site.id}}" /> {{site.url}}</li>
                     {% endfor %}
                     </ul>
+                    {% endfor %}
+                    {% if groups|length > 0 %}
                     <div class="row">
                         <div class="col-md-6">
                             <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                            {{forms.select_field('Add to Group','group_id', None, groups) }}
+                            {{forms.select_field('Add to Group','group_id', None, [('','Uncategorized')]+groups) }}
                             <input type="submit" class="btn btn-primary btn-sm" value="Add selected sites to group" />
                         </div>
                     </div>
+                    {% endif %}
                 </form>
             </div>
 

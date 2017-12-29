@@ -233,7 +233,7 @@ def courtorders_view(id):
     return render_template('courtorders_view.html',
                            judgment=obj,
                            orders=obj.get_court_orders(),
-                           sites=obj.get_urls(),
+                           sites=obj.get_grouped_urls(),
                            groups=[(grp['id'],grp['name']) for grp in obj.get_url_groups()]
                            )
 
@@ -301,12 +301,24 @@ def courtorders_site_add():
 @admin_pages.route('/control/courtorders/site/group', methods=['POST'])
 @check_admin
 def courtorders_site_group():
-    for site_id in request.form.getlist('site_id'):
+    f = request.form
+    if f['group_id']:
+        grp = CourtJudgmentURLGroup(request.conn, f['group_id'])
+    else:
+        grp = None
+    for site_id in f.getlist('site_id'):
         obj = CourtJudgmentURL(request.conn, site_id)
-        obj['group_id'] = request.form['group_id']
+        if f['group_id'] == '':
+            obj['group_id'] = None
+        else:
+            obj['group_id'] = f['group_id']
         obj.store()
     request.conn.commit()
-    return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
+    if grp:
+        flash("Added URL(s) to group: " + grp['name'])
+    else:
+        flash("Removed URL(s) from groups")
+    return redirect(url_for('.courtorders_view', id=f['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/group/add', methods=['POST'])
 @check_admin
@@ -316,4 +328,5 @@ def courtorders_group_add():
     obj['name'] = request.form['name']
     obj.store()
     request.conn.commit()
+    flash("Added URL group: "+ request.form['name'])
     return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))

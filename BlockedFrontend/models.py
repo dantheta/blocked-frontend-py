@@ -95,14 +95,14 @@ class CourtJudgment(DBObject):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
     def get_grouped_urls(self):
-        q = NORM.Query(self.conn, """select u.*, g.name as group_name
+        q = Query(self.conn, """select u.*, g.name as group_name
             from court_judgment_urls u
             left join court_judgment_url_groups g on g.id = u.group_id
+            where u.judgment_id = %s
             order by g.name, u.url
-            """)
+            """, [self['id']])
         urliter = (CourtJudgmentURL(self.conn, data=row) for row in q)
         return itertools.groupby(urliter, lambda row: row['group_name'])
-
 
     def get_url_groups(self):
         return CourtJudgmentURLGroup.select(self.conn, judgment_id=self['id'], _orderby='name')
