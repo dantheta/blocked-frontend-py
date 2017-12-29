@@ -2,14 +2,14 @@
 {% macro text_field(label, name, value='', placeholder='') %}
 <div class="form-group">
     <label for="{{name}}">{{label}}</label>
-    <input class="form-control" name="{{name}}" value="{{value}}" placehholder="{{placeholder}}"/>
+    <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
 </div>
 {% endmacro %}
 
 {% macro textarea_field(label, name, value='') %}
 <div class="form-group">
     <label for="{{name}}">{{label}}</label>
-    <textarea class="form-control" name="{{name}}">{{value}}</textarea>
+    <textarea class="form-control" name="{{name}}">{{value or ''}}</textarea>
 </div>
 {% endmacro %}
 
