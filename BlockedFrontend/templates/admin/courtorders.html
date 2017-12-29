@@ -10,70 +10,34 @@
 
     <h1>{{pagetitle}}</h1>
     <h2>Court Judgments</h2>
-
-  </div>
-  <div class="col-md-6">
-    <div class="well">
-<form action="{{url_for('.courtorders_update')}}" method="POST">
-  <legend>Add new court judgment <a href="#" onclick="$(this).parent().next().show()"><span class="glyphicon glyphicon-chevron-down"></span></a> </legend>
-
-  <div style="display: none" class="row">
-    <div class="col-md-6">
-  {{forms.text_field('Name','name')}}
-  {{forms.text_field('Date (yyyy-mm-dd)','date')}}
-  {{forms.text_field('Wiki URL','url')}}
-  {{forms.submit('Add')}}
+    <div>
+        <a href="{{url_for('.courtorders_edit')}}" class="btn btn-primary">Add</a>
     </div>
   </div>
 
-</form>
-    </div> <!-- /.well -->
-  </div> <!-- /.col -->
 </div>
 <div class="row">
     <div class="col-md-12">
 
-{% for judgment, orderlist in orders %}
-    <div class="row">
-    <div class="col-md-4">
-        <h2>{{judgment.name}}</h2>
-        <div><strong>Date:</strong> {{judgment.date}}</div>
-        <div><strong>URL:</strong> <a href="{{judgment.url}}" rel="nofollow" target="_blank">{{judgment.url}}</a></div>
-
-        <div style="margin-top: 1em">
-        <a href="{{ url_for('.courtorders_edit', id=judgment.id)}}" class="btn btn-primary btn-sm">
-          <span class="glyphicon glyphicon-edit"></span>
-          Edit</a>
-        <a href="{{ url_for('.courtorders_delete', id=judgment.id)}}" class="btn btn-danger btn-sm">
-          <span class="glyphicon glyphicon-trash"></span>
-          Delete</a>
-        </div>
-    </div>
-    <div class="col-md-8">
-
         <table class="table">
             <tr>
                 <th>Name</th>
-                <th>Network</th>
                 <th>Date</th>
-                <th>URL</th>
+                <th></th>
             </tr>
-    {% for order in orderlist %}
-            {% if order.order_name != None %}
-            <tr>
-            <td style="padding-left: 2em">{{ order.order_name }}</td>
-            <td>{{ order.network_name }}</td>
-            <td>{{ order.order_date }}</td>
-            <td>{{ order.order_url }}</td>
-
-            </tr>
-            {% endif %}
-    {% endfor %}
+{% for judgment in judgments %}
+    <tr>
+        <td>{{judgment.name}}</td>
+        <td>{{judgment.date}}</td>
+        <td>
+        <a href="{{ url_for('.courtorders_edit', id=judgment.id)}}" class="btn btn-primary btn-sm">
+          <span class="glyphicon glyphicon-edit"></span> Edit</a>
+        <a href="{{ url_for('.courtorders_delete', id=judgment.id)}}" class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-trash"></span> Delete</a>
+        </td>
+    </tr>
+{% endfor %}
         </table>
-    </div>
-</div>
-    <hr />
-    {% endfor %}
 
   {# {{ paging.page_list('.courtorders', page, pagecount, 25) }} #}
 

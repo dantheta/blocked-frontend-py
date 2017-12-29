@@ -6,12 +6,23 @@
 </div>
 {% endmacro %}
 
+{% macro textarea_field(label, name, value='') %}
+<div class="form-group">
+    <label for="{{name}}">{{label}}</label>
+    <textarea class="form-control" name="{{name}}">{{value}}</textarea>
+</div>
+{% endmacro %}
+
 {% macro select_field(label, name, value=None, options=[]) %}
 <div class="form-group">
     <label for="{{name}}">{{label}}</label>
     <select class="form-control" name="{{ name}}">
         {% for opt in options %}
-        <option value="{{opt}}" {{'checked' if opt == value else ''}}>{{opt}}</option>
+        {% if opt is sequence %}
+        <option value="{{opt[0]}}" {{'selected' if opt[0] == value else ''}}>{{opt[1]}}</option>
+        {% else %}
+        <option value="{{opt}}" {{'selected' if opt == value else ''}}>{{opt}}</option>
+        {% endif %}
         {% endfor %}
     </select>
 </div>

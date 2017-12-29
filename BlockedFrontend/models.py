@@ -68,29 +68,22 @@ class Item(DBObject):
 
 class CourtJudgment(DBObject):
     TABLE = 'court_judgments'
-    FIELDS = ['name','url','date']
+    FIELDS = ['name','url','date',
+              'citation',
+              'case_number',
+              'restriction_type',
+              'instruction_type',
+              'jurisdiction',
+              'power_id',
+              'court_authority',
+              'injunction_obtained_by',
+              'injunction_represented_by',
+              'injunction_instructs',
+              'other_docs',
+              'sites_description',
+              ]
 
-    @classmethod
-    def view_summary(cls, conn):
-        """Yields groupby iterator, of judgment_id->courtorders"""
-        c = conn.cursor(cursor_factory = DictCursor)
-        c.execute("""select j.id, j.name, j.date, j.url, o.id as order_id, o.name as order_name, o.url as order_url, o.network_name, o.date as order_date
-            from court_judgments j
-            left join court_orders o on judgment_id = j.id
-            order by j.name, o.name""")
-        for row in itertools.groupby(c, lambda row: {x: row[x] for x in ['id','name','date','url']}):
-            yield row
-        c.close()
+class CourtPowers(DBObject):
+    TABLE = 'court_powers'
+    FIELDS = ['name','legislation']
 
-    def get_court_orders(self):
-        for obj in CourtOrder.select(self.conn, judgment_id = self['id'], _orderby='name'):
-            yield obj
-
-
-class CourtOrder(DBObject):
-    TABLE = 'court_orders'
-    FIELDS = ['name','network_name','judgment_id','date','url']
-
-class CourtOrderURL(DBObject):
-    TABLE = 'court_order_urls'
-    FIELDS = ['court_order_id','urlid']

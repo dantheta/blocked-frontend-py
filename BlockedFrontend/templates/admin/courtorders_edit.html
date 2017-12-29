@@ -6,7 +6,7 @@
 
 {% block body %}
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-12">
 
   <h1>{{pagetitle}}</h1>
   <form action="{{url_for('.courtorders_update', id=obj.id)}}" method="POST">
@@ -17,46 +17,65 @@
   {{forms.text_field('Name','name', obj.name)}}
   {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date)}}
   {{forms.text_field('Wiki URL','url', obj.url)}}
+  {{forms.text_field('Citation','citation', obj.citation)}}
+  {{forms.text_field('Case Number','case_number', obj.case_number)}}
+
+  {{forms.select_field('Restriction type', 'restriction_type', obj.restriction_type,
+      [
+        ('',''),
+        ('domain_seizure','Domain Seizure'),
+        ('domain_suspension','Domain Suspension'),
+        ('isp_block','ISP Block'),
+        ('content_removal','Content Removal'),
+      ])
+    }}
+
+  {{forms.select_field('Instruction type', 'instruction_type', obj.instruction_type,
+      [
+      ('',''),
+      ('injunction','Injunction'),
+      ('administrative_order', 'Administrative order'),
+      ])
+  }}
+
+  {{forms.select_field('Jurisdiction', 'jurisdiction', obj.jurisdiction,
+      [
+      ('',''),
+      ('uk','UK'),
+      ('scotland','UK (Scotland only)'),
+      ('us','USA'),
+      ])
+  }}
+
+  {{forms.select_field('Power used', 'power_id', obj.power_id, [('','')] + powers) }}
+
+  {{forms.select_field('Court/Authority', 'court_authority', obj.court_authority,
+      [
+      ('',''),
+      ('high_court','High Court'),
+      ('bbfc_order','BBFC Administrative Order'),
+      ])
+  }}
+
+  {{forms.text_field('Injunction obtained by','injunction_obtained_by', obj.injunction_obtained_by)}}
+  {{forms.text_field('Injunction represented by','injunction_represented_by', obj.injunction_represented_by)}}
+  {{forms.select_field('Injunction applies to','injunction_instructs', obj.injunction_instructs,
+      [
+        ('',''),
+        ('all_uk_isps','All UK ISPS'),
+      ])
+  }}
+
+  {{forms.textarea_field('Other docs (html)','other_docs', obj.other_docs)}}
+  {{forms.textarea_field('Affected sites description (html)','sites_description', obj.sites_description)}}
+
+
       {{forms.submit('Update')}}
     </div>
   </div>
 </form>
 
 
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-8">
-    <h2>Court Orders</h2>
-<table class="table">
-  <tr>
-    <th>Name</th>
-    <th>Network</th>
-    <th>Date</th>
-    <th>URL</th>
-  </tr>
-  {% for order in orders %}
-  <tr>
-    <td>{{ order.name }}</td>
-    <td>{{ order.network_name }}</td>
-    <td>{{ order.date }}</td>
-    <td>{{ order.url }}</td>
-  </tr>
-  {% endfor %}
-</table>
-
-
-  </div>
-  <div class="col-md-4 well">
-    <form action="{{ url_for('.courtorders_add_order', judgment_id=obj.id)}}" method="POST">
-      <legend>Add court order</legend>
-      {{ forms.text_field('Name', 'name') }}
-      {{ forms.text_field('Date (yyyy-mm-dd)', 'date') }}
-      {{ forms.text_field('URL', 'url') }}
-      {{ forms.select_field('Network','network_name',None,config.ISPS) }}
-      {{ forms.submit('Add') }}
-    </form>
   </div>
 </div>
 {% endblock %}

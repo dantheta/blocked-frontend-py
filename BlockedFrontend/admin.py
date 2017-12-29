@@ -223,29 +223,30 @@ def ispreports_unflag(url):
 @admin_pages.route('/control/courtorders')
 @check_admin
 def courtorders():
-    reports = CourtJudgment.view_summary(request.conn)
-    return render_template('courtorders.html', orders=reports)
+    reports = CourtJudgment.select(request.conn, _orderby='name')
+    return render_template('courtorders.html', judgments=reports)
 
 @admin_pages.route('/control/courtorders/edit/<int:id>')
+@admin_pages.route('/control/courtorders/add')
 @check_admin
-def courtorders_edit(id):
+def courtorders_edit(id=None):
     obj = CourtJudgment(request.conn, id)
     return render_template('courtorders_edit.html',
                            obj=obj,
-                           orders=obj.get_court_orders())
+                           powers=[ (x['id'], x['name'])
+                                    for x in
+                                    CourtPowers.select(request.conn, _orderby='name')
+                                    ]
+                           )
 
 
 @admin_pages.route('/control/courtorders/update/<int:id>', methods=['POST'])
-@admin_pages.route('/control/courtorders/add', methods=['POST'])
+@admin_pages.route('/control/courtorders/insert', methods=['POST'])
 @check_admin
 def courtorders_update(id=None):
     f = request.form
     obj = CourtJudgment(request.conn, id)
-    obj.update({
-        'name': f['name'],
-        'date': f['date'],
-        'url': f['url']
-    })
+    obj.update({x: None if f[x] == '' else f[x] for x in CourtJudgment.FIELDS})
     obj.store()
     request.conn.commit()
     return redirect(url_for('.courtorders'))
@@ -259,18 +260,3 @@ def courtorders_delete(id):
     request.conn.commit()
     return redirect(url_for('.courtorders'))
 
-@admin_pages.route('/control/courtorders/add_order/<int:judgment_id>', methods=['POST'])
-@check_admin
-def courtorders_add_order(judgment_id):
-    f = request.form
-    obj = CourtOrder(request.conn)
-    obj.update({
-        'name': f['name'],
-        'date': f['date'],
-        'url': f['url'],
-        'judgment_id': judgment_id,
-        'network_name': f['network_name']
-    })
-    obj.store()
-    request.conn.commit()
-    return redirect(url_for('.courtorders_edit', id=judgment_id ))

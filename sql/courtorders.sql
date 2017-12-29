@@ -1,11 +1,38 @@
 
-create table court_judgments(id serial primary key, name varchar, date date, url varchar, created timestamptz, last_updated timestamptz);
-create table court_orders(id serial primary key, judgment_id int not null, network_name varchar(64), name varchar, date date, url varchar, created timestamptz, last_updated timestamptz);
-create table court_order_urls(id serial primary key, court_order_id int, urlid int, created timestamptz, last_updated timestamptz);
+create table court_judgments(
+    id serial primary key,
+	name varchar,
+	date date,
+	url varchar,
+    citation varchar,
+    case_number varchar,
+    restriction_type varchar,
+    instruction_type varchar,
+    jurisdiction varchar,
+    power_id int,
+    court_authority varchar,
+    injunction_obtained_by varchar,
+    injunction_represented_by varchar,
+    injunction_instructs varchar,
+    other_docs text,
+    sites_description text,
+    
+	created timestamptz,
+	last_updated timestamptz
+);
 
+create unique index court_judgment_name on court_judgments(name);
 
-alter table court_orders add foreign key (judgment_id) references court_judgments(id) on delete cascade;
-alter table court_order_urls add foreign key(court_order_id) references court_orders(id) on delete cascade;
+create table court_powers(
+    id serial primary key,
+    name varchar unique,
+    legislation varchar,
 
-create unique index court_order_network on court_orders(judgment_id, network_name);
-create unique index unq_court_order_urls on court_order_urls(court_order_id, urlid);
+    created timestamptz,
+    last_updated timestamptz
+);
+
+insert into court_powers(name, legislation) values
+('Copyright, Designs and Patents Act, Section 97A','http://www.legislation.gov.uk/ukpga/1988/48/section/97A'),
+ ('Senior Courts Act 1981, Section 37 (1)','http://www.legislation.gov.uk/ukpga/1981/54/section/37'),
+ ('Digital Economy Act 2017, section 23 (1)', 'http://www.legislation.gov.uk/ukpga/2017/30/section/23');
