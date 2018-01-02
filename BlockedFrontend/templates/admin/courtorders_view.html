@@ -2,7 +2,7 @@
 {% import "paging.part.html" as paging %}
 {% import "forms.part.html" as forms %}
 
-{% set pagetitle = "Court Order Admin" %}
+{% set pagetitle = "Legal Requests Admin" %}
 
 {% block body %}
 <div class="row">
@@ -41,8 +41,8 @@
         {{ field('Instruction type','instruction_type',judgment) }}
         {{ field('Jurisdiction','jurisdiction',judgment) }}
         {{ field('Court/authority','court_authority',judgment) }}
-        {{ field('Injunction obtained by','injunction_obtained_by',judgment) }}
-        {{ field('Injunction represented by','injunction_represented_by',judgment) }}
+        {{ field('Application made by','injunction_obtained_by',judgment) }}
+        {{ field('Applicants represented by','injunction_represented_by',judgment) }}
 
         <div class="row">
             <div class="col-md-6">

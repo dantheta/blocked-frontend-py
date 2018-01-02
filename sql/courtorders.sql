@@ -56,7 +56,7 @@ create table court_judgment_urls(
 
 create unique index on court_judgment_urls(judgment_id, url);
 alter table court_judgment_urls add foreign key (judgment_id) references court_judgments(id) on delete cascade;
-alter table court_judgment_urls add foreign key (group_id) references court_judgment_url_groups(id) on delete set null;
+
 
 create table court_judgment_url_groups (
     id serial primary key,
@@ -68,7 +68,7 @@ create table court_judgment_url_groups (
 
 create unique index on court_judgment_url_groups(judgment_id, name);
 alter table court_judgment_url_groups add foreign key (judgment_id) references court_judgments(id) on delete cascade;
-
+alter table court_judgment_urls add foreign key (group_id) references court_judgment_url_groups(id) on delete set null;
 
 insert into court_powers(name, legislation) values
 ('Copyright, Designs and Patents Act, Section 97A','http://www.legislation.gov.uk/ukpga/1988/48/section/97A'),
