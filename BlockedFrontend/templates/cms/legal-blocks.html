@@ -43,6 +43,19 @@ padding-left: 1.5em !important;
 </div>
 </div>
 
+{% if config['SITE-THEME'] == 'gb' %}
+{{ table_courtorders(blocks) }}
+{% else %}
+{{ table_urllist(blocks) }}
+{% endif %}
+
+{{ paging.page_list('.legal_blocks', page, pagecount, sort=sortorder) }}
+
+</div>
+</div>
+{% endblock %}
+
+{% macro table_courtorders(blocks) %}
 <table class="table">
     <tr>
         <th>Court Judgment / URL {#<a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
@@ -85,9 +98,40 @@ padding-left: 1.5em !important;
     {% endfor %}
     {% endfor %}
 </table>
+{% endmacro %}
 
-{{ paging.page_list('.legal_blocks', page, pagecount, sort=sortorder) }}
+{% macro table_urllist(blocks) %}
+<table class="table table-striped">
+    <tr>
+        <th><a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
+        {% if sortorder == 'url' %}
+            <span class="glyphicon glyphicon-chevron-down"></span>
+        {% endif %}
+        </th>
+        <th>Networks</th>
+        <th>First Detected</th>
+        <th><a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
+        {% if sortorder == 'last_blocked' %}
+            <span class="glyphicon glyphicon-chevron-down"></span>
+        {% endif %}
+        </th>
+    </tr>
+    {% for row in blocks %}
+    <tr>
+        <td>{{ row.url }}
+        <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
+        </td>
+        <td class="networklist">
+            <ul>
+            {% for net in row.networks|sort %}
+                <li>{{ net }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td>{{ row.first_blocked | fmtime }}</td>
+        <td>{{ row.last_blocked | fmtime }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-</div>
-</div>
-{% endblock %}
+{% endmacro %}
