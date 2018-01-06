@@ -30,6 +30,10 @@ banner_text_block(bool): show banner text block, default true
     <![endif]-->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/theme.css?cb={{config.CACHEBUST}}" />
+    <style type="text/css">
+      {% block page_style %}
+      {% endblock %}
+    </style>
   </head>
   <body>
     {{ chunks.piwik() }}

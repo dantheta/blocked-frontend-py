@@ -17,6 +17,18 @@
 {{ g.remote_content.TextAreaThree|safe }}
 {%endblock%}
 
+{% block page_style %}
+
+th.courtjudgment {
+    background-color: #f7f7f7;
+}
+
+td.urlcol {
+padding-left: 1.5em !important;
+}
+
+{% endblock %}
+
 {% block bodyrow2 %}
 <div class="row">
 <div class="col-md-12">
@@ -31,24 +43,32 @@
 </div>
 </div>
 
-<table class="table table-striped">
+<table class="table">
     <tr>
-        <th><a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
+        <th>Court Judgment / URL {#<a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
         {% if sortorder == 'url' %}
             <span class="glyphicon glyphicon-chevron-down"></span>
-        {% endif %}
+        {% endif %}#}
         </th>
         <th>Networks</th>
         <th>First Detected</th>
-        <th><a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
+        <th>Last Checked {#<a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
         {% if sortorder == 'last_blocked' %}
             <span class="glyphicon glyphicon-chevron-down"></span>
-        {% endif %}
+        {% endif %}#}
         </th>
     </tr>
-    {% for row in blocks %}
+    {% for courtorder,corows in blocks|groupby('judgment_name') %}
+    {% if courtorder %}
+    <tr><th colspan="4" class="courtjudgment"><h4>{{ courtorder }}</h4></th></tr>
+    {% endif %}
+    {% for groupname, rows in corows|groupby('url_group_name') %}
+    {% if groupname %}
+    <tr><td colspan="4"><h5>{{ groupname }}</h5></td></tr>
+    {% endif %}
+    {% for row in rows%}
     <tr>
-        <td>{{ row.url }}
+        <td class="urlcol">{{ row.url }}
         <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
         </td>
         <td class="networklist">
@@ -61,6 +81,8 @@
         <td>{{ row.first_blocked | fmtime }}</td>
         <td>{{ row.last_blocked | fmtime }}</td>
     </tr>
+    {% endfor %}
+    {% endfor %}
     {% endfor %}
 </table>
 
