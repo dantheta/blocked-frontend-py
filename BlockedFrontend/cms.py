@@ -67,7 +67,7 @@ def credits():
 @cms_pages.route('/legal-blocks/<int:page>')
 def legal_blocks(page=1):
     g.remote_content = g.remote.get_content('legal-blocks')
-    if current_app.config['SITE_THEME'] == 'gb':
+    if current_app.config['SITE_THEME'] == 'blocked-gb':
         style = 'injunction'
     else:
         style = 'urlrow'
