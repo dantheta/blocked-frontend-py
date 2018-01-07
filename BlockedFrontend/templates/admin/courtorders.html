@@ -27,7 +27,10 @@
             </tr>
 {% for judgment in judgments %}
     <tr>
-        <td><a href="{{url_for('.courtorders_view', id=judgment.id)}}">{{judgment.name}}</a></td>
+        <td>
+            <a href="{{url_for('.courtorders_view', id=judgment.id)}}">{{judgment.name}}</a>
+            <div>{{ judgment.sites_description|null|safe }}</div>
+        </td>
         <td>{{judgment.date}}</td>
         <td>
         <a href="{{ url_for('.courtorders_edit', id=judgment.id)}}" class="btn btn-primary btn-sm">
