@@ -277,7 +277,7 @@ def courtorders_update(id=None):
                 if order_id:
                     order.delete()
                 continue
-            order.update({'network_name': network_name, 'url': url, 'judgment_id': obj['id'], 'date':date})
+            order.update({'network_name': network_name, 'url': url, 'judgment_id': obj['id'], 'date':convertnull(date)})
             order.store()
         request.conn.commit()
         return redirect(url_for('.courtorders'))
