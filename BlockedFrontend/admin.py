@@ -14,6 +14,11 @@ from NORM.exceptions import ObjectNotFound,ObjectExists
 
 admin_pages = Blueprint('admin', __name__, template_folder='templates/admin')
 
+def convertnull(value):
+    if not isinstance(value,(unicode,str)):
+        return value
+    return None if value == '' else value
+
 @admin_pages.before_request
 def setup_db():
     request.conn = psycopg2.connect(current_app.config['DB'])
@@ -260,14 +265,14 @@ def courtorders_update(id=None):
     try:
         f = request.form
         obj = CourtJudgment(request.conn, id)
-        obj.update({x: None if f[x] == '' else f[x] for x in CourtJudgment.FIELDS})
+        obj.update({x: convertnull(f[x]) for x in CourtJudgment.FIELDS})
         obj.store()
 
         applies = f.getlist('applies')
         for order_id, network_name, url, date in zip(f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url'), f.getlist('order_date')):
             order = CourtOrder(request.conn, order_id or None)
             if network_name in applies:
-                order.update({'url': url, 'judgment_id': obj['id'], 'date': date})
+                order.update({'url': url, 'judgment_id': obj['id'], 'date': convertnull(date)})
             else:
                 if order_id:
                     order.delete()
