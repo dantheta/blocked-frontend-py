@@ -37,6 +37,7 @@ create table court_orders(
     id serial primary key,
     judgment_id int not null,
     network_name varchar,
+    date date,
     url varchar,
     created timestamptz,
     last_updated timestamptz

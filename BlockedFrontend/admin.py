@@ -264,15 +264,15 @@ def courtorders_update(id=None):
         obj.store()
 
         applies = f.getlist('applies')
-        for order_id, network_name, url in zip(f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url')):
+        for order_id, network_name, url, date in zip(f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url'), f.getlist('order_date')):
             order = CourtOrder(request.conn, order_id or None)
             if network_name in applies:
-                order.update({'url': url, 'judgment_id': obj['id']})
+                order.update({'url': url, 'judgment_id': obj['id'], 'date': date})
             else:
                 if order_id:
                     order.delete()
                 continue
-            order.update({'network_name': network_name, 'url': url, 'judgment_id': obj['id']})
+            order.update({'network_name': network_name, 'url': url, 'judgment_id': obj['id'], 'date':date})
             order.store()
         request.conn.commit()
         return redirect(url_for('.courtorders'))

@@ -12,7 +12,7 @@
   <form action="{{url_for('.courtorders_update', id=obj.id)}}" method="POST">
   <legend>Edit {{ obj.name}}</legend>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
 
   {{forms.text_field('Name','name', obj.name)}}
   {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date)}}
@@ -69,8 +69,11 @@
         <div class="col-md-3">
       {{ forms.check_field(order.network_name, 'applies', order.network_name, True) }}
         </div>
-        <div class="col-md-9">
+        <div class="col-md-5">
       {{ forms.text_field('Court order URL', 'applies_url', order['url']) }}
+        </div>
+        <div class="col-md-4">
+      {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', order.date) }}
         </div>
   {% endfor %}
     </div>
@@ -82,8 +85,11 @@
         <div class="col-md-3">
       {{ forms.check_field(isp, 'applies', isp) }}
         </div>
-        <div class="col-md-9">
+        <div class="col-md-5">
       {{ forms.text_field('Court order URL', 'applies_url', '') }}
+        </div>
+        <div class="col-md-4">
+      {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', '') }}
         </div>
       {% endif %}
   {% endfor %}

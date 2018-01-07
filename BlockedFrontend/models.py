@@ -117,7 +117,7 @@ class CourtJudgmentURLGroup(DBObject):
 
 class CourtOrder(DBObject):
     TABLE = 'court_orders'
-    FIELDS = ['judgment_id', 'network_name','url']
+    FIELDS = ['judgment_id', 'network_name','url','date']
 
 class CourtPowers(DBObject):
     TABLE = 'court_powers'
