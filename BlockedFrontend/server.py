@@ -87,6 +87,14 @@ def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
 
+@app.template_filter('fmdate')
+def fmdate(s):
+    if not s:
+        return ''
+    if isinstance(s, datetime.date):
+        return s.strftime('%Y-%m-%d')
+    return datetime.datetime.strptime(s, '%Y-%m-%d') \
+        .strftime('%d %B, %Y')
 
 @app.template_filter('null')
 def null(s, default=''):
@@ -123,7 +131,22 @@ def domain(url):
     except Exception as exc:
         logging.warn("filter.domain exception: %s", repr(exc))
         return url
-    
+
+@app.template_filter('customgrouper')
+def customgrouper(values, keys):
+    import itertools
+    """Used by legal blocks template in court orders mode.
+    vars: values - list of values
+          keys - list of keys
+    Groups by compound key made of keys 
+    Assumes correctly sorted input.
+    """
+    return itertools.groupby(
+        values,
+        lambda values: [values[x] for x in keys],
+    )
+
+
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))

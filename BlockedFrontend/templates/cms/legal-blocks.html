@@ -19,12 +19,17 @@
 
 {% block page_style %}
 
-th.courtjudgment {
+td.courtjudgment {
     background-color: #f7f7f7;
 }
 
+td.groupheader h5{
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
 td.urlcol {
-padding-left: 1.5em !important;
+  padding-left: 1.5em !important;
 }
 
 {% endblock %}
@@ -58,26 +63,32 @@ padding-left: 1.5em !important;
 {% macro table_courtorders(blocks) %}
 <table class="table">
     <tr>
-        <th>Court Judgment / URL {#<a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
-        {% if sortorder == 'url' %}
-            <span class="glyphicon glyphicon-chevron-down"></span>
-        {% endif %}#}
-        </th>
+        <th>Court Judgment / URL</th>
         <th>Networks</th>
         <th>First Detected</th>
-        <th>Last Checked {#<a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
-        {% if sortorder == 'last_blocked' %}
-            <span class="glyphicon glyphicon-chevron-down"></span>
-        {% endif %}#}
-        </th>
+        <th>Last Checked</th>
     </tr>
-    {% for courtorder,corows in blocks|groupby('judgment_name') %}
+    {% for (courtorder, judgment_date, judgment_sites_description),corows in blocks|customgrouper(['judgment_name','judgment_date','judgment_sites_description']) %}
     {% if courtorder %}
-    <tr><th colspan="4" class="courtjudgment"><h4>{{ courtorder }}</h4></th></tr>
+    <tr>
+        <td colspan="4" class="courtjudgment">
+            <h4>{{ courtorder }}</h4>
+            <div>{{judgment_date|fmdate}}</div>
+            {% if judgment_sites_description %}
+            <p>{{ judgment_sites_description|safe }}</p>
+            {% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4" class="courtjudgment">
+            <h4>URLs not yet identified with a legal decision to block</h4>
+        </td>
+    </tr>
     {% endif %}
     {% for groupname, rows in corows|groupby('url_group_name') %}
     {% if groupname %}
-    <tr><td colspan="4"><h5>{{ groupname }}</h5></td></tr>
+    <tr><td colspan="4" class="groupheader"><h5>{{ groupname }}</h5></td></tr>
     {% endif %}
     {% for row in rows%}
     <tr>
