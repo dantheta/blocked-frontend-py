@@ -1,0 +1,34 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Legal Requests Admin" %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-6">
+
+    <h1>{{pagetitle}}</h1>
+    <h2>URL Group import</h2>
+
+  </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <form enctype="multipart/form-data" action="{{ url_for('.courtorders_group_do_import') }}" method="POST">
+            <legend>Upload URL groups</legend>
+
+            <input type="file" name="groupfile">
+
+            {{forms.submit('Upload')}}
+        </form>
+
+
+    </div>
+</div>
+
+{% endblock %}
+
+

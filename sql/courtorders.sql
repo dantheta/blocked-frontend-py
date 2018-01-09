@@ -61,7 +61,7 @@ alter table court_judgment_urls add foreign key (judgment_id) references court_j
 
 create table court_judgment_url_groups (
     id serial primary key,
-    judgment_id int not null,
+    judgment_id int null,
     name varchar not null,
     created timestamptz,
     last_updated timestamptz

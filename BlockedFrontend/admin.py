@@ -335,3 +335,66 @@ def courtorders_group_add():
     request.conn.commit()
     flash("Added URL group: "+ request.form['name'])
     return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
+
+@admin_pages.route('/control/courtorders/site/group/import', methods=['GET'])
+@check_admin
+def courtorders_group_import():
+    return render_template('courtorders_group_import.html')
+
+@admin_pages.route('/control/courtorders/site/group/import', methods=['POST'])
+@check_admin
+def courtorders_group_do_import():
+    if 'groupfile' not in request.files:
+        flash('No input file supplied')
+        return redirect(request.url)
+
+    groupfile = request.files['groupfile']
+    if groupfile.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+
+    if groupfile and groupfile.filename.endswith('.csv'):
+        import_groupfile(groupfile)
+
+
+    flash("Imported successfully")
+    return redirect(url_for('.courtorders'))
+
+def import_groupfile(groupfile):
+    import csv
+    reader = csv.reader(groupfile.stream)
+    for row in reader:
+        url = row[0]
+        group = row[1]
+
+        if not url or not group:
+            continue
+
+        try:
+            groupobj = CourtJudgmentURLGroup.select_one(request.conn, name=group)
+            try:
+                urlobj = CourtJudgmentURL.select_one(request.conn, url=url)
+            except ObjectNotFound:
+                urlobj = None
+            if urlobj is None or urlobj['group_id']:
+                # already assigned to a group, create a new url obj and assign that to the group & same judgment
+                urlobj = CourtJudgmentURL(request.conn)
+                urlobj.update({
+                    'judgment_id': groupobj['judgment_id'],
+                    'group_id': groupobj['id'],
+                    'url': url
+                })
+            else:
+                # assign existing url to group
+                urlobj['group_id'] = groupobj['id']
+            try:
+                urlobj.store()
+            except ObjectExists:
+                current_app.logger.warn("Duplicate entry: %s", urlobj.data)
+                request.conn.rollback()
+            else:
+                request.conn.commit()
+        except ObjectNotFound:
+            current_app.logger.warn("Group not found: %s", group)
+            request.conn.rollback()
+

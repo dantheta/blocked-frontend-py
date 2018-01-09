@@ -108,12 +108,12 @@ class CourtJudgment(DBObject):
         return CourtJudgmentURLGroup.select(self.conn, judgment_id=self['id'], _orderby='name')
 
 class CourtJudgmentURL(DBObject):
-    FIELDS = ['judgment_id','url']
+    FIELDS = ['judgment_id','url', 'group_id']
     TABLE = 'court_judgment_urls'
 
 class CourtJudgmentURLGroup(DBObject):
     TABLE = 'court_judgment_url_groups'
-    FIELDS = ['name']
+    FIELDS = ['name','judgment_id']
 
 class CourtOrder(DBObject):
     TABLE = 'court_orders'
