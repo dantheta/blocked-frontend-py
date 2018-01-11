@@ -28,7 +28,16 @@
 
     </div>
 </div>
-
+<div class="row">
+    <div class="col-md-12">
+      <h2>Defined groups</h2>
+        <ul>
+        {% for group in groups %}
+            <li>{{group.name}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}
 
 

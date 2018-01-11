@@ -339,7 +339,7 @@ def courtorders_group_add():
 @admin_pages.route('/control/courtorders/site/group/import', methods=['GET'])
 @check_admin
 def courtorders_group_import():
-    return render_template('courtorders_group_import.html')
+    return render_template('courtorders_group_import.html', groups=CourtJudgmentURLGroup.select(request.conn, _orderby='name'))
 
 @admin_pages.route('/control/courtorders/site/group/import', methods=['POST'])
 @check_admin
