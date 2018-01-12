@@ -72,7 +72,12 @@
                     </h4>
                     <ul>
                     {% for site in grpsites %}
-                        <li><input type="checkbox" name="site_id" value="{{site.id}}" /> {{site.url}}</li>
+                        <li>
+                            <input type="checkbox" name="site_id" value="{{site.id}}" /> {{site.url}}
+                            <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </li>
                     {% endfor %}
                     </ul>
                     {% endfor %}
