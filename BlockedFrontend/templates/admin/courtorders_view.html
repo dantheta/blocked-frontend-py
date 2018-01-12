@@ -45,14 +45,14 @@
         {{ field('Applicants represented by','injunction_represented_by',judgment) }}
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
         <h3>Additional Information</h3>
         <h4>Other court documents</h4>
         <div>{{judgment.other_docs|null|safe}}</div>
         <h4>Sites targeted</h4>
         <div>{{judgment.sites_description|null|safe}}</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
         <h3>Court Orders</h3>
                 <ul>
         {% for order in orders %}
@@ -64,7 +64,7 @@
 
         <h2>Targeted sites</h2>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <form method="POST" action="{{url_for('.courtorders_site_group')}}">
                     {% for sitegrp, grpsites in sites %}
                     <h4 style="padding: 0.25em; background-color: {{'lightblue' if sitegrp else 'lightgray'}}">
@@ -93,31 +93,52 @@
                 </form>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="row">
-                    <div class="col-md-12 well">
-                        <form class="form form-inline" method="POST" action="{{url_for('.courtorders_site_add')}}">
-                            <legend>Add site</legend>
-                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                            <label for="url">URL:</label>
-                            <div class="control-group">
-                                <input class="form-control" type="text" name="url" />
-                                <input class="btn btn-default" type="submit" value="Add" />
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">URLs</div>
+                            <div class="panel-body">
+                                <form class="form" method="POST" action="{{url_for('.courtorders_site_add')}}">
+                                    <legend>Add site</legend>
+                                    <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+                                    <label for="url">URL:</label>
+                                    <div class="control-group">
+                                        <input class="form-control" type="text" name="url" />
+                                    </div>
+                                    <input class="btn btn-default" type="submit" value="Add" />
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 2em">
-                    <div class="col-md-12 well">
-                        <form class="form form-inline" method="POST" action="{{url_for('.courtorders_group_add')}}">
-                            <legend>Add Group</legend>
-                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                            <label for="url">Name:</label>
-                            <div class="control-group">
-                                <input class="form-control" type="text" name="name" />
-                                <input class="btn btn-default" type="submit" value="Add" />
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">URL Groups</div>
+                            <div class="panel-body">
+                                <form class="form form-inline" method="POST" action="{{url_for('.courtorders_group_add')}}">
+                                    <legend>Add Group</legend>
+                                    <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+                                    <label for="url">Name:</label>
+                                    <div class="control-group">
+                                        <input class="form-control" type="text" name="name" />
+                                        <input class="btn btn-default" type="submit" value="Add" />
+                                    </div>
+                                </form>
+                                <h4>Groups</h4>
+                                <ul>
+                                    {% for grp in groups %}
+                                    <li>
+                                        {{ grp[1] }}
+                                        <a href="{{ url_for('.courtorders_group_delete',id=grp[0]) }}">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

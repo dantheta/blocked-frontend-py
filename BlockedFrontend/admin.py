@@ -336,6 +336,15 @@ def courtorders_group_add():
     flash("Added URL group: "+ request.form['name'])
     return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
 
+@admin_pages.route('/control/courtorders/site/group/delete/<int:id>', methods=['GET'])
+@check_admin
+def courtorders_group_delete(id):
+    obj = CourtJudgmentURLGroup(request.conn, id=id)
+    obj.delete()
+    request.conn.commit()
+    flash("Deleted URL group: "+ obj['name'])
+    return redirect(url_for('.courtorders_view', id=obj['judgment_id']))
+
 @admin_pages.route('/control/courtorders/site/delete/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_site_delete(id):
