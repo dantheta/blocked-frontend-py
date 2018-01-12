@@ -78,9 +78,9 @@ td.urlcol {
                 {%- if wiki_url -%}</a>{%- endif -%}
             </h4>
             {% if judgment_url %}
-            <div>Court judgment: <a href="{{ judgment_url}}">{{citation}}</a></div>
+            <p>Court judgment: <a href="{{ judgment_url}}">{{citation}}</a></p>
             {% endif %}
-            <div>{{judgment_date|fmdate}}</div>
+            <p>{{judgment_date|fmdate}}</p>
             {% if judgment_sites_description %}
             <p>{{ judgment_sites_description|safe }}</p>
             {% endif %}
