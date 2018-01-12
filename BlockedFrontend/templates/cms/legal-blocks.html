@@ -68,11 +68,18 @@ td.urlcol {
         <th>First Detected</th>
         <th>Last Checked</th>
     </tr>
-    {% for (courtorder, judgment_date, judgment_sites_description),corows in blocks|customgrouper(['judgment_name','judgment_date','judgment_sites_description']) %}
+    {% for (courtorder, judgment_date, wiki_url, judgment_url, citation, judgment_sites_description),corows in
+        blocks|customgrouper(['judgment_name','judgment_date','wiki_url','judgment_url','citation','judgment_sites_description']) %}
     {% if courtorder %}
     <tr>
         <td colspan="4" class="courtjudgment">
-            <h4>{{ courtorder }}</h4>
+            <h4>{%- if wiki_url -%}<a href="{{wiki_url}}" target="_blank">{%- endif -%}
+                {{ courtorder }}
+                {%- if wiki_url -%}</a>{%- endif -%}
+            </h4>
+            {% if judgment_url %}
+            <div>Court judgment: <a href="{{ judgment_url}}">{{citation}}</a></div>
+            {% endif %}
             <div>{{judgment_date|fmdate}}</div>
             {% if judgment_sites_description %}
             <p>{{ judgment_sites_description|safe }}</p>
