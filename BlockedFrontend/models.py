@@ -91,6 +91,10 @@ class CourtJudgment(DBObject):
     def get_court_order_networks(self):
         return [x['network_name'] for x in self.get_court_orders()]
 
+    def get_court_orders_by_network(self):
+        """Returns a dictionary of network: court order"""
+        return {obj['network_name']: obj for obj in self.get_court_orders()}
+
     def get_urls(self):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
@@ -110,6 +114,9 @@ class CourtJudgment(DBObject):
 class CourtJudgmentURL(DBObject):
     FIELDS = ['judgment_id','url', 'group_id']
     TABLE = 'court_judgment_urls'
+
+    def get_court_judgment(self):
+        return CourtJudgment(self.conn, id=self['judgment_id'])
 
 class CourtJudgmentURLGroup(DBObject):
     TABLE = 'court_judgment_url_groups'

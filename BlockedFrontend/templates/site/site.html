@@ -130,6 +130,9 @@ Your feedback was successfully submitted.
       {% if item.final_url %}
         <a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a>
       {% endif %}
+      {% if item.network_name in judgment_orders and judgment_orders[item.network_name].url %}
+      <div><a href="{{ judgment_orders[item.network_name].url }}" target="_blank">View injunction details</a></div>
+      {% endif %}
     </td>
   {% elif show_lastblocked %}
     <td>{{(item.last_blocked_timestamp|fmtime) or ''}}</td>

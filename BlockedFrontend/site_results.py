@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session
 
 from utils import *
-from models import SavedList, Item
+from models import SavedList, Item, CourtJudgmentURL
 from db import *
 
 from NORM.exceptions import ObjectNotFound
@@ -52,6 +52,7 @@ def check_post():
 @site_pages.route('/site/<path:url>')
 @site_pages.route('/results')
 def site(url=None):
+    conn = db_connect()
     if not url:
         url = request.args['url']
 
@@ -101,13 +102,22 @@ def site(url=None):
 
     if session.get('route') == 'savedlist':
         logging.info("Selecting savedlist")
-        savedlist = SavedList.select_one(db_connect(), name=session['savedlist'][0])
+        savedlist = SavedList.select_one(conn, name=session['savedlist'][0])
     else:
         try:
-            item = Item.get_public_list_item(db_connect(), url)
+            item = Item.get_public_list_item(conn, url)
             savedlist = item.get_list()
         except ObjectNotFound:
             savedlist = None
+
+    try:
+        judgment_url = CourtJudgmentURL.select_one(conn, url=url)
+        judgment = judgment_url.get_court_judgment()
+        judgment_orders = judgment.get_court_orders_by_network()
+    except ObjectNotFound:
+        judgment = None
+        judgment_orders = {}
+        pass
 
     return render_template('site.html',
                            results_blocked=(result for result in results if result['status'] == 'blocked'),
@@ -128,7 +138,10 @@ def site(url=None):
 
                            networks=g.remote.get_networks(),
                            thanks=thanks,
-                           thanksmsg=thanksmsg
+                           thanksmsg=thanksmsg,
+
+                           judgment = judgment,
+                           judgment_orders=judgment_orders
                            )
 
 
