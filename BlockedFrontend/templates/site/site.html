@@ -130,8 +130,8 @@ Your feedback was successfully submitted.
       {% if item.final_url %}
         <a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a>
       {% endif %}
-      {% if item.network_name in judgment_orders and judgment_orders[item.network_name].url %}
-      <div><a href="{{ judgment_orders[item.network_name].url }}" target="_blank">View injunction details</a></div>
+      {% if item.network_id in judgment_orders and judgment_orders[item.network_id].url %}
+      <div><a href="{{ judgment_orders[item.network_id].url }}" target="_blank">View injunction details</a></div>
       {% endif %}
     </td>
   {% elif show_lastblocked %}
@@ -153,6 +153,12 @@ Your feedback was successfully submitted.
 {% if savedlist and config.MODULE_SAVEDLIST %}
 <div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
 {% endif %}
+{% endif %}
+
+{% if judgment and judgment.url %}
+
+<h3>This site has been blocked by <a href="{{ judgment.url }}" title="View court order information">court order</a>.</h3>
+
 {% endif %}
 
 {% if live %}
