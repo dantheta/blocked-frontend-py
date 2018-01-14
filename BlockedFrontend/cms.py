@@ -118,9 +118,17 @@ def reported_sites_post():
 
 @cms_pages.route('/legal-blocks/export')
 def export_blocks():
+    if current_app.config['SITE_THEME'] == 'blocked-uk':
+        return export_blocks_by_injunction()
+    else:
+        return export_blocks_by_url()
+
+def export_blocks_by_url():
     import csv
     import tempfile
     import itertools
+
+
 
     tmpfile = tempfile.SpooledTemporaryFile('w+')
     writer = csv.writer(tmpfile)
@@ -158,6 +166,61 @@ def export_blocks():
         'Content-Disposition': 'attachment; filename=legal-blocks.csv',
         'Content-length': str(length)
         })
+
+
+def export_blocks_by_injunction():
+    import csv
+    import tempfile
+    import itertools
+
+    COLS = [
+        'url',
+        'judgment_name',
+        'judgment_date',
+        'judgment_url',
+        'wiki_url',
+        'judgment_sites_description',
+        'citation',
+        'url_group_name',
+        'first_blocked',
+        'last_blocked',
+        'networks'
+    ]
+
+    tmpfile = tempfile.SpooledTemporaryFile('w+')
+    writer = csv.writer(tmpfile)
+    writer.writerow(['#', "Title: Legal blocks"])
+    writer.writerow(['#', "List saved from blocked.org.uk"])
+    writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks')])
+    writer.writerow([])
+    #writer.writerow(['URL', 'Report URL', 'Networks'])
+    writer.writerow([x.replace('_',' ').title() for x in COLS])
+
+    def get_legal_blocks():
+        page = 0
+        while True:
+            data = request.api.recent_blocks(page, current_app.config['DEFAULT_REGION'], 'injunction')
+            for item in data['results']:                
+                yield [item[x] for x in COLS if x != 'networks'] + item['networks']
+            page += 1
+            if page > get_pagecount(data['urlcount'], 25):
+                break
+
+    for row in get_legal_blocks():
+        writer.writerow(row)
+
+    tmpfile.flush()
+    length = tmpfile.tell()
+    tmpfile.seek(0)
+
+    def returnvalue(*args):
+        for line in tmpfile:
+            yield line
+
+    return Response(returnvalue(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename=legal-blocks.csv',
+        'Content-length': str(length)
+    })
 
 
 # static page routing
