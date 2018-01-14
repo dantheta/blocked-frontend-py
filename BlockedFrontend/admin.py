@@ -384,6 +384,9 @@ def import_groupfile(groupfile):
     reader = csv.reader(groupfile.stream)
     for row in reader:
         url = row[0]
+        if len(row) < 2:
+            continue
+
         group = row[1]
 
         if not url or not group:
