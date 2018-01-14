@@ -4,7 +4,7 @@ import logging
 import datetime
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, abort, config, current_app, session, flash
+    g, url_for, abort, config, current_app, session, flash, jsonify
 
 from models import *
 from auth import *
@@ -416,4 +416,30 @@ def import_groupfile(groupfile):
         except ObjectNotFound:
             current_app.logger.warn("Group not found: %s", group)
             request.conn.rollback()
+
+
+## URL Admin
+
+
+@admin_pages.route('/control/urls', methods=['GET'])
+@check_admin
+def urls():
+    return render_template('admin_urls.html')
+
+@admin_pages.route('/control/urls/check', methods=['GET'])
+@check_admin
+def admin_urls_check():
+    status = request.api.status_url(request.args['url'], request.args.get('normalize', '1') == '1')
+    return jsonify(**status)
+
+@admin_pages.route('/control/urls', methods=['POST'])
+@check_admin
+def urls_post():
+    rsp = request.api.set_status_url(request.form['url'], request.form['status'],
+                                     request.form.get('normalize', '0') == '1')
+    if rsp['success'] == True:
+        flash("URL Status updated")
+    else:
+        flash("Error updating URL status")
+    return redirect(url_for('.urls'))
 

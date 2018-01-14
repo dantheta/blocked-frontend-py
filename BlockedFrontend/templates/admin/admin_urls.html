@@ -1,0 +1,75 @@
+{% extends "admin.page.html" %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Administrator Login" %}
+
+
+{% block body %}
+<div class="row">
+
+<div class="col-md-6">
+
+<h2>URL Admin</h2>
+
+<div>
+<form action="{{url_for('.urls')}}" method="POST">
+    <div class="form-group">
+        <label class="control-label" for="url">URL:</label>
+        <div class="input-group">
+            <input class="form-control" id="url" name="url" value="" placeholder=""/>
+            <span class="input-group-btn">
+                <button id="check" class="btn btn-default" type="button">Check</button>
+            </span>
+        </div>
+    </div>
+    {{ forms.check_field("Normalize URL", 'normalize', 1, True) }}
+    <div class="well">
+    {{ forms.static_field('Title:', 'title', '') }}
+    {{ forms.static_field('URL:', 'url_stored', '') }}
+    {{ forms.static_field('URL Status:', 'url_status', '') }}
+    </div>
+
+    {{ forms.select_field('New Status:', 'status', None, [
+        ('duplicate','duplicate'),
+        ('invalid','invalid'),
+        ('disallowed-by-robots-txt', 'disallowed-by-robots-txt'),
+        ('ok', 'ok'),
+        ])
+        }}
+<input type="submit" class="btn btn-primary" value="Submit" />
+</form>
+</div>
+
+</div><!-- /.col -->
+    <div class="col-md-4 col-md-offset-2">
+        <div class="alert alert-info">Unchecking "Normalize URL" allows you to check and change the status of URLs
+            which have case variations or end with '/'.
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block page_script %}
+
+$(document).ready(function(){
+  $('#check').click(function(){
+    args = {'url': $('#url').val(), 'normalize': 1};
+    if ($('input[name=normalize]').prop('checked') == false) {
+        args['normalize'] = 0;
+    }
+    $.get('/control/urls/check', args, function(data,textstatus,xhr) {
+      $('#url_stored').text(data.url);
+      $('#title').text(data.title);
+      $('#url_status').text(data['url-status']);
+      $('#url').parent().parent().addClass('has-success');
+      $('#url').parent().parent().removeClass('has-error');
+    }).fail(function(){
+      $('#url_stored').text('* not found *');
+      $('#url').parent().parent().addClass('has-error');
+      $('#url').parent().parent().removeClass('has-success');
+    });
+  });
+});
+
+{% endblock %}

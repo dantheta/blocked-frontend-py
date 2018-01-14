@@ -1,21 +1,28 @@
 
 {% macro text_field(label, name, value='', placeholder='') %}
 <div class="form-group">
-    <label for="{{name}}">{{label}}</label>
+    <label class="control-label" for="{{name}}">{{label}}</label>
     <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
+</div>
+{% endmacro %}
+
+{% macro static_field(label, id, value='', placeholder='') %}
+<div class="form-group">
+    <label class="control-label" >{{label}}</label>
+    <p class="form-control-static" id="{{id}}">{{ value or '' }}</p>
 </div>
 {% endmacro %}
 
 {% macro textarea_field(label, name, value='') %}
 <div class="form-group">
-    <label for="{{name}}">{{label}}</label>
+    <label class="control-label" for="{{name}}">{{label}}</label>
     <textarea class="form-control" name="{{name}}">{{value or ''}}</textarea>
 </div>
 {% endmacro %}
 
 {% macro select_field(label, name, value=None, options=[]) %}
 <div class="form-group">
-    <label for="{{name}}">{{label}}</label>
+    <label class="control-label" for="{{name}}">{{label}}</label>
     <select class="form-control" name="{{ name}}">
         {% for opt in options %}
         {% if opt is sequence %}
@@ -31,7 +38,7 @@
 {% macro check_field(label, name, value, checked=False) %}
 <div class="form-group">
 <div class="checkbox">
-  <label>
+  <label class="control-label">
     <input type="checkbox" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
     {{ label }}
   </label>
@@ -41,7 +48,7 @@
 
 {% macro password_field(label, name, value='', placeholder='') %}
 <div class="form-group">
-    <label for="{{name}}">{{label}}</label>
+    <label class="control-label" for="{{name}}">{{label}}</label>
     <input class="form-control" type="password" name="{{name}}" value="{{value}}" placehholder="{{placeholder}}"/>
 </div>
 {% endmacro %}

@@ -108,6 +108,18 @@ class ApiClient(BaseApiClient):
         req['signature'] = self.sign(req, ['url'])
         return self.POST('submit/url', req)
 
+    def status_url(self, url, normalize=True):
+        req = {'url':url, 'normalize': '1' if normalize else '0'}
+        return self._request('status/url', req)
+
+    def set_status_url(self, url, status, normalize=True):
+        req = {'url': url, 'status': status,
+               'normalize': '1' if normalize else '0',
+               'date': self.timestamp()
+               }
+        req['signature'] = self.sign(req, ['url'])
+        return self.POST('status/url', req)
+
     def search_url(self, search, page=0, exclude_adult=0):
         """Search sites by keyword"""
 
@@ -149,10 +161,6 @@ class ApiClient(BaseApiClient):
     def ispreport_stats(self):
         req = {'date': self.timestamp()}
         return self._request('status/ispreport-stats', req)
-
-    def status_url(self, url):
-        req = {'url': url}
-        return self._request('status/url', req)
 
     def status_probes(self, region):
         req = {'date':self.timestamp()}
