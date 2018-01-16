@@ -32,9 +32,20 @@ def index():
         
         )
 
+def load_country_data():
+    import yaml
+
+    with current_app.open_resource('data/countries.yml') as fp:
+        return yaml.load(fp)
+
+
 @stats_pages.route('/stats/probes')
 def probe_stats():
     data = request.api.status_probes(current_app.config['DEFAULT_REGION'])
+    country_names = load_country_data()
+
+    current_app.logger.info("%s", country_names)
+
     now = datetime.datetime.now()
     for d in data['status']:
         d['parsed_timestamp'] = parse_timestamp(d['lastseen'])
@@ -42,8 +53,10 @@ def probe_stats():
             d['age'] = now - d['parsed_timestamp']
         else:
             d['age'] = None
+        d['country'] = country_names.get([x for x in d['regions'] if x != 'eu'][0])
 
-    return render_template('probes.html',
+    return render_template('stats/probes.html',
         data=data,
+        country_names=country_names,
         networks=g.remote.get_networks(),
         )
