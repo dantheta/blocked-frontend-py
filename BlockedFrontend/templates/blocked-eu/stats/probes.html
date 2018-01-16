@@ -26,7 +26,6 @@
 <tr>
   <th>Network</th>
   <th>Country</th>
-  <th>Filters Enabled</th>
   <th>Supplied by</th>
   <th>Status</th>
   <th>Last Seen</th>
@@ -46,14 +45,14 @@
   <td>
     {{ d.country }}
   </td>
+
   <td>
-    {% if d.filter_enabled == True %}
-    <span class="label label-success">Enabled</span>
-    {% elif d.filter_enabled == False %}
-    <span class="label label-warning">Not enabled</span>
+    {% if d.owner_link %}
+    <a href="{{d.owner_link}}" target="_blank">{{d.location}}</a>
+    {% else %}
+    {{d.location}}
     {% endif %}
   </td>
-  <td>{{d.location}}</td>
   <td>
     {% if d.probe_status == 'active' %}
     {% if d.status == 'down' or d.lastseen == None %}
