@@ -97,7 +97,11 @@
 {{ menu_link("Credits" ,'/credits') }}
 {{ menu_link_eq("Statistics", '/stats') }}
 {{ menu_link("Status", '/stats/probes') }}
+{% if config.SITE_THEME == 'blocked-eu' %}
+{{ menu_link("Contact", '/contact') }}
+{% else %}
 <a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
+{% endif %}
 
 {% endmacro %}
 
