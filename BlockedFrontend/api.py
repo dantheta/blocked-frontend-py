@@ -108,8 +108,10 @@ class ApiClient(BaseApiClient):
         req['signature'] = self.sign(req, ['url'])
         return self.POST('submit/url', req)
 
-    def status_url(self, url, normalize=True):
+    def status_url(self, url, region=None, normalize=True):
         req = {'url':url, 'normalize': '1' if normalize else '0'}
+        if region:
+            req['region'] = region
         return self._request('status/url', req)
 
     def set_status_url(self, url, status, normalize=True):

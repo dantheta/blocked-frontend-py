@@ -1,7 +1,7 @@
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, session
+    g, url_for, session, current_app
 
 from utils import *
 from models import SavedList, Item, CourtJudgmentURL
@@ -68,7 +68,7 @@ def site(url=None):
     # workaround for apache folding // into /
     url = fix_path(url)
 
-    data = request.api.status_url(url)
+    data = request.api.status_url(url, current_app.config['DEFAULT_REGION'])
     activecount = 0
     pastcount = 0
     can_unblock = None

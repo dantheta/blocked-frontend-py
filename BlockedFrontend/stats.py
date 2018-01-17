@@ -10,7 +10,16 @@ stats_pages = Blueprint('stats', __name__,
 
 
 @stats_pages.route('/stats')
-def index():
+def stats():
+    if current_app.config['SITE_THEME'] == 'blocked-eu':
+        return stats_eu()
+    else:
+        return stats_gb()
+
+def stats_eu():
+    return render_template('stats/stats.html')
+
+def stats_gb():
     result = request.api.isp_stats()
     ispstats = result['isp-stats']
     isps = ispstats.keys()
@@ -18,7 +27,7 @@ def index():
 
     category_stats = request.api.category_stats()
 
-    return render_template('stats.html',
+    return render_template('stats/stats.html',
         ispstats=ispstats,
         isps=isps,
         total=[ ispstats[x]['total']  for x in isps ],
