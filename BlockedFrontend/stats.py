@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
 from utils import *
+from resources import *
 
 stats_pages = Blueprint('stats', __name__,
     template_folder='templates/stats')
@@ -41,11 +42,7 @@ def stats_gb():
         
         )
 
-def load_country_data():
-    import yaml
 
-    with current_app.open_resource('data/countries.yml') as fp:
-        return yaml.load(fp)
 
 
 @stats_pages.route('/stats/probes')
@@ -53,7 +50,6 @@ def probe_stats():
     data = request.api.status_probes(current_app.config['DEFAULT_REGION'])
     country_names = load_country_data()
 
-    current_app.logger.info("%s", country_names)
 
     now = datetime.datetime.now()
     for d in data['status']:

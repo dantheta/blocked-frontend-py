@@ -1,0 +1,243 @@
+{% extends "BasicPage.page.html" %}
+{% from "network_description.part.html" import isp_info, popover_js %}
+
+{% macro status_names(status) %}
+{{ config.STATUS_NAMES.get(status, status) }}
+{% endmacro %}
+
+
+
+{%set titletag = "Site report: " + domain %}
+{%set pagetitle = domain %}
+{%set pagerole = "Site blocking report" %}
+
+
+{% block og %}
+<meta property="og:site_name" content="Report mobile and Internet Service Providers blocking sites" />
+<meta property="og:type" content="article" />
+<meta property="article:author" content="https://www.openrightsgroup.org" />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:title" name="twitter:title" content="Site report for {{pagetitle}}" />
+<meta name="twitter:site" content="" />
+<meta name="twitter:site:id" content="" />
+<meta property="og:url" name="twitter:url" content="{{request.url}}" />
+<meta property="og:description" name="twitter:description" content="Report incorrectly blocked sites on UK ISP and mobile networks" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:image" property="og:image" content="https://www.blocked.org.uk/assets/images/blocked/socialmedia/blocked_result.jpg" />
+
+{% endblock %}
+
+
+{%block banner_text%}
+
+{%endblock%}
+
+{% block page_style %}
+#active th {
+    width: 20%;
+}
+
+.results-table th:first-child {
+    width: 30%;
+}
+
+{% endblock %}
+
+
+{%block page_menu%}
+  <div><a href="{{ url_for('.check',mode='live')}}">Check if a site is being blocked</a></div>
+{% endblock %}
+
+{% block page_script %}
+  $(document).ready(function(){
+{% if activecount > 0 and not live %}
+    $('#pastblock').hide();
+    $('#allresults').hide();
+
+    $('#showpast').click(function() {
+      $('#pastblock').slideDown();
+      return false;
+    });
+    $('#showallresults').click(function(){
+      $('#pastblock').slideDown();
+      $('#allresults').slideDown();
+      return false;
+    });
+{% endif %}
+{% if live %}
+    $('#unblockbtn').addClass('btn-disabled');
+    $('#unblockbtn').attr('disabled','disabled');
+    StreamResults('{{url}}');
+{% endif %}
+    $('#copybtn').click(function(){
+      $('#permalink').select();
+      document.execCommand('copy');
+
+    });
+    {{ popover_js() }}
+  });
+{% endblock %}
+
+{% block page_js_libs %}
+{% if live %}
+<script src="/static/stream.js?c=6" type="application/javascript"></script>
+{% endif %}
+{% endblock %}
+
+{%macro results_table(id, results, show_lastblocked=True, show_firstblocked=False, show_category=False, show_status=False) %}
+<table id="{{ id }}" class="table results-table">
+<tr>
+  <th>ISP</th>
+  <th>Country</th>
+  {% if show_firstblocked %}
+    <th>First Blocked</th>
+  {% endif %}
+  <th>Last Checked</th>
+  {% if show_category %}
+    <th>Category</th>
+    <th></th>
+  {% elif show_firstblocked %}
+    <th>First Blocked</th>
+  {% elif show_lastblocked %}
+    <th>Last Blocked</th>
+  {% elif show_status %}
+    <th>Status</th>
+  {% else %}
+    <th></th>
+  {% endif %}
+</tr>
+{% for item in results %}
+<tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if show_status and item.status in ('error','dnserror','sslerror') else ''}}">
+  <td >
+    {{ item.network_name }}
+  </td>
+  <td>
+    {{ country_names[ item.regions|reject('equalto','eu')|first ] }}
+  </td>
+  {% if show_firstblocked %}
+  <td>
+    {{item.status_timestamp|fmtime}}
+  </td>
+  {% endif %}
+  <td>
+    {{item.status_timestamp|fmtime}}
+  </td>
+  {% if show_category %}
+    <td>{{item.category}}
+    {% if item.blocktype == 'COPYRIGHT' %}
+    <p><i>This site has been
+      {% if item.final_url %}
+      <a href="{{item.final_url}}" rel="nofollow" target="_blank" title="View ISP court order information">blocked by court order</a>
+      {% else %}
+      blocked by court order
+      {% endif %}
+      .
+    </i></p>
+    {% endif %}
+    </td>
+
+    <td>
+      {% if item.final_url %}
+        <a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a>
+      {% endif %}
+      {% if item.network_id in judgment_orders and judgment_orders[item.network_id].url %}
+      <div><a href="{{ judgment_orders[item.network_id].url }}" target="_blank">View injunction details</a></div>
+      {% endif %}
+    </td>
+  {% elif show_lastblocked %}
+    <td>{{(item.last_blocked_timestamp|fmtime) or ''}}</td>
+  {% elif show_status %}
+    <td>{{ status_names(item.status) }}</td>
+  {% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{%endmacro%}
+
+
+{%block body %}
+
+
+{% if judgment and judgment.url %}
+
+<h3>This site has been blocked by <a href="{{ judgment.url }}" title="View court order information">court order</a>.</h3>
+
+{% endif %}
+
+{% if live %}
+<h3>Active blocks</h3>
+{% else %}
+<h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
+{% endif %}
+
+{{results_table('active', results_blocked, show_firstblocked=True, show_category=True) }}
+
+
+<div class="showmore">
+{% if pastcount > 0 %}
+  <a href="#" id="showpast">View past blocks for this site</a>
+{% endif %}
+{% if activecount > 0 %}
+  <a href="#" id="showallresults">Show all results</a>
+{% endif %}
+</div>
+
+{% if pastcount > 0 or live %}
+<div id="pastblock">
+{% if live %}
+<h3>Past blocks</h3>
+{% else %}
+<h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
+{% endif %}
+
+{{ results_table('past', results_past) }}
+
+</div>
+{% endif %}
+
+<div id="allresults">
+<h3>All results</h3>
+
+{{ results_table('all', results_all, show_lastblocked = False, show_status=True) }}
+</div>
+
+<div> <!-- actions -->
+
+
+<a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+
+  </div>
+
+  <div class="col-md-6">
+    <h4>Link to this result</h4>
+    <form class="form-horizontal">
+      <div class="form-group">
+        <div class="col-sm-12">
+          <div class="input-group">
+            <input class="form-control" type="text" id="permalink" name="permalink" value="{{ config.SITE_URL }}{{  url_for('.site', url=url)  }}">
+            <span class="input-group-btn">
+              <button title="Copy this permalink to the clipboard" id="copybtn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-copy"></span></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+  </div>
+
+</div> <!-- /.row -->
+
+<div class="row shaded-row">
+{{chunks.contactChunk() }}
+</div>
+
+{% endblock %}
+

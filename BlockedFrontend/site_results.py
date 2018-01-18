@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session, current_app
 
 from utils import *
+from resources import *
 from models import SavedList, Item, CourtJudgmentURL
 from db import *
 
@@ -55,6 +56,8 @@ def site(url=None):
     conn = db_connect()
     if not url:
         url = request.args['url']
+
+    country_names = load_country_data()
 
     try:
         thanks = session.pop('thanks')
@@ -139,6 +142,8 @@ def site(url=None):
                            networks=g.remote.get_networks(),
                            thanks=thanks,
                            thanksmsg=thanksmsg,
+
+                           country_names=country_names,
 
                            judgment = judgment,
                            judgment_orders=judgment_orders
