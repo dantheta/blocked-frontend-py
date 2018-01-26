@@ -98,6 +98,12 @@ td.urlcol {
     <tr><td colspan="4" class="groupheader"><h5>{{ groupname }}</h5></td></tr>
     {% endif %}
     {% for row in rows%}
+        {% if row.url == None %}
+    <tr>
+        <td colspan="4">No sites or IP addresses currently detected.</td>
+    </tr>
+        {% else %}
+
     <tr>
         <td class="urlcol">{{ row.url }}
         <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
@@ -112,6 +118,7 @@ td.urlcol {
         <td>{{ row.first_blocked | fmtime }}</td>
         <td>{{ row.last_blocked | fmtime }}</td>
     </tr>
+       {% endif %}
     {% endfor %}
     {% endfor %}
     {% endfor %}
