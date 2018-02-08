@@ -148,3 +148,22 @@ class CourtPowers(DBObject):
     TABLE = 'court_powers'
     FIELDS = ['name','legislation']
 
+
+class Test(DBObject):
+    TABLE = 'tests.test_cases'
+    FIELDS = [
+        'name',
+        'status',
+        'tags',
+        'filter',
+        'sent',
+        'total',
+        'received',
+        'routing_key',
+        'isps',
+        'check_interval',
+        'last_check',
+        'repeat_interval',
+        'last_run',
+        'batch_size',
+    ]

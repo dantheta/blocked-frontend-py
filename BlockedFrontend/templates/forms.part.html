@@ -25,10 +25,10 @@
     <label class="control-label" for="{{name}}">{{label}}</label>
     <select class="form-control" name="{{ name}}">
         {% for opt in options %}
-        {% if opt is sequence %}
-        <option value="{{opt[0]}}" {{'selected' if opt[0] == value else ''}}>{{opt[1]}}</option>
-        {% else %}
+        {% if opt is string %}
         <option value="{{opt}}" {{'selected' if opt == value else ''}}>{{opt}}</option>
+        {% else %}
+        <option value="{{opt[0]}}" {{'selected' if opt[0] == value else ''}}>{{opt[1]}}</option>
         {% endif %}
         {% endfor %}
     </select>

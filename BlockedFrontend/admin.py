@@ -9,6 +9,7 @@ from flask import Blueprint, render_template, redirect, request, \
 from models import *
 from auth import *
 from utils import *
+from resources import *
 
 from NORM.exceptions import ObjectNotFound,ObjectExists
 
@@ -495,3 +496,50 @@ def urls_post():
         flash("Error updating URL status")
     return redirect(url_for('.urls'))
 
+
+## Tests admin
+
+@admin_pages.route('/control/tests')
+@check_admin
+def tests():
+    tests = Test.select(request.conn, _orderby='name')
+    return render_template('tests.html', tests=tests)
+
+@admin_pages.route('/control/tests/add')
+@admin_pages.route('/control/tests/edit/<int:id>')
+@check_admin
+def tests_edit(id=None):
+    test = Test(request.conn, id=id)
+    return render_template('tests_edit.html',
+                           test=test,
+                           isps=load_isp_data(),
+                           countries=load_country_data(),
+                           filters=load_data('filters'),
+                           tags=load_data('tags')
+                           )
+
+@admin_pages.route('/control/tests/update', methods=['POST'])
+@check_admin
+def tests_update():
+    f = request.form
+    test = Test(request.conn, id=(f['id'] or None))
+    test.update({
+        'name': f['name'],
+        'description': f['description'],
+        'check_interval': f['check_interval'],
+        'repeat_interval': f['repeat_interval'] or None,
+        'batch_size': f['batch_size']
+    })
+    test.store()
+    request.conn.commit()
+    flash("Test case updated")
+    return redirect(url_for('.tests'))
+
+@admin_pages.route('/control/tests/delete/<int:id>')
+@check_admin
+def tests_delete(id):
+    t = Test(request.conn, id)
+    t.delete()
+    request.conn.commit()
+    flash("Test case deleted")
+    return redirect(url_for('.tests'))

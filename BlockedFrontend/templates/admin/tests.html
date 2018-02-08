@@ -1,0 +1,41 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Test Cases Admin" %}
+
+{% block body %}
+<div>
+    <a href="{{ url_for('.tests_edit') }}" class="btn btn-default">Add Test Case</a>
+</div>
+<div class="row">
+  <div class="col-md-12">
+
+      <table class="table table-striped">
+          <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th></th>
+          </tr>
+          {% for test in tests %}
+          <tr>
+              <td>{{ test.name }}</td>
+              <td>{{ test.status }}</td>
+              <td>
+                  {% if test.total %}
+                  {{ test.sent / test.total|float }}
+                  {% endif %}
+              </td>
+              <td>
+                  <a href="{{ url_for('.tests_edit', id=test.id) }}">Edit</a>
+                  <a href="{{ url_for('.tests_delete', id=test.id) }}">Delete</a>
+              </td>
+          </tr>
+
+          {% endfor %}
+      </table>
+
+  </div>
+</div>
+{% endblock %}
