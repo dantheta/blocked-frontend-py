@@ -1,0 +1,29 @@
+eu:
+  gb:
+    - bt-unfiltered
+    - plusnet-unfiltered
+    - sky-unfiltered
+    - talktalk-unfiltered
+    - virginmedia-unfiltered
+  "no":
+    - canaldigital_no
+    - get_no
+    - lynet_no
+    - nextgentel_no
+    - powertech_no
+  be:
+    - belgacom
+    - edpnet
+    - voo_be
+  de:
+    - deutsche_telekom
+  es:
+    - jazznet
+  fr:
+    - proxad
+  at:
+    - telekom-at
+    - upc-at
+  nl:
+    - upc-nl
+    - xs4all

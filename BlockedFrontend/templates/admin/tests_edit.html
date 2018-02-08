@@ -1,0 +1,61 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Test Cases Admin" %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-9">
+    <form class="form" method="POST" action="{{ url_for('.tests_update') }}">
+        <input type="hidden" name="id" value="{{ test.id|null }}" />
+        <legend>Add test case</legend>
+
+        {{ forms.text_field('Name', 'name', test.name) }}
+        {{ forms.textarea_field('Description', 'description', test.name) }}
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Tags</h3>
+                {% for tag in tags %}
+                {{ forms.check_field(tag, 'tags', tag, tag in (test.tags or [])) }}
+                {% endfor %}
+            </div>
+            <div class="col-md-6">
+                <h3>Filter</h3>
+                {{ forms.select_field('Filter set', 'filter', test.filter, filters) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3>ISPs</h3>
+                <div class="row">
+                {% for country, networks in isps.eu.iteritems() | sort %}
+                    <div class="col-md-2">
+                    <h4>{{ countries[country] }}</h4>
+                    {% for network in networks %}
+                    {{ forms.check_field(network, 'isps', network, network in (test.isps or [])) }}
+                    {% endfor %}
+
+                    </div>
+                {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        {{ forms.text_field('Check Interval', 'check_interval', test.check_interval) }}
+        {{ forms.text_field('Repeat Interval', 'repeat_interval', test.repeat_interval) }}
+        {{ forms.text_field('Batch Size', 'batch_size', test.batch_size) }}
+        {{ forms.submit('Submit') }}
+    </form>
+
+
+  </div>
+  <div class="col-md-3">
+      <div class="well">
+
+      </div>
+  </div>
+</div>
+{% endblock %}
