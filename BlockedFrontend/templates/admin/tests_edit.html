@@ -17,13 +17,11 @@
         <div class="row">
             <div class="col-md-6">
                 <h3>Tags</h3>
-                {% for tag in tags %}
-                {{ forms.check_field(tag, 'tags', tag, tag in (test.tags or [])) }}
-                {% endfor %}
+                {{ forms.select_field('Tag', 'tag', test.tag, ['']+tags) }}
             </div>
             <div class="col-md-6">
                 <h3>Filter</h3>
-                {{ forms.select_field('Filter set', 'filter', test.filter, filters) }}
+                {{ forms.select_field('Filter set', 'filter', test.filter, ['']+filters) }}
             </div>
         </div>
 
