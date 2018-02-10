@@ -9,6 +9,8 @@ from flask import Blueprint, render_template, redirect, request, \
 from utils import *
 from models import Item
 
+from resources import load_country_data
+
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
 
@@ -65,17 +67,23 @@ def credits():
 
 @cms_pages.route('/legal-blocks')
 @cms_pages.route('/legal-blocks/<int:page>')
-def legal_blocks(page=1):
+@cms_pages.route('/legal-blocks/<region>')
+@cms_pages.route('/legal-blocks/<region>/<int:page>')
+def legal_blocks(page=1, region=None):
     g.remote_content = g.remote.get_content('legal-blocks')
     if current_app.config['SITE_THEME'] == 'blocked-uk':
         style = 'injunction'
     else:
         style = 'urlrow'
-    data = request.api.recent_blocks(page-1, current_app.config['DEFAULT_REGION'], style, request.args.get('sort','url'))
+    if not region:
+        region = current_app.config['DEFAULT_REGION']
+    data = request.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
     blocks = data['results']
     count = data['count']
     urlcount = data['urlcount']
     return render_template('legal-blocks.html',
+            countries = load_country_data(),
+            region=region,
             page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
             pagecount = get_pagecount(urlcount, 25)
             )
@@ -117,13 +125,16 @@ def reported_sites_post():
         return redirect( url_for('.reported_sites') )
 
 @cms_pages.route('/legal-blocks/export')
-def export_blocks():
+@cms_pages.route('/legal-blocks/export/<region>')
+def export_blocks(region=None):
+    if not region:
+        region = current_app.config['DEFAULT_REGION']
     if current_app.config['SITE_THEME'] == 'blocked-uk':
-        return export_blocks_by_injunction()
+        return export_blocks_by_injunction(region)
     else:
-        return export_blocks_by_url()
+        return export_blocks_by_url(region)
 
-def export_blocks_by_url():
+def export_blocks_by_url(region):
     import csv
     import tempfile
     import itertools
@@ -141,7 +152,7 @@ def export_blocks_by_url():
     def get_legal_blocks():
         page = 0
         while True:
-            data = request.api.recent_blocks(page, current_app.config['DEFAULT_REGION'])
+            data = request.api.recent_blocks(page, region)
             
             for item in data['results']:
                 yield item['url'], item['network_name']
@@ -168,7 +179,7 @@ def export_blocks_by_url():
         })
 
 
-def export_blocks_by_injunction():
+def export_blocks_by_injunction(region):
     import csv
     import tempfile
     import itertools
@@ -199,7 +210,7 @@ def export_blocks_by_injunction():
     def get_legal_blocks():
         page = 0
         while True:
-            data = request.api.recent_blocks(page, current_app.config['DEFAULT_REGION'], 'injunction')
+            data = request.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:                
                 yield [item[x] for x in COLS if x != 'networks'] + item['networks']
             page += 1

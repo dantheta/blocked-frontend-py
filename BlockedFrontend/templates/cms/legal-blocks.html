@@ -39,12 +39,28 @@ td.urlcol {
 <div class="col-md-12">
 
 <div class="row">
-<div class="col-md-9">
+<div class="col-md-7">
     <h2>Recent legally-blocked sites</h2>
     <h4>{{urlcount}} site{{'s' if urlcount != 1 else '' }} detected</h4>
 </div>
-<div class="col-md-3">
-    <a style="margin-top: 20px" href="{{ url_for('.export_blocks') }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-save"></span> Export</a>
+<div class="col-md-5" style="padding-top: 20px">
+    {% if config['SITE_THEME'] == 'blocked-eu' %}
+      <div class="btn-group">
+      <button  style="margin-right: 16px" type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="glyphicon glyphicon-filter"></span>
+        Filter by country <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        {% if region %}
+          <li><a href="{{ url_for('.legal_blocks', page=page, sort=sortorder, region=None) }}">(all)</a></li>
+        {% endif %}
+        {% for code,country in countries.iteritems() %}
+          <li><a href="{{ url_for('.legal_blocks', page=page, sort=sortorder, region=code) }}">{{ country }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    <a href="{{ url_for('.export_blocks', region=region) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-save"></span> Export</a>
 </div>
 </div>
 
@@ -54,7 +70,7 @@ td.urlcol {
 {{ table_urllist(blocks) }}
 {% endif %}
 
-{{ paging.page_list('.legal_blocks', page, pagecount, sort=sortorder) }}
+{{ paging.page_list('.legal_blocks', page, pagecount, region=region, sort=sortorder) }}
 
 </div>
 </div>
@@ -128,14 +144,14 @@ td.urlcol {
 {% macro table_urllist(blocks) %}
 <table class="table table-striped">
     <tr>
-        <th><a href="{{ url_for('.legal_blocks', page=page, sort='url') }}" title="Sort by URL">URL</a>
+        <th><a href="{{ url_for('.legal_blocks', page=page, region=region, sort='url') }}" title="Sort by URL">URL</a>
         {% if sortorder == 'url' %}
             <span class="glyphicon glyphicon-chevron-down"></span>
         {% endif %}
         </th>
         <th>Networks</th>
         <th>First Detected</th>
-        <th><a href="{{ url_for('.legal_blocks', page=page, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
+        <th><a href="{{ url_for('.legal_blocks', page=page, region=region, sort='last_blocked') }}" title="Sort by last check date">Last Checked</a>
         {% if sortorder == 'last_blocked' %}
             <span class="glyphicon glyphicon-chevron-down"></span>
         {% endif %}
