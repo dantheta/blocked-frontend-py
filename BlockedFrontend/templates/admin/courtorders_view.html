@@ -70,16 +70,22 @@
                     <h4 style="padding: 0.25em; background-color: {{'lightblue' if sitegrp else 'lightgray'}}">
                         {{sitegrp or 'Uncategorized'}}
                     </h4>
-                    <ul>
+                    <table>
                     {% for site in grpsites %}
-                        <li>
-                            <input type="checkbox" name="site_id" value="{{site.id}}" /> {{site.url}}
+                        <tr>
+                            <td>
+                            <input type="checkbox" name="site_id" value="{{site.id}}" />
+                            </td>
+                            <td>{{site.url}}</td>
+                            <td>{{site.whois_expiry|fmdate}}</td>
+                            <td>
                             <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </a>
-                        </li>
+                            </td>
+                        </tr>
                     {% endfor %}
-                    </ul>
+                    </table>
                     {% endfor %}
                     {% if groups|length > 0 %}
                     <div class="row">
