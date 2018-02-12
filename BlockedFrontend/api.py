@@ -77,6 +77,7 @@ class ApiClient(BaseApiClient):
         'status/blocks': ['date'],
         'status/ispreports': ['date'],
         'status/stats': ['date'],
+        'status/country-stats': ['date'],
         'status/isp-stats': ['date'],
         'status/category-stats': ['date'],
         'status/domain-isp-stats': ['date'],
@@ -135,6 +136,10 @@ class ApiClient(BaseApiClient):
     def stats(self):
         req = {'date': self.timestamp()}
         return self._request('status/stats', req)
+
+    def country_stats(self):
+        req = {'date': self.timestamp()}
+        return self._request('status/country-stats', req)
 
     def reports(self, page, isp=None, admin=False):
         req = {'date': self.timestamp(), 'page': str(page)}

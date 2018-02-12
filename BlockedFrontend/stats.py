@@ -13,9 +13,28 @@ stats_pages = Blueprint('stats', __name__,
 @stats_pages.route('/stats')
 def stats():
     if current_app.config['SITE_THEME'] == 'blocked-eu':
-        abort(404)
+        return stats_eu()
     else:
         return stats_gb()
+
+def stats_eu():
+    import operator
+    results = request.api.country_stats()
+    countries = load_country_data()
+
+    # exclude EU region and sort by country name
+    stats = sorted([x for x in results['stats'] if x['region'] != 'eu'],
+                   key=operator.itemgetter('region'),
+                   cmp=lambda x,y: cmp(countries[x], countries[y]))
+
+    labels = [countries[x['region']] for x in stats ]
+    values = [x['blocked_url_count'] for x in stats ]
+
+    return render_template('stats-eu.html',
+                           labels = labels,
+                           values = values,
+                           countries=countries)
+
 
 def stats_gb():
     result = request.api.isp_stats()

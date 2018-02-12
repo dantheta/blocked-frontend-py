@@ -96,9 +96,7 @@
 {{ menu_link("About", '/about') }}
 {{ menu_link("Support" ,'/support') }}
 {{ menu_link("Credits" ,'/credits') }}
-{% if config.SITE_THEME != 'blocked-eu' %}
 {{ menu_link_eq("Statistics", '/stats') }}
-{% endif %}
 {{ menu_link("Status", '/stats/probes') }}
 {% if config.SITE_THEME == 'blocked-eu' %}
 {{ menu_link("Contact", '/contact') }}
