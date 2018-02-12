@@ -27,6 +27,8 @@
     {{ forms.static_field('Title:', 'title', '') }}
     {{ forms.static_field('URL:', 'url_stored', '') }}
     {{ forms.static_field('URL Status:', 'url_status', '') }}
+    {{ forms.static_field('Registration Expiry', 'whois_expiry', '') }}
+    {{ forms.static_field('Tags:', 'tags', '') }}
     </div>
 
     {{ forms.select_field('New Status:', 'status', None, [
@@ -62,6 +64,8 @@ $(document).ready(function(){
       $('#url_stored').text(data.url);
       $('#title').text(data.title);
       $('#url_status').text(data['url-status']);
+      $('#whois_expiry').text(data['whois_expiry']);
+      $('#tags').text(data['tags']);
       $('#url').parent().parent().addClass('has-success');
       $('#url').parent().parent().removeClass('has-error');
     }).fail(function(){
