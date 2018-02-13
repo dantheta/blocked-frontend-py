@@ -117,6 +117,7 @@ def site(url=None):
         judgment_url = CourtJudgmentURL.select_one(conn, url=url)
         judgment = judgment_url.get_court_judgment()
         judgment_orders = judgment.get_court_orders_by_network()
+        can_unblock = False
     except ObjectNotFound:
         judgment = None
         judgment_orders = {}
