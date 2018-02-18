@@ -166,4 +166,5 @@ class Test(DBObject):
         'repeat_interval',
         'last_run',
         'batch_size',
+        'last_id',
     ]
