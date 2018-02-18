@@ -26,5 +26,6 @@ CREATE TABLE test_cases (
     last_check timestamptz,
     repeat_interval interval,
     last_run timestamptz,
-    batch_size int default 250
+    batch_size int default 250,
+    last_id int
 );

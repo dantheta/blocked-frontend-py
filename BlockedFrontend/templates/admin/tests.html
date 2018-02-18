@@ -15,6 +15,7 @@
           <tr>
               <th>Name</th>
               <th>Status</th>
+              <th></th>
               <th>Progress</th>
               <th></th>
           </tr>
@@ -23,10 +24,15 @@
               <td>{{ test.name }}</td>
               <td>{{ test.status }}</td>
               <td>
+                  <a href=""><span class="glyphicon glyphicon-play"></span></a>
+                  <a href=""><span class="glyphicon glyphicon-pause"></span></a>
+              </td>
+              <td>
                   {% if test.total %}
                   {{ test.sent / test.total|float }}
                   {% endif %}
               </td>
+
               <td>
                   <a href="{{ url_for('.tests_edit', id=test.id) }}">Edit</a>
                   <a href="{{ url_for('.tests_delete', id=test.id) }}">Delete</a>

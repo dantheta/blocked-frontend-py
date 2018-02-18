@@ -481,6 +481,15 @@ def tests_update():
         'repeat_interval': f['repeat_interval'] or None,
         'batch_size': f['batch_size']
     })
+    if f.get('source') == 'query':
+        test['filter'] = f['filter']
+
+    elif f.get('source') == 'tag':
+        test['tags'] = [f['tag']]
+    if 'isps' in f:
+        test['isps'] = f.getlist('isps')
+    else:
+        test['isps'] = []
     test.store()
     request.conn.commit()
     flash("Test case updated")
