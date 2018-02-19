@@ -123,6 +123,9 @@ class CourtJudgment(DBObject):
     def get_url_groups(self):
         return CourtJudgmentURLGroup.select(self.conn, judgment_id=self['id'], _orderby='name')
 
+    def get_power(self):
+        return CourtPowers.select(self.conn, self['power_id'])
+
 class CourtJudgmentURL(DBObject):
     FIELDS = ['judgment_id','url', 'group_id']
     TABLE = 'court_judgment_urls'

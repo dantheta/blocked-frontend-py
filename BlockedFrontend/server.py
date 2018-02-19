@@ -44,34 +44,39 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
 
-from cms import cms_pages, custom_routing
-custom_routing(app.config['SITE_THEME'])
-app.register_blueprint(cms_pages)
+if app.config.get('SITE_THEME') == '451':
+    from err451 import err451_pages
+    print "Registering 451"
+    app.register_blueprint(err451_pages)
+else:
+    from cms import cms_pages, custom_routing
+    custom_routing(app.config['SITE_THEME'])
+    app.register_blueprint(cms_pages)
 
-from site_results import site_pages
-app.register_blueprint(site_pages)
+    from site_results import site_pages
+    app.register_blueprint(site_pages)
 
-if app.config['MODULE_CATEGORY']:
-    from category import category_pages
-    app.register_blueprint(category_pages)
+    if app.config['MODULE_CATEGORY']:
+        from category import category_pages
+        app.register_blueprint(category_pages)
 
-if app.config['MODULE_UNBLOCK']:
-    from unblock import unblock_pages
-    app.register_blueprint(unblock_pages)
+    if app.config['MODULE_UNBLOCK']:
+        from unblock import unblock_pages
+        app.register_blueprint(unblock_pages)
 
-if app.config['MODULE_SAVEDLIST']:
-    from savedlists import list_pages
-    app.register_blueprint(list_pages)
+    if app.config['MODULE_SAVEDLIST']:
+        from savedlists import list_pages
+        app.register_blueprint(list_pages)
 
-if app.config['MODULE_ADMIN']:
-    from admin import admin_pages
-    app.register_blueprint(admin_pages)
+    if app.config['MODULE_ADMIN']:
+        from admin import admin_pages
+        app.register_blueprint(admin_pages)
 
-from reload import reload_blueprint
-app.register_blueprint(reload_blueprint)
+    from reload import reload_blueprint
+    app.register_blueprint(reload_blueprint)
 
-from stats import stats_pages
-app.register_blueprint(stats_pages)
+    from stats import stats_pages
+    app.register_blueprint(stats_pages)
 
 
 @app.before_request
@@ -162,6 +167,8 @@ def check_user():
 
 @app.before_request
 def load_remote_data():
+    if app.config.get('SITE_THEME') == '451':
+        return
     g.remote_content = collections.defaultdict(dict)
     g.remote_chunks = collections.defaultdict(lambda: None)
 

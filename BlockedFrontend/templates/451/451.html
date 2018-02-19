@@ -1,0 +1,34 @@
+<html>
+<head>
+    <title>{{site}} :: 451 Unavailable fro legal reasons</title>
+</head>
+<body>
+<h1>Error 451: Unavailable For Legal Reasons</h1>
+
+<h2>{{site}}</h2>
+
+<p>Access to this domain has been restricted in the United Kingdom at {{ networks|join_en }} following a
+    Court Order {{site}}/{{ judgment.case_number }} and Judgment {{ judgment.citation }}.</p>
+
+<p>This Court Order was imposed under the <!-- Copyright, Designs and Patents Act 1988 --> {{power.name}}.
+    The Court Order was issued on {{ orders|attr('date')|first }} and is valid until [Court Order Expiration Date].</p>
+
+<p>The Court Order was obtained by {{judgment.injunction_obtained_by}}. In case of error, such as a domain mistakenly
+identified that should not be blocked under this Order, you may contact them directly via [website contact page].
+    Errors cannot be corrected by {{ networks|join_en }}.</p>
+
+<p>If you believe this that this web domain has been incorrectly blocked, and wish to challenge the order
+itself, you can contact the {{ judgment.court_authority|replace('_',' ')|title }} <!-- at [the appropriate legal authority] or
+    [the address of the appropriate legal authority] -->.</p>
+
+<p>You have the right to apply to the High Court to vary or discharge the Orders if you are affected
+by the blocks which have been imposed. Any application must be made to the High Court directly and must:
+    <ol>
+    <li> clearly indicate your identity and status as an applicant;</li>
+    <li> be supported by evidence setting out and justifying the grounds of the application,</li> and
+    <li>be notified to all parties 10 days in advance.</li>
+    </ol>
+</p>
+
+</body>
+</html>
