@@ -25,6 +25,8 @@ def err451(site=None):
     if site is None:
         return abort(404)
 
+    site = fix_path(site)
+
     cjurl = CourtJudgmentURL.select_one(conn, url=site)
     judgment = cjurl.get_court_judgment()
     networks = judgment.get_court_order_networks()
