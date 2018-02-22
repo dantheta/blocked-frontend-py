@@ -44,6 +44,11 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
 
+if app.config['MODULE_ADMIN']:
+    from admin import admin_pages
+
+    app.register_blueprint(admin_pages)
+
 if app.config.get('SITE_THEME') == '451':
     from err451 import err451_pages
     print "Registering 451"
@@ -67,10 +72,6 @@ else:
     if app.config['MODULE_SAVEDLIST']:
         from savedlists import list_pages
         app.register_blueprint(list_pages)
-
-    if app.config['MODULE_ADMIN']:
-        from admin import admin_pages
-        app.register_blueprint(admin_pages)
 
     from reload import reload_blueprint
     app.register_blueprint(reload_blueprint)
@@ -97,7 +98,7 @@ def fmdate(s):
     if not s:
         return ''
     if isinstance(s, datetime.date):
-        return s.strftime('%Y-%m-%d')
+        return s.strftime('%d %B, %Y')
     return datetime.datetime.strptime(s, '%Y-%m-%d') \
         .strftime('%d %B, %Y')
 

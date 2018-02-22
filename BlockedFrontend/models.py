@@ -124,7 +124,9 @@ class CourtJudgment(DBObject):
         return CourtJudgmentURLGroup.select(self.conn, judgment_id=self['id'], _orderby='name')
 
     def get_power(self):
-        return CourtPowers.select(self.conn, self['power_id'])
+        if self['power_id'] is None:
+            return None
+        return CourtPowers.select_one(self.conn, self['power_id'])
 
 class CourtJudgmentURL(DBObject):
     FIELDS = ['judgment_id','url', 'group_id']
