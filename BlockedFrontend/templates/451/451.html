@@ -32,7 +32,7 @@
     Court Order {{field(site)}}/{{ field(judgment.case_number) }} and Judgment {{ field(judgment.citation) }}.</p>
 
 <p>
-    {% if power %}This Court Order was imposed under the <!-- Copyright, Designs and Patents Act 1988 --> {{field(power.name)}}.{% endif %}
+    {% if power %}This Court Order was imposed under the <!-- Copyright, Designs and Patents Act 1988 --> <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
     The Court Order was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and is valid until [Court Order Expiration Date].</p>
 
 <p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}. In case of error, such as a domain mistakenly
