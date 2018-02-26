@@ -1,12 +1,20 @@
 {%macro field(s)%}
 <span class="field">{{s|safe}}</span>
 {%endmacro%}
+
+{%macro link(text, url) %}
+{% if url %}
+<a href="{{ url }}">{{text|safe}}</a>
+{% else %}
+{{ text | safe }}
+{% endif %}
+{% endmacro %}
 <html>
 <head>
-    <title>{{site}} :: 451 Unavailable fro legal reasons</title>
+    <title>{{site}} :: 451 Unavailable for legal reasons</title>
     <style type="text/css">
         .field {
-            background-color: #dedede;
+            background-color: #dedede; padding: 2px;
         }
         h1 {
             background-color: #eeeeee;
@@ -29,14 +37,15 @@
 <h2>{{site}}</h2>
 
 <p>Access to this domain has been restricted in the United Kingdom at {{ field(networks|join_en) }} following a
-    Court Order {{field(site)}}/{{ field(judgment.case_number) }} and Judgment {{ field(judgment.citation) }}.</p>
+    Court Order {{field(site)}}/{{ field(link(judgment.case_number, orders|map(attribute='url')|first)) }} and Judgment {{ field(link(judgment.citation, judgment.judgment_url)) }}.</p>
 
 <p>
-    {% if power %}This Court Order was imposed under the <!-- Copyright, Designs and Patents Act 1988 --> <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
-    The Court Order was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and is valid until [Court Order Expiration Date].</p>
+    {% if power %}This Court Order was imposed under the <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
+    The Court Order was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and is valid until {# todo expiry #} further notice.</p>
 
-<p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}. In case of error, such as a domain mistakenly
-identified that should not be blocked under this Order, you may contact them directly via [website contact page].
+<p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}.
+    In case of error, such as a domain mistakenly identified that should not be blocked under this Order,
+    you may contact them directly via [website contact page].
     Errors cannot be corrected by {{ field(networks|join_en) }}.</p>
 
 <p>If you believe this that this web domain has been incorrectly blocked, and wish to challenge the order
