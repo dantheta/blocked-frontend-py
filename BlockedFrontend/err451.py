@@ -21,8 +21,6 @@ def get_referrer_domain():
 def err451(site=None, isp=None):
     conn = db_connect()
 
-    print site
-
     if site is None:
         return abort(404)
 
@@ -40,7 +38,6 @@ def err451(site=None, isp=None):
         if isp not in orders:
             abort(404)
         orders = [orders[isp]]
-        print orders
     else:
         orders = list(judgment.get_court_orders())
     networks = [x['network_name'] for x in orders]

@@ -36,11 +36,13 @@
 
 <h2>{{site}}</h2>
 
-<p>Access to this domain has been restricted in the United Kingdom at {{ field(networks|join_en) }} following a
-    Court Order {{field(site)}}/{{ field(link(judgment.case_number, orders|map(attribute='url')|first)) }} and Judgment {{ field(link(judgment.citation, judgment.judgment_url)) }}.</p>
+
+<p>Access to this domain has been restricted in the United Kingdom at {{ field(networks|join_en) }} following an injunction.
+    You can read the Judgment {{ field(link(judgment.citation, judgment.judgment_url)) }} and the Court Order asking us to block
+    {{field(site)}}/{{ field(link(judgment.case_number, orders|map(attribute='url')|first)) }}.</p>
 
 <p>
-    {% if power %}This Court Order was imposed under the <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
+    {% if power %}This injuncation was imposed under the <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
     The Court Order was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and is valid until {# todo expiry #} further notice.</p>
 
 <p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}.
@@ -56,7 +58,7 @@ itself, you can contact the {{ field(judgment.court_authority|replace('_',' ')|t
 by the blocks which have been imposed. Any application must be made to the High Court directly and must:
     <ol>
     <li> clearly indicate your identity and status as an applicant;</li>
-    <li> be supported by evidence setting out and justifying the grounds of the application,</li> and
+    <li> be supported by evidence setting out and justifying the grounds of the application; and</li>
     <li>be notified to all parties 10 days in advance.</li>
     </ol>
 </p>
