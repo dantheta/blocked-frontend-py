@@ -13,6 +13,7 @@ create table court_judgments(
     power_id int,
     court_authority varchar,
     injunction_obtained_by varchar,
+    injunction_obtained_by_url varchar,
     injunction_represented_by varchar,
     injunction_instructs varchar,
     other_docs text,

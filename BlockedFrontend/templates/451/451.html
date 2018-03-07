@@ -61,12 +61,15 @@
 </p>
 
 <p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}.
+    {% if judgment.injunction_obtained_by_url %}
     In case of error, such as a domain mistakenly identified that should not be blocked under this Order,
-    you may contact them directly via [website contact page].
+    you may contact them directly via {{field(link('their contact page', judgment.injunction_obtained_by_url))}}.
+    {% endif %}
     Errors cannot be corrected by {{ field(networks|join_en) }}.</p>
 
 <p>If you believe that this web domain has been incorrectly blocked, and wish to challenge the order
-itself, you can contact the {{ field(judgment.court_authority|replace('_',' ')|title) }} <!-- at [the appropriate legal authority] or
+itself, you can contact the {{ field(judgment.court_authority|replace('_',' ')|title) }}
+    <!-- at [the appropriate legal authority] or
     [the address of the appropriate legal authority] -->.</p>
 
 <p>You have the right to apply to the High Court to vary or discharge the Orders if you are affected

@@ -80,6 +80,7 @@ class CourtJudgment(DBObject):
               'power_id',
               'court_authority',
               'injunction_obtained_by',
+              'injunction_obtained_by_url',
               'injunction_represented_by',
               'other_docs',
               'sites_description',

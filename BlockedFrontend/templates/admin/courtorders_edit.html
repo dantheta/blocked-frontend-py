@@ -58,7 +58,16 @@
       ])
   }}
 
-  {{forms.text_field('Application made by','injunction_obtained_by', obj.injunction_obtained_by)}}
+    <div class="row">
+        <div class="col-md-6">
+    {{forms.text_field('Application made by','injunction_obtained_by', obj.injunction_obtained_by)}}
+        </div>
+        <div class="col-md-6">
+    {{forms.text_field('Contact address (URL)','injunction_obtained_by_url', obj.injunction_obtained_by_url)}}
+        </div>
+    </div>
+
+
   {{forms.text_field('Applications represented by','injunction_represented_by', obj.injunction_represented_by)}}
 
   <h3>Injunction applies to</h3>
