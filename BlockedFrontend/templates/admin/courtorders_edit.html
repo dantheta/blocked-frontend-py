@@ -75,17 +75,17 @@
   {% for order in orders %}
       <input type="hidden" name="order_id" value="{{order.id}}" />
       <input type="hidden" name="network_name" value="{{order.network_name}}" />
-        <div class="col-md-3">
+        <div class="col-md-2" style="font-size: large; font-weight: bold; padding-top: 1.00em">
       {{ forms.check_field(order.network_name, 'applies', order.network_name, True) }}
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
       {{ forms.text_field('Court order URL', 'applies_url', order['url']) }}
         </div>
-        <div class="col-md-2">
-      {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', order.date) }}
+        <div class="col-md-3">
+      {{ forms.text_field('Date', 'order_date', order.date, placeholder='yyyy-mm-dd') }}
         </div>
-        <div class="col-md-2">
-      {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', order.expiry_date) }}
+        <div class="col-md-3">
+      {{ forms.text_field('Expiry Date', 'expiry_date', order.expiry_date, placeholder='yyyy-mm-dd') }}
         </div>
   {% endfor %}
     </div>
@@ -94,21 +94,22 @@
       {% if isp not in order_networks %}
       <input type="hidden" name="order_id" value="" />
       <input type="hidden" name="network_name" value="{{isp}}" />
-        <div class="col-md-3">
+        <div class="col-md-2"  style="font-size: large; font-weight: bold; padding-top: 1.0em">
       {{ forms.check_field(isp, 'applies', isp) }}
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
       {{ forms.text_field('Court order URL', 'applies_url', '') }}
         </div>
-        <div class="col-md-2">
-      {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', '') }}
+        <div class="col-md-3">
+      {{ forms.text_field('Date', 'order_date', '', placeholder='yyyy-mm-dd') }}
         </div>
-        <div class="col-md-2">
-      {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', '') }}
+        <div class="col-md-3">
+      {{ forms.text_field('Expiry Date', 'expiry_date', '', placeholder='yyyy-mm-dd') }}
         </div>
       {% endif %}
   {% endfor %}
     </div>
+<p>Dates should be entered in yyyy-mm-dd format.</p>
 
   <h3>Additional information</h3>
 
