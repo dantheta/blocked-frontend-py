@@ -1,15 +1,16 @@
-{%macro field(s)%}
-<span class="field">{{s|safe}}</span>
-{%endmacro%}
-
-{%macro link(text, url) %}
-{% if url %}
-<a href="{{ url }}">{{text|safe}}</a>
-{% else %}
-{{ text | safe }}
-{% endif %}
-{% endmacro %}
+<!DOCTYPE html >
 <html>
+{%macro field(s) -%}
+<span class="field">{{s|safe}}</span>
+{%- endmacro%}
+
+{%macro link(text, url) -%}
+{%- if url -%}
+<a href="{{ url }}">{{text|safe}}</a>
+{%- else -%}
+{{ text | safe }}
+{%- endif -%}
+{%- endmacro %}
 <head>
     <title>{{site}} :: 451 Unavailable for legal reasons</title>
     <style type="text/css">
@@ -18,13 +19,14 @@
         }
         h1 {
             background-color: #eeeeee;
-            margin: -20px;
+            margin: -40px;
             margin-bottom: 1em;
-            padding: 0.5em
+            padding: 0.75em
         }
         body {
-            margin: 20px;
+            margin: 40px;
             font-size: large;
+            line-height: 133%;
         }
         li {
             margin-bottom: 0.5em;
@@ -61,25 +63,25 @@
 </p>
 
 <p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}.
-    {% if judgment.injunction_obtained_by_url %}
     In case of error, such as a domain mistakenly identified that should not be blocked under this Order,
     you may contact them directly via {{field(link('their contact page', judgment.injunction_obtained_by_url))}}.
-    {% endif %}
     Errors cannot be corrected by {{ field(networks|join_en) }}.</p>
 
 <p>If you believe that this web domain has been incorrectly blocked, and wish to challenge the order
 itself, you can contact the {{ field(judgment.court_authority|replace('_',' ')|title) }}
-    <!-- at [the appropriate legal authority] or
-    [the address of the appropriate legal authority] -->.</p>
+    {# at [the appropriate legal authority] or
+    [the address of the appropriate legal authority] #}.</p>
 
 <p>You have the right to apply to the High Court to vary or discharge the Orders if you are affected
-by the blocks which have been imposed. Any application must be made to the High Court directly and must:
-    <ol>
-    <li> clearly indicate your identity and status as an applicant;</li>
-    <li> be supported by evidence setting out and justifying the grounds of the application; and</li>
-    <li>be notified to all parties 10 days in advance.</li>
-    </ol>
-</p>
+by the blocks which have been imposed. Any application must be made to the High Court directly and must:</p>
+
+<ol>
+<li> clearly indicate your identity and status as an applicant;</li>
+<li> be supported by evidence setting out and justifying the grounds of the application; and</li>
+<li>be notified to all parties 10 days in advance.</li>
+</ol>
+
 
 </body>
 </html>
+
