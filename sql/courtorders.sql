@@ -38,6 +38,7 @@ create table court_orders(
     judgment_id int not null,
     network_name varchar,
     date date,
+    expiry_date date,
     url varchar,
     created timestamptz,
     last_updated timestamptz

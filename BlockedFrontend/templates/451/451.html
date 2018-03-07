@@ -38,12 +38,27 @@
 
 
 <p>Access to this domain has been restricted in the United Kingdom at {{ field(networks|join_en) }} following an injunction.
-    You can read the Judgment {{ field(link(judgment.citation, judgment.judgment_url)) }} and the Court Order asking us to block
+    You can read the
+    {% if judgment.citation %}
+    Judgment {{ field(link(judgment.citation, judgment.judgment_url)) }} and the
+    {% endif %}
+    Court Order asking us to block
     {{field(site)}}/{{ field(link(judgment.case_number, orders|map(attribute='url')|first)) }}.</p>
 
 <p>
     {% if power %}This injuncation was imposed under the <a href="{{power.legislation}}">{{field(power.name)}}</a>.{% endif %}
-    The Court Order was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and is valid until {# todo expiry #} further notice.</p>
+    The Court Order
+    {% if orders|map(attribute='date')|first %}
+    was issued on {{ field(orders|map(attribute='date')|first|fmdate) }} and
+    {% endif %}
+    is valid until
+    {% if orders|map(attribute='expiry_date')|first %}
+    {{ field(orders|map(attribute='expiry_date')|first|fmdate) }}
+    {% else %}
+    further notice
+    {% endif %}
+    .
+</p>
 
 <p>The Court Order was obtained by {{field(judgment.injunction_obtained_by)}}.
     In case of error, such as a domain mistakenly identified that should not be blocked under this Order,

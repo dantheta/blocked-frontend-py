@@ -75,6 +75,9 @@
         <div class="col-md-4">
       {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', order.date) }}
         </div>
+        <div class="col-md-4">
+      {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', order.expiry_date) }}
+        </div>
   {% endfor %}
     </div>
     <div class="row">
@@ -90,6 +93,9 @@
         </div>
         <div class="col-md-4">
       {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', '') }}
+        </div>
+        <div class="col-md-4">
+      {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', '') }}
         </div>
       {% endif %}
   {% endfor %}
