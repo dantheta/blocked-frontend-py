@@ -81,10 +81,10 @@
         <div class="col-md-5">
       {{ forms.text_field('Court order URL', 'applies_url', order['url']) }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
       {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', order.date) }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
       {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', order.expiry_date) }}
         </div>
   {% endfor %}
@@ -100,10 +100,10 @@
         <div class="col-md-5">
       {{ forms.text_field('Court order URL', 'applies_url', '') }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
       {{ forms.text_field('Date (yyyy-mm-dd)', 'order_date', '') }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
       {{ forms.text_field('Expiry Date (yyyy-mm-dd)', 'expiry_date', '') }}
         </div>
       {% endif %}
