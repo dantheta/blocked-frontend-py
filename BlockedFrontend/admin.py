@@ -510,6 +510,8 @@ def tests():
 @check_admin
 def tests_edit(id=None):
     test = Test(request.conn, id=id)
+    if not id:
+        test['check_interval'] = datetime.timedelta(0)
     return render_template('tests_edit.html',
                            test=test,
                            isps=load_isp_data(),
@@ -552,3 +554,13 @@ def tests_delete(id):
     request.conn.commit()
     flash("Test case deleted")
     return redirect(url_for('.tests'))
+    
+@admin_pages.route('/control/tests/status/<int:id>/<status>')
+@check_admin
+def tests_status(id, status):
+    t = Test(request.conn, id)
+    t['status'] = status.upper()
+    t.store()
+    request.conn.commit()
+    flash("Test status updated.")
+    return redirect(url_for('.tests'))    

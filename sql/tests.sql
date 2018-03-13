@@ -2,9 +2,11 @@
 create type enum_test_status as enum(
     'NEW',
     'RUNNING',
+    'WAITING',
     'PAUSED',
+    'COMPLETE'
     'ERROR',
-    'CANCELLED'
+    'CANCELLED',    
 );
 
 CREATE TABLE test_cases (
@@ -20,12 +22,11 @@ CREATE TABLE test_cases (
     sent int default 0,
     total int default 0,
     received int default 0,
-    routing_key varchar,
     isps varchar[],
-    check_interval interval,
+    check_interval interval default 'interval 5 min',
     last_check timestamptz,
     repeat_interval interval,
     last_run timestamptz,
     batch_size int default 250,
-    last_id int
+    last_id int default 0
 );

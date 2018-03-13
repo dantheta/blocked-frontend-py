@@ -14,36 +14,70 @@
         {{ forms.text_field('Name', 'name', test.name) }}
         {{ forms.textarea_field('Description', 'description', test.name) }}
 
-        <div class="row">
-            <div class="col-md-6">
-                <h3>URL Source</h3>
-                <input type="radio" name="source" value="tag" {{ 'checked' if test.tags else '' }}/>
-                {{ forms.select_field('Tag', 'tag', test.tag, ['']+tags) }}
-                <input type="radio" name="source" value="query" {{ 'checked' if test.filter else '' }} />
-                {{ forms.select_field('Filter set', 'filter', test.filter, ['']+filters) }}
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12">
+        <div>
+                  <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#source" aria-controls="source" role="tab" data-toggle="tab">Source</a></li>
+            <li role="presentation"><a href="#rate" aria-controls="rate" role="tab" data-toggle="tab">Rate</a></li>
+            <li role="presentation"><a href="#networks" aria-controls="networks" role="tab" data-toggle="tab">Networks</a></li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="source">
+                <h3>URL Source</h3>
+                <input type="hidden" name="source" value="tag" />                
+                {# <input type="radio" name="source" value="query" {{ 'checked' if test.filter else '' }} />
+                {{ forms.select_field('Filter set', 'filter', test.filter, ['']+filters) }} #}
+                {{ forms.select_field('Tag', 'tag', test.tag, ['']+tags) }}
+                
+            </div>
+            <div role="tabpanel" class="tab-pane" id="networks">
                 <h3>ISPs</h3>
-                <div class="row">
+                <table class="table">
+                    <tr>
+                    <th></th>
+                    <th>Country / Network</th>
+                    </tr>
                 {% for country, networks in isps.eu.iteritems() | sort %}
-                    <div class="col-md-2">
-                    <h4>{{ countries[country] }}</h4>
+                <tr>
+                    <td colspan="2"><h4>{{ countries[country] }}</h4></td>
+                </tr>
                     {% for network in networks %}
-                    {{ forms.check_field(network, 'isps', network, network in (test.isps or [])) }}
+                    <tr>
+                        <td>
+                    {{ forms.check_field('', 'isps', network, network in (test.isps or [])) }}
+                        </td>
+                        <td>{{ network }}</td>
+                    </tr>
                     {% endfor %}
 
-                    </div>
                 {% endfor %}
-
-                </div>
+                </table>            
             </div>
+            <div role="tabpanel" class="tab-pane" id="rate">
+            {# forms.text_field('Repeat Interval', 'repeat_interval', test.repeat_interval) #}
+
+            <h3>Rate</h3>
+            <div class="row">
+                <div class="col-md-4">{{ forms.text_field('Send URLs', 'batch_size', test.batch_size or 250) }}</div>
+                <div class="col-md-4">{{ forms.text_field('Every ', 'check_interval_num', test.check_interval.days if test.check_interval.days else
+                test.check_interval.seconds / 3600.0 if test.check_interval.seconds > 1800 else test.check_interval.seconds / 60.0 ) }}</div>
+                <div class="col-md-4">{{ forms.select_field('', 'check_interval_unit', 
+                'day' if test.check_interval.days else 'hour' if test.check_interval.seconds > 1800 else 'min', 
+                ['min','hour','day'],  ) }}</div>
+            </div>
+
+            </div>
+          </div>
+
         </div>
-        {{ forms.text_field('Check Interval', 'check_interval', test.check_interval) }}
-        {{ forms.text_field('Repeat Interval', 'repeat_interval', test.repeat_interval) }}
-        {{ forms.text_field('Batch Size', 'batch_size', test.batch_size) }}
+
+
+        {# forms.text_field('Check Interval', 'check_interval', test.check_interval) #}
+        
+        
         {{ forms.submit('Submit') }}
     </form>
 
@@ -55,4 +89,8 @@
       </div>
   </div>
 </div>
+{% endblock %}
+
+{% block page_script %}
+
 {% endblock %}
