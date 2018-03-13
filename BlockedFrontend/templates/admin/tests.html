@@ -24,8 +24,14 @@
               <td>{{ test.name }}</td>
               <td>{{ test.status }}</td>
               <td>
-                  <a href=""><span class="glyphicon glyphicon-play"></span></a>
-                  <a href=""><span class="glyphicon glyphicon-pause"></span></a>
+                  {% if test.status in ('RUNNING','WAITING') %}
+                  <a href="{{url_for('.tests_status', id=test.id, status='paused')}}"><span class="glyphicon glyphicon-pause"></span></a>
+                  {% elif test.status in ('PAUSED',) %}
+                  <a href="{{url_for('.tests_status', id=test.id, status='running')}}"><span class="glyphicon glyphicon-play"></span></a>
+                  {% endif %}
+                  {% if test.status in ('RUNNING','PAUSED','WAITING') %}
+                  <a href="{{url_for('.tests_status', id=test.id, status='cancelled')}}"><span class="glyphicon glyphicon-stop"></span></a>
+                  {% endif %}
               </td>
               <td>
                   {% if test.total %}

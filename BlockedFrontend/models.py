@@ -153,7 +153,6 @@ class Test(DBObject):
         'sent',
         'total',
         'received',
-        'routing_key',
         'isps',
         'check_interval',
         'last_check',
