@@ -1,0 +1,38 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Legal Requests Review" %}
+
+{% block body %}
+
+
+<div class="row">
+    <div class="col-md-12">
+
+<h1>{{pagetitle}}</h1>
+
+<table class="table">
+<tr>
+<th>URL</th>
+<th>Network</th>
+<th>Created</th>
+</tr>
+{% for row in results %}
+<tr>
+<td><a href="{{ url_for('site.site', url=row.url) }}">{{row.url}}</a></td>
+<td>{{row.network_name}}</td>
+<td>{{row.first_blocked|fmdate}}</td>
+</tr>
+{% endfor %}
+</table>
+
+{{ paging.page_list('.courtorders_review', page, pagecount, 25) }}
+    
+</div>    
+</div>
+
+{% endblock %}
+
+
+

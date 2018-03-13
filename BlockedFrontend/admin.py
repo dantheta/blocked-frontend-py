@@ -242,6 +242,41 @@ def courtorders_view(id):
                            groups=[(grp['id'],grp['name']) for grp in obj.get_url_groups()]
                            )
 
+@admin_pages.route('/control/courtorders/review')
+@admin_pages.route('/control/courtorders/review/<int:page>')
+@check_admin
+def courtorders_review(page=1):
+    offset = (page-1)*25
+    q = Query(request.conn, 
+              """
+              select count(*) ct from urls
+              inner join url_latest_status uls on uls.urlid = urls.urlid
+              left join court_judgment_urls cu on urls.url = cu.url
+              where urls.status = 'ok' and uls.status = 'blocked' 
+                and uls.blocktype = 'COPYRIGHT' and cu.url is null
+              """,
+              []
+             )
+    count = q.fetchone()['ct']
+    q.close()
+    
+    q = Query(request.conn, 
+              """
+              select urls.url, network_name, uls.created, uls.first_blocked from urls
+              inner join url_latest_status uls on uls.urlid = urls.urlid
+              left join court_judgment_urls cu on urls.url = cu.url
+              where urls.status = 'ok' and uls.status = 'blocked' 
+                and uls.blocktype = 'COPYRIGHT' and cu.url is null
+              order by uls.first_blocked limit 25 offset {0}""".format(offset),
+              []
+             )
+    return render_template('courtorders_review.html',
+                           results=q,
+                           page=page,
+                           pagesize=25, 
+                           pagecount=get_pagecount(count, 25)
+                          )
+    
 @admin_pages.route('/control/courtorders/edit/<int:id>')
 @admin_pages.route('/control/courtorders/add')
 @check_admin
