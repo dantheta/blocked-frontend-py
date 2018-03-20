@@ -296,6 +296,16 @@ th.num {
     color: #dfdfdf;
     font-family: 'Poppins', sans-serif;
 }
+.topstrip2 {
+    background-color: #eee;
+    
+    color: #333333;
+    font-family: 'Poppins', sans-serif;
+}
+
+.topstrip2 .row {
+    padding-bottom: 0.5em !important;
+}
 
 .topstrip .row {
     text-align: right;
