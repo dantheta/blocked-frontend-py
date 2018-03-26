@@ -524,23 +524,26 @@ def tests_edit(id=None):
 @check_admin
 def tests_update():
     f = request.form
+    
     test = Test(request.conn, id=(f['id'] or None))
     test.update({
         'name': f['name'],
         'description': f['description'],
-        'check_interval': f['check_interval'],
-        'repeat_interval': f['repeat_interval'] or None,
+        'check_interval': "{0} {1}".format(f['check_interval_num'], f['check_interval_unit']),
+        'repeat_interval': f.get('repeat_interval') or None,
         'batch_size': f['batch_size']
     })
+    
     if f.get('source') == 'query':
         test['filter'] = f['filter']
-
     elif f.get('source') == 'tag':
         test['tags'] = [f['tag']]
+        
     if 'isps' in f:
         test['isps'] = f.getlist('isps')
     else:
         test['isps'] = []
+        
     test.store()
     request.conn.commit()
     flash("Test case updated")
