@@ -35,7 +35,8 @@
               </td>
               <td>
                   {% if test.total %}
-                  {{ test.sent / test.total|float }}
+                  {{ test.sent }} / {{test.total}}
+                  ({{ test.sent * 100 / test.total|float }}%)
                   {% endif %}
               </td>
 
