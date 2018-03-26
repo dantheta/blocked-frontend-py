@@ -17,7 +17,7 @@ CREATE TABLE test_cases (
     last_updated timestamptz not null,
 
     status enum_test_status default 'NEW',
-    tag varchar,
+    tags varchar[],
     filter varchar,
     sent int default 0,
     total int default 0,
