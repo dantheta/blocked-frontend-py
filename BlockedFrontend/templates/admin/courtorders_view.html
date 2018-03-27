@@ -85,10 +85,13 @@
                             <td>{{site.url}}</td>
                             <td>{{site.whois_expiry|fmdate}}</td>
                             <td>
-                            <a href="{{ url_for('.urls',url=site.url) }}">
+                            <a href="{{ url_for('.urls',url=site.url) }}" title="Administer URL">
                                 <span class="glyphicon glyphicon-tag"></span>
                             </a>
-                            <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}">
+                            <a href="{{ url_for('.courtorders_site_flag',id=site.id) }}" class="{{ 'label label-info' if site['flag_id'] else '' }}" title="{{'This site has been flagged' if site['flag_id'] else 'Flag this site' }}">
+                                <span class="glyphicon glyphicon-flag "></span>
+                            </a>
+                            <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}" title=">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </a>
                             </td>

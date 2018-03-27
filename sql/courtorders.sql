@@ -77,3 +77,16 @@ insert into court_powers(name, legislation) values
 ('Copyright, Designs and Patents Act, Section 97A','http://www.legislation.gov.uk/ukpga/1988/48/section/97A'),
  ('Senior Courts Act 1981, Section 37 (1)','http://www.legislation.gov.uk/ukpga/1981/54/section/37'),
  ('Digital Economy Act 2017, section 23 (1)', 'http://www.legislation.gov.uk/ukpga/2017/30/section/23');
+ 
+create table court_judgment_url_flags(
+    id serial primary key,
+    urlid int not null unique,
+    reason varchar not null,
+    abusetype varchar,
+    date_observed date, 
+    description text,
+    created timestamptz,
+    last_updated timestamptz
+);
+
+alter table court_judgment_url_flags add foreign key (urlid) references court_judgment_urls(id) on delete cascade;

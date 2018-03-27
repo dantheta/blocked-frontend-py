@@ -46,6 +46,17 @@
 </div>
 {% endmacro %}
 
+{% macro radio_field(label, name, value, checked=False) %}
+<div class="form-group">
+<div class="checkbox">
+  <label class="control-label">
+    <input type="radio" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
+    {{ label }}
+  </label>
+</div>
+</div>
+{% endmacro %}
+
 {% macro password_field(label, name, value='', placeholder='') %}
 <div class="form-group">
     <label class="control-label" for="{{name}}">{{label}}</label>

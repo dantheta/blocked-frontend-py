@@ -404,6 +404,42 @@ def courtorders_site_delete(id):
     flash("Removed site: "+ obj['url'])
     return redirect(url_for('.courtorders_view', id=obj['judgment_id']))
 
+@admin_pages.route('/control/courtorders/site/flag/<int:id>', methods=['GET'])
+@check_admin
+def courtorders_site_flag(id):
+    url = CourtJudgmentURL(request.conn, id=id)
+    judgment = url.get_court_judgment()
+    try:
+        flag = CourtJudgmentURLFlag.select_one(request.conn, 
+                                               urlid = url['id'])
+    except ObjectNotFound:
+        flag = {}
+    
+    return render_template('courtorders_flag.html', url=url, flag=flag, judgment=judgment)
+
+@admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
+@check_admin
+def courtorders_site_flag_post():
+    f = request.form
+    url = CourtJudgmentURL(request.conn, id=f['urlid'])
+    
+    try:
+        flag = CourtJudgmentURLFlag.select_one(request.conn, urlid = url['id'])
+    except ObjectNotFound:
+        flag = CourtJudgmentURLFlag(request.conn)
+        
+    flag.update({
+        'reason': f['reason'],
+        'description': f['description'],
+        'date_observed': f['date_observed'] or None,
+        'abusetype': f['abusetype'] if f['reason'] == 'domain_may_be_abusive' else None,
+        'urlid': f['urlid']
+    })
+    flag.store()
+    judgment = url.get_court_judgment()
+    request.conn.commit()
+    flash("Url {0} flagged".format(url['url']))
+    return redirect(url_for('.courtorders_view', id=judgment['id']))
 
 @admin_pages.route('/control/courtorders/site/group/import', methods=['GET'])
 @check_admin
