@@ -85,6 +85,9 @@
                             <td>{{site.url}}</td>
                             <td>{{site.whois_expiry|fmdate}}</td>
                             <td>
+                            <a href="{{ url_for('.urls',url=site.url) }}">
+                                <span class="glyphicon glyphicon-tag"></span>
+                            </a>
                             <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </a>

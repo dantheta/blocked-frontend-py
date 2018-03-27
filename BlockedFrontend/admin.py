@@ -477,7 +477,16 @@ def import_groupfile(groupfile):
 @admin_pages.route('/control/urls', methods=['GET'])
 @check_admin
 def urls():
-    return render_template('admin_urls.html')
+    if request.args.get('url'):
+        try:
+            status = request.api.status_url(request.args['url'], True)
+        except Exception:
+            status = None
+            flash("Could not locate a URL record for {0}".format(request.args['url']))
+    else:
+        status = None
+        
+    return render_template('admin_urls.html', status=status)
 
 @admin_pages.route('/control/urls/check', methods=['GET'])
 @check_admin
@@ -488,14 +497,17 @@ def admin_urls_check():
 @admin_pages.route('/control/urls', methods=['POST'])
 @check_admin
 def urls_post():
-    rsp = request.api.set_status_url(request.form['url'], request.form['status'],
-                                     request.form.get('normalize', '0') == '1')
-    if rsp['success'] == True:
-        flash("URL Status updated")
-    else:
-        flash("Error updating URL status")
-    return redirect(url_for('.urls'))
+    f = request.form
+    if 'update_mode' in f:
+        rsp = request.api.set_status_url(f['url'], f['status'],
+                                         f.get('normalize', '0') == '1')
+        if rsp['success'] == True:
+            flash("URL Status updated")
+        else:
+            flash("Error updating URL status")
+        return redirect(url_for('.urls'))
 
+    abort(400)
 
 ## Tests admin
 

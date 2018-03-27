@@ -16,7 +16,7 @@
     <div class="form-group">
         <label class="control-label" for="url">URL:</label>
         <div class="input-group">
-            <input class="form-control" id="url" name="url" value="" placeholder=""/>
+            <input class="form-control" id="url" name="url" value="{{ status.url|default('') }}" placeholder=""/>
             <span class="input-group-btn">
                 <button id="check" class="btn btn-default" type="button">Check</button>
             </span>
@@ -24,11 +24,11 @@
     </div>
     {{ forms.check_field("Normalize URL", 'normalize', 1, True) }}
     <div class="well">
-    {{ forms.static_field('Title:', 'title', '') }}
-    {{ forms.static_field('URL:', 'url_stored', '') }}
-    {{ forms.static_field('URL Status:', 'url_status', '') }}
-    {{ forms.static_field('Registration Expiry', 'whois_expiry', '') }}
-    {{ forms.static_field('Tags:', 'tags', '') }}
+    {{ forms.static_field('Title:', 'title', status.title|default('') ) }}
+    {{ forms.static_field('URL:', 'url_stored', status.url|default('')) }}
+    {{ forms.static_field('URL Status:', 'url_status', status['url-status']|default('')  ) }}
+    {{ forms.static_field('Registration Expiry', 'whois_expiry', status.whois_expiry|default('')  ) }}
+    {{ forms.static_field('Tags:', 'tags', status.tags|default([])|join(",") ) }}
     </div>
 
     {{ forms.select_field('New Status:', 'status', None, [
@@ -38,7 +38,7 @@
         ('ok', 'ok'),
         ])
         }}
-<input type="submit" class="btn btn-primary" value="Submit" />
+<input type="submit" class="btn btn-primary" name="update_mode" value="Update URL Status" />
 </form>
 </div>
 
