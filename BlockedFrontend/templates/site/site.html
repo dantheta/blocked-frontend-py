@@ -161,11 +161,22 @@ Your feedback was successfully submitted.
 
 {% endif %}
 
+{% if url.lower().startswith('https:') %}
+<div class="info-panel">
+    <span class="glyphicon glyphicon-info-sign" style="margin-left: -1.75em; float: left; font-size: 1.5em"></span>
+<p>Parental control filter systems can have difficulty providing human readable responses for HTTPS requests, due to certificate errors.  </p>
+
+<p><a href="{{ url_for('.site', url=url.replace('https:','http:')) }}">View the non-HTTPS results</a> for this site.</p>
+</div>
+{% endif %}
+
 {% if live %}
 <h3>Active blocks</h3>
 {% else %}
 <h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
 {% endif %}
+
+
 
 {{results_table('active', results_blocked, show_category=True) }}
 

@@ -175,6 +175,19 @@ padding-left: 2em;
 
 /* results */
 
+.info-panel {
+    padding: 1em;
+    padding-left: 4em;
+    background-color: #eee;
+}
+
+.info-panel span {
+    margin-left: -1.75em; 
+    margin-top: 0.15em;
+    float: left; 
+    font-size: 1.5em;
+}
+
 #active * td {
     background-color: #ffeded;
 }
