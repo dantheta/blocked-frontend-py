@@ -348,9 +348,14 @@ def courtorders_delete(id):
 def courtorders_site_add():
     f = request.form
     obj = CourtJudgmentURL(request.conn)
-    obj.update({'url':f['url'],'judgment_id':f['judgment_id']})
-    obj.store()
-    request.conn.commit()
+    obj.update({'url':normalize_url(f['url']),'judgment_id':f['judgment_id']})
+    try:
+        obj.store()
+        request.conn.commit()
+    except ObjectExists:
+        print obj.data
+        flash("This site has already been added to this court order")
+        request.conn.rollback()
     return redirect(url_for('.courtorders_view', id=f['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/group', methods=['POST'])
