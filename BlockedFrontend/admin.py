@@ -415,7 +415,7 @@ def courtorders_site_flag(id):
     except ObjectNotFound:
         flag = {}
     
-    return render_template('courtorders_flag.html', url=url, flag=flag, judgment=judgment)
+    return render_template('courtorders_flag.html', url=url, flag=flag, judgment=judgment, today=datetime.date.today())
 
 @admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
 @check_admin

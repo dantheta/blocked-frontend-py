@@ -39,7 +39,7 @@
 </div>
 </div>
 
-{{ forms.text_field('Date observed','date_observed', flag.get('date_observed',''), 'yyyy-mm-dd') }}
+{{ forms.text_field('Date observed','date_observed', flag.get('date_observed',today.strftime('%Y-%m-%d')), 'yyyy-mm-dd') }}
 
 {{ forms.textarea_field('Description','description', flag.get('description','') ) }}
 
