@@ -12,20 +12,24 @@
 <div class="row">
     <div class="col-md-6">
 
-<table class="" style="width: 100%">
-<tr>
-<td>Total sites blocked by injunction</td>
-<td>{{ stats1.total }}</td>
-</tr>
-<tr>
-<td>Total sites incorrectly blocked by injunction</td>
-<td>{{ stats1.error_count }}</td>
-</tr>
-<tr>
-<td>%</td>
-<td>{{ "{0:0.4f}".format(stats1.error_count|float / stats1.total) }}%</td>
-</tr>
-</table>
+<div class="stats">
+<div>
+<span>{{ "{:,}".format(stats1.total) }}</span>
+sites blocked by injunction
+</div>
+
+<div>
+<span>{{ "{:,}".format(stats1.error_count) }}</span>
+sites incorrectly blocked
+</div>
+
+<div>
+<span>{{ "{0:0.4f}".format(stats1.error_count|float / stats1.total) }}%</span>
+of sites incorrectly blocked
+</div>
+
+</div>
+
 
     </div>
 
@@ -53,6 +57,7 @@
 <table class="table">
 <tr>
   <th>URL</th>
+  <th>Court Judgment</th>
   <th>Error</th>
   <th>Reported</th>
 </tr>
@@ -60,6 +65,15 @@
 
 <tr>
 <td><a href="{{ url_for('site.site', url=row.url)}}">{{ row.url }}</a></td>
+<td>
+    {% if row.judgment_url %}
+    <a href="{{ row.judgment_url }}">
+    {% endif %}
+    {{ row.citation or row.case_number or 'Injunction' }}
+    {% if row.judgment_url %}
+    </a>
+    {% endif %}
+</td>    
 <td>{{ row.reason|replace('_',' ')|capitalize }}</td>
 <td>{{ row.created|fmdate }}</td>
 </tr>

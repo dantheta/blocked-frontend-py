@@ -296,9 +296,10 @@ def legal_errors():
         [])
     
     stats3 = Query(conn, """
-        select url, reason, cjuf.created
+        select cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
         from frontend.court_judgment_urls cju 
         inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
         order by url""", [])
     
     conn.commit()
