@@ -17,7 +17,7 @@
 
 {% block body %}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-3">
 
 <div class="stats">
 <div>
@@ -40,8 +40,8 @@ of sites incorrectly blocked
 
     </div>
 
-    <div class="col-md-6">
-    
+    <div class="col-md-4">
+    <h4>Errors by type</h4>
 <table class="table">
 <tr>
 <th>Category</th>
@@ -55,6 +55,25 @@ of sites incorrectly blocked
 {% endfor %}
 </table>    
         
+    </div>
+    <div class="col-md-5">
+    <h4>Errors by ISP</h4>
+    <table class="table">
+    <tr>
+    <th>ISP</th>
+    <th class="num">Blocks Detected</th>
+    <th class="num">Errors Detected</th>
+    </tr>
+    {% for row in stats4 %}
+    <tr>
+        <td>{{row.description}}</td>
+        <td class="num">{{row.total}}</td>
+        <td class="num">{{row.error_count}}</td>
+        <td></td>
+    </tr>
+    {%endfor%}
+    </table>
+    
     </div>
 </div>
 

@@ -326,12 +326,32 @@ def legal_errors():
         order by {0}""".format(sort), 
         [[current_app.config['DEFAULT_REGION']]]
         )
+        
+    stats4 = Query(conn, """
+        select distinct isps.name, isps.description, count(distinct urls.urlid) total, 
+            count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
+        from url_latest_status uls
+        inner join urls on uls.urlid = urls.urlid
+        inner join isps on isps.name = uls.network_name
+        inner join frontend.court_judgment_urls cju on cju.url = urls.url
+        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
+        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+            and isps.regions && %s::varchar[]
+            and urls.url ~* '^https?://[^/]+$'        
+        group by isps.name, isps.description
+        order by count(distinct urls.urlid) desc
+        """.format(sort), 
+        [[current_app.config['DEFAULT_REGION']]]
+        )        
     
     conn.commit()
     return render_template('legal-block-errors.html',
                            stats1=stats1,
                            stats2=stats2,
-                           stats3=stats3 )
+                           stats3=stats3, 
+                           stats4=stats4
+                           )
 
 
 @cms_pages.route('/legal-blocks/orders')
