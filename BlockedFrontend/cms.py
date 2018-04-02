@@ -282,30 +282,50 @@ def legal_errors():
     
     conn = psycopg2.connect(current_app.config['DB'])    
     q = Query(conn, """
-        select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else 0 end) error_count
+        select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
 
         from url_latest_status uls
         inner join urls on uls.urlid = urls.urlid
+        inner join isps on isps.name = uls.network_name
         left join frontend.court_judgment_urls cju on urls.url = cju.url
         left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
-        where blocktype='COPYRIGHT' and uls.status = 'blocked'""", 
-        [])
+        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+            and isps.regions && %s::varchar[]
+            and urls.url ~* '^https?://[^/]+$'
+        """, 
+        [[current_app.config['DEFAULT_REGION']]]
+        )
     stats1 = q.fetchone()
     q.close()
     
     stats2 = Query(conn, """
-        select reason, count(*) error_count
-        from frontend.court_judgment_urls cju 
+        select reason, count(distinct urls.urlid) error_count
+        from url_latest_status uls
+        inner join urls on uls.urlid = urls.urlid
+        inner join isps on isps.name = uls.network_name
+        inner join frontend.court_judgment_urls cju on urls.url = cju.url
         inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+            and isps.regions && %s::varchar[]
+            and urls.url ~* '^https?://[^/]+$'
         group by reason""", 
-        [])
+        [[current_app.config['DEFAULT_REGION']]]
+        )
     
     stats3 = Query(conn, """
-        select cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
-        from frontend.court_judgment_urls cju 
+        select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
+        from url_latest_status uls
+        inner join urls on uls.urlid = urls.urlid
+        inner join isps on isps.name = uls.network_name
+        inner join frontend.court_judgment_urls cju on cju.url = urls.url
         inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
         inner join frontend.court_judgments cj on cj.id = cju.judgment_id
-        order by {0}""".format(sort), [])
+        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+            and isps.regions && %s::varchar[]
+            and urls.url ~* '^https?://[^/]+$'        
+        order by {0}""".format(sort), 
+        [[current_app.config['DEFAULT_REGION']]]
+        )
     
     conn.commit()
     return render_template('legal-block-errors.html',

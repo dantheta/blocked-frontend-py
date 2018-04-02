@@ -45,12 +45,12 @@ of sites incorrectly blocked
 <table class="table">
 <tr>
 <th>Category</th>
-<th>Total errors</th>
+<th class="num">Total errors</th>
 </tr>
 {% for row in stats2 %}
 <tr>
   <td>{{ row.reason|replace('_',' ')|capitalize }}</td>
-  <td>{{ row.error_count }}</td>
+  <td class="num">{{ row.error_count }}</td>
 </tr>
 {% endfor %}
 </table>    
