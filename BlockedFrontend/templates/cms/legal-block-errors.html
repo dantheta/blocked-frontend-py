@@ -17,7 +17,7 @@
 
 {% block body %}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
 
 <div class="stats">
 <div>
@@ -35,13 +35,13 @@ sites incorrectly blocked
 of sites incorrectly blocked
 </div>
 
-<div>&nbsp;</div>
+<div ><small>Totals based on networks with no parental control filters.</small></div>
 </div>
 
-<!--
+
     </div>
 
-    <div class="col-md-4"> -->
+    <div class="col-md-4"> 
     <h4>Errors by type</h4>
 <table class="table">
 <tr>
@@ -57,17 +57,17 @@ of sites incorrectly blocked
 </table>    
         
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
     <h4>Errors by ISP</h4>
     <table class="table">
     <tr>
     <th>ISP</th>
-    <th class="num">Blocks Detected</th>
-    <th class="num">Errors Detected</th>
+    <th class="num">Blocks </th>
+    <th class="num">Errors</th>
     </tr>
     {% for row in stats4 %}
     <tr>
-        <td>{{row.description}}</td>
+        <td>{{row.description|replace(' (unfiltered)','')}}</td>
         <td class="num">{{row.total}}</td>
         <td class="num">{{row.error_count}}</td>
         <td></td>
