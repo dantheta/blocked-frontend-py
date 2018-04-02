@@ -275,6 +275,11 @@ def wildcard(page='index'):
 
 @cms_pages.route('/legal-blocks/errors')
 def legal_errors():
+    sort = request.args.get('sort','url')
+    
+    if not sort in ('url','reason','created'):
+        abort(400)
+    
     conn = psycopg2.connect(current_app.config['DB'])    
     q = Query(conn, """
         select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else 0 end) error_count
@@ -300,7 +305,7 @@ def legal_errors():
         from frontend.court_judgment_urls cju 
         inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
         inner join frontend.court_judgments cj on cj.id = cju.judgment_id
-        order by url""", [])
+        order by {0}""".format(sort), [])
     
     conn.commit()
     return render_template('legal-block-errors.html',
