@@ -1,0 +1,70 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{%set pagetitle = "Legal block errors" %}
+
+
+{% block page_style %}
+
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-6">
+
+<table class="" style="width: 100%">
+<tr>
+<td>Total sites blocked by injunction</td>
+<td>{{ stats1.total }}</td>
+</tr>
+<tr>
+<td>Total sites incorrectly blocked by injunction</td>
+<td>{{ stats1.error_count }}</td>
+</tr>
+<tr>
+<td>%</td>
+<td>{{ "{0:0.4f}".format(stats1.error_count|float / stats1.total) }}%</td>
+</tr>
+</table>
+
+    </div>
+
+    <div class="col-md-6">
+    
+<table class="table">
+<tr>
+<th>Category</th>
+<th>Total errors</th>
+</tr>
+{% for row in stats2 %}
+<tr>
+  <td>{{ row.reason|replace('_',' ')|capitalize }}</td>
+  <td>{{ row.error_count }}</td>
+</tr>
+{% endfor %}
+</table>    
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+    
+<table class="table">
+<tr>
+  <th>URL</th>
+  <th>Error</th>
+  <th>Reported</th>
+</tr>
+{% for row in stats3 %}
+
+<tr>
+<td><a href="{{ url_for('site.site', url=row.url)}}">{{ row.url }}</a></td>
+<td>{{ row.reason|replace('_',' ')|capitalize }}</td>
+<td>{{ row.created|fmdate }}</td>
+</tr>
+
+{% endfor %}
+{% endblock %}
+
+

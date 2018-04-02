@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, redirect, request, \
 
 from utils import *
 from models import Item
+from NORM import Query
 
 from resources import load_country_data
 
@@ -272,3 +273,36 @@ def wildcard(page='index'):
     except jinja2.TemplateNotFound:
         abort(404)
 
+@cms_pages.route('/legal-blocks/errors')
+def legal_errors():
+    conn = psycopg2.connect(current_app.config['DB'])    
+    q = Query(conn, """
+        select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else 0 end) error_count
+
+        from url_latest_status uls
+        inner join urls on uls.urlid = urls.urlid
+        left join frontend.court_judgment_urls cju on urls.url = cju.url
+        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        where blocktype='COPYRIGHT' and uls.status = 'blocked'""", 
+        [])
+    stats1 = q.fetchone()
+    q.close()
+    
+    stats2 = Query(conn, """
+        select reason, count(*) error_count
+        from frontend.court_judgment_urls cju 
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        group by reason""", 
+        [])
+    
+    stats3 = Query(conn, """
+        select url, reason, cjuf.created
+        from frontend.court_judgment_urls cju 
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        order by url""", [])
+    
+    conn.commit()
+    return render_template('legal-block-errors.html',
+                           stats1=stats1,
+                           stats2=stats2,
+                           stats3=stats3 )
