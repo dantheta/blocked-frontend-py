@@ -332,3 +332,25 @@ def legal_errors():
                            stats1=stats1,
                            stats2=stats2,
                            stats3=stats3 )
+
+
+@cms_pages.route('/legal-blocks/orders')
+def legal_orders():
+    conn = psycopg2.connect(current_app.config['DB'])    
+    
+    q = Query(conn, """select cj.name, cj.date, cj.citation,
+            count(distinct uls.urlid) block_count
+        from court_judgments cj
+        left join court_judgment_urls cju on cju.judgment_id = cj.id
+        left join urls on urls.url = cju.url and urls.url ~* '^https?://[^/]+$' 
+        left join url_latest_status uls on uls.urlid = urls.urlid and urls.status = 'ok'
+            and blocktype='COPYRIGHT' and uls.status = 'blocked'
+        left join isps on isps.name = uls.network_name and isps.regions && %s::varchar[]
+        group by cj.name,cj.date, cj.citation
+        order by cj.date desc
+            """,
+            [[current_app.config['DEFAULT_REGION']]]
+            )
+    
+    return render_template('legal-block-orders.html',
+                           judgments=q) 
