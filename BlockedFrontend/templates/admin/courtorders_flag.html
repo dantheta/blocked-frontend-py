@@ -19,7 +19,7 @@
 
 <form action="{{ url_for('.courtorders_site_flag_post') }}" method="POST">
     <input type="hidden" name="urlid" value="{{ url.id }}" />
-{% for reason in ['Domain Inactive','Domain for sale or parked', 'Domain in legitimate usage', 'Domain currently broken', 'Domain does not resolve'] %}
+{% for reason in ['Block appears correct', 'Domain Inactive','Domain for sale or parked', 'Domain in legitimate usage', 'Domain currently broken', 'Domain does not resolve'] %}
 
 {{ forms.radio_field(reason, 'reason', reason.lower().replace(' ','_'), (flag.get('reason') == reason.lower().replace(' ','_')) ) }}
 
