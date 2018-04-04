@@ -414,13 +414,30 @@ def courtorders_site_delete(id):
 def courtorders_site_flag(id):
     url = CourtJudgmentURL(request.conn, id=id)
     judgment = url.get_court_judgment()
+    
+    q = Query(request.conn, """
+        select isps.name, uls.status, uls.blocktype, uls.created
+        from urls
+        inner join url_latest_status uls on uls.urlid = urls.urlid
+        inner join isps on uls.network_name = isps.name
+        where urls.url = %s 
+        and isps.regions && '{gb}'::varchar[] and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+        order by isps.name""",
+        [url['url']])
+    
     try:
         flag = CourtJudgmentURLFlag.select_one(request.conn, 
                                                urlid = url['id'])
     except ObjectNotFound:
         flag = {}
     
-    return render_template('courtorders_flag.html', url=url, flag=flag, judgment=judgment, today=datetime.date.today())
+    return render_template('courtorders_flag.html', 
+                           url=url, 
+                           flag=flag, 
+                           judgment=judgment, 
+                           today=datetime.date.today(),
+                           status=q
+                           )
 
 @admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
 @check_admin
