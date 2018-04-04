@@ -45,6 +45,10 @@
 
 {{ forms.submit('Flag court order') }}
 
+{% if flag.id %}
+<input type="submit" name="delete" value="Unflag" class="btn btn-danger" />
+{% endif %}
+
 </form> 
 
     </div>
@@ -64,6 +68,30 @@
     <td>{{row.blocktype}}</td>
     <td>{{row.created|fmdate}}</td>
     </tr>
+    {% endfor %}
+    </table>
+    
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+    
+    <h3>Flag history</h3>
+    <table class="table small">
+    <tr>
+    <th>Date</th>
+    <th>Date observed</th>
+    <th>Flag</th>
+    <th>Description</th>
+    </tr>
+    {% for f in flags %}
+    <tr>
+    <td>{{ f.last_updated|fmtime }}</td>
+    <td>{{ f.date_observed|fmdate }}</td>
+    <td>{{ f.reason|replace('_',' ')|capitalize }}</td>
+    <td>{{ f.description }}</td>
+    </tr>    
     {% endfor %}
     </table>
     

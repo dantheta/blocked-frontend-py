@@ -90,3 +90,32 @@ create table court_judgment_url_flags(
 );
 
 alter table court_judgment_url_flags add foreign key (urlid) references court_judgment_urls(id) on delete cascade;
+
+create table court_judgment_url_flag_history (like court_judgment_url_flags);
+alter table court_judgment_url_flag_history add flag_id int not null;
+create sequence court_judgment_url_flag_history_id_seq ;
+alter table court_judgment_url_flag_history alter id set default nextval('court_judgment_url_flag_history_id_seq');
+alter table court_judgment_url_flag_history add foreign key (urlid) references court_judgment_urls(id) on delete cascade;
+
+create or replace function court_judgment_url_flag_upd_del() returns trigger AS $$
+BEGIN
+insert into court_judgment_url_flag_history(flag_id, urlid, reason, abusetype, date_observed, description, created, last_updated)
+  select id, urlid, reason, abusetype, date_observed, description, created, last_updated 
+  from court_judgment_url_flags where id = OLD.id;
+  if TG_OP = 'UPDATE'
+  then
+    return NEW;
+  else
+    return OLD;
+  end if;
+END;
+$$ language plpgsql;
+
+create trigger court_judgment_url_flags_trig_upd
+before update on court_judgment_url_flags 
+for each row execute procedure court_judgment_url_flag_upd_del();
+
+create trigger court_judgment_url_flags_trig_del 
+before delete on court_judgment_url_flags 
+for each row execute procedure court_judgment_url_flag_upd_del();
+

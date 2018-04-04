@@ -425,6 +425,13 @@ def courtorders_site_flag(id):
         order by isps.name""",
         [url['url']])
     
+    flags = Query(request.conn, """
+        select f.*
+        from court_judgment_url_flag_history f 
+        where f.urlid = %s
+        order by f.date_observed desc""",
+        [url['id']])
+    
     try:
         flag = CourtJudgmentURLFlag.select_one(request.conn, 
                                                urlid = url['id'])
@@ -436,7 +443,8 @@ def courtorders_site_flag(id):
                            flag=flag, 
                            judgment=judgment, 
                            today=datetime.date.today(),
-                           status=q
+                           status=q,
+                           flags=flags,
                            )
 
 @admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
@@ -444,6 +452,19 @@ def courtorders_site_flag(id):
 def courtorders_site_flag_post():
     f = request.form
     url = CourtJudgmentURL(request.conn, id=f['urlid'])
+    
+    if 'delete' in f:
+        try:
+            flag = CourtJudgmentURLFlag.select_one(request.conn, urlid = url['id'])
+            flag.delete()
+            judgment = url.get_court_judgment()
+            request.conn.commit()
+            flash("Url {0} unflagged".format(url['url']))
+            return redirect(url_for('.courtorders_view', id=judgment['id']))
+        except ObjectNotFound:
+            request.conn.rollback()
+            abort(404)
+        
     
     try:
         flag = CourtJudgmentURLFlag.select_one(request.conn, urlid = url['id'])
