@@ -84,6 +84,7 @@
     <th>Date observed</th>
     <th>Flag</th>
     <th>Description</th>
+    <th></th>
     </tr>
     {% for f in flags %}
     <tr>
@@ -91,6 +92,7 @@
     <td>{{ f.date_observed|fmdate }}</td>
     <td>{{ f.reason|replace('_',' ')|capitalize }}</td>
     <td>{{ f.description }}</td>
+    <td><a href="{{ url_for('.courtorders_site_flag_delete', id=f.id) }}"><span class="glyphicon glyphicon-trash"></span></a></td>
     </tr>    
     {% endfor %}
     </table>

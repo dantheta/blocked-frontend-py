@@ -484,6 +484,20 @@ def courtorders_site_flag_post():
     flash("Url {0} flagged".format(url['url']))
     return redirect(url_for('.courtorders_view', id=judgment['id']))
 
+@admin_pages.route('/control/courtorders/site/flag/delete/<int:id>', methods=['GET'])
+@check_admin
+def courtorders_site_flag_delete(id):
+    q = Query(request.conn, 
+              "delete from court_judgment_url_flag_history where id = %s returning urlid as urlid",
+              [id])
+    row = q.fetchone()
+    
+    request.conn.commit()
+    flash("Historical flag removed")
+    return redirect(url_for('.courtorders_site_flag', id=row['urlid']))
+    
+    
+
 @admin_pages.route('/control/courtorders/site/group/import', methods=['GET'])
 @check_admin
 def courtorders_group_import():
