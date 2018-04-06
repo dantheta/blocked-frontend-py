@@ -276,6 +276,7 @@ def wildcard(page='index'):
 @cms_pages.route('/legal-blocks/errors')
 def legal_errors():
     sort = request.args.get('sort','url')
+    o = request.args.get('o', 'a')
     
     if not sort in ('url','reason','created'):
         abort(400)
@@ -326,7 +327,7 @@ def legal_errors():
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'        
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-        order by {0}""".format(sort), 
+        order by {0} {1}""".format(sort, 'asc' if o == 'a' else 'desc'), 
         [[current_app.config['DEFAULT_REGION']]]
         )
         

@@ -3,12 +3,17 @@
 
 {%set pagetitle = "Legal block errors" %}
 
-{% macro sortlink(v) %}
-{% if request.args.get('sort','url') != v %}
-<a href="{{ url_for('.legal_errors', sort=v) }}" title="Sort by {{v}}"><span class="glyphicon glyphicon-chevron-down"></span></a>
-{% else %}
-<span class="glyphicon glyphicon-chevron-down"></span>
-{% endif %}
+{% macro sortlink(v, title) %}
+
+
+<a href="{{ url_for('.legal_errors', sort=v, o='d' if request.args.get('sort','url') == v and request.args.get('o','a') == 'a' else 'a') }}" title="Sort by {{v}}">{{title}}</a>
+  {% if request.args.get('sort','url') == v %}
+  {% if  request.args.get('o','a') == 'a' %}
+    <span class="glyphicon small glyphicon-triangle-bottom"></span></a>
+  {% else %}
+    <span class="glyphicon small glyphicon-triangle-top"></span></a>
+  {% endif %}
+  {% endif %}
 {% endmacro %}
 
 {% block page_style %}
@@ -31,7 +36,7 @@ sites incorrectly blocked
 </div>
 
 <div>
-<span>{{ "{0:0.4f}".format(stats1.error_count|float / stats1.total) }}%</span>
+<span>{{ "{0:0.2f}".format(100.0*stats1.error_count / stats1.total) }}%</span>
 of sites incorrectly blocked
 </div>
 
@@ -83,10 +88,10 @@ of sites incorrectly blocked
     
 <table class="table">
 <tr>
-  <th>URL {{sortlink('url')}}</th>
+  <th>{{sortlink('url', 'URL')}}</th>
   <th>Court Judgment</th>
-  <th>Error {{sortlink('reason')}}</th>
-  <th>Reported {{sortlink('created')}}</th>
+  <th>{{sortlink('reason', 'Error')}}</th>
+  <th>{{sortlink('created', 'Reported')}}</th>
 </tr>
 {% for row in stats3 %}
 
