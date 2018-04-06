@@ -252,11 +252,15 @@ def courtorders_review(page=1):
               """
               select count(*) ct from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
+              inner join isps on isps.name = uls.network_name and regions && %s::varchar[]
+                and (isps.filter_level = 'No Adult' or isps.isp_type = 'mobile')
               left join court_judgment_urls cu on urls.url = cu.url
               where urls.status = 'ok' and uls.status = 'blocked' 
+                and urls.url ~* '^https?://[^/]+$'
                 and uls.blocktype = 'COPYRIGHT' and cu.url is null
               """,
-              []
+              [[current_app.config['DEFAULT_REGION']]]
+
              )
     count = q.fetchone()['ct']
     q.close()
@@ -265,11 +269,14 @@ def courtorders_review(page=1):
               """
               select urls.url, network_name, uls.created, uls.first_blocked from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
+              inner join isps on isps.name = uls.network_name and regions && %s::varchar[]
+                and (isps.filter_level = 'No Adult' or isps.isp_type = 'mobile')
               left join court_judgment_urls cu on urls.url = cu.url
               where urls.status = 'ok' and uls.status = 'blocked' 
+                and urls.url ~* '^https?://[^/]+$'
                 and uls.blocktype = 'COPYRIGHT' and cu.url is null
               order by uls.first_blocked limit 25 offset {0}""".format(offset),
-              []
+              [[current_app.config['DEFAULT_REGION']]]
              )
     return render_template('courtorders_review.html',
                            results=q,
