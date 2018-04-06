@@ -111,7 +111,9 @@ class CourtJudgment(DBObject):
 
     def get_grouped_urls_with_expiry(self):
         """Uses view onto backend's URLs table"""
-        q = Query(self.conn, """select u.*, g.name as group_name, pu.whois_expiry, cjuf.id as flag_id
+        q = Query(self.conn, """select u.*, g.name as group_name, pu.whois_expiry, cjuf.id as flag_id,
+            (select count(*) from court_judgment_url_flag_history fh where fh.urlid = u.id) 
+            + (case when cjuf.id is not null then 1 else 0 end) as flag_count
             from court_judgment_urls u
             left join urls pu on pu.url = u.url
             left join court_judgment_url_groups g on g.id = u.group_id
