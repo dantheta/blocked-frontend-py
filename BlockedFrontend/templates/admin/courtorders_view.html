@@ -90,7 +90,9 @@
                                 class="{{ 'btn btn-default active' if site['flag_id'] else 'btn btn-default' }}" 
                                 title="{{'This site has been flagged' if site['flag_id'] else 'Flag this site' }}">
                                 <span class="glyphicon glyphicon-flag "></span>
-                            <span class="badge">{{ site.flag_count }}</span>
+                                {% if site.flag_count %}
+                                <span class="badge">{{ site.flag_count }}</span>
+                                {% endif %}
                             </a>
                             <a href="{{ url_for('.urls',url=site.url) }}" title="Administer URL">
                                 <span class="glyphicon glyphicon-tag"></span>
