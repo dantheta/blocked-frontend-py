@@ -84,7 +84,7 @@
                             </td>
                             <td><a href="{{site.url}}" target="_blank">{{site.url}}</a></td>
                             <td>{{site.whois_expiry|fmdate}}</td>
-                            <td>
+                            <td style="text-align: right">
                             
                             <a href="{{ url_for('.courtorders_site_flag',id=site.id) }}" 
                                 class="{{ 'btn btn-default active' if site['flag_id'] else 'btn btn-default' }}" 
