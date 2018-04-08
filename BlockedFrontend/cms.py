@@ -289,11 +289,12 @@ def legal_errors():
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         left join frontend.court_judgment_urls cju on urls.url = cju.url
-        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id and cjuf.reason != 'block_appears_correct'
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
             and urls.url ~* '^https?://[^/]+$'
+            -- 
         """, 
         [[current_app.config['DEFAULT_REGION']]]
         )
@@ -311,6 +312,8 @@ def legal_errors():
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+            and cjuf.reason != 'block_appears_correct'
+
         group by reason""", 
         [[current_app.config['DEFAULT_REGION']]]
         )
@@ -327,6 +330,8 @@ def legal_errors():
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'        
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+            and cjuf.reason != 'block_appears_correct'
+
         order by {0} {1}""".format(sort, 'asc' if o == 'a' else 'desc'), 
         [[current_app.config['DEFAULT_REGION']]]
         )
@@ -344,6 +349,8 @@ def legal_errors():
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'  
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')      
+            and cjuf.reason != 'block_appears_correct'
+
         group by isps.name, isps.description
         order by count(distinct urls.urlid) desc
         """.format(sort), 
