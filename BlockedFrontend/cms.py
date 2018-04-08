@@ -312,7 +312,7 @@ def legal_errors():
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-            and cjuf.reason != 'block_appears_correct'
+            -- and cjuf.reason != 'block_appears_correct'
 
         group by reason""", 
         [[current_app.config['DEFAULT_REGION']]]
