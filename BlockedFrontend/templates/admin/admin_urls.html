@@ -23,7 +23,7 @@
         </div>
     </div>
     {{ forms.check_field("Normalize URL", 'normalize', 1, True) }}
-    <div class="well">
+    <div class="">
     {{ forms.static_field('Title:', 'title', status.title|default('') ) }}
     {{ forms.static_field('URL:', 'url_stored', status.url|default('')) }}
     {{ forms.static_field('URL Status:', 'url_status', status['url-status']|default('')  ) }}
@@ -31,6 +31,9 @@
     {{ forms.static_field('Tags:', 'tags', status.tags|default([])|join(",") ) }}
     </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
     {{ forms.select_field('New Status:', 'status', None, [
         ('duplicate','duplicate'),
         ('invalid','invalid'),
@@ -38,7 +41,41 @@
         ('ok', 'ok'),
         ])
         }}
-<input type="submit" class="btn btn-primary" name="update_mode" value="Update URL Status" />
+<input type="submit" class="btn btn-primary" name="update_status" value="Update URL Status" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+    
+    <div class="form-group">
+    <label class="control-label" for="tag">Add tag:</label>
+    <div id="existingtag" class="input-group">
+    <select class="form-control" name="tag">
+        {% for opt in tags %}
+        {% if opt is string %}
+        <option value="{{opt}}" >{{opt}}</option>
+        {% else %}
+        <option value="{{opt[0]}}" >{{opt[1]}}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <div class="input-group-addon"><a id="switchnewtag" title="Enter a new tag"><span class="glyphicon glyphicon-plus-sign"></span></a></div>
+    </div>
+    <div id="newtag" class="input-group">
+        
+        <input class="form-control" name="newtag" placeholder="new-tag" />
+        <div class="input-group-addon"><a id="switchexistingtag" title="Select from list of existing tags"><span class="glyphicon glyphicon-remove-sign"></span></a></div>
+    </div>
+    
+    
+</div>
+        
+<input type="submit" class="btn btn-primary" name="update_tag" value="Add tag" />
+            </div>
+        </div>
+    </div>
+    
+    
 </form>
 </div>
 
@@ -74,6 +111,21 @@ $(document).ready(function(){
       $('#url').parent().parent().removeClass('has-success');
     });
   });
+
+  $('#newtag').hide();
+  $('#switchnewtag').click(function(){
+     $('#newtag').show();
+     $('#existingtag').hide();
+     return false;
+  });   
+  $('#switchexistingtag').click(function(){
+     $('#newtag').hide();
+     $('#existingtag').show();
+     $('input[name=newtag]').val('');
+     return false;
+  });
+  
+  
 });
 
 {% endblock %}

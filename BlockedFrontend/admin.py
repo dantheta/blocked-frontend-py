@@ -1,5 +1,6 @@
 
 import os
+import re
 import logging
 import datetime
 
@@ -586,7 +587,7 @@ def urls():
     else:
         status = None
         
-    return render_template('admin_urls.html', status=status)
+    return render_template('admin_urls.html', status=status, tags=load_data('tags'))
 
 @admin_pages.route('/control/urls/check', methods=['GET'])
 @check_admin
@@ -598,7 +599,8 @@ def admin_urls_check():
 @check_admin
 def urls_post():
     f = request.form
-    if 'update_mode' in f:
+    print f
+    if 'update_status' in f:
         rsp = request.api.set_status_url(f['url'], f['status'],
                                          f.get('normalize', '0') == '1')
         if rsp['success'] == True:
@@ -606,6 +608,24 @@ def urls_post():
         else:
             flash("Error updating URL status")
         return redirect(url_for('.urls'))
+
+    if 'update_tag' in f:
+        if f['newtag']:
+            tag = f['newtag'].lower()
+        else:
+            tag = f['tag'].lower()
+        
+        if not re.match(r'[a-z0-9-]+', tag):
+            flash("Tag \"{0}\" is not valid.  Tags must contain only characters a-z, 0-9 and '-'.".format(tag))
+            return redirect(url_for('.urls'))
+        
+            
+        q = Query(request.conn, """update urls set tags = tags || %s::varchar where url = %s and not tags && %s::varchar[]""",
+            [ tag, normalize_url(f['url']), [tag] ])
+        q.close()
+        request.conn.commit()
+        flash("URL Tags updated")
+        return redirect(url_for('.urls', url=normalize_url(f['url'])))
 
     abort(400)
 
