@@ -104,8 +104,10 @@ def show_list(name, page=1):
 @list_pages.route('/lists')
 def show_lists():
     g.remote_content = g.remote.get_content('lists')
+    savedlists = models.SavedList.select(request.conn, public='t', _orderby='name')
+    request.conn.commit()
     return render_template('lists.html',
-        lists=models.SavedList.select(request.conn, public='t', _orderby='name')
+        lists=savedlists
         )
 
 
