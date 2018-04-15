@@ -271,6 +271,9 @@ Site has been flagged
         </div>
       </div>
     </form>
+    <h4>Related results</h4>
+    <p><a href="{{ url_for('.site', url=url.replace('http:','https:')) }}">View results for the HTTPS version of this site.</a></p>
+
     {% if savedlist and not live and config.MODULE_SAVEDLIST %}
     <div>This site appears on the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> user-created list.</div>
     {% endif %}
