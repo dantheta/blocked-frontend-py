@@ -8,6 +8,7 @@ import collections
 from api import ApiClient
 from utils import *
 from .remotecontent import RemoteContent
+import db
 
 from flask import Flask, render_template, request,  \
     abort, g, session
@@ -79,6 +80,9 @@ else:
     from stats import stats_pages
     app.register_blueprint(stats_pages)
 
+@app.before_first_request
+def setup_db():
+    db.setup()
 
 @app.before_request
 def hook_api():

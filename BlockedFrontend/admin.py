@@ -11,6 +11,7 @@ from models import *
 from auth import *
 from utils import *
 from resources import *
+from db import *
 
 from NORM.exceptions import ObjectNotFound,ObjectExists
 
@@ -23,7 +24,13 @@ def convertnull(value):
 
 @admin_pages.before_request
 def setup_db():
-    request.conn = psycopg2.connect(current_app.config['DB'])
+    request.conn = db_connect()
+    
+@admin_pages.after_request
+def shutdown_db(rsp):
+    db_disconnect(request.conn)
+    request.conn = None
+    return rsp
 
 @admin_pages.route('/control', methods=['GET'])
 def admin():

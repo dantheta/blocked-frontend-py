@@ -7,6 +7,7 @@ import datetime
 from flask import Blueprint, render_template, redirect, request, current_app, session, url_for, abort, g
 from utils import *
 from models import *
+from db import *
 
 
 unblock_pages = Blueprint('unblock', __name__,
@@ -14,7 +15,13 @@ unblock_pages = Blueprint('unblock', __name__,
 
 @unblock_pages.before_request
 def setup_db():
-    request.conn = psycopg2.connect(current_app.config['DB'])
+    request.conn = db_connect()
+
+@unblock_pages.after_request
+def shutdown_db(rsp):
+    db_disconnect(request.conn)
+    request.conn = None
+    return rsp
 
 @unblock_pages.route('/unblock')
 def unblock():

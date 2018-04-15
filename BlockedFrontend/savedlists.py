@@ -11,15 +11,20 @@ import models
 import NORM.exceptions
 
 from auth import *
+from db import *
 
 list_pages = Blueprint('list', __name__,
                        template_folder='templates/savedlists')
 
 @list_pages.before_request
 def setup_db():
-    request.conn = psycopg2.connect(current_app.config['DB'])
+    request.conn = db_connect()
 
-
+@list_pages.after_request
+def shutdown_db(rsp):
+    db_disconnect(request.conn)
+    request.conn = None
+    return rsp
 
 @list_pages.route('/list', methods=['POST'])
 @check_admin
