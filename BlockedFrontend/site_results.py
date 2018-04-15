@@ -77,6 +77,17 @@ def site(url=None):
     can_unblock = None
     prev_unblock_type = None
 
+    try:
+        if 'http:' in url:
+            alt_url = url.replace('http:','https:')
+        else:
+            alt_url = url.replace('https:','http:')
+            
+        alt_url_data = request.api.status_url(alt_url, current_app.config['DEFAULT_REGION'])
+    except Exception:
+        alt_url_data = None
+
+
     results = [x for x in data['results'] if x['isp_active']]
     for item in results:
         if item['status'] == 'blocked':
@@ -147,7 +158,9 @@ def site(url=None):
                            country_names=country_names,
 
                            judgment = judgment,
-                           judgment_orders=judgment_orders
+                           judgment_orders=judgment_orders,
+                           
+                           alt_url_data = alt_url_data
                            )
 
 

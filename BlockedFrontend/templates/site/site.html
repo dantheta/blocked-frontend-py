@@ -161,7 +161,7 @@ Your feedback was successfully submitted.
 
 {% endif %}
 
-{% if url.lower().startswith('https:') %}
+{% if url.lower().startswith('https:') and alt_url_data %}
 <div class="info-panel">
     <span class="glyphicon glyphicon-info-sign" style="margin-left: -1.75em; float: left; font-size: 1.5em"></span>
 <p>Parental control filter systems can have difficulty providing human readable responses for HTTPS requests, due to certificate errors.  </p>
@@ -272,7 +272,9 @@ Site has been flagged
       </div>
     </form>
     <h4>Related results</h4>
+    {% if alt_url_data %}
     <p><a href="{{ url_for('.site', url=url.replace('http:','https:')) }}">View results for the HTTPS version of this site.</a></p>
+    {% endif %}
 
     {% if savedlist and not live and config.MODULE_SAVEDLIST %}
     <div>This site appears on the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> user-created list.</div>
