@@ -90,7 +90,7 @@ def show_list(name, page=1):
     itemcount = savedlist.count_items()
     session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
     items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
-
+    request.conn.commit()
     return render_template('show_list.html',
             savedlist = savedlist,
             itemcount = itemcount,
