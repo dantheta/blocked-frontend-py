@@ -10,15 +10,18 @@ POOL = None
 
 def setup():
     global POOL
-    POOL = psycopg2.pool.ThreadedConnectionPool(2, 12, current_app.config['DB'], cursor_factory=DictCursor)
+    #POOL = psycopg2.pool.ThreadedConnectionPool(2, 12, current_app.config['DB'], cursor_factory=DictCursor)
+    return
 
 def db_connect():
-    return POOL.getconn()
+    #return POOL.getconn()
+    return psycopg2.connect(current_app.config['DB'], cursor_factory=DictCursor)
     
 def db_disconnect(conn):
     # TODO: transaction cleanup
-    current_app.logger.debug("Transaction status: %s", conn.get_transaction_status())
-    POOL.putconn(conn)
+    return
+    #current_app.logger.debug("Transaction status: %s", conn.get_transaction_status())
+    #POOL.putconn(conn)
     
 
 def cursor(conn):
