@@ -1,0 +1,34 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{%set pagetitle = "Legal blocks - Court orders" %}
+
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+    
+    <table class="table">
+    <tr>
+    <th style="width: 50%">Judgment</th>
+    <th>Date</th>
+    <th style="width: 20%">Citation</th>
+    <th class="num">Blocks Detected</th>
+    </tr>
+    {% for judgment in judgments %}
+    <tr>
+        <td>{{judgment.name}}</td>
+        <td>{{judgment.date|fmdate}}</td>
+        <td>{{judgment.citation|null}}</td>
+        <td class="num">{{judgment.block_count}}</td>
+    </tr>
+    
+    {% endfor %}
+    </table>
+    
+    </div>
+</div>
+
+
+{% endblock %}
+
