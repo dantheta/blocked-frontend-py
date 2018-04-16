@@ -128,6 +128,7 @@ def site(url=None):
         judgment_url = CourtJudgmentURL.select_one(conn, url=url)
         judgment = judgment_url.get_court_judgment()
         judgment_orders = judgment.get_court_orders_by_network()
+        judgment_url_flag = judgment_url.get_flag()
         can_unblock = False
     except ObjectNotFound:
         judgment = None
@@ -159,6 +160,7 @@ def site(url=None):
 
                            judgment = judgment,
                            judgment_orders=judgment_orders,
+                           cjuf = judgment_url_flag,
                            
                            alt_url_data = alt_url_data
                            )

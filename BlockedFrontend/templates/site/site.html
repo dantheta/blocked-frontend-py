@@ -212,17 +212,17 @@ Your feedback was successfully submitted.
 <div> <!-- actions -->
   {% if config.MODULE_UNBLOCK %}
 {% if can_unblock == true or live %}
-<a id="unblockbtn" href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
+  <a id="unblockbtn" href="{{ url_for('unblock.unblock', url=url) }}" class="btn btn-primary">Request unblock</a>
 {% elif can_unblock == false %}
-<a class="btn btn-primary btn-disabled" disabled rel="nofollow">
+  <a class="btn btn-primary btn-disabled" disabled rel="nofollow">
 {%- if prev_unblock_type == 'unblock' -%}
-Unblock Requested
+  Unblock Requested
 {%- elif prev_unblock_type == 'blacklist' -%}
-Site is blacklisted
+  Site is blacklisted
 {%- elif judgment -%}
-Site is blocked by court order
+  Site is blocked by court order  
 {%- else -%}
-Site has been flagged
+  Site has been flagged
 {%- endif -%}
 </a>
 {% endif %}
@@ -248,6 +248,11 @@ Site has been flagged
         <p>Reported on {{reports[0].created|fmtime}}</p>
         <p class="report-message"><span>&ldquo;</span>{{ reports[0].message }}<span>&rdquo;</span></p>
       {% endif %}
+    {% elif cjuf and cjuf.reason != 'block_appears_correct' %}
+    
+    <p style="margin-top: 1.5em">This page has been flagged as <b>incorrectly blocked</b> under an injunction.</p>  
+    <p>It is flagged as <strong>{{ cjuf.reason.replace('_',' ').capitalize() }}</strong>.  </p>
+    <div><a href="{{url_for('cms.legal_errors')}}">View all legal block errors</a></div>
     {% else %}
     <h4>Tell us about this site</h4>
     <p>For example: is the link dead, or is the domain being squatted?

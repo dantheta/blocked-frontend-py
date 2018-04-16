@@ -138,6 +138,10 @@ class CourtJudgmentURL(DBObject):
 
     def get_court_judgment(self):
         return CourtJudgment(self.conn, id=self['judgment_id'])
+        
+    def get_flag(self):
+        return CourtJudgmentURLFlag.select_one(self.conn, urlid=self['id'])
+        
 
 class CourtJudgmentURLGroup(DBObject):
     TABLE = 'court_judgment_url_groups'
