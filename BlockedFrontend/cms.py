@@ -21,6 +21,8 @@ REMOTE_TEXT_CONTENT = {
     'seized-domains': 'seized-domains'
     }
 
+PAGE_ITEMS=25
+
 def custom_routing(site):
     if site == 'blocked-eu':
         cms_pages.add_url_rule('/', 'legal_blocks', legal_blocks)
@@ -274,13 +276,15 @@ def wildcard(page='index'):
         abort(404)
 
 @cms_pages.route('/legal-blocks/errors')
-def legal_errors():
+@cms_pages.route('/legal-blocks/errors/<int:page>')
+def legal_errors(page=1):
     sort = request.args.get('sort','url')
     o = request.args.get('o', 'a')
     
     if not sort in ('url','reason','created'):
         abort(400)
     
+    # error totals - large stats panel
     conn = psycopg2.connect(current_app.config['DB'])    
     q = Query(conn, """
         select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
@@ -301,6 +305,7 @@ def legal_errors():
     stats1 = q.fetchone()
     q.close()
     
+    # summary of block errors by reason
     stats2 = Query(conn, """
         select reason, count(distinct urls.urlid) error_count
         from url_latest_status uls
@@ -318,6 +323,27 @@ def legal_errors():
         [[current_app.config['DEFAULT_REGION']]]
         )
     
+    # main error listing
+    q_stats3_count = Query(conn, """
+    select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url 
+        from url_latest_status uls
+        inner join urls on uls.urlid = urls.urlid
+        inner join isps on isps.name = uls.network_name
+        inner join frontend.court_judgment_urls cju on cju.url = urls.url
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
+        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+            and isps.regions && %s::varchar[]
+            and urls.url ~* '^https?://[^/]+$'        
+            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+            and cjuf.reason != 'block_appears_correct'
+            ) x
+        """,
+        [[current_app.config['DEFAULT_REGION']]])
+            
+    stats3_count = q_stats3_count.fetchone()['ct']
+    pagecount = get_pagecount(stats3_count, PAGE_ITEMS)
+    
     stats3 = Query(conn, """
         select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
         from url_latest_status uls
@@ -332,10 +358,12 @@ def legal_errors():
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
             and cjuf.reason != 'block_appears_correct'
 
-        order by {0} {1}""".format(sort, 'asc' if o == 'a' else 'desc'), 
+        order by {0} {1}
+        limit {3} offset {2}""".format(sort, 'asc' if o == 'a' else 'desc', (page-1)*PAGE_ITEMS, PAGE_ITEMS), 
         [[current_app.config['DEFAULT_REGION']]]
         )
         
+    # stats listing by ISP
     stats4 = Query(conn, """
         select distinct isps.name, isps.description, count(distinct urls.urlid) total, 
             count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
@@ -362,7 +390,11 @@ def legal_errors():
                            stats1=stats1,
                            stats2=stats2,
                            stats3=stats3, 
-                           stats4=stats4
+                           stats4=stats4, 
+                           
+                           page=page,
+                           pagecount=pagecount,
+                           count=stats3_count,
                            )
 
 
