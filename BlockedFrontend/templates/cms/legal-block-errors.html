@@ -6,7 +6,7 @@
 {% macro sortlink(v, title) %}
 
 
-<a href="{{ url_for('.legal_errors', sort=v, o='d' if request.args.get('sort','url') == v and request.args.get('o','a') == 'a' else 'a') }}" title="Sort by {{v}}">{{title}}</a>
+<a href="{{ url_for('.legal_errors', page=page, sort=v, o='d' if request.args.get('sort','url') == v and request.args.get('o','a') == 'a' else 'a') }}" title="Sort by {{v}}">{{title}}</a>
   {% if request.args.get('sort','url') == v %}
   {% if  request.args.get('o','a') == 'a' %}
     <span class="glyphicon small glyphicon-triangle-bottom"></span></a>
@@ -69,13 +69,11 @@ of sites incorrectly blocked
     <table class="table">
     <tr>
     <th>ISP</th>
-    <th class="num">Blocks </th>
     <th class="num">Errors</th>
     </tr>
     {% for row in stats4 %}
     <tr>
         <td>{{row.description|replace(' (unfiltered)','')}}</td>
-        <td class="num">{{row.total}}</td>
         <td class="num">{{row.error_count}}</td>
         <td></td>
     </tr>
