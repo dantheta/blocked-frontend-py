@@ -54,10 +54,12 @@ of sites incorrectly blocked
 <th class="num">Total</th>
 </tr>
 {% for row in stats2 %}
+{% if row.reason != 'block_appears_correct' %}
 <tr>
   <td>{{ row.reason|replace('_',' ')|capitalize }}</td>
   <td class="num">{{ row.error_count }}</td>
 </tr>
+{% endif %}
 {% endfor %}
 </table>    
         
