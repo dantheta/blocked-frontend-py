@@ -133,6 +133,7 @@ def site(url=None):
     except ObjectNotFound:
         judgment = None
         judgment_orders = {}
+        judgment_url_flag = None
         pass
     conn.commit()
     return render_template('site.html',
