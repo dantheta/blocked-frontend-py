@@ -5,6 +5,10 @@
 {%set pagetitle = g.remote_content.title if 'title' in g.remote_content
     else "Website blocking through legal means" %}
 
+{%block page_menu%}
+<div><a href="{{ url_for('.legal_errors') }}">Legal block errors</a></div>
+{% endblock %}
+
 {% block col1_row1 %}
 {{ g.remote_content.TextAreaOne|safe }}
 {%endblock%}
