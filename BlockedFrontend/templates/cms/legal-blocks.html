@@ -128,7 +128,9 @@ td.urlcol {
         <td class="urlcol">{{ row.url }}
         <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
         {% if row.reason and row.reason != 'block_appears_correct' %}
-        <div>{{row.reason|replace('_',' ')|capitalize}}</div>
+        <div style="margin-top: 0.25em">            
+            <span class="label label-warning"><span class="glyphicon glyphicon-warning-sign"></span> {{row.reason|replace('_',' ')|capitalize}}</span>
+        </div>
         {% endif %}
         </td>
         <td class="networklist">
