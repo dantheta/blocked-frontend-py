@@ -198,6 +198,7 @@ def export_blocks_by_injunction(region):
         'url_group_name',
         'first_blocked',
         'last_blocked',
+        'reason',
         'networks'
     ]
 
@@ -215,7 +216,11 @@ def export_blocks_by_injunction(region):
         while True:
             data = request.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:                
-                yield [item[x] for x in COLS if x != 'networks'] + item['networks']
+                yield [
+                    item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 
+                    for x in COLS 
+                    if x != 'networks'
+                    ] + item['networks']
             page += 1
             if page > get_pagecount(data['urlcount'], 25):
                 break
