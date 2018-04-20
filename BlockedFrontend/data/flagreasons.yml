@@ -1,0 +1,14 @@
+reasons:
+- Block appears correct
+- Domain Inactive
+- Domain for sale or parked
+- Domain in legitimate usage
+- Domain currently broken
+- Domain does not resolve
+- Domain may be abusive
+- Reverse proxy failure
+
+abusetypes:
+  redirects: Click fraud/redirects
+  malware: Malware
+  other: Other

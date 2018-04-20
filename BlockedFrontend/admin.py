@@ -460,6 +460,7 @@ def courtorders_site_flag(id):
                            today=datetime.date.today(),
                            status=q,
                            flags=flags,
+                           flagreasons=load_data('flagreasons')
                            )
 
 @admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
