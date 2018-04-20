@@ -193,8 +193,58 @@ def blacklist_delete():
 @admin_pages.route('/control/user')
 @check_admin
 def users():
-    users = request.api.list_users()
+    users = User.select(request.conn)
     return render_template('users.html', users=users)
+
+@admin_pages.route('/control/user/add', methods=['POST'])
+@check_admin
+def user_add():
+    f = request.form
+    user = User(request.conn)
+    user.update({
+        'username': f['username'],
+        'email': f['email'],
+        'user_type': f['user_type'],
+    })
+    newpass = user.random_password()
+    user.set_password(newpass)
+    user.store()
+    request.conn.commit()
+    flash("User {0} created with password {1} ".format(f['username'], newpass))
+    return redirect(url_for('.users'))
+
+@admin_pages.route('/control/user/disable/<int:id>')
+@check_admin
+def user_disable(id):
+    ret = user_set_enabled(id, False)
+    return ret
+
+@admin_pages.route('/control/user/enable/<int:id>')
+@check_admin
+def user_enable(id):
+    ret = user_set_enabled(id, True)
+    return ret
+    
+def user_set_enabled(id, value):    
+    user = User(request.conn, id)
+    user['enabled'] = value
+    user.store()
+    request.conn.commit()
+    flash("User {0} {1}.".format(user['username'],
+                                 'enabled' if value else 'disabled'))
+
+    return redirect(url_for('.users'))
+
+@admin_pages.route('/control/user/newpassword/<int:id>')
+@check_admin
+def user_generate_password(id):
+    user = User(request.conn, id)
+    newpass = user.reset_password()
+    user.store()
+    request.conn.commit()
+    flash("User {0} password reset to: {1}".format(user['username'], newpass))
+    return redirect(url_for('.users'))
+
 
 #
 # ISP Report admin

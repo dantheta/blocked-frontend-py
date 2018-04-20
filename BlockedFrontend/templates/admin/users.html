@@ -1,4 +1,5 @@
 {% extends "admin.page.html" %}
+{% import "forms.part.html" as forms %}
 
 {% set pagetitle = "User Admin" %}
 
@@ -6,25 +7,36 @@
 <div class="row">
 <div class="col-md-12">
 
-<h1>{{pagetitle}}</h1>
+<h1>{{pagetitle}}
+
+<button id="addbtn" class="btn  btn-primary" style="float: right" data-toggle="modal" data-target="#addform"><span class="glyphicon glyphicon-plus"></span> Add new user</button>
+</h1>
 
 <table class="table">
 <tr>
   <th>Name</th>
+  <th>Email</th>
   <th>Created</th>
   <th>Status</th>
+  <th>Type</th>
+  <th></th>
 </tr>
-{% for user in users.users %}
+{% for user in users %}
 <tr>
-  <td>{{ user.email }}
-  <br />
-    {{ user.fullname }}
-  </td>
-  <td>{{ user.createdat }} </td>
+  <td>{{ user.username }}</td>
+  <td>{{ user.email }}</td>
+  <td>{{ user.created |fmtime }}</td>
+  <td>{{ 'Enabled' if user.enabled else 'Disabled' }}</td>
+  <td>{{ user.user_type }}</td>
   <td>
-    {{ user.status }}
-  </td>
+    {% if user.enabled %}
+    <a href="{{url_for('.user_disable', id=user.id)}}" class="btn btn-sm btn-default" title="Disable user"><span class="glyphicon glyphicon-ok-circle"></span></a>
+    {% else %}
+    <a href="{{url_for('.user_enable', id=user.id)}}" class="btn btn-sm btn-danger active" title="Re-enable user"><span class="glyphicon glyphicon-ban-circle"></span></a>
+    {% endif %}
+    <a href="{{url_for('.user_generate_password', id=user.id)}}" class="btn btn-sm btn-default" title="Reset user password"><span class="glyphicon glyphicon-random"></span></a>
 
+  </td>
 </tr>
 
 {% endfor %}
@@ -33,6 +45,39 @@
 </div>
 </div>
 
+<div class="modal" id="addform" role="dialog">
+      <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form action="{{ url_for('.user_add') }}" method="POST">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add user</h4>
+      </div>
+      <div class="modal-body">
+        {{ forms.text_field('Username','username') }}
+        {{ forms.text_field('Email','email') }}
+        {{ forms.select_field('User type','user_type', options=['user','reviewer','moderator','admin']) }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+        </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+
+</div>
+
 {% endblock %}
 
+{% block page_script %}
+
+$(document).ready(function(){
+  $('#addbtn').click(function(){
+     $('. 
+  });  
+    
+})
+
+{% endblock %}
 

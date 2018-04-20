@@ -39,6 +39,7 @@ CREATE TABLE users(
     email varchar unique,
     password varchar,
     user_type enum_user_level not null default 'user',
+    enabled bool default true,
     created timestamptz not null,
     last_updated timestamptz not null
     );

@@ -72,6 +72,7 @@ class User(DBObject):
               'email',
               'password'
               ]
+    PASSWORD_LENGTH=12
     
     @staticmethod
     def _encode(s):
@@ -91,17 +92,22 @@ class User(DBObject):
         salt = bcrypt.gensalt()
         self['password'] = bcrypt.hashpw(self._encode(password), salt)
         
+    def reset_password(self, length=PASSWORD_LENGTH):
+        newpass = self.random_password(length)
+        self.set_password(newpass)
+        return newpass
+        
     @classmethod
     def authenticate(klass, conn, username, password):
-        user = klass.select_one(conn, username=username)
+        user = klass.select_one(conn, username=username, enabled=True)
         if user.check_password(password):
             return user
         
     @staticmethod
-    def random_password(length=12):
+    def random_password(length=PASSWORD_LENGTH):
         import random, string
         
-        return "".join(random.sample(string.letters+string.digits, 12))
+        return "".join(random.sample(string.letters+string.digits, length))
 
 class CourtJudgment(DBObject):
     TABLE = 'court_judgments'
