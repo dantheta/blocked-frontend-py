@@ -67,6 +67,7 @@ def admin_post():
         return render_template('login.html', message='Incorrect username or password')
 
     session['admin'] = True
+    session['userid'] = user['id']
     flash("Admin login successful")
     return redirect(url_for('.admin'))
 
