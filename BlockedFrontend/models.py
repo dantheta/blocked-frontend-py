@@ -66,6 +66,43 @@ class Item(DBObject):
         c.close()
         return cls(conn, data=row)
 
+class User(DBObject):
+    TABLE = 'users'
+    FIELDS = ['username',
+              'email',
+              'password'
+              ]
+    
+    @staticmethod
+    def _encode(s):
+        if isinstance(s, unicode):
+            return s.encode('utf8')
+        else:
+            return s
+    
+    def check_password(self, testpass):
+        import bcrypt
+        m = self._encode(testpass)
+        if bcrypt.hashpw(self._encode(testpass), self._encode(self['password'])) == self._encode(self['password']):
+            return True
+            
+    def set_password(self, password):
+        import bcrypt
+        salt = bcrypt.gensalt()
+        self['password'] = bcrypt.hashpw(self._encode(password), salt)
+        
+    @classmethod
+    def authenticate(klass, conn, username, password):
+        user = klass.select_one(conn, username=username)
+        if user.check_password(password):
+            return user
+        
+    @staticmethod
+    def random_password(length=12):
+        import random, string
+        
+        return "".join(random.sample(string.letters+string.digits, 12))
+
 class CourtJudgment(DBObject):
     TABLE = 'court_judgments'
     FIELDS = ['name',

@@ -8,7 +8,8 @@ from flask import Flask
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect
 from BlockedFrontend.utils import parse_timestamp
-
+from BlockedFrontend.models import User
+from NORM.exceptions import ObjectNotFound
 
 conn = None
 
@@ -82,3 +83,27 @@ def run_update():
         break
     c.close()
     conn.commit()
+
+@app.cli.command()
+def create_admin():
+    conn = db_connect()
+    
+    try:
+        _ = User.select_one(conn, username='admin')
+        app.logger.info("User admin already exists")
+        return
+    except ObjectNotFound:
+        pass
+        
+    user = User(conn)
+    user.update({
+        'username': 'admin',
+        'email':'admin@localhost',
+        'user_type':'admin',
+        })
+    password = User.random_password()
+    user.set_password(password)
+    user.store()
+    conn.commit()
+    app.logger.info("Created admin with password: %s", password)
+    

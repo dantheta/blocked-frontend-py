@@ -167,8 +167,7 @@ def on_error(error):
 @app.before_request
 def check_user():
     g.admin = session.get('admin', False)
-    if app.config['ADMIN_USER'] is None:
-        g.admin = True
+    
 
 @app.before_request
 def load_remote_data():

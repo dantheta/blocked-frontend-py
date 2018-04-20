@@ -58,17 +58,18 @@ def cacheclear():
 
 @admin_pages.route('/control', methods=['POST'])
 def admin_post():
-    if not (current_app.config.get('ADMIN_USER') and current_app.config.get('ADMIN_PASSWORD')):
-        abort(403)
+    try:
+        user = User.authenticate(request.conn, request.form['username'], request.form['password'])
+        if user is None:
+            raise ValueError
+    except (ObjectNotFound,ValueError) as exc:
+        current_app.logger.warn("Exception: %s", repr(exc))
+        return render_template('login.html', message='Incorrect username or password')
 
-    if current_app.config['ADMIN_USER'] == request.form['username'] and \
-        current_app.config['ADMIN_PASSWORD'] == request.form['password']:
+    session['admin'] = True
+    flash("Admin login successful")
+    return redirect(url_for('.admin'))
 
-        session['admin'] = True
-        flash("Admin login successful")
-        return redirect(url_for('.admin'))
-
-    return render_template('login.html', message='Incorrect username or password')
 
 @admin_pages.route('/control/logout')
 @check_admin
