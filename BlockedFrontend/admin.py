@@ -1,6 +1,7 @@
 
 import os
 import re
+import psycopg2
 import logging
 import datetime
 
@@ -22,15 +23,6 @@ def convertnull(value):
         return value
     return None if value == '' else value
 
-@admin_pages.before_request
-def setup_db():
-    request.conn = db_connect()
-    
-@admin_pages.after_request
-def shutdown_db(rsp):
-    db_disconnect(request.conn)
-    request.conn = None
-    return rsp
 
 @admin_pages.route('/control', methods=['GET'])
 def admin():
@@ -59,7 +51,7 @@ def cacheclear():
 @admin_pages.route('/control', methods=['POST'])
 def admin_post():
     try:
-        user = User.authenticate(request.conn, request.form['username'], request.form['password'])
+        user = User.authenticate(g.conn, request.form['username'], request.form['password'])
         if user is None:
             raise ValueError
     except (ObjectNotFound,ValueError) as exc:
@@ -92,42 +84,42 @@ def forcecheck():
 @check_admin
 def savedlists():
     return render_template('listindex.html',
-        lists=SavedList.select(request.conn, _orderby='name')
+        lists=SavedList.select(g.conn, _orderby='name')
         )
 
 @admin_pages.route('/control/savedlists/delete/<int:id>')
 @check_admin
 def savedlist_delete(id):
-    savedlist = SavedList(request.conn, id=id)
+    savedlist = SavedList(g.conn, id=id)
     savedlist.delete()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.savedlists'))
 
 @admin_pages.route('/control/savedlists/show/<int:id>')
 @check_admin
 def savedlist_show(id):
-    savedlist = SavedList(request.conn, id=id)
+    savedlist = SavedList(g.conn, id=id)
     savedlist['public'] = True
     savedlist.store()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.savedlists'))
 
 @admin_pages.route('/control/savedlists/hide/<int:id>')
 @check_admin
 def savedlist_hide(id):
-    savedlist = SavedList(request.conn, id=id)
+    savedlist = SavedList(g.conn, id=id)
     savedlist['public'] = False
     savedlist.store()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.savedlists'))
 
 @admin_pages.route('/control/savedlists/<int:id>/frontpage/<int:state>')
 @check_admin
 def savedlist_frontpage(id, state):
-    savedlist = SavedList(request.conn, id=id)
+    savedlist = SavedList(g.conn, id=id)
     savedlist['frontpage'] = bool(state)
     savedlist.store()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.savedlists'))
 
 @admin_pages.route('/control/savedlists/merge', methods=['POST'])
@@ -138,8 +130,8 @@ def savedlist_merge():
     if not isinstance(ids, list):
         abort(500)
     ids.sort()
-    first = SavedList(request.conn, id=ids[0])
-    c = request.conn.cursor()
+    first = SavedList(g.conn, id=ids[0])
+    c = g.conn.cursor()
     for id in ids[1:]:
         # try to update in bulk
         c.execute("savepoint point1")
@@ -150,11 +142,11 @@ def savedlist_merge():
             c.execute("rollback to point1")
         else:
             # bulk move succeeded, onto the next list
-            SavedList(request.conn, id=id).delete()
+            SavedList(g.conn, id=id).delete()
             continue
 
         # otherwise, move one-by-one and delete on duplicate
-        for item in Item.select(request.conn, list_id = id):
+        for item in Item.select(g.conn, list_id = id):
             try:
                 c.execute("savepoint point1")
                 item['list_id'] = first['id']
@@ -162,8 +154,8 @@ def savedlist_merge():
             except ObjectExists:
                 c.execute("rollback to point1")
                 item.delete()
-        SavedList(request.conn, id=id).delete()
-    request.conn.commit()
+        SavedList(g.conn, id=id).delete()
+    g.conn.commit()
     flash("Selected lists have been merged into '{}'".format(first['name']))
     return redirect(url_for('.savedlists'))
                 
@@ -193,14 +185,14 @@ def blacklist_delete():
 @admin_pages.route('/control/user')
 @check_admin
 def users():
-    users = User.select(request.conn)
+    users = User.select(g.conn)
     return render_template('users.html', users=users)
 
 @admin_pages.route('/control/user/add', methods=['POST'])
 @check_admin
 def user_add():
     f = request.form
-    user = User(request.conn)
+    user = User(g.conn)
     user.update({
         'username': f['username'],
         'email': f['email'],
@@ -209,7 +201,7 @@ def user_add():
     newpass = user.random_password()
     user.set_password(newpass)
     user.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("User {0} created with password {1} ".format(f['username'], newpass))
     return redirect(url_for('.users'))
 
@@ -226,10 +218,10 @@ def user_enable(id):
     return ret
     
 def user_set_enabled(id, value):    
-    user = User(request.conn, id)
+    user = User(g.conn, id)
     user['enabled'] = value
     user.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("User {0} {1}.".format(user['username'],
                                  'enabled' if value else 'disabled'))
 
@@ -238,10 +230,10 @@ def user_set_enabled(id, value):
 @admin_pages.route('/control/user/newpassword/<int:id>')
 @check_admin
 def user_generate_password(id):
-    user = User(request.conn, id)
+    user = User(g.conn, id)
     newpass = user.reset_password()
     user.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("User {0} password reset to: {1}".format(user['username'], newpass))
     return redirect(url_for('.users'))
 
@@ -289,13 +281,13 @@ def ispreports_unflag(url):
 @admin_pages.route('/control/courtorders')
 @check_admin
 def courtorders():
-    reports = CourtJudgment.select(request.conn, _orderby='-date')
+    reports = CourtJudgment.select(g.conn, _orderby='-date')
     return render_template('courtorders.html', judgments=reports)
 
 @admin_pages.route('/control/courtorders/<int:id>')
 @check_admin
 def courtorders_view(id):
-    obj = CourtJudgment(request.conn, id)
+    obj = CourtJudgment(g.conn, id)
     return render_template('courtorders_view.html',
                            judgment=obj,
                            orders=obj.get_court_orders(),
@@ -308,7 +300,7 @@ def courtorders_view(id):
 @check_admin
 def courtorders_review(page=1):
     offset = (page-1)*25
-    q = Query(request.conn, 
+    q = Query(g.conn, 
               """
               select count(*) ct from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
@@ -325,7 +317,7 @@ def courtorders_review(page=1):
     count = q.fetchone()['ct']
     q.close()
     
-    q = Query(request.conn, 
+    q = Query(g.conn, 
               """
               select urls.url, network_name, uls.created, uls.first_blocked from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
@@ -349,12 +341,12 @@ def courtorders_review(page=1):
 @admin_pages.route('/control/courtorders/add')
 @check_admin
 def courtorders_edit(id=None):
-    obj = CourtJudgment(request.conn, id)
+    obj = CourtJudgment(g.conn, id)
     return render_template('courtorders_edit.html',
                            obj=obj,
                            powers=[ (x['id'], x['name'])
                                     for x in
-                                    CourtPowers.select(request.conn, _orderby='name')
+                                    CourtPowers.select(g.conn, _orderby='name')
                                     ],
                            orders = obj.get_court_orders(),
                            order_networks = obj.get_court_order_networks()
@@ -367,7 +359,7 @@ def courtorders_edit(id=None):
 def courtorders_update(id=None):
     try:
         f = request.form
-        obj = CourtJudgment(request.conn, id)
+        obj = CourtJudgment(g.conn, id)
         obj.update({x: convertnull(f[x]) for x in CourtJudgment.FIELDS})
         obj.store()
 
@@ -376,7 +368,7 @@ def courtorders_update(id=None):
                 f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url'),
                 f.getlist('order_date'), f.getlist('expiry_date')):
 
-            order = CourtOrder(request.conn, order_id or None)
+            order = CourtOrder(g.conn, order_id or None)
             if network_name in applies:
                 order.update({
                     'url': url,
@@ -396,7 +388,7 @@ def courtorders_update(id=None):
                 'expiry_date':convertnull(expiry_date)
             })
             order.store()
-        request.conn.commit()
+        g.conn.commit()
         return redirect(url_for('.courtorders'))
     except KeyError as exc:
         logging.warn("Key error: %s", exc.args)
@@ -405,24 +397,24 @@ def courtorders_update(id=None):
 @admin_pages.route('/control/courtorders/delete/<int:id>')
 @check_admin
 def courtorders_delete(id):
-    obj = CourtJudgment(request.conn, id)
+    obj = CourtJudgment(g.conn, id)
     obj.delete()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.courtorders'))
 
 @admin_pages.route('/control/courtorders/site/add', methods=['POST'])
 @check_admin
 def courtorders_site_add():
     f = request.form
-    obj = CourtJudgmentURL(request.conn)
+    obj = CourtJudgmentURL(g.conn)
     obj.update({'url':normalize_url(f['url']),'judgment_id':f['judgment_id']})
     try:
         obj.store()
-        request.conn.commit()
+        g.conn.commit()
     except ObjectExists:
         print obj.data
         flash("This site has already been added to this court order")
-        request.conn.rollback()
+        g.conn.rollback()
     return redirect(url_for('.courtorders_view', id=f['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/group', methods=['POST'])
@@ -430,17 +422,17 @@ def courtorders_site_add():
 def courtorders_site_group():
     f = request.form
     if f['group_id']:
-        grp = CourtJudgmentURLGroup(request.conn, f['group_id'])
+        grp = CourtJudgmentURLGroup(g.conn, f['group_id'])
     else:
         grp = None
     for site_id in f.getlist('site_id'):
-        obj = CourtJudgmentURL(request.conn, site_id)
+        obj = CourtJudgmentURL(g.conn, site_id)
         if f['group_id'] == '':
             obj['group_id'] = None
         else:
             obj['group_id'] = f['group_id']
         obj.store()
-    request.conn.commit()
+    g.conn.commit()
     if grp:
         flash("Added URL(s) to group: " + grp['name'])
     else:
@@ -450,39 +442,39 @@ def courtorders_site_group():
 @admin_pages.route('/control/courtorders/site/group/add', methods=['POST'])
 @check_admin
 def courtorders_group_add():
-    obj = CourtJudgmentURLGroup(request.conn)
+    obj = CourtJudgmentURLGroup(g.conn)
     obj['judgment_id'] = request.form['judgment_id']
     obj['name'] = request.form['name']
     obj.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("Added URL group: "+ request.form['name'])
     return redirect(url_for('.courtorders_view', id=request.form['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/group/delete/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_group_delete(id):
-    obj = CourtJudgmentURLGroup(request.conn, id=id)
+    obj = CourtJudgmentURLGroup(g.conn, id=id)
     obj.delete()
-    request.conn.commit()
+    g.conn.commit()
     flash("Deleted URL group: "+ obj['name'])
     return redirect(url_for('.courtorders_view', id=obj['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/delete/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_site_delete(id):
-    obj = CourtJudgmentURL(request.conn, id=id)
+    obj = CourtJudgmentURL(g.conn, id=id)
     obj.delete()
-    request.conn.commit()
+    g.conn.commit()
     flash("Removed site: "+ obj['url'])
     return redirect(url_for('.courtorders_view', id=obj['judgment_id']))
 
 @admin_pages.route('/control/courtorders/site/flag/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_site_flag(id):
-    url = CourtJudgmentURL(request.conn, id=id)
+    url = CourtJudgmentURL(g.conn, id=id)
     judgment = url.get_court_judgment()
     
-    q = Query(request.conn, """
+    q = Query(g.conn, """
         select isps.name, uls.status, uls.blocktype, uls.created
         from urls
         inner join url_latest_status uls on uls.urlid = urls.urlid
@@ -492,7 +484,7 @@ def courtorders_site_flag(id):
         order by isps.name""",
         [url['url']])
     
-    flags = Query(request.conn, """
+    flags = Query(g.conn, """
         select f.*
         from court_judgment_url_flag_history f 
         where f.urlid = %s
@@ -500,7 +492,7 @@ def courtorders_site_flag(id):
         [url['id']])
     
     try:
-        flag = CourtJudgmentURLFlag.select_one(request.conn, 
+        flag = CourtJudgmentURLFlag.select_one(g.conn, 
                                                urlid = url['id'])
     except ObjectNotFound:
         flag = {}
@@ -519,25 +511,25 @@ def courtorders_site_flag(id):
 @check_admin
 def courtorders_site_flag_post():
     f = request.form
-    url = CourtJudgmentURL(request.conn, id=f['urlid'])
+    url = CourtJudgmentURL(g.conn, id=f['urlid'])
     
     if 'delete' in f:
         try:
-            flag = CourtJudgmentURLFlag.select_one(request.conn, urlid = url['id'])
+            flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['id'])
             flag.delete()
             judgment = url.get_court_judgment()
-            request.conn.commit()
+            g.conn.commit()
             flash("Url {0} unflagged".format(url['url']))
             return redirect(url_for('.courtorders_view', id=judgment['id']))
         except ObjectNotFound:
-            request.conn.rollback()
+            g.conn.rollback()
             abort(404)
         
     
     try:
-        flag = CourtJudgmentURLFlag.select_one(request.conn, urlid = url['id'])
+        flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['id'])
     except ObjectNotFound:
-        flag = CourtJudgmentURLFlag(request.conn)
+        flag = CourtJudgmentURLFlag(g.conn)
         
     flag.update({
         'reason': f['reason'],
@@ -548,19 +540,19 @@ def courtorders_site_flag_post():
     })
     flag.store()
     judgment = url.get_court_judgment()
-    request.conn.commit()
+    g.conn.commit()
     flash("Url {0} flagged".format(url['url']))
     return redirect(url_for('.courtorders_view', id=judgment['id']))
 
 @admin_pages.route('/control/courtorders/site/flag/delete/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_site_flag_delete(id):
-    q = Query(request.conn, 
+    q = Query(g.conn, 
               "delete from court_judgment_url_flag_history where id = %s returning urlid as urlid",
               [id])
     row = q.fetchone()
     
-    request.conn.commit()
+    g.conn.commit()
     flash("Historical flag removed")
     return redirect(url_for('.courtorders_site_flag', id=row['urlid']))
     
@@ -569,7 +561,7 @@ def courtorders_site_flag_delete(id):
 @admin_pages.route('/control/courtorders/site/group/import', methods=['GET'])
 @check_admin
 def courtorders_group_import():
-    return render_template('courtorders_group_import.html', groups=CourtJudgmentURLGroup.select(request.conn, _orderby='name'))
+    return render_template('courtorders_group_import.html', groups=CourtJudgmentURLGroup.select(g.conn, _orderby='name'))
 
 @admin_pages.route('/control/courtorders/site/group/import', methods=['POST'])
 @check_admin
@@ -604,14 +596,14 @@ def import_groupfile(groupfile):
             continue
 
         try:
-            groupobj = CourtJudgmentURLGroup.select_one(request.conn, name=group)
+            groupobj = CourtJudgmentURLGroup.select_one(g.conn, name=group)
             try:
-                urlobj = CourtJudgmentURL.select_one(request.conn, url=url)
+                urlobj = CourtJudgmentURL.select_one(g.conn, url=url)
             except ObjectNotFound:
                 urlobj = None
             if urlobj is None or urlobj['group_id']:
                 # already assigned to a group, create a new url obj and assign that to the group & same judgment
-                urlobj = CourtJudgmentURL(request.conn)
+                urlobj = CourtJudgmentURL(g.conn)
                 urlobj.update({
                     'judgment_id': groupobj['judgment_id'],
                     'group_id': groupobj['id'],
@@ -624,12 +616,12 @@ def import_groupfile(groupfile):
                 urlobj.store()
             except ObjectExists:
                 current_app.logger.warn("Duplicate entry: %s", urlobj.data)
-                request.conn.rollback()
+                g.conn.rollback()
             else:
-                request.conn.commit()
+                g.conn.commit()
         except ObjectNotFound:
             current_app.logger.warn("Group not found: %s", group)
-            request.conn.rollback()
+            g.conn.rollback()
 
 
 ## URL Admin
@@ -680,10 +672,10 @@ def urls_post():
             return redirect(url_for('.urls'))
         
             
-        q = Query(request.conn, """update urls set tags = tags || %s::varchar where url = %s and not tags && %s::varchar[]""",
+        q = Query(g.conn, """update urls set tags = tags || %s::varchar where url = %s and not tags && %s::varchar[]""",
             [ tag, normalize_url(f['url']), [tag] ])
         q.close()
-        request.conn.commit()
+        g.conn.commit()
         flash("URL Tags updated")
         return redirect(url_for('.urls', url=normalize_url(f['url'])))
 
@@ -694,14 +686,14 @@ def urls_post():
 @admin_pages.route('/control/tests')
 @check_admin
 def tests():
-    tests = Test.select(request.conn, _orderby='name')
+    tests = Test.select(g.conn, _orderby='name')
     return render_template('tests.html', tests=tests)
 
 @admin_pages.route('/control/tests/add')
 @admin_pages.route('/control/tests/edit/<int:id>')
 @check_admin
 def tests_edit(id=None):
-    test = Test(request.conn, id=id)
+    test = Test(g.conn, id=id)
     if not id:
         test['check_interval'] = datetime.timedelta(0)
     return render_template('tests_edit.html',
@@ -717,7 +709,7 @@ def tests_edit(id=None):
 def tests_update():
     f = request.form
     
-    test = Test(request.conn, id=(f['id'] or None))
+    test = Test(g.conn, id=(f['id'] or None))
     test.update({
         'name': f['name'],
         'description': f['description'],
@@ -737,25 +729,25 @@ def tests_update():
         test['isps'] = []
         
     test.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("Test case updated")
     return redirect(url_for('.tests'))
 
 @admin_pages.route('/control/tests/delete/<int:id>')
 @check_admin
 def tests_delete(id):
-    t = Test(request.conn, id)
+    t = Test(g.conn, id)
     t.delete()
-    request.conn.commit()
+    g.conn.commit()
     flash("Test case deleted")
     return redirect(url_for('.tests'))
     
 @admin_pages.route('/control/tests/status/<int:id>/<status>')
 @check_admin
 def tests_status(id, status):
-    t = Test(request.conn, id)
+    t = Test(g.conn, id)
     t['status'] = status.upper()
     t.store()
-    request.conn.commit()
+    g.conn.commit()
     flash("Test status updated.")
     return redirect(url_for('.tests'))    

@@ -1,6 +1,5 @@
 
 import logging
-import psycopg2
 import jinja2
 
 from flask import Blueprint, render_template, redirect, request, \
@@ -30,8 +29,8 @@ def custom_routing(site):
         cms_pages.add_url_rule('/', 'index', index)
 
 def frontpage_lists():
-    conn = psycopg2.connect(current_app.config['DB'])
-    for item in Item.get_frontpage_random(conn):
+    
+    for item in Item.get_frontpage_random(g.conn):
         site = request.api.status_url(item['url'])
         savedlist = item.get_list()
         return site, savedlist
@@ -290,8 +289,8 @@ def legal_errors(page=1):
         abort(400)
     
     # error totals - large stats panel
-    conn = psycopg2.connect(current_app.config['DB'])    
-    q = Query(conn, """
+    
+    q = Query(g.conn, """
         select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
 
         from url_latest_status uls
@@ -311,7 +310,7 @@ def legal_errors(page=1):
     q.close()
     
     # summary of block errors by reason
-    stats2 = Query(conn, """
+    stats2 = Query(g.conn, """
         select reason, count(distinct urls.urlid) error_count
         from url_latest_status uls
         inner join urls on uls.urlid = urls.urlid
@@ -329,7 +328,7 @@ def legal_errors(page=1):
         )
     
     # main error listing
-    q_stats3_count = Query(conn, """
+    q_stats3_count = Query(g.conn, """
     select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url 
         from url_latest_status uls
         inner join urls on uls.urlid = urls.urlid
@@ -349,7 +348,7 @@ def legal_errors(page=1):
     stats3_count = q_stats3_count.fetchone()['ct']
     pagecount = get_pagecount(stats3_count, PAGE_ITEMS)
     
-    stats3 = Query(conn, """
+    stats3 = Query(g.conn, """
         select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
         from url_latest_status uls
         inner join urls on uls.urlid = urls.urlid
@@ -369,7 +368,7 @@ def legal_errors(page=1):
         )
         
     # stats listing by ISP
-    stats4 = Query(conn, """
+    stats4 = Query(g.conn, """
         select distinct isps.name, isps.description, count(distinct urls.urlid) total, 
             count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
         from url_latest_status uls
@@ -390,7 +389,7 @@ def legal_errors(page=1):
         [[current_app.config['DEFAULT_REGION']]]
         )        
     
-    conn.commit()
+    g.conn.commit()
     return render_template('legal-block-errors.html',
                            stats1=stats1,
                            stats2=stats2,
@@ -405,9 +404,8 @@ def legal_errors(page=1):
 
 @cms_pages.route('/legal-blocks/orders')
 def legal_orders():
-    conn = psycopg2.connect(current_app.config['DB'])    
     
-    q = Query(conn, """select cj.name, cj.date, cj.citation,
+    q = Query(g.conn, """select cj.name, cj.date, cj.citation,
             count(distinct uls.urlid) block_count
         from court_judgments cj
         left join court_judgment_urls cju on cju.judgment_id = cj.id

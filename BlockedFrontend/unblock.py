@@ -1,7 +1,6 @@
 
 import random
 import logging
-import psycopg2
 import datetime
 
 from flask import Blueprint, render_template, redirect, request, current_app, session, url_for, abort, g
@@ -13,15 +12,7 @@ from db import *
 unblock_pages = Blueprint('unblock', __name__,
                           template_folder='templates/unblock')
 
-@unblock_pages.before_request
-def setup_db():
-    request.conn = db_connect()
 
-@unblock_pages.after_request
-def shutdown_db(rsp):
-    db_disconnect(request.conn)
-    request.conn = None
-    return rsp
 
 @unblock_pages.route('/unblock')
 def unblock():
@@ -124,7 +115,7 @@ def nextsite(current_url):
 
     # use savedlists if there's no other route defined
     logging.info("Getting savedlist random site")
-    for item in Item.get_frontpage_random(request.conn):
+    for item in Item.get_frontpage_random(g.conn):
         return redirect(url_for('site.site', url=item['url']))
 
 

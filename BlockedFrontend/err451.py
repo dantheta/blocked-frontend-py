@@ -19,7 +19,7 @@ def get_referrer_domain():
 @err451_pages.route('/<path:site>')
 @err451_pages.route('/<isp>/<path:site>')
 def err451(site=None, isp=None):
-    conn = db_connect()
+    
 
     if site is None:
         return abort(404)
@@ -27,7 +27,7 @@ def err451(site=None, isp=None):
     site = fix_path(site)
 
     try:
-        cjurl = CourtJudgmentURL.select_one(conn, url=site)
+        cjurl = CourtJudgmentURL.select_one(g.conn, url=site)
     except ObjectNotFound:
         abort(404)
 

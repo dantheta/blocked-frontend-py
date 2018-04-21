@@ -1,6 +1,5 @@
 import re
 import logging
-import psycopg2
 
 from flask import Blueprint, render_template, redirect, request, \
     jsonify, g, url_for, session, current_app, Response, abort
@@ -16,15 +15,6 @@ from db import *
 list_pages = Blueprint('list', __name__,
                        template_folder='templates/savedlists')
 
-@list_pages.before_request
-def setup_db():
-    request.conn = db_connect()
-
-@list_pages.after_request
-def shutdown_db(rsp):
-    db_disconnect(request.conn)
-    request.conn = None
-    return rsp
 
 @list_pages.route('/list', methods=['POST'])
 @check_admin
@@ -32,7 +22,7 @@ def create_list():
     """Create a saved list"""
     f = request.form
 
-    newlist = models.SavedList(request.conn)
+    newlist = models.SavedList(g.conn)
     newlist.update({
         'name': f['name'],
         'username': f['username'],
@@ -42,7 +32,7 @@ def create_list():
         newlist.store()
     except NORM.exceptions.ObjectExists:
         # actually an integrityerror in disguise
-        request.conn.rollback()
+        g.conn.rollback()
         return render_template('message.html', 
             title="List creation error",
             message="A list with this name already exists.  Please try again with a different list name.")
@@ -55,7 +45,7 @@ def create_list():
         data = request.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'))
 
         for site in data['sites']:
-            newitem = models.Item(request.conn)
+            newitem = models.Item(g.conn)
             newitem.update({
                 'list_id': newlist['id'],
                 'title': site['title'],
@@ -68,7 +58,7 @@ def create_list():
             break
         page += 1
 
-    request.conn.commit()
+    g.conn.commit()
 
     return redirect(url_for('.show_list', name=f['name']))
 
@@ -81,7 +71,7 @@ def show_list(name, page=1):
     if page < 1:
         return redirect(url_for('.show_list', name=name))
     try:
-        savedlist = models.SavedList.select_one(request.conn, name=name)
+        savedlist = models.SavedList.select_one(g.conn, name=name)
     except NORM.exceptions.ObjectNotFound:
         abort(404)
     if not (savedlist['public'] or g.admin):
@@ -90,7 +80,7 @@ def show_list(name, page=1):
     itemcount = savedlist.count_items()
     session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
     items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
-    request.conn.commit()
+    g.conn.commit()
     return render_template('show_list.html',
             savedlist = savedlist,
             itemcount = itemcount,
@@ -104,8 +94,8 @@ def show_list(name, page=1):
 @list_pages.route('/lists')
 def show_lists():
     g.remote_content = g.remote.get_content('lists')
-    savedlists = models.SavedList.select(request.conn, public='t', _orderby='name')
-    request.conn.commit()
+    savedlists = models.SavedList.select(g.conn, public='t', _orderby='name')
+    g.conn.commit()
     return render_template('lists.html',
         lists=savedlists
         )
@@ -114,10 +104,10 @@ def show_lists():
 @list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])
 @check_admin
 def item_delete(id):
-    item = models.Item(request.conn, id=id)
+    item = models.Item(g.conn, id=id)
     savedlist = item.get_list()
     item.delete()
-    request.conn.commit()
+    g.conn.commit()
     if request.method == 'POST':
         return jsonify(success=True,listid=savedlist['id'])
 
@@ -130,15 +120,15 @@ def item_add():
 
     # search for URL, add to list if found
 
-    savedlist = models.SavedList.select_one(request.conn, f['list_id'])
-    newitem = models.Item(request.conn)
+    savedlist = models.SavedList.select_one(g.conn, f['list_id'])
+    newitem = models.Item(g.conn)
     newitem.update({
         'url': f['url'],
         'list_id': f['list_id'],
         'title': ''
         })
     newitem.store()
-    request.conn.commit()
+    g.conn.commit()
     return redirect(url_for('.show_list', name=savedlist['name']))
 
 @list_pages.route('/list/<name>/export')
@@ -146,7 +136,7 @@ def export_list(name):
     import csv
     import tempfile
     try:
-        savedlist = models.SavedList.select_one(request.conn, name=name)
+        savedlist = models.SavedList.select_one(g.conn, name=name)
     except NORM.exceptions.ObjectNotFound:
         abort(404)
 

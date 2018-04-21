@@ -85,6 +85,15 @@ def setup_db():
     db.setup()
 
 @app.before_request
+def open_db():
+    g.conn = db.db_connect_pool()
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'conn'):
+        db.db_disconnect(g.conn)
+
+@app.before_request
 def hook_api():
     request.api = api
 
