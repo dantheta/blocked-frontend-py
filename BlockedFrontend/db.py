@@ -13,8 +13,8 @@ def setup():
     POOL = psycopg2.pool.ThreadedConnectionPool(2, 12, current_app.config['DB'], cursor_factory=DictCursor)
     return
 
-#def db_connect():
-#    return psycopg2.connect(current_app.config['DB'], cursor_factory=DictCursor)
+def db_connect_single():
+    return psycopg2.connect(current_app.config['DB'], cursor_factory=DictCursor)
     
 def db_connect_pool() :   
     return POOL.getconn()

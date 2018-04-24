@@ -6,7 +6,7 @@ import datetime
 from flask import Flask
 
 from BlockedFrontend.api import ApiClient, APIError
-from BlockedFrontend.db import db_connect
+from BlockedFrontend.db import db_connect_single
 from BlockedFrontend.utils import parse_timestamp
 from BlockedFrontend.models import User
 from NORM.exceptions import ObjectNotFound
@@ -36,7 +36,7 @@ logging.basicConfig(
 
 @app.cli.command()
 def run_submit():
-    conn = db_connect()
+    conn = db_connect_single()
     c = conn.cursor()
     c.execute("select distinct url from items \
                inner join savedlists on list_id = savedlists.id \
@@ -54,7 +54,7 @@ def run_submit():
 
 @app.cli.command()
 def run_update():
-    conn = db_connect()
+    conn = db_connect_single()
     c = conn.cursor()
     c2 = conn.cursor()
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
@@ -86,7 +86,7 @@ def run_update():
 
 @app.cli.command()
 def create_admin():
-    conn = db_connect()
+    conn = db_connect_single()
     
     try:
         _ = User.select_one(conn, username='admin')
