@@ -198,7 +198,8 @@ def export_blocks_by_injunction(region):
         'url_group_name',
         'first_blocked',
         'last_blocked',
-        'reason',
+        'error_status',
+        'additional_error_information',
         'networks'
     ]
 
