@@ -112,7 +112,7 @@ of sites incorrectly blocked
 
 {% endfor %}
 </table>
-{{ paging.page_list('.legal_errors', page, pagecount) }} 
+{{ paging.page_list('.legal_errors', page, pagecount, sort=request.args.get('sort','url'), o=request.args.get('o','a')  ) }} 
 
 {% endblock %}
 
