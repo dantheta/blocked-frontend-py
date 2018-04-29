@@ -384,3 +384,7 @@ p.report-message {
 p.report-message span {
     color: #a0a0a0;
 }
+
+.topstrip2 * form {
+margin-top: 6px;
+}
