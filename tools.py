@@ -59,7 +59,7 @@ def run_update():
     c2 = conn.cursor()
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
                where frontpage=true \
-               order by last_checked nulls first limit 50")
+               order by last_checked nulls first limit 500")
 
     # only evaluate based on test results from the last two weeks
     cutoff = datetime.datetime.now() - datetime.timedelta(14)
@@ -80,7 +80,6 @@ def run_update():
             if 'UrlLookupError' in exc.args[0]:
                 # URL no longer present on the backend?
                 c2.execute("delete from items where url = %s", [row['url']])
-        break
     c.close()
     conn.commit()
 
