@@ -19,7 +19,7 @@ def stats():
 
 def stats_eu():
     import operator
-    results = request.api.country_stats()
+    results = g.api.country_stats()
     countries = load_country_data()
 
     # exclude EU region and sort by country name
@@ -37,12 +37,12 @@ def stats_eu():
 
 
 def stats_gb():
-    result = request.api.isp_stats()
+    result = g.api.isp_stats()
     ispstats = result['isp-stats']
     isps = ispstats.keys()
     isps.sort()
 
-    category_stats = request.api.category_stats()
+    category_stats = g.api.category_stats()
 
     return render_template('stats.html',
         ispstats=ispstats,
@@ -52,16 +52,16 @@ def stats_gb():
         category_stats=category_stats['stats'],
         categories = ["{1} ({0})".format(x['network_name'], x['category']) for x in category_stats['stats']],
 
-        domain_stats = request.api.domain_stats(),
+        domain_stats = g.api.domain_stats(),
 
-        domain_isp_stats = request.api.domain_isp_stats()
+        domain_isp_stats = g.api.domain_isp_stats()
         
         )
 
 
 @stats_pages.route('/stats/probes')
 def probe_stats():
-    data = request.api.status_probes(current_app.config['DEFAULT_REGION'])
+    data = g.api.status_probes(current_app.config['DEFAULT_REGION'])
     country_names = load_country_data()
 
 

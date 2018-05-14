@@ -31,19 +31,19 @@ def custom_routing(site):
 def frontpage_lists():
     
     for item in Item.get_frontpage_random(g.conn):
-        site = request.api.status_url(item['url'])
+        site = g.api.status_url(item['url'])
         savedlist = item.get_list()
         return site, savedlist
         
 def frontpage_random():
-    randomsite = request.api.GET('ispreport/candidates',{'count':1})
-    site = request.api.status_url(randomsite['results'][0])
+    randomsite = g.api.GET('ispreport/candidates',{'count':1})
+    site = g.api.status_url(randomsite['results'][0])
     return site
 
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
     session['route'] = 'random'
-    stats = request.api.stats()
+    stats = g.api.stats()
 
     if current_app.config['RANDOMSITE'] == 'frontpagerandom':
         site = frontpage_random()
@@ -79,7 +79,7 @@ def legal_blocks(page=1, region=None):
         style = 'urlrow'
     if not region:
         region = current_app.config['DEFAULT_REGION']
-    data = request.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
+    data = g.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
     blocks = data['results']
     count = data['count']
     urlcount = data['urlcount']
@@ -104,8 +104,8 @@ def reported_sites(isp=None, page=1):
             # otherwise, return a 404
             abort(404)
     g.remote_content = g.remote.get_content('reported-sites')
-    data = request.api.reports(page-1, isp=isp)
-    data2 = request.api.ispreport_stats()
+    data = g.api.reports(page-1, isp=isp)
+    data2 = g.api.ispreport_stats()
     count = data['count']
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
@@ -154,7 +154,7 @@ def export_blocks_by_url(region):
     def get_legal_blocks():
         page = 0
         while True:
-            data = request.api.recent_blocks(page, region)
+            data = g.api.recent_blocks(page, region)
             
             for item in data['results']:
                 yield item['url'], item['network_name']
@@ -214,7 +214,7 @@ def export_blocks_by_injunction(region):
     def get_legal_blocks():
         page = 0
         while True:
-            data = request.api.recent_blocks(page, region, 'injunction')
+            data = g.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:                
                 yield [
                     item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 

@@ -33,7 +33,7 @@ def check_post():
     if request.form['submit'] == 'false':
         return redirect(url_for('.site', url=url))
 
-    data = request.api.submit_url(url)
+    data = g.api.submit_url(url)
 
     if data['queued'] == True:
         return render_template('site.html',
@@ -70,7 +70,7 @@ def site(url=None):
     # workaround for apache folding // into /
     url = fix_path(url)
 
-    data = request.api.status_url(url, current_app.config['DEFAULT_REGION'])
+    data = g.api.status_url(url, current_app.config['DEFAULT_REGION'])
     activecount = 0
     pastcount = 0
     can_unblock = None
@@ -82,7 +82,7 @@ def site(url=None):
         else:
             alt_url = url.replace('https:','http:')
             
-        alt_url_data = request.api.status_url(alt_url, current_app.config['DEFAULT_REGION'])
+        alt_url_data = g.api.status_url(alt_url, current_app.config['DEFAULT_REGION'])
     except Exception:
         alt_url_data = None
 
@@ -230,9 +230,9 @@ def stream_results():
             'url': url,
             'timeout': 20,
         }
-        req['date'] = request.api.timestamp()
-        req['signature'] = request.api.sign(req, ['url', 'date'])
-        for row in request.api.GET('stream/results', req, _stream=True):
+        req['date'] = g.api.timestamp()
+        req['signature'] = g.api.sign(req, ['url', 'date'])
+        for row in g.api.GET('stream/results', req, _stream=True):
             print row
             yield row + "\r\n"
 

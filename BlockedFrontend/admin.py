@@ -75,7 +75,7 @@ def logout():
 @admin_pages.route('/control/url/submit', methods=['POST'])
 @check_admin
 def forcecheck():
-    data = request.api.submit_url(request.form['url'], force=1)
+    data = g.api.submit_url(request.form['url'], force=1)
     if data['success']:
         flash("URL submitted successfully")
     else:
@@ -164,7 +164,7 @@ def savedlist_merge():
 @admin_pages.route('/control/blacklist', methods=['GET'])
 @check_admin
 def blacklist_select():
-    entries = request.api.blacklist_select()
+    entries = g.api.blacklist_select()
 
     return render_template('blacklist.html',
         entries = entries
@@ -174,14 +174,14 @@ def blacklist_select():
 @admin_pages.route('/control/blacklist', methods=['POST'])
 @check_admin
 def blacklist_post():
-    request.api.blacklist_insert(request.form['domain'])
+    g.api.blacklist_insert(request.form['domain'])
     return redirect(url_for('.blacklist_select'))
 
 
 @admin_pages.route('/control/blacklist/delete', methods=['GET'])
 @check_admin
 def blacklist_delete():
-    request.api.blacklist_delete(request.args['domain'])
+    g.api.blacklist_delete(request.args['domain'])
     return redirect(url_for('.blacklist_select'))
 
 @admin_pages.route('/control/user')
@@ -250,7 +250,7 @@ def user_generate_password(id):
 @check_admin
 def ispreports():
     page = int(request.args.get('page',1))
-    reports = request.api.reports(page-1, admin=True)
+    reports = g.api.reports(page-1, admin=True)
     return render_template('ispreports.html', reports=reports,
                            page=page,
                            pagecount = get_pagecount(reports['count'], 25))
@@ -259,7 +259,7 @@ def ispreports():
 @check_admin
 def ispreports_flag(url):
     url = fix_path(url)
-    req = request.api.reports_flag(url, request.args.get('status','abuse'))
+    req = g.api.reports_flag(url, request.args.get('status','abuse'))
     if req['success'] != True:
         flash("An error occurred flagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
@@ -268,7 +268,7 @@ def ispreports_flag(url):
 @check_admin
 def ispreports_unflag(url):
     url = fix_path(url)
-    req = request.api.reports_unflag(url)
+    req = g.api.reports_unflag(url)
     if req['success'] != True:
         flash("An error occurred unflagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
@@ -634,7 +634,7 @@ def import_groupfile(groupfile):
 def urls():
     if request.args.get('url'):
         try:
-            status = request.api.status_url(request.args['url'], True)
+            status = g.api.status_url(request.args['url'], True)
         except Exception:
             status = None
             flash("Could not locate a URL record for {0}".format(request.args['url']))
@@ -646,7 +646,7 @@ def urls():
 @admin_pages.route('/control/urls/check', methods=['GET'])
 @check_admin
 def admin_urls_check():
-    status = request.api.status_url(request.args['url'], request.args.get('normalize', '1') == '1')
+    status = g.api.status_url(request.args['url'], request.args.get('normalize', '1') == '1')
     return jsonify(**status)
 
 @admin_pages.route('/control/urls', methods=['POST'])
@@ -655,7 +655,7 @@ def urls_post():
     f = request.form
     print f
     if 'update_status' in f:
-        rsp = request.api.set_status_url(f['url'], f['status'],
+        rsp = g.api.set_status_url(f['url'], f['status'],
                                          f.get('normalize', '0') == '1')
         if rsp['success'] == True:
             flash("URL Status updated")

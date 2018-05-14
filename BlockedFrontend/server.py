@@ -95,7 +95,7 @@ def close_db(error):
 
 @app.before_request
 def hook_api():
-    request.api = api
+    g.api = api
 
 @app.template_filter('fmtime')
 def fmtime(s):

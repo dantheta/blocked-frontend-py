@@ -46,8 +46,8 @@ def unblock2():
         'url': data['url'],
         }
 
-    req['signature'] = request.api.sign(req, ['url'])
-    urldata = request.api.GET('status/url', req)
+    req['signature'] = g.api.sign(req, ['url'])
+    urldata = g.api.GET('status/url', req)
     logging.info("urldata: %s", urldata)
 
     blocks = [ process_block(blk) for blk 
@@ -91,8 +91,8 @@ def nextsite(current_url):
             'active': 1,
             'page': random.randrange(0, session['category'][1]), # select a random page; api pages are zero-based
             }
-        req['signature'] = request.api.sign(req, ['id'])
-        searchdata = request.api.GET('category/sites/'+str(session['category'][0]), req)
+        req['signature'] = g.api.sign(req, ['id'])
+        searchdata = g.api.GET('category/sites/'+str(session['category'][0]), req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
             return redirect(url_for('site.site', url=nextsite))
@@ -101,15 +101,15 @@ def nextsite(current_url):
 
         logging.info("running search: %s", session['keyword'])
         req = {'q': session['keyword'][0], 'page': random.randrange(0, session['keyword'][1])}
-        req['signature'] = request.api.sign(req, ['q'])
-        searchdata = request.api.GET('search/url', req)
+        req['signature'] = g.api.sign(req, ['q'])
+        searchdata = g.api.GET('search/url', req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
             return redirect(url_for('site.site', url=nextsite))
 
     elif session.get('route') == 'oldrandom':
         logging.info("Getting random site")
-        data = request.api.GET('ispreport/candidates',{'count':1})
+        data = g.api.GET('ispreport/candidates',{'count':1})
         return redirect(url_for('site.site', url=data['results'][0]))
 
 
@@ -149,20 +149,20 @@ def submit_unblock():
         'allow_publish': 1 if form.get('allow_publish') else 0,
         'allow_contact': 1 if form.get('allow_contact') else 0,
         'auth': {
-            'email': request.api.username,
+            'email': g.api.username,
             'signature': '',
             }
         }
     if 'networks' in form:
         req['networks'] = make_list(form['networks'])
-    req['auth']['signature'] = request.api.sign(req,  ['url','date'])
+    req['auth']['signature'] = g.api.sign(req,  ['url','date'])
 
     if current_app.config['DUMMY']:
         # demo mode - don't really submit
         logging.warn("Dummy mode: not really submitting")
         data = {'verification_required':  False, 'success': True}
     else:
-        data = request.api.POST_JSON('ispreport/submit', req)
+        data = g.api.POST_JSON('ispreport/submit', req)
 
     logging.info("Submission: %s", data)
 
@@ -206,12 +206,12 @@ def verify():
     f = request.args
     req = {
         'token': f['token'],
-        'date': request.api.timestamp()
+        'date': g.api.timestamp()
         }
 
-    req['signature'] = request.api.sign(req, ['token','date'])
+    req['signature'] = g.api.sign(req, ['token','date'])
 
-    data = request.api.POST('verify/email', req)
+    data = g.api.POST('verify/email', req)
     if data['success'] == False:
         return render_template('message.html',
             message = "We have been unable to locate a user account with this link.  <br />Please check that you have the correct verification link from your email.",
@@ -226,8 +226,8 @@ def recheck():
     req = {
         'url': url,
         }
-    req['signature'] = request.api.sign(req, ['url'])
-    urldata = request.api.POST('submit/url', req)
+    req['signature'] = g.api.sign(req, ['url'])
+    urldata = g.api.POST('submit/url', req)
     logging.info("urldata: %s", urldata)
     return "OK"
 

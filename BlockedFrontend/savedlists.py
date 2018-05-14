@@ -42,7 +42,7 @@ def create_list():
     while True:
 
         logging.info("Search page: %d", page)
-        data = request.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'))
+        data = g.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'))
 
         for site in data['sites']:
             newitem = models.Item(g.conn)

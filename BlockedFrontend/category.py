@@ -26,11 +26,11 @@ def blocked_sites(category=1, page=1):
         'active': 1,
         'page': page-1,
         }
-    req['signature'] = request.api.sign(req, ['id'])
-    data = request.api.GET('category/sites/'+str(category), req)
+    req['signature'] = g.api.sign(req, ['id'])
+    data = g.api.GET('category/sites/'+str(category), req)
     extra = {}
     if data['total_blocked_url_count'] < 100:
-        data2 = request.api.GET('category/'+str(category), req)
+        data2 = g.api.GET('category/'+str(category), req)
         extra['parentid'] =  data2['parents'][-1][0]
         extra['parentname'] =  data2['parents'][-1][1]
 
@@ -50,7 +50,7 @@ def sites_search(search=None, page=1):
         session['route'] = 'keyword'
 
         exclude_adult = request.args.get('exclude_adult', 0)
-        data = request.api.search_url(search, page-1, exclude_adult)
+        data = g.api.search_url(search, page-1, exclude_adult)
         logging.debug(data)
         pagesize = 20 # defined in API
         pagecount = get_pagecount(data['count'], pagesize)
@@ -74,14 +74,14 @@ def apicategorysearch():
     req = {
         'search': request.args['term']
     }
-    req['signature'] = request.api.sign(req, ['search'])
-    data = request.api.GET('category/search', req, decode=False)
+    req['signature'] = g.api.sign(req, ['search'])
+    data = g.api.GET('category/search', req, decode=False)
     return data
 
 @category_pages.route('/random')
 def random():
     session['route'] = 'random'
-    data = request.api.GET('ispreport/candidates',{'count':1})
+    data = g.api.GET('ispreport/candidates',{'count':1})
     return redirect(url_for('site.site', url=data['results'][0]))
 
 @category_pages.route('/random-category')
@@ -89,15 +89,15 @@ def random_category():
     req = {
         'count': 1
         }
-    req['signature'] = request.api.sign(req, ['count'])
-    data = request.api.GET('category/random', req)
+    req['signature'] = g.api.sign(req, ['count'])
+    data = g.api.GET('category/random', req)
     return redirect(url_for('.blocked_sites', category=data['id']))
 
 @category_pages.route('/sitemap.xml')
 def sitemap():
     req = {'parent': 0}
-    req['signature'] = request.api.sign(req, ['parent'])
-    data = request.api.GET('category/0', req)
+    req['signature'] = g.api.sign(req, ['parent'])
+    data = g.api.GET('category/0', req)
 
     return render_template('sitemap_xml.j2', categories=data['categories'])
 
