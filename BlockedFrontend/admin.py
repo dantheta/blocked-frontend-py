@@ -62,14 +62,15 @@ def admin_post():
     session['userid'] = user['id']
     session['admin_level'] = user['user_type']
     flash("Admin login successful")
+    if session['admin_level'] != 'admin':
+        return redirect(url_for('cms.index'))
     return redirect(url_for('.admin'))
 
 
 @admin_pages.route('/control/logout')
-@check_admin
 def logout():
     del session['admin']
-    return redirect(url_for('.admin'))
+    return redirect(url_for('cms.index'))
 
 @admin_pages.route('/control/url/submit', methods=['POST'])
 @check_admin

@@ -45,7 +45,12 @@ banner_text_block(bool): show banner text block, default true
     <div class="topstrip">
       <div class="container">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-1">
+              {% if session.admin %}
+              <a href="{{ url_for('admin.logout') }}" title="Log out"><span class="badge badge-info">{{ session.admin_level|title }}</span></a>
+              {% endif %}
+          </div>
+          <div class="col-md-11">
           Transparency campaign from <a href="https://www.openrightsgroup.org"><img src="/static/img/org_horiz.png" title="Open Rigts Group Logo" /></a>
           </div>
         </div>
