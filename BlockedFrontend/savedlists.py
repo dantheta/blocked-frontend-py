@@ -17,7 +17,7 @@ list_pages = Blueprint('list', __name__,
 
 
 @list_pages.route('/list', methods=['POST'])
-@check_admin
+@check_moderator
 def create_list():
     """Create a saved list"""
     f = request.form
@@ -102,7 +102,7 @@ def show_lists():
 
 
 @list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])
-@check_admin
+@check_moderator
 def item_delete(id):
     item = models.Item(g.conn, id=id)
     savedlist = item.get_list()
@@ -114,7 +114,7 @@ def item_delete(id):
     return redirect(url_for('.show_list', name=savedlist['name']))
 
 @list_pages.route('/list/add', methods=['POST'])
-@check_admin
+@check_moderator
 def item_add():
     f = request.form
 

@@ -176,6 +176,7 @@ def on_error(error):
 @app.before_request
 def check_user():
     g.admin = session.get('admin', False)
+    g.admin_level = session.get('admin_level', 'admin' if g.admin else 'user')
     
 
 @app.before_request

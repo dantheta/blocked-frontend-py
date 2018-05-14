@@ -70,7 +70,9 @@ class User(DBObject):
     TABLE = 'users'
     FIELDS = ['username',
               'email',
-              'password'
+              'password',
+              'user_type',
+              'enabled',
               ]
     PASSWORD_LENGTH=12
     

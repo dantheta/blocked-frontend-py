@@ -60,6 +60,7 @@ def admin_post():
 
     session['admin'] = True
     session['userid'] = user['id']
+    session['admin_level'] = user['user_type']
     flash("Admin login successful")
     return redirect(url_for('.admin'))
 
