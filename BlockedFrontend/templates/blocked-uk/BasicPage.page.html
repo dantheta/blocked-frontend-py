@@ -68,7 +68,7 @@ banner_text_block(bool): show banner text block, default true
             <div>
                 <div style="font-size: 200%; text-align: center; margin-bottom: 0.25em">We need £5,000</div>
                 <div class="progress" style="margin-bottom: 0px">
-                    <div class="progress-bar" role="progressbar" style="width: {{g.miscvars.fundraise_pct}}%" aria-valuenow="{{g.miscvars.fundraise_pct}}" aria-valuemax="100" aria-valuemin="0" /></div>
+                    <div class="progress-bar" role="progressbar" style="width: {{g.remote_chunks.fundraisePercent|int}}%" aria-valuenow="{{g.remote_chunks.fundraisePercent|int}}" aria-valuemax="100" aria-valuemin="0" /></div>
                 </div>
                 <div style="">£0
                     <span style="float: right">£5,000</span>
