@@ -311,7 +311,7 @@ th.num {
 }
 .topstrip2 {
     background-color: #eee;
-    
+    padding-top: 0.5em;
     color: #333333;
     font-family: 'Poppins', sans-serif;
 }
@@ -327,6 +327,10 @@ th.num {
 
 .topstrip .row a {
     margin-left: 0.25em;
+}
+
+.progress-bar {
+    background-image: linear-gradient(to bottom,#333333 0,#282828 100%);
 }
 
 .sendisps {
