@@ -97,6 +97,11 @@ def close_db(error):
 def hook_api():
     g.api = api
 
+@app.before_request
+def hook_miscdata():
+    from resources import load_data
+    g.miscvars = load_data('misc')
+
 @app.template_filter('fmtime')
 def fmtime(s):
     if not s:
