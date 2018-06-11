@@ -154,7 +154,7 @@ class CourtJudgment(DBObject):
             where u.judgment_id = %s
             group by u.url
             order by u.url
-            """, [self['id'], [region]])
+            """, [ [region], self['id']])
         return q
 
     def get_grouped_urls(self):
