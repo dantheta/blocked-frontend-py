@@ -1,0 +1,29 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{%set pagetitle = "Sites listed for " + judgment.name %}
+
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+    
+    <table class="table">
+    <tr>
+    <th>Site</th>
+    <th class="num">Block count</th>
+    </tr>
+
+    {% for url in urls %}
+    <tr>
+        <td><a href="{{url_for('site.site', url=url.url)}}">{{ url.url }}</a></td>
+        <td class="num">{{url.block_count}}</td>
+    </tr>
+
+    {% endfor %}
+
+    </table>
+    </div>
+</div>
+
+{% endblock %}

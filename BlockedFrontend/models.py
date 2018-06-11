@@ -144,6 +144,18 @@ class CourtJudgment(DBObject):
     def get_urls(self):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
+    def get_urls_with_status(self):
+        q = Query(self.conn, """select u.url, count(distinct uls.id) as block_count
+            from court_judgment_urls u
+            left join urls on u.url = urls.url
+            left join url_latest_status uls on urls.urlid = uls.urlid
+                and uls.status = 'blocked' and uls.blocktype = 'COPYRIGHT'
+            where u.judgment_id = %s
+            group by u.url
+            order by u.url
+            """, [self['id']])
+        return q
+
     def get_grouped_urls(self):
         q = Query(self.conn, """select u.*, g.name as group_name
             from court_judgment_urls u

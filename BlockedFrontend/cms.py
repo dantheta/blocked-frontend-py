@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, redirect, request, \
 
 from utils import *
 from models import Item
+import models
 from NORM import Query
 
 from resources import load_country_data
@@ -406,7 +407,8 @@ def legal_errors(page=1):
 @cms_pages.route('/legal-blocks/orders')
 def legal_orders():
     
-    q = Query(g.conn, """select cj.name, cj.date, cj.citation,
+    q = Query(g.conn, """select cj.id, cj.name, cj.date, cj.citation,
+            count(distinct cju.url) site_count,
             count(distinct uls.urlid) block_count
         from court_judgments cj
         left join court_judgment_urls cju on cju.judgment_id = cj.id
@@ -414,7 +416,7 @@ def legal_orders():
         left join url_latest_status uls on uls.urlid = urls.urlid and urls.status = 'ok'
             and blocktype='COPYRIGHT' and uls.status = 'blocked'
         left join isps on isps.name = uls.network_name and isps.regions && %s::varchar[]
-        group by cj.name,cj.date, cj.citation
+        group by cj.id, cj.name,cj.date, cj.citation
         order by cj.date desc
             """,
             [[current_app.config['DEFAULT_REGION']]]
@@ -422,3 +424,14 @@ def legal_orders():
     
     return render_template('legal-block-orders.html',
                            judgments=q) 
+
+@cms_pages.route('/legal-blocks/order/<int:id>')
+@cms_pages.route('/legal-blocks/order/<int:id>/<int:page>')
+def legal_order_sites(id, page=1):
+    judgment = models.CourtJudgment(g.conn, id)
+
+    return render_template('legal-block-sites.html',
+                           judgment=judgment,
+                           urls=judgment.get_urls_with_status())
+
+

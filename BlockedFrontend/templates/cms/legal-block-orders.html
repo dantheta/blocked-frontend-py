@@ -10,16 +10,19 @@
     
     <table class="table">
     <tr>
-    <th style="width: 50%">Judgment</th>
+    <th style="width: 50%">Judgment/Citation</th>
     <th>Date</th>
-    <th style="width: 20%">Citation</th>
+    <th class="num">Sites listed</th>
     <th class="num">Blocks Detected</th>
     </tr>
     {% for judgment in judgments %}
     <tr>
-        <td>{{judgment.name}}</td>
+        <td>
+            <div><a href="{{url_for('.legal_order_sites', id=judgment.id)}}">{{judgment.name}}</a></div>
+            <div><em>{{judgment.citation|null}}</em></div>
+        </td>
         <td>{{judgment.date|fmdate}}</td>
-        <td>{{judgment.citation|null}}</td>
+        <td class="num">{{judgment.site_count}}</td>
         <td class="num">{{judgment.block_count}}</td>
     </tr>
     
@@ -28,7 +31,5 @@
     
     </div>
 </div>
-
-
 {% endblock %}
 
