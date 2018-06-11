@@ -144,16 +144,17 @@ class CourtJudgment(DBObject):
     def get_urls(self):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
-    def get_urls_with_status(self):
+    def get_urls_with_status(self, region):
         q = Query(self.conn, """select u.url, count(distinct uls.id) as block_count
             from court_judgment_urls u
-            left join urls on u.url = urls.url
+            left join urls on u.url = urls.url and urls.url ~* '^https?://[^/]+$' and urls.status = 'ok'
             left join url_latest_status uls on urls.urlid = uls.urlid
                 and uls.status = 'blocked' and uls.blocktype = 'COPYRIGHT'
+            left join isps on isps.name = uls.network_name and isps.regions && %s::varchar[]
             where u.judgment_id = %s
             group by u.url
             order by u.url
-            """, [self['id']])
+            """, [self['id'], [region]])
         return q
 
     def get_grouped_urls(self):

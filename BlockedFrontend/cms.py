@@ -432,6 +432,6 @@ def legal_order_sites(id, page=1):
 
     return render_template('legal-block-sites.html',
                            judgment=judgment,
-                           urls=judgment.get_urls_with_status())
+                           urls=judgment.get_urls_with_status(current_app.config['DEFAULT_REGION']))
 
 
