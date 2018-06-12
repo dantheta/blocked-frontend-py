@@ -203,6 +203,14 @@ def export_blocks_by_injunction(region):
         'networks'
     ]
 
+    c = g.conn.cursor()
+    c.execute("""select name from isps 
+              where regions && %s::varchar[] and show_results=1
+              order by name""",
+              [[region]])
+    networks = [row['name'] for row in c]
+    c.close()
+
     tmpfile = tempfile.SpooledTemporaryFile('w+')
     writer = csv.writer(tmpfile)
     writer.writerow(['#', "Title: Legal blocks"])
@@ -210,7 +218,10 @@ def export_blocks_by_injunction(region):
     writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks')])
     writer.writerow([])
     #writer.writerow(['URL', 'Report URL', 'Networks'])
-    writer.writerow([x.replace('_',' ').title() for x in COLS])
+    writer.writerow([x.replace('_',' ').title() for x in COLS] 
+                    + ['Networks:'] + networks )
+
+
 
     def get_legal_blocks():
         page = 0
@@ -218,10 +229,13 @@ def export_blocks_by_injunction(region):
             data = g.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:                
                 yield [
-                    item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 
-                    for x in COLS 
-                    if x != 'networks'
-                    ] + item['networks']
+                        item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 
+                        for x in COLS 
+                        if x != 'networks'
+                    ] + [""] + [
+                        "Y" if x in item['networks'] else ""
+                        for x in networks
+                    ]
             page += 1
             if page > get_pagecount(data['urlcount'], 25):
                 break
@@ -237,6 +251,7 @@ def export_blocks_by_injunction(region):
         for line in tmpfile:
             yield line
 
+    g.conn.commit()
     return Response(returnvalue(), mimetype='text/csv', headers={
         'Content-Disposition': 'attachment; filename=legal-blocks.csv',
         'Content-length': str(length)
