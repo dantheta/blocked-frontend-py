@@ -200,7 +200,6 @@ def export_blocks_by_injunction(region):
         'last_blocked',
         'error_status',
         'additional_error_information',
-        'networks'
     ]
 
     c = g.conn.cursor()
@@ -231,7 +230,6 @@ def export_blocks_by_injunction(region):
                 yield [
                         item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 
                         for x in COLS 
-                        if x != 'networks'
                     ] + [""] + [
                         "Y" if x in item['networks'] else ""
                         for x in networks
