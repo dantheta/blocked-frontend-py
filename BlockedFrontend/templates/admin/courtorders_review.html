@@ -17,12 +17,14 @@
 <th>URL</th>
 <th>Network</th>
 <th>Created</th>
+<th>WHOIS Expiry</th>
 </tr>
 {% for row in results %}
 <tr>
 <td><a href="{{ url_for('site.site', url=row.url) }}">{{row.url}}</a></td>
 <td>{{row.network_name}}</td>
 <td>{{row.first_blocked|fmdate}}</td>
+<td>{{row.whois_expiry|fmdate}}</td>
 </tr>
 {% endfor %}
 </table>

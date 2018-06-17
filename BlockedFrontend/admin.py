@@ -321,7 +321,7 @@ def courtorders_review(page=1):
     
     q = Query(g.conn, 
               """
-              select urls.url, network_name, uls.created, uls.first_blocked from urls
+              select urls.url, network_name, uls.created, uls.first_blocked, whois_expiry from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
               inner join isps on isps.name = uls.network_name and regions && %s::varchar[]
                 and (isps.filter_level = 'No Adult' or isps.isp_type = 'mobile')
