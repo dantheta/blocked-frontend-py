@@ -1,0 +1,57 @@
+{% extends "admin.page.html" %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "URL Admin" %}
+
+
+{% block body %}
+<div class="row">
+
+<div class="col-md-9">
+
+
+<div>
+<form action="{{url_for('.urls_upload_post')}}" method="POST">
+<legend>URL Upload</legend>
+ {{ forms.textarea_field('URLs to add (paste)', 'urls', '', rows=18) }}    
+
+
+ <h3>Add tags:</h3>
+ <div class="well">
+
+    {% for tag in tags %}
+    <span style="white-space: nowrap; margin-right: 16px">
+        <input type="checkbox" name="tag" value="{{ tag }}"> {{ tag|title }}</input>
+    </span>
+    {% endfor %}
+ 
+</div>
+<input type="submit" class="btn btn-primary" value="Upload"></input>
+</form>
+</div>
+
+</div><!-- /.col -->
+</div>
+
+{% endblock %}
+
+{% block page_script %}
+
+$(document).ready(function(){
+  $('#newtag').hide();
+  $('#switchnewtag').click(function(){
+     $('#newtag').show();
+     $('#existingtag').hide();
+     return false;
+  });   
+  $('#switchexistingtag').click(function(){
+     $('#newtag').hide();
+     $('#existingtag').show();
+     $('input[name=newtag]').val('');
+     return false;
+  });
+  
+  
+});
+
+{% endblock %}

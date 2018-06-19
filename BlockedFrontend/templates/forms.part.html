@@ -13,10 +13,10 @@
 </div>
 {% endmacro %}
 
-{% macro textarea_field(label, name, value='') %}
+{% macro textarea_field(label, name, value='', rows=None) %}
 <div class="form-group">
     <label class="control-label" for="{{name}}">{{label}}</label>
-    <textarea class="form-control" name="{{name}}">{{value or ''}}</textarea>
+    <textarea class="form-control" name="{{name}}" {% if rows %}rows="{{rows}}"{%endif%}>{{value or ''}}</textarea>
 </div>
 {% endmacro %}
 

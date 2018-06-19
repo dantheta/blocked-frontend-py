@@ -683,6 +683,18 @@ def urls_post():
 
     abort(400)
 
+@admin_pages.route('/control/urls/upload')
+@check_admin
+def urls_upload():
+    return render_template('admin_url_upload.html',
+                           tags=sorted(load_data('tags'))
+                           )
+@admin_pages.route('/control/urls/upload', methods=['POST'])
+@check_admin
+def urls_upload_post():
+    pass
+
+
 ## Tests admin
 
 @admin_pages.route('/control/tests')
