@@ -23,8 +23,6 @@ if app.config.get('SITE_THEME'):
     searchpath = app.jinja_loader.searchpath
     app.jinja_loader.searchpath.insert(0, searchpath[0] + '/' + app.config['SITE_THEME'])
 
-app.logger.info("Search path: %s", app.jinja_loader.searchpath)
-
 api = ApiClient(
     app.config['API_EMAIL'],
     app.config['API_SECRET']

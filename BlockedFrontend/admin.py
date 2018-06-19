@@ -669,7 +669,7 @@ def urls_post():
         else:
             tag = f['tag'].lower()
         
-        if not re.match(r'[a-z0-9-]+', tag):
+        if not is_tag_valid(tag):
             flash("Tag \"{0}\" is not valid.  Tags must contain only characters a-z, 0-9 and '-'.".format(tag))
             return redirect(url_for('.urls'))
         
@@ -692,7 +692,47 @@ def urls_upload():
 @admin_pages.route('/control/urls/upload', methods=['POST'])
 @check_admin
 def urls_upload_post():
-    pass
+
+    bad_tags = [ # strip empty and invalid values
+            x.lower() for x in request.form.getlist('tag')
+            if x and not is_tag_valid(x.lower())
+            ]
+    if bad_tags:
+        flash("Invalid tags: {0}".format(", ".join(bad_tags)))
+
+    tags = make_list([ # strip empty and invalid values
+            x.lower() for x in request.form.getlist('tag')
+            if x and is_tag_valid(x.lower())
+            ])
+
+    addcount = 0
+
+    errors = []
+    for _url in request.form['urls'].splitlines():
+        url = normalize_url(_url)
+
+        try:
+            result = g.api.submit_url(url, queue='none')
+            if result['success']:
+                addcount += 1
+            else:
+                errors.append(url)
+                continue
+
+            for tag in tags:
+                q = Query(g.conn, 
+                          """update urls set tags = tags || %s::varchar 
+                             where url = %s and not tags && %s::varchar[]""",
+                          [ tag, url, [tag] ])
+                q.close()
+            g.conn.commit()
+        except Exception as v:
+            current_app.logger.warn("API exception: %s", str(v))
+
+    if errors:
+        flash("Errors submitting: {0}".format(", ".join(errors)))
+    flash("{0} url{1} uploaded".format(addcount, '' if addcount == 1 else 's'))
+    return redirect(url_for('.urls_upload'))
 
 
 ## Tests admin

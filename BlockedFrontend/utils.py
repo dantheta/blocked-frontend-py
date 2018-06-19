@@ -4,18 +4,26 @@ import time
 import datetime
 import urlparse
 
-__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount','fix_path','normalize_url']
+__all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount',
+           'fix_path','normalize_url','is_tag_valid']
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
     return p.netloc
 
-def normalize_url(url):
+def normalize_url(_url):
+    url = _url.strip()
     if not ':' in url or not url.lower().startswith(('http:','https:')):
         url = 'http://' + url
     p = urlparse.urlsplit(url)          
     new = urlparse.urlunsplit((p.scheme.lower(), p.netloc.lower(), p.path if p.path != '/' else '', p.query, p.fragment))
     return new
+
+def is_tag_valid(tag):
+    if re.match(r'[a-z0-9-]+$', tag):
+        return True
+    return False
+
     
 
 def make_list(item):
