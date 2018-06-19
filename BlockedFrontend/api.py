@@ -100,7 +100,7 @@ class ApiClient(BaseApiClient):
         data = self.GET(endpoint, req)
         return data
 
-    def submit_url(self, url, force=0, queue=None):
+    def submit_url(self, url, force=0, source=None, queue=None):
         req = {
             'url': url,
         }
@@ -108,6 +108,8 @@ class ApiClient(BaseApiClient):
             req['force'] = force
         if queue is not None:
             req['queue'] = queue
+        if source is not None:
+            req['source'] = source
         req['signature'] = self.sign(req, ['url'])
         return self.POST('submit/url', req)
 

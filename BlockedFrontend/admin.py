@@ -712,7 +712,7 @@ def urls_upload_post():
         url = normalize_url(_url)
 
         try:
-            result = g.api.submit_url(url, queue='none')
+            result = g.api.submit_url(url, queue='none', source=request.form['source'])
             if result['success']:
                 addcount += 1
             else:

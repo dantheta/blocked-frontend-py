@@ -1,8 +1,18 @@
 
-{% macro text_field(label, name, value='', placeholder='') %}
+{% macro hint_para(hint) %}
+    {% if hint %}
+    <p class="bg-info hint" style="padding: 8px">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      {{ hint }}
+    </p>
+    {% endif %}
+{% endmacro %}
+
+{% macro text_field(label, name, value='', placeholder='', hint=None) %}
 <div class="form-group">
     <label class="control-label" for="{{name}}">{{label}}</label>
     <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
+    {{ hint_para(hint) }}
 </div>
 {% endmacro %}
 

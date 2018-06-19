@@ -13,8 +13,9 @@
 <div>
 <form action="{{url_for('.urls_upload_post')}}" method="POST">
 <legend>URL Upload</legend>
- {{ forms.textarea_field('URLs to add (paste one per line)', 'urls', '', rows=18) }}    
+ {{ forms.textarea_field('URLs to add (paste one per line)', 'urls', '', rows=14) }}    
 
+ {{ forms.text_field('Source (required):', 'source' '', hint="A simple identifier for the source of these URLs.  Also added as a tag") }}
 
  <h4>Add tags:</h4>
  <div class="well">
@@ -23,7 +24,7 @@
     {% for tag in tags %}
     <span style="white-space: nowrap; margin-right: 16px">
         <label>
-        <input type="checkbox" name="tag" value="{{ tag }}"> {{ tag|title }}</input>
+        <input type="checkbox" name="tag" value="{{ tag }}"> {{ tag }}</input>
         </label>
     </span>
     {% endfor %}
