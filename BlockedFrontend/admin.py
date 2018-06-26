@@ -496,7 +496,7 @@ def courtorders_site_flag(id):
     
     try:
         flag = CourtJudgmentURLFlag.select_one(g.conn, 
-                                               urlid = url['id'])
+                                               judgment_url_id = url['id'])
     except ObjectNotFound:
         flag = {}
     
@@ -518,7 +518,7 @@ def courtorders_site_flag_post():
     
     if 'delete' in f:
         try:
-            flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['id'])
+            flag = CourtJudgmentURLFlag.select_one(g.conn, judgment_url_id = url['id'])
             flag.delete()
             judgment = url.get_court_judgment()
             g.conn.commit()
@@ -530,7 +530,7 @@ def courtorders_site_flag_post():
         
     
     try:
-        flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['id'])
+        flag = CourtJudgmentURLFlag.select_one(g.conn, judgment_url_id = url['id'])
     except ObjectNotFound:
         flag = CourtJudgmentURLFlag(g.conn)
         
