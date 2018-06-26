@@ -100,7 +100,7 @@ def create_admin():
         'email':'admin@localhost',
         'user_type':'admin',
         })
-    password = User.reset_password()
+    password = user.reset_password()
     user.store()
     conn.commit()
     app.logger.info("Created admin with password: %s", password)
