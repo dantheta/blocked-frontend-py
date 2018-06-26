@@ -311,7 +311,7 @@ def courtorders_review(page=1):
               left join court_judgment_urls cu on urls.url = cu.url
               where urls.status = 'ok' and uls.status = 'blocked' 
                 and urls.url ~* '^https?://[^/]+$'
-                and uls.blocktype = 'COPYRIGHT' and cu.url is null
+                and uls.blocktype = 'COPYRIGHT' and (cu.url is null or cu.judgment_id is null)
               """,
               [[current_app.config['DEFAULT_REGION']]]
 
@@ -334,6 +334,7 @@ def courtorders_review(page=1):
              )
     return render_template('courtorders_review.html',
                            results=q,
+                           flags=load_data('flags'),
                            page=page,
                            pagesize=25, 
                            pagecount=get_pagecount(count, 25)
@@ -489,7 +490,7 @@ def courtorders_site_flag(id):
     flags = Query(g.conn, """
         select f.*
         from court_judgment_url_flag_history f 
-        where f.urlid = %s
+        where f.judgment_url_id = %s
         order by f.date_observed desc""",
         [url['id']])
     
@@ -538,7 +539,8 @@ def courtorders_site_flag_post():
         'description': f['description'],
         'date_observed': f['date_observed'] or None,
         'abusetype': f['abusetype'] if f['reason'] == 'domain_may_be_abusive' else None,
-        'urlid': f['urlid']
+        'judgment_url_id': f['urlid'],
+        'urlid': url.get_urlid(),
     })
     flag.store()
     judgment = url.get_court_judgment()
@@ -550,7 +552,7 @@ def courtorders_site_flag_post():
 @check_admin
 def courtorders_site_flag_delete(id):
     q = Query(g.conn, 
-              "delete from court_judgment_url_flag_history where id = %s returning urlid as urlid",
+              "delete from court_judgment_url_flag_history where id = %s returning judgment_url_id as urlid",
               [id])
     row = q.fetchone()
     

@@ -312,7 +312,7 @@ def legal_errors(page=1):
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         left join frontend.court_judgment_urls cju on urls.url = cju.url
-        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id and cjuf.reason != 'block_appears_correct'
+        left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id and cjuf.reason != 'block_appears_correct'
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]
             and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
@@ -331,7 +331,7 @@ def legal_errors(page=1):
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         inner join frontend.court_judgment_urls cju on urls.url = cju.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]
             and urls.url ~* '^https?://[^/]+$'
@@ -349,7 +349,7 @@ def legal_errors(page=1):
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
         inner join frontend.court_judgments cj on cj.id = cju.judgment_id
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]
@@ -369,7 +369,7 @@ def legal_errors(page=1):
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
         inner join frontend.court_judgments cj on cj.id = cju.judgment_id
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]
@@ -390,7 +390,7 @@ def legal_errors(page=1):
         inner join urls on uls.urlid = urls.urlid
         inner join isps on isps.name = uls.network_name
         inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        left join frontend.court_judgment_url_flags cjuf on cjuf.urlid = cju.id
+        left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
         inner join frontend.court_judgments cj on cj.id = cju.judgment_id
         where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
             and isps.regions && %s::varchar[]

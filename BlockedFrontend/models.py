@@ -200,6 +200,13 @@ class CourtJudgmentURL(DBObject):
         
     def get_flag(self):
         return CourtJudgmentURLFlag.select_one(self.conn, urlid=self['id'])
+
+    def get_urlid(self):
+        q = Query(self.conn, """select urlid from urls where url = %s""", [self['url']])
+        row = q.fetchone()
+        if row is None:
+            return None
+        return row['urlid']
         
 
 class CourtJudgmentURLGroup(DBObject):
