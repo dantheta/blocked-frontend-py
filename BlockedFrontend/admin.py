@@ -512,6 +512,7 @@ def courtorders_site_flag(id):
 @admin_pages.route('/control/courtorders/url/flag/<path:id>', methods=['GET'])
 @check_admin
 def courtorders_url_flag(id):
+    id = fix_path(id)
     try:
         url = Url.select_one(g.conn, url=id)
     except ObjectNotFound:
