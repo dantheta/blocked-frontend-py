@@ -321,7 +321,10 @@ def courtorders_review(page=1):
     
     q = Query(g.conn, 
               """
-              select urls.url, network_name, uls.created, uls.first_blocked, whois_expiry from urls
+              select urls.url, network_name, uls.created, uls.first_blocked, whois_expiry ,
+                  case when exists(select id from court_judgment_url_flags cjuf 
+                                    where cjuf.urlid = urls.urlid and cjuf.judgment_url_id is null) then true else false end as flagged 
+              from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
               inner join isps on isps.name = uls.network_name and regions && %s::varchar[]
                 and (isps.filter_level = 'No Adult' or isps.isp_type = 'mobile')

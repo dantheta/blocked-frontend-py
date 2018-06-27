@@ -28,8 +28,8 @@
 <td>{{row.whois_expiry|fmdate}}</td>
 <td>
     <a href="{{ url_for('.courtorders_url_flag',id=row.url) }}" 
-        class="{{ 'btn btn-default active' if row['flag_id'] else 'btn btn-default' }}" 
-        title="{{'This site has been flagged' if row['flag_id'] else 'Flag this site' }}">
+        class="{{ 'btn btn-default active' if row['flagged'] else 'btn btn-default' }}" 
+        title="{{'This site has been flagged' if row['flagged'] else 'Flag this site' }}">
         <span class="glyphicon glyphicon-flag "></span>
     </a>
 </td>
