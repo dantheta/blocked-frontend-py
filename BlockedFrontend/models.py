@@ -229,6 +229,18 @@ class CourtJudgmentURLFlag(DBObject):
         return CourtJudgmentUrl(self.conn, self['urlid'])
         
 
+class Url(DBObject):
+    TABLE = 'urls'
+    UPDATABLE = False
+    FIELDS = ['urlid','urlid','tags','source','status','inserted','lastpolled',
+            'hash','whois_expiry','whois_expiry_last_checked','url_type',
+            'last_reported','first_blocked','last_blocked','title']
+
+    @property
+    def id(self):
+        return self['urlid']
+
+
 class Test(DBObject):
     TABLE = 'tests.test_cases'
     FIELDS = [

@@ -18,6 +18,7 @@
 <th>Network</th>
 <th>Created</th>
 <th>WHOIS Expiry</th>
+<th></th>
 </tr>
 {% for row in results %}
 <tr>
@@ -25,6 +26,13 @@
 <td>{{row.network_name}}</td>
 <td>{{row.first_blocked|fmdate}}</td>
 <td>{{row.whois_expiry|fmdate}}</td>
+<td>
+    <a href="{{ url_for('.courtorders_url_flag',id=row.url) }}" 
+        class="{{ 'btn btn-default active' if row['flag_id'] else 'btn btn-default' }}" 
+        title="{{'This site has been flagged' if row['flag_id'] else 'Flag this site' }}">
+        <span class="glyphicon glyphicon-flag "></span>
+    </a>
+</td>
 </tr>
 {% endfor %}
 </table>

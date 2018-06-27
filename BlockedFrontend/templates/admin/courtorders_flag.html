@@ -9,7 +9,9 @@
   <div class="col-md-8">
 
     <h1>{{pagetitle}}</h1>
+    {% if judgment %}
     <h2>{{ judgment.name }}</h2>
+    {% endif %}
     <h3>Flag <a href="{{ url.url }}" target="_blank">{{ url.url }}</a></h3>
   </div>
 
@@ -17,7 +19,7 @@
 <div class="row">
   <div class="col-md-6">
 
-<form action="{{ url_for('.courtorders_site_flag_post') }}" method="POST">
+<form action="{{ formsubmit | default( url_for('.courtorders_site_flag_post') ) }}" method="POST">
     <input type="hidden" name="urlid" value="{{ url.id }}" />
 {% for reason in flagreasons.reasons %}
 

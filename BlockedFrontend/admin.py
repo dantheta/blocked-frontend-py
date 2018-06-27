@@ -334,7 +334,6 @@ def courtorders_review(page=1):
              )
     return render_template('courtorders_review.html',
                            results=q,
-                           flags=load_data('flags'),
                            page=page,
                            pagesize=25, 
                            pagecount=get_pagecount(count, 25)
@@ -510,6 +509,49 @@ def courtorders_site_flag(id):
                            flagreasons=load_data('flagreasons')
                            )
 
+@admin_pages.route('/control/courtorders/url/flag/<path:id>', methods=['GET'])
+@check_admin
+def courtorders_url_flag(id):
+    try:
+        url = Url.select_one(g.conn, url=id)
+    except ObjectNotFound:
+        abort(404)
+
+    
+    q = Query(g.conn, """
+        select isps.name, uls.status, uls.blocktype, uls.created
+        from url_latest_status uls 
+        inner join isps on uls.network_name = isps.name
+        where urlid = %s 
+        and isps.regions && '{gb}'::varchar[] and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+        order by isps.name""",
+        [url['urlid']])
+    
+    flags = Query(g.conn, """
+        select f.*
+        from court_judgment_url_flag_history f 
+        where f.urlid = %s
+        order by f.date_observed desc""",
+        [url['urlid']])
+    
+    try:
+        flag = CourtJudgmentURLFlag.select_one(g.conn, 
+                                               urlid = url['urlid'])
+    except ObjectNotFound:
+        flag = {}
+    
+    return render_template('courtorders_flag.html', 
+                           url=url, 
+                           flag=flag, 
+                           judgment=None, 
+                           today=datetime.date.today(),
+                           status=q,
+                           flags=flags,
+                           flagreasons=load_data('flagreasons'),
+                           formsubmit=url_for('.courtorders_url_flag_post')
+                           )
+
+
 @admin_pages.route('/control/courtorders/site/flag', methods=['POST'])
 @check_admin
 def courtorders_site_flag_post():
@@ -548,17 +590,58 @@ def courtorders_site_flag_post():
     flash("Url {0} flagged".format(url['url']))
     return redirect(url_for('.courtorders_view', id=judgment['id']))
 
+
+@admin_pages.route('/control/courtorders/url/flag', methods=['POST'])
+@check_admin
+def courtorders_url_flag_post():
+    f = request.form
+    url = Url.select_one(g.conn, urlid=f['urlid'])
+    
+    if 'delete' in f:
+        try:
+            flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['urlid'])
+            flag.delete()
+            g.conn.commit()
+            flash("Url {0} unflagged".format(url['url']))
+            return redirect(url_for('.courtorders_url_flag', id=url['url']))
+        except ObjectNotFound:
+            g.conn.rollback()
+            abort(404)
+        
+    
+    try:
+        flag = CourtJudgmentURLFlag.select_one(g.conn, urlid = url['urlid'])
+    except ObjectNotFound:
+        flag = CourtJudgmentURLFlag(g.conn)
+        
+    flag.update({
+        'reason': f['reason'],
+        'description': f['description'],
+        'date_observed': f['date_observed'] or None,
+        'abusetype': f['abusetype'] if f['reason'] == 'domain_may_be_abusive' else None,
+        'judgment_url_id': None,
+        'urlid': url['urlid'],
+    })
+    flag.store()
+    g.conn.commit()
+    flash("Url {0} flagged".format(url['url']))
+    return redirect(url_for('.courtorders_url_flag', id=url['url']))
+
 @admin_pages.route('/control/courtorders/site/flag/delete/<int:id>', methods=['GET'])
 @check_admin
 def courtorders_site_flag_delete(id):
     q = Query(g.conn, 
-              "delete from court_judgment_url_flag_history where id = %s returning judgment_url_id as urlid",
+              "delete from court_judgment_url_flag_history where id = %s returning judgment_url_id, urlid ",
               [id])
     row = q.fetchone()
     
     g.conn.commit()
     flash("Historical flag removed")
-    return redirect(url_for('.courtorders_site_flag', id=row['urlid']))
+    if row['judgment_url_id']:
+        return redirect(url_for('.courtorders_site_flag', id=row['judgment_url_id']))
+    else:
+        url = Url.select_one(g.conn, urlid=row['urlid'])
+        return redirect(url_for('.courtorders_url_flag', id=url['url']))
     
     
 
