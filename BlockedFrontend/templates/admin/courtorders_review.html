@@ -15,7 +15,7 @@
 <table class="table">
 <tr>
 <th>URL</th>
-<th>Network</th>
+<th>Networks</th>
 <th>Created</th>
 <th>WHOIS Expiry</th>
 <th></th>
@@ -23,7 +23,13 @@
 {% for row in results %}
 <tr>
 <td><a href="{{ url_for('site.site', url=row.url) }}">{{row.url}}</a></td>
-<td>{{row.network_name}}</td>
+<td>
+    <ul>
+        {% for network in row.networks %}
+        <li>{{ network }}</li>
+        {% endfor %}
+    </ul>
+</td>
 <td>{{row.first_blocked|fmdate}}</td>
 <td>{{row.whois_expiry|fmdate}}</td>
 <td>

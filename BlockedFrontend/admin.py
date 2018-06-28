@@ -304,7 +304,7 @@ def courtorders_review(page=1):
     offset = (page-1)*25
     q = Query(g.conn, 
               """
-              select count(*) ct from urls
+              select count(distinct urls.urlid) ct from urls
               inner join url_latest_status uls on uls.urlid = urls.urlid
               inner join isps on isps.name = uls.network_name and regions && %s::varchar[]
                 and (isps.filter_level = 'No Adult' or isps.isp_type = 'mobile')
@@ -321,7 +321,8 @@ def courtorders_review(page=1):
     
     q = Query(g.conn, 
               """
-              select urls.url, network_name, uls.created, uls.first_blocked, whois_expiry ,
+              select urls.url, array_agg(network_name) networks, 
+                min(uls.created) created, min(uls.first_blocked) first_blocked, whois_expiry ,
                   case when exists(select id from court_judgment_url_flags cjuf 
                                     where cjuf.urlid = urls.urlid and cjuf.judgment_url_id is null) then true else false end as flagged 
               from urls
@@ -332,7 +333,8 @@ def courtorders_review(page=1):
               where urls.status = 'ok' and uls.status = 'blocked' 
                 and urls.url ~* '^https?://[^/]+$'
                 and uls.blocktype = 'COPYRIGHT' and cu.url is null
-              order by uls.first_blocked limit 25 offset {0}""".format(offset),
+              group by urls.url, whois_expiry, urls.urlid
+              order by min(uls.first_blocked) limit 25 offset {0}""".format(offset),
               [[current_app.config['DEFAULT_REGION']]]
              )
     return render_template('courtorders_review.html',
