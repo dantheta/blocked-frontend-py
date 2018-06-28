@@ -155,6 +155,11 @@ Your feedback was successfully submitted.
 {% endif %}
 {% endif %}
 
+{% if url_status == 'disallowed-by-robots-txt' %}
+<div class="alert alert-warning" role="alert">It has not been possible to check this URL because the 
+    site's <a href="http://www.robotstxt.org/" title="About robots.txt" rel="nofollow">robots.txt</a> file does not allow requests from the Blocked probes.</div>
+{% endif %}
+
 {% if judgment and judgment.url %}
 
 <h3>This site has been blocked by <a href="{{ judgment.url }}" title="View court order information">court order</a>.</h3>

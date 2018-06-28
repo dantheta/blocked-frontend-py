@@ -86,6 +86,7 @@ def site(url=None):
     except Exception:
         alt_url_data = None
 
+    url_status = data['url-status']
 
     results = [x for x in data['results'] if x['isp_active']]
     for item in results:
@@ -151,6 +152,8 @@ def site(url=None):
                            reports=data.get('reports',[]),
                            prev_unblock_type=prev_unblock_type,
                            savedlist=savedlist,
+
+                           url_status = url_status,
 
                            networks=g.remote.get_networks(),
                            thanks=thanks,
