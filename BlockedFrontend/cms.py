@@ -456,8 +456,8 @@ def legal_orders():
 def legal_order_sites(id, page=1):
     judgment = models.CourtJudgment(g.conn, id)
 
-    return render_template('legal-block-services.html',
+    return render_template('legal-block-sites.html',
                            judgment=judgment,
-                           groups=judgment.get_groups_with_status(current_app.config['DEFAULT_REGION']))
+                           urls=judgment.get_urls_with_status(current_app.config['DEFAULT_REGION']))
 
 
