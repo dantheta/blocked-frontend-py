@@ -68,10 +68,10 @@ def credits():
     g.remote_content = g.remote.get_content('credits')
     return render_template('credits.html')
 
-@cms_pages.route('/legal-blocks')
-@cms_pages.route('/legal-blocks/<int:page>')
-@cms_pages.route('/legal-blocks/<region>')
-@cms_pages.route('/legal-blocks/<region>/<int:page>')
+@cms_pages.route('/legal-blocks/sites')
+@cms_pages.route('/legal-blocks/sites/<int:page>')
+@cms_pages.route('/legal-blocks/sites/<region>')
+@cms_pages.route('/legal-blocks/sites/<region>/<int:page>')
 def legal_blocks(page=1, region=None):
     g.remote_content = g.remote.get_content('legal-blocks')
     if current_app.config['SITE_THEME'] == 'blocked-uk':
@@ -418,6 +418,19 @@ def legal_errors(page=1):
 
 
 @cms_pages.route('/legal-blocks/orders')
+def legal_orders_old():
+    return redirect(url_for('.legal_orders'), 301)
+
+@cms_pages.route('/legal-blocks/<int:page>')
+@cms_pages.route('/legal-blocks/<region>')
+@cms_pages.route('/legal-blocks/<region>/<int:page>')
+def legal_blocks_old(page=1, region=None):
+    if region:
+        return redirect(url_for('.legal_blocks', region=region, page=page), 301)
+    return redirect(url_for('.legal_blocks', page=page), 301)
+
+
+@cms_pages.route('/legal-blocks')
 def legal_orders():
     
     q = Query(g.conn, """select cj.id, cj.name, cj.date, cj.citation,
