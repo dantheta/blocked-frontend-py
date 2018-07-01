@@ -1,0 +1,85 @@
+{% macro style() %}
+td.courtjudgment {
+    background-color: #f7f7f7;
+}
+
+td.groupheader h5{
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+td.urlcol {
+  padding-left: 1.5em !important;
+}
+{% endmacro %}
+
+{% macro table_courtorders(blocks) %}
+<table class="table">
+    <tr>
+        <th>Court Judgment / URL</th>
+        <th>Networks</th>
+        <th>First Detected</th>
+        <th>Last Checked</th>
+    </tr>
+    {% for (courtorder, judgment_date, wiki_url, judgment_url, citation, judgment_sites_description),corows in
+        blocks|customgrouper(['judgment_name','judgment_date','wiki_url','judgment_url','citation','judgment_sites_description']) %}
+    {% if courtorder %}
+    <tr>
+        <td colspan="4" class="courtjudgment">
+            <h4>{%- if wiki_url -%}<a href="{{wiki_url}}" target="_blank">{%- endif -%}
+                {{ courtorder }}
+                {%- if wiki_url -%}</a>{%- endif -%}
+            </h4>
+            {% if judgment_url %}
+            <p>Court judgment: <a href="{{ judgment_url}}">{{citation}}</a></p>
+            {% endif %}
+            <p>{{judgment_date|fmdate}}</p>
+            {% if judgment_sites_description %}
+            <p>{{ judgment_sites_description|safe }}</p>
+            {% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4" class="courtjudgment">
+            <h4>URLs not yet identified with a legal decision to block</h4>
+        </td>
+    </tr>
+    {% endif %}
+    {% for groupname, rows in corows|groupby('url_group_name') %}
+    {% if groupname %}
+    <tr><td colspan="4" class="groupheader"><h5>{{ groupname }}</h5></td></tr>
+    {% endif %}
+    {% for row in rows%}
+        {% if row.url == None %}
+    <tr>
+        <td colspan="4">No sites or IP addresses currently detected.</td>
+    </tr>
+        {% else %}
+
+    <tr>
+        <td class="urlcol">{{ row.url }}
+        <div class="sitereport"><a href="{{ url_for('site.site', url=row.url) }}">Site report</a></div>
+        {% if row.error_status and row.error_status != 'block_appears_correct' %}
+        <div style="margin-top: 0.25em">            
+            <span class="label label-warning"><span class="glyphicon glyphicon-warning-sign"></span> {{row.error_status|replace('_',' ')|capitalize}}</span>
+        </div>
+        {% endif %}
+        </td>
+        <td class="networklist">
+            <ul>
+            {% for net in row.networks|sort %}
+                <li>{{ net }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td>{{ row.first_blocked | fmtime }}</td>
+        <td>{{ row.last_blocked | fmtime }}</td>
+    </tr>
+       {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+</table>
+{% endmacro %}
+

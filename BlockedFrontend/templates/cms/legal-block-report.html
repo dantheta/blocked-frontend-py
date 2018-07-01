@@ -1,0 +1,21 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "legal-blocks.part.html" as legalblock %}
+
+{%set pagetitle = judgment.name %}
+
+{% block page_style %}
+{{ legalblock.style() }}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+    
+
+    {{ legalblock.table_courtorders(blocks) }}
+
+    </div>
+</div>
+
+{% endblock %}

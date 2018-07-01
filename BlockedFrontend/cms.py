@@ -68,28 +68,6 @@ def credits():
     g.remote_content = g.remote.get_content('credits')
     return render_template('credits.html')
 
-@cms_pages.route('/legal-blocks/sites')
-@cms_pages.route('/legal-blocks/sites/<int:page>')
-@cms_pages.route('/legal-blocks/sites/<region>')
-@cms_pages.route('/legal-blocks/sites/<region>/<int:page>')
-def legal_blocks(page=1, region=None):
-    g.remote_content = g.remote.get_content('legal-blocks')
-    if current_app.config['SITE_THEME'] == 'blocked-uk':
-        style = 'injunction'
-    else:
-        style = 'urlrow'
-    if not region:
-        region = current_app.config['DEFAULT_REGION']
-    data = g.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
-    blocks = data['results']
-    count = data['count']
-    urlcount = data['urlcount']
-    return render_template('legal-blocks.html',
-            countries = load_country_data(),
-            region=region,
-            page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
-            pagecount = get_pagecount(urlcount, 25)
-            )
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
@@ -429,6 +407,29 @@ def legal_blocks_old(page=1, region=None):
         return redirect(url_for('.legal_blocks', region=region, page=page), 301)
     return redirect(url_for('.legal_blocks', page=page), 301)
 
+@cms_pages.route('/legal-blocks/sites')
+@cms_pages.route('/legal-blocks/sites/<int:page>')
+@cms_pages.route('/legal-blocks/sites/<region>')
+@cms_pages.route('/legal-blocks/sites/<region>/<int:page>')
+def legal_blocks(page=1, region=None):
+    g.remote_content = g.remote.get_content('legal-blocks')
+    if current_app.config['SITE_THEME'] == 'blocked-uk':
+        style = 'injunction'
+    else:
+        style = 'urlrow'
+    if not region:
+        region = current_app.config['DEFAULT_REGION']
+    data = g.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
+    blocks = data['results']
+    count = data['count']
+    urlcount = data['urlcount']
+    return render_template('legal-blocks.html',
+            countries = load_country_data(),
+            region=region,
+            page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
+            pagecount = get_pagecount(urlcount, 25)
+            )
+
 
 @cms_pages.route('/legal-blocks')
 def legal_orders():
@@ -456,8 +457,8 @@ def legal_orders():
 def legal_order_sites(id, page=1):
     judgment = models.CourtJudgment(g.conn, id)
 
-    return render_template('legal-block-sites.html',
+    return render_template('legal-block-report.html',
                            judgment=judgment,
-                           urls=judgment.get_urls_with_status(current_app.config['DEFAULT_REGION']))
+                           blocks = judgment.get_report(current_app.config['DEFAULT_REGION']))
 
 

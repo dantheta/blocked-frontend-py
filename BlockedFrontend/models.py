@@ -179,6 +179,25 @@ class CourtJudgment(DBObject):
         urliter = (CourtJudgmentURL(self.conn, data=row) for row in q)
         return itertools.groupby(urliter, lambda row: row['group_name'])
 
+    def get_grouped_urls_with_status(self, region):
+        q = Query(self.conn, """select 
+                case when cjug.name is null then '(unclassified)' else cjug.name end as group_name, 
+                u.url,
+                count(distinct url_latest_status_id) as block_count
+            from court_judgment_urls u
+            left join court_judgment_url_groups cjug on cjug.id = u.group_id
+            left join active_copyright_blocks urls on u.url = urls.url and regions && %s::varchar[]
+            where u.judgment_id = %s 
+            group by 
+                case when cjug.name is null then '(unclassified)' else cjug.name end,
+                u.url
+            order by 
+                case when cjug.name is null then '(unclassified)' else cjug.name end,
+                u.url
+            """, [ [region], self['id']])
+        urliter = (CourtJudgmentURL(self.conn, data=row) for row in q)
+        return itertools.groupby(urliter, lambda row: row['group_name'])
+
     def get_grouped_urls_with_expiry(self):
         """Uses view onto backend's URLs table"""
         q = Query(self.conn, """select u.*, g.name as group_name, pu.whois_expiry, cjuf.id as flag_id,
@@ -202,6 +221,29 @@ class CourtJudgment(DBObject):
         if self['power_id'] is None:
             return None
         return CourtPowers.select_one(self.conn, self['power_id'])
+
+    def get_report(self, region):
+        q = Query(self.conn, """select a.*, cjuf.reason, cjuf.abusetype from (
+              -- copyright blocks with or without judgments
+              select cj.name judgment_name, cj.date judgment_date, cj.url wiki_url, cj.judgment_url judgment_url, cj.citation citation, cj.sites_description judgment_sites_description, 
+                    cjug.name url_group_name, 
+                    urls.url, array_agg(network_name) as networks, public.fmtime(min(first_blocked)) as first_blocked,
+                    public.fmtime(max(last_blocked)) as last_blocked,
+                    cj.id as judgment_id, cju.id as judgment_url_id
+                from court_judgments cj 
+                    left join court_judgment_urls cju on cju.judgment_id = cj.id 
+                    left join court_judgment_url_groups cjug on cjug.id = cju.group_id
+                    left join active_copyright_blocks urls on cju.url = urls.url and regions && %s::varchar[]
+                    
+                    group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, urls.url, cju.id
+              ) a 
+              left join frontend.court_judgment_url_flags cjuf on (a.judgment_url_id = cjuf.judgment_url_id and cjuf.judgment_url_id is not null)
+              where a.judgment_id = %s
+              order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, url""",
+              [[region], self['id']]
+              )
+        return q
+
 
 class CourtJudgmentURL(DBObject):
     FIELDS = ['judgment_id','url', 'group_id']
