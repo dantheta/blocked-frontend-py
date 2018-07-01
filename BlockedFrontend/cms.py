@@ -434,10 +434,13 @@ def legal_blocks_old(page=1, region=None):
 def legal_orders():
     
     q = Query(g.conn, """select cj.id, cj.name, cj.date, cj.citation,
-            count(distinct cju.url) site_count,
+            cjug.name
+            count(distinct distinct case when cjug.name is null then '(unclassified)' else cjug.name end) services_targeted,
             count(distinct uls.urlid) block_count
         from court_judgments cj
         left join court_judgment_urls cju on cju.judgment_id = cj.id
+        left join court_judgment_url_groups cjug on cjug.judgment_id = cj.id
+
         left join urls on urls.url = cju.url and urls.url ~* '^https?://[^/]+$' 
         left join url_latest_status uls on uls.urlid = urls.urlid and urls.status = 'ok'
             and blocktype='COPYRIGHT' and uls.status = 'blocked'
