@@ -1,0 +1,29 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{%set pagetitle = "Services targeted by " + judgment.name %}
+
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+    
+    <table class="table">
+    <tr>
+    <th>Service</th>
+    <th class="num">Block count</th>
+    </tr>
+
+    {% for group in groups %}
+    <tr>
+        <td><a href="#">{{ group.name }}</a></td>
+        <td class="num">{{group.block_count}}</td>
+    </tr>
+
+    {% endfor %}
+
+    </table>
+    </div>
+</div>
+
+{% endblock %}

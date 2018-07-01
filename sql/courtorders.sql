@@ -121,3 +121,12 @@ create trigger court_judgment_url_flags_trig_del
 before delete on court_judgment_url_flags 
 for each row execute procedure court_judgment_url_flag_upd_del();
 
+
+create view active_copyright_blocks as
+select urls.*, uls.id as url_latest_status_id, regions from 
+    urls 
+    left join url_latest_status uls on urls.urlid = uls.urlid
+        and uls.status = 'blocked' and uls.blocktype = 'COPYRIGHT'
+    left join isps on isps.name = uls.network_name
+    where urls.url ~* '^https?://[^/]+$' and urls.status = 'ok'
+

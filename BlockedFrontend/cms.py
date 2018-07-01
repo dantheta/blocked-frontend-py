@@ -434,17 +434,14 @@ def legal_blocks_old(page=1, region=None):
 def legal_orders():
     
     q = Query(g.conn, """select cj.id, cj.name, cj.date, cj.citation,
-            cjug.name
-            count(distinct distinct case when cjug.name is null then '(unclassified)' else cjug.name end) services_targeted,
-            count(distinct uls.urlid) block_count
+            -- count(distinct case when cjug.name is null then '(unclassified)' else cjug.name end) services_targeted,
+            count(distinct cjug.name) services_targeted,
+            count(distinct urls.urlid) block_count
         from court_judgments cj
         left join court_judgment_urls cju on cju.judgment_id = cj.id
         left join court_judgment_url_groups cjug on cjug.judgment_id = cj.id
 
-        left join urls on urls.url = cju.url and urls.url ~* '^https?://[^/]+$' 
-        left join url_latest_status uls on uls.urlid = urls.urlid and urls.status = 'ok'
-            and blocktype='COPYRIGHT' and uls.status = 'blocked'
-        left join isps on isps.name = uls.network_name and isps.regions && %s::varchar[]
+        left join active_copyright_blocks urls on urls.url = cju.url and urls.regions && %s::varchar[]
         group by cj.id, cj.name,cj.date, cj.citation
         order by cj.date desc
             """,
@@ -459,8 +456,8 @@ def legal_orders():
 def legal_order_sites(id, page=1):
     judgment = models.CourtJudgment(g.conn, id)
 
-    return render_template('legal-block-sites.html',
+    return render_template('legal-block-services.html',
                            judgment=judgment,
-                           urls=judgment.get_urls_with_status(current_app.config['DEFAULT_REGION']))
+                           groups=judgment.get_groups_with_status(current_app.config['DEFAULT_REGION']))
 
 

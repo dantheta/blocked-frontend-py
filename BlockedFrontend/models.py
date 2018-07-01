@@ -145,15 +145,27 @@ class CourtJudgment(DBObject):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
 
     def get_urls_with_status(self, region):
-        q = Query(self.conn, """select u.url, count(distinct uls.id) as block_count
+        q = Query(self.conn, """select u.url, count(distinct url_latest_status_id) as block_count
             from court_judgment_urls u
-            left join urls on u.url = urls.url and urls.url ~* '^https?://[^/]+$' and urls.status = 'ok'
-            left join url_latest_status uls on urls.urlid = uls.urlid
-                and uls.status = 'blocked' and uls.blocktype = 'COPYRIGHT'
-            left join isps on isps.name = uls.network_name and isps.regions && %s::varchar[]
+            left join active_copyright_blocks urls on u.url = urls.url and regions && %s::varchar[]
             where u.judgment_id = %s
             group by u.url
             order by u.url
+            """, [ [region], self['id']])
+        return q
+
+    def get_groups_with_status(self, region):
+        q = Query(self.conn, """select 
+                case when cjug.name is null then '(unclassified)' else cjug.name end as name, 
+                count(distinct url_latest_status_id) as block_count
+            from court_judgment_urls u
+            left join court_judgment_url_groups cjug on cjug.id = u.group_id
+            left join active_copyright_blocks urls on u.url = urls.url and regions && %s::varchar[]
+            where u.judgment_id = %s 
+            group by 
+                case when cjug.name is null then '(unclassified)' else cjug.name end
+            order by 
+                case when cjug.name is null then '(unclassified)' else cjug.name end
             """, [ [region], self['id']])
         return q
 
@@ -201,12 +213,18 @@ class CourtJudgmentURL(DBObject):
     def get_flag(self):
         return CourtJudgmentURLFlag.select_one(self.conn, judgment_url_id=self['id'])
 
-    def get_urlid(self):
-        q = Query(self.conn, """select urlid from urls where url = %s""", [self['url']])
-        row = q.fetchone()
-        if row is None:
+    def get_url(self):
+        try:
+            url = Url.select_one(self.conn, url=self['url'])
+            return url
+        except ObjectNotFound:
             return None
-        return row['urlid']
+
+    def get_urlid(self):
+        url = self.get_url()
+        if url is None:
+            return None
+        return url['urlid']
         
 
 class CourtJudgmentURLGroup(DBObject):
