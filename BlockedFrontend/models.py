@@ -223,23 +223,15 @@ class CourtJudgment(DBObject):
         return CourtPowers.select_one(self.conn, self['power_id'])
 
     def get_report(self, region):
-        q = Query(self.conn, """select a.*, cjuf.reason, cjuf.abusetype from (
-              -- copyright blocks with or without judgments
-              select cj.name judgment_name, cj.date judgment_date, cj.url wiki_url, cj.judgment_url judgment_url, cj.citation citation, cj.sites_description judgment_sites_description, 
-                    cjug.name url_group_name, 
-                    urls.url, array_agg(network_name) as networks, public.fmtime(min(first_blocked)) as first_blocked,
-                    public.fmtime(max(last_blocked)) as last_blocked,
-                    cj.id as judgment_id, cju.id as judgment_url_id
-                from court_judgments cj 
-                    left join court_judgment_urls cju on cju.judgment_id = cj.id 
-                    left join court_judgment_url_groups cjug on cjug.id = cju.group_id
-                    left join active_copyright_blocks urls on cju.url = urls.url and regions && %s::varchar[]
-                    
-                    group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, urls.url, cju.id
-              ) a 
-              left join frontend.court_judgment_url_flags cjuf on (a.judgment_url_id = cjuf.judgment_url_id and cjuf.judgment_url_id is not null)
-              where a.judgment_id = %s
-              order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, url""",
+        q = Query(self.conn, """
+                select distinct 
+                    judgment_id, judgment_name, judgment_date, wiki_url, judgment_url, citation, judgment_sites_description,
+                     reason as error_status, abusetype, first_blocked, last_blocked,
+                    case when url_group_name is null then '(Unclassified)' else url_group_name end url_group_name,
+                    case when networks = '{NULL}' then NULL else url end url 
+                from active_court_blocks 
+                where (regions && %s::varchar[] or regions is null) AND judgment_id = %s
+                """,
               [[region], self['id']]
               )
         return q
