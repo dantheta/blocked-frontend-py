@@ -226,7 +226,7 @@ class CourtJudgment(DBObject):
         q = Query(self.conn, """
                 select distinct 
                     judgment_id, judgment_name, judgment_date, wiki_url, judgment_url, citation, judgment_sites_description,
-                     reason as error_status, abusetype, first_blocked, last_blocked,
+                     reason as error_status, abusetype, first_blocked, last_blocked, networks,
                     case when url_group_name is null then '(Unclassified)' else url_group_name end url_group_name,
                     case when networks = '{NULL}' then NULL else url end url 
                 from active_court_blocks 
