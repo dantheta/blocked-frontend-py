@@ -140,7 +140,8 @@ create or replace view active_court_blocks as
 	    array_agg(distinct network_name) as networks, 
 	    public.fmtime(min(first_blocked)) as first_blocked,
 	    public.fmtime(max(last_blocked)) as last_blocked,
-        count(distinct urls.urlid) as block_count
+        count(distinct urls.urlid) as block_count,
+        cjuf.judgment_url_id as flag_url_id
 	    
 	    
 	from court_judgments cj 
@@ -149,5 +150,5 @@ create or replace view active_court_blocks as
 	    left join active_copyright_blocks urls on cju.url = urls.url 
 	    left join frontend.court_judgment_url_flags cjuf on ((cju.id = cjuf.judgment_url_id and cjuf.judgment_url_id is not null) or urls.urlid = cjuf.urlid)
 
-      group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, cju.url,  cjuf.reason, cjuf.abusetype, regions
+      group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, cju.url,  cjuf.reason, cjuf.abusetype, regions, cjuf.judgment_url_id
       order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, cju.url

@@ -438,7 +438,7 @@ def legal_orders():
     q = Query(g.conn, """select 
             judgment_id as id, judgment_name as name, judgment_date as date, citation, 
 
-            count(reason) errors_detected,
+            count(distinct flag_url_id) errors_detected,
             count(distinct url_group_name) services_targeted,
             sum(block_count) as block_count
 
