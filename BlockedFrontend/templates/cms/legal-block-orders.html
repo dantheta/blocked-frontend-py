@@ -3,6 +3,13 @@
 
 {%set pagetitle = "Legal blocks - Court orders" %}
 
+{% block page_menu %}
+
+<div><a href="{{ url_for('.legal_blocks') }}">All legal blocks</a></div>
+<div><a href="{{ url_for('.legal_errors') }}">Legal block errors</a></div>
+<div style="margin-top: 1em"><a href="{{ url_for('.export_blocks', region=region) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-save"></span> Export</a></div>
+
+{% endblock %}
 
 {% block body %}
 <div class="row">
@@ -14,6 +21,7 @@
     <th>Date</th>
     <th class="num">Services Targeted</th>
     <th class="num">Blocks Detected</th>
+    <th class="num">Errors Detected</th>
     </tr>
     {% for judgment in judgments %}
     <tr>
@@ -24,6 +32,7 @@
         <td>{{judgment.date|fmdate}}</td>
         <td class="num">{{judgment.services_targeted or '-'}}</td>
         <td class="num">{{judgment.block_count}}</td>
+        <td class="num">{{judgment.errors_detected}}</td>
     </tr>
     
     {% endfor %}

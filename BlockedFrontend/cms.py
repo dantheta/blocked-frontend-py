@@ -434,23 +434,24 @@ def legal_blocks(page=1, region=None):
 @cms_pages.route('/legal-blocks')
 def legal_orders():
     
-    q = Query(g.conn, """select cj.id, cj.name, cj.date, cj.citation,
-            -- count(distinct case when cjug.name is null then '(unclassified)' else cjug.name end) services_targeted,
-            count(distinct cjug.name) services_targeted,
-            count(distinct urls.urlid) block_count
-        from court_judgments cj
-        left join court_judgment_urls cju on cju.judgment_id = cj.id
-        left join court_judgment_url_groups cjug on cjug.judgment_id = cj.id
+    region = current_app.config['DEFAULT_REGION']
+    q = Query(g.conn, """select 
+            judgment_id as id, judgment_name as name, judgment_date as date, citation, 
 
-        left join active_copyright_blocks urls on urls.url = cju.url and urls.regions && %s::varchar[]
-        group by cj.id, cj.name,cj.date, cj.citation
-        order by cj.date desc
+            count(reason) errors_detected,
+            count(distinct url_group_name) services_targeted,
+            sum(block_count) as block_count
+
+            from active_court_blocks 
+            where (regions && %s::varchar[] or regions is null)
+            group by judgment_id , judgment_name , judgment_date , citation
             """,
-            [[current_app.config['DEFAULT_REGION']]]
-            )
+            [ [region] ])
+
     
     return render_template('legal-block-orders.html',
-                           judgments=q) 
+                           judgments=q,
+                           region=region) 
 
 @cms_pages.route('/legal-blocks/order/<int:id>')
 @cms_pages.route('/legal-blocks/order/<int:id>/<int:page>')

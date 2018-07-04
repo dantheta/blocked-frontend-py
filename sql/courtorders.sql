@@ -139,7 +139,8 @@ create or replace view active_court_blocks as
 	    regions,
 	    array_agg(distinct network_name) as networks, 
 	    public.fmtime(min(first_blocked)) as first_blocked,
-	    public.fmtime(max(last_blocked)) as last_blocked
+	    public.fmtime(max(last_blocked)) as last_blocked,
+        count(distinct urls.urlid) as block_count
 	    
 	    
 	from court_judgments cj 
