@@ -148,7 +148,8 @@ create or replace view active_court_blocks as
 	    left join court_judgment_urls cju on cju.judgment_id = cj.id 
 	    left join court_judgment_url_groups cjug on cjug.id = cju.group_id
 	    left join active_copyright_blocks urls on cju.url = urls.url 
-	    left join frontend.court_judgment_url_flags cjuf on ((cju.id = cjuf.judgment_url_id and cjuf.judgment_url_id is not null) or urls.urlid = cjuf.urlid)
+	    left join court_judgment_url_flags cjuf on ((cju.id = cjuf.judgment_url_id and cjuf.judgment_url_id is not null) or (urls.urlid = cjuf.urlid and urls.urlid is not null))
+            and cjuf.reason <> 'block_appears_correct' 
 
       group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, cju.url,  cjuf.reason, cjuf.abusetype, region, cjuf.judgment_url_id
       order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, cju.url
