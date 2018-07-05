@@ -443,10 +443,10 @@ def legal_orders():
             sum(block_count) as block_count
 
             from active_court_blocks 
-            where (regions && %s::varchar[] or regions is null)
+            where (region = %s or region is null)
             group by judgment_id , judgment_name , judgment_date , citation
             """,
-            [ [region] ])
+            [ region ])
 
     
     return render_template('legal-block-orders.html',

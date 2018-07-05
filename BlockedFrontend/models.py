@@ -230,9 +230,9 @@ class CourtJudgment(DBObject):
                     case when url_group_name is null then '(Unclassified)' else url_group_name end url_group_name,
                     case when networks = '{NULL}' then NULL else url end url 
                 from active_court_blocks 
-                where (regions && %s::varchar[] or regions is null) AND judgment_id = %s
+                where (region = %s] or regions is null) AND judgment_id = %s
                 """,
-              [[region], self['id']]
+              [region, self['id']]
               )
         return q
 
