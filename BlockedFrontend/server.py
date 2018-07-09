@@ -168,6 +168,12 @@ def customgrouper(values, keys):
         lambda values: [values[x] for x in keys],
     )
 
+@app.template_filter('noproto')
+def filter_noproto(url):
+    import re
+    if url is None:
+        return None
+    return re.sub(r'^https?://','', url)
 
 @app.errorhandler(Exception)
 def on_error(error):

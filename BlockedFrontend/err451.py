@@ -9,7 +9,7 @@ from utils import *
 from models import *
 from db import *
 
-err451_pages = Blueprint('category', __name__,
+err451_pages = Blueprint('err451', __name__,
                            template_folder='templates/451')
 def get_referrer_domain():
     parts = urlparse.urlparse(request.headers['Referer'])

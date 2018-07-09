@@ -294,6 +294,24 @@ Your feedback was successfully submitted.
 
 </div> <!-- /.row -->
 
+{% if judgment %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>451 Unavailable</h3>
+        <p><a href="https://www.451unavailable.org/what-is-error-451/" title="About Error 451">Error 451</a> is the status code for content which has been made unavailable for legal reasons.</p>
+        <p>Status pages for <strong>{{ url|noproto }}</strong> are available for the 
+        {% for network,order in judgment_orders.iteritems() %}
+        {% if loop.last %} and {% endif %}
+        <a href="https://uk.451unavailable.org/{{order.network_name}}/{{url}}" title="Error 451 page for {{url|noproto}} on {{order.network_name}}" >{{ order.network_name }}</a>
+        {%- if not loop.last %}, {% endif %}
+        {% endfor %}
+        networks.
+    </div>
+</div>
+
+{% endif %}
+
 <div class="row shaded-row">
 {{chunks.contactChunk() }}
 </div>
