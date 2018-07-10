@@ -135,6 +135,7 @@ def site(url=None):
         judgment_orders = {}
         judgment_url_flag = None
         pass
+    print judgment_orders
     g.conn.commit()
     return render_template('site.html',
                            results_blocked=(result for result in results if result['status'] == 'blocked'),

@@ -5,6 +5,10 @@
 {{ config.STATUS_NAMES.get(status, status) }}
 {% endmacro %}
 
+{% macro err451_link(url, network) %}
+<a href="https://uk.451unavailable.org/{{network}}/{{url}}" title="Error 451 page for {{url|noproto}} on {{network}}" >{{network}}</a>
+{% endmacro %}
+
 
 {% if not thanks %}
 {%set titletag = "Site report: " + domain %}
@@ -128,10 +132,13 @@ Your feedback was successfully submitted.
 
     <td>
       {% if item.final_url %}
-        <a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a>
+        <div><a href="{{ item.final_url }}" rel="nofollow" target="_blank">View ISP block page</a></div>
       {% endif %}
-      {% if item.network_id in judgment_orders and judgment_orders[item.network_id].url %}
-      <div><a href="{{ judgment_orders[item.network_id].url }}" target="_blank">View injunction details</a></div>
+      {% if item.network_id in judgment_orders %}
+        {% if judgment_orders[item.network_id].url %}
+          <div><a href="{{ judgment_orders[item.network_id].url }}" target="_blank">View injunction details</a></div>
+        {% endif %}
+        <div><a href="https://uk.451unavailable.org/{{item.network_id}}/{{url}}" title="Error 451 page for {{url|noproto}} on {{item.network_id}}" >View 451 error page</a></div>
       {% endif %}
     </td>
   {% elif show_lastblocked %}
@@ -303,7 +310,7 @@ Your feedback was successfully submitted.
         <p>Status pages for <strong>{{ url|noproto }}</strong> are available for the 
         {% for network,order in judgment_orders.iteritems() %}
         {% if loop.last %} and {% endif %}
-        <a href="https://uk.451unavailable.org/{{order.network_name}}/{{url}}" title="Error 451 page for {{url|noproto}} on {{order.network_name}}" >{{ order.network_name }}</a>
+        {{ err451_link(url, order.network_name) }}
         {%- if not loop.last %}, {% endif %}
         {% endfor %}
         networks.
