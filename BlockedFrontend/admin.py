@@ -832,7 +832,12 @@ def urls_upload_post():
 @check_admin
 def tests():
     tests = Test.select(g.conn, _orderby='name')
-    return render_template('tests.html', tests=tests)
+    queues = Query(g.conn, """select * 
+        from tests.queue_status 
+        where queue_name like '%%.public'
+        order by message_count desc""", 
+        [])
+    return render_template('tests.html', tests=tests, queues=queues)
 
 @admin_pages.route('/control/tests/add')
 @admin_pages.route('/control/tests/edit/<int:id>')
@@ -892,6 +897,8 @@ def tests_delete(id):
 def tests_status(id, status):
     t = Test(g.conn, id)
     t['status'] = status.upper()
+    if status.upper() == 'RUNNING':
+        t['status_message'] = ''
     t.store()
     g.conn.commit()
     flash("Test status updated.")

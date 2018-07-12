@@ -310,4 +310,5 @@ class Test(DBObject):
         'last_run',
         'batch_size',
         'last_id',
+        'status_message',
     ]

@@ -4,6 +4,17 @@
 
 {% set pagetitle = "Test Cases Admin" %}
 
+{% macro queue_status(count) -%}
+bg-
+{%- if count < 1000 -%}
+success
+{%- elif count < 10000 -%}
+warning
+{%- else -%}
+danger
+{%- endif -%}
+{%- endmacro %}
+
 {% block body %}
 <div>
     <a href="{{ url_for('.tests_edit') }}" class="btn btn-default">Add Test Case</a>
@@ -22,14 +33,17 @@
           {% for test in tests %}
           <tr>
               <td>{{ test.name }}</td>
-              <td>{{ test.status }}</td>
+              <td>
+                  {{ test.status }}
+                  <div>{{ test.status_message }}</div>
+              </td>
               <td>
                   {% if test.status in ('RUNNING','WAITING') %}
                   <a href="{{url_for('.tests_status', id=test.id, status='paused')}}"><span class="glyphicon glyphicon-pause"></span></a>
-                  {% elif test.status in ('PAUSED','NEW') %}
+                  {% elif test.status in ('PAUSED','NEW','ERROR') %}
                   <a href="{{url_for('.tests_status', id=test.id, status='running')}}"><span class="glyphicon glyphicon-play"></span></a>
                   {% endif %}
-                  {% if test.status in ('RUNNING','PAUSED','WAITING') %}
+                  {% if test.status in ('RUNNING','PAUSED','WAITING','ERROR') %}
                   <a href="{{url_for('.tests_status', id=test.id, status='cancelled')}}"><span class="glyphicon glyphicon-stop"></span></a>
                   {% endif %}
               </td>
@@ -46,6 +60,23 @@
               </td>
           </tr>
 
+          {% endfor %}
+      </table>
+
+      <h3>Queue Status</h3>
+
+      <table class="table">
+          <tr>
+              <th>Queue name</th>
+              <th class="num">Last Updated</th>
+              <th class="num">Message count</th>
+          </tr>
+          {% for queue in queues: %}
+          <tr class="{{ queue_status(queue.message_count)}}">
+              <td>{{ queue.queue_name }}</td>
+              <td class="num">{{ queue.last_updated|fmtime }}</td>
+              <td class="num">{{ queue.message_count }}</td>
+          </tr>
           {% endfor %}
       </table>
 
