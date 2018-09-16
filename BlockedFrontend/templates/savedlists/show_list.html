@@ -78,7 +78,7 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
                 {% endif %}
             </a>
             {% else %}
-            <a class="btn btn-primary" href="{{url_for('unblock.unblock',url=item.url)}}">Request Unblock</a>
+            <a class="btn btn-primary" rel="nofollow" href="{{url_for('unblock.unblock',url=item.url)}}">Request Unblock</a>
             {% endif %}
         </td>
         <td>
