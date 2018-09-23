@@ -40,7 +40,7 @@ def run_submit():
     c = conn.cursor()
     c.execute("select distinct url from items \
                inner join savedlists on list_id = savedlists.id \
-               where frontpage=true and blocked=true")
+               where frontpage=true")
     for row in c:
         req = {
             'url': row['url'],
