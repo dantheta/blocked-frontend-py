@@ -5,6 +5,18 @@ eu:
     - sky-unfiltered
     - talktalk-unfiltered
     - virginmedia-unfiltered
+
+    - three
+    - vodafone
+    - o2
+    - ee
+
+    - aaisp
+    - bt
+    - sky
+    - talktalk
+    - plusnet
+    - virginmedia
   "no":
     - canaldigital_no
     - get_no
