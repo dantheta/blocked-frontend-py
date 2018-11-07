@@ -62,8 +62,12 @@
             <h3>Rate</h3>
             <div class="row">
                 <div class="col-md-4">{{ forms.text_field('Send URLs', 'batch_size', test.batch_size or 250) }}</div>
-                <div class="col-md-4">{{ forms.text_field('Every ', 'check_interval_num', test.check_interval.days if test.check_interval.days else
-                test.check_interval.seconds / 3600.0 if test.check_interval.seconds > 1800 else test.check_interval.seconds / 60.0 ) }}</div>
+                <div class="col-md-4">{{ forms.text_field('Every ', 'check_interval_num', 
+                         test.check_interval.days if test.check_interval.days 
+                    else test.check_interval.seconds / 3600.0 if test.check_interval.seconds > 1800 
+                    else test.check_interval.seconds / 60.0 if test.check_interval_seconds 
+                    else 5 
+                    ) }}</div>
                 <div class="col-md-4">{{ forms.select_field('', 'check_interval_unit', 
                 'day' if test.check_interval.days else 'hour' if test.check_interval.seconds > 1800 else 'min', 
                 ['min','hour','day'],  ) }}</div>
