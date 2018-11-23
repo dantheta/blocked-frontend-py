@@ -76,6 +76,14 @@ def legal_blocks(page=1, region=None):
     else:
         style = 'urlrow'
     if not region:
+        try:
+            hostprefix = request.headers.get('Host','').split('.')[0]
+            if len(hostprefix) == 2:
+                region = hostprefix
+        except Exception as e:
+            app.logger.warn("Host prefix exception: %s", str(e))
+
+    if not region:
         region = current_app.config['DEFAULT_REGION']
     data = request.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
     blocks = data['results']
