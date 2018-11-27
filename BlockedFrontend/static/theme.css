@@ -22,7 +22,7 @@ h2 {
 }
 
 
-h3, .pctdesc, .pagerole {
+h3, .pctdesc, .pagerole, .page_title {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 24px;
