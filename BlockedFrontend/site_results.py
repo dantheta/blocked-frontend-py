@@ -166,7 +166,9 @@ def site(url=None):
                            judgment_orders=judgment_orders,
                            cjuf = judgment_url_flag,
                            
-                           alt_url_data = alt_url_data
+                           alt_url_data = alt_url_data,
+
+                           page_title = data.get('title')
                            )
 
 
