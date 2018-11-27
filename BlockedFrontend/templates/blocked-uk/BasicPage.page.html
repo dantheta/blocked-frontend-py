@@ -66,6 +66,7 @@ banner_text_block(bool): show banner text block, default true
     <div class="col-md-{{ title_width | default(7) }}">
       <div class="pagerole">{{pagerole}}</div>
       <h1>{{ pagetitle }}</h1>
+      {% block subtitle %}{% endblock %}
       {% block urllink %}
       {% if url %}
       <div class="url"><a href="{{url}}" rel="nofollow" target="_blank">{{url}}</a>

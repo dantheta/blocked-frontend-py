@@ -146,7 +146,9 @@ def site(url=None):
                            country_names=country_names,
 
                            judgment = judgment,
-                           judgment_orders=judgment_orders
+                           judgment_orders=judgment_orders,
+
+                           page_title = data.get('title')
                            )
 
 

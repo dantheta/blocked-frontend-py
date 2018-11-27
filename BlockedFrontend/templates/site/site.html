@@ -29,6 +29,11 @@
 
 {% endblock %}
 
+{% block subtitle %}
+{% if page_title %}
+<div class="page_title">{{page_title}}</div>
+{% endif %}
+{% endblock %}
 
 {%block banner_text%}
 {% if thanks and thanksmsg|default('unblock') in ('unblock',None) %}
