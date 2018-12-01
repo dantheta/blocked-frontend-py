@@ -75,6 +75,8 @@ def legal_blocks(page=1, region=None):
         style = 'injunction'
     else:
         style = 'urlrow'
+
+    regionmode = 'url'
     if not region:
         try:
             hostprefix = request.headers.get('Host','').split('.')[0]
@@ -84,9 +86,8 @@ def legal_blocks(page=1, region=None):
         except Exception as e:
             app.logger.warn("Host prefix exception: %s", str(e))
 
+    if not region: # if still no region
         region = current_app.config['DEFAULT_REGION']
-    else:
-        regionmode = 'url'
 
     data = request.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
     blocks = data['results']
