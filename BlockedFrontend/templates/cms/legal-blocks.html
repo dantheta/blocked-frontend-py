@@ -40,16 +40,21 @@ td.urlcol {
 
 <div class="row">
 <div class="col-md-7">
-    <h2>Recent legally-blocked sites</h2>
+    <h2>Recent legally-blocked sites {% if region %}in {{countries[region]}}{% endif %}</h2>
     <h4>{{urlcount}} site{{'s' if urlcount != 1 else '' }} detected</h4>
 </div>
 <div class="col-md-5" style="padding-top: 20px">
     {% if config['SITE_THEME'] == 'blocked-eu' %}
       <div class="btn-group">
+      {% if regionmode == 'subdomain' %}
+      <a class="btn btn-lg btn-primary" href="https://www.netblocked.eu">View results for all regions</a>
+      {% else %}
+
       <button  style="margin-right: 16px" type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="glyphicon glyphicon-filter"></span>
         Filter by country <span class="caret"></span>
       </button>
+      {% endif %}
       <ul class="dropdown-menu">
         {% if region %}
           <li><a href="{{ url_for('.legal_blocks', page=page, sort=sortorder, region=None) }}">(all)</a></li>

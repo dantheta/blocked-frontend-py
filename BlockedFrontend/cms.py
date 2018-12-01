@@ -80,11 +80,14 @@ def legal_blocks(page=1, region=None):
             hostprefix = request.headers.get('Host','').split('.')[0]
             if len(hostprefix) == 2:
                 region = hostprefix
+                regionmode = 'subdomain'
         except Exception as e:
             app.logger.warn("Host prefix exception: %s", str(e))
 
-    if not region:
         region = current_app.config['DEFAULT_REGION']
+    else:
+        regionmode = 'url'
+
     data = request.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
     blocks = data['results']
     count = data['count']
@@ -93,7 +96,8 @@ def legal_blocks(page=1, region=None):
             countries = load_country_data(),
             region=region,
             page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
-            pagecount = get_pagecount(urlcount, 25)
+            pagecount = get_pagecount(urlcount, 25),
+            regionmode = regionmode
             )
 
 @cms_pages.route('/reported-sites')
