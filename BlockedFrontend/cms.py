@@ -77,14 +77,14 @@ def legal_blocks(page=1, region=None):
         style = 'urlrow'
 
     regionmode = 'url'
-    if not region:
-        try:
-            hostprefix = request.headers.get('Host','').split('.')[0]
-            if len(hostprefix) == 2:
-                region = hostprefix
-                regionmode = 'subdomain'
-        except Exception as e:
-            app.logger.warn("Host prefix exception: %s", str(e))
+
+    try:
+        hostprefix = request.headers.get('Host','').split('.')[0]
+        if len(hostprefix) == 2:
+            region = hostprefix
+            regionmode = 'subdomain'
+    except Exception as e:
+        app.logger.warn("Host prefix exception: %s", str(e))
 
     if not region: # if still no region
         region = current_app.config['DEFAULT_REGION']
