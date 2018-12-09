@@ -40,7 +40,7 @@ td.urlcol {
 
 <div class="row">
 <div class="col-md-7">
-    <h2>Recent legally-blocked sites {% if region %}in {{countries[region]}}{% endif %}</h2>
+    <h2>Recent legally-blocked sites {% if region not in ('gb','eu') %}in {{countries[region]}}{% endif %}</h2>
     <h4>{{urlcount}} site{{'s' if urlcount != 1 else '' }} detected</h4>
 </div>
 <div class="col-md-5" style="padding-top: 20px">
