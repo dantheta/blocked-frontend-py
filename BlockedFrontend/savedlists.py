@@ -11,6 +11,7 @@ import NORM.exceptions
 
 from auth import *
 from db import *
+from resources import load_data
 
 list_pages = Blueprint('list', __name__,
                        template_folder='templates/savedlists')
@@ -87,7 +88,8 @@ def show_list(name, page=1):
             page = page,
             pagesize = pagesize,
             pagecount = get_pagecount(itemcount, pagesize), 
-            items = items
+            items = items,
+            reasons = load_data('flagreasons')
             )
 
 
@@ -106,12 +108,57 @@ def show_lists():
 def item_delete(id):
     item = models.Item(g.conn, id=id)
     savedlist = item.get_list()
-    item.delete()
+    if request.form.get('all'):
+        item.delete_from_all()
+    else:
+        item.delete()
     g.conn.commit()
     if request.method == 'POST':
         return jsonify(success=True,listid=savedlist['id'])
 
     return redirect(url_for('.show_list', name=savedlist['name']))
+
+@list_pages.route('/list/delete_and_flag/<int:id>', methods=['GET','POST'])
+@check_moderator
+def item_delete_and_flag(id, reason=None):
+    item = models.Item(g.conn, id=id)
+    savedlist = item.get_list()
+    
+    if request.method == 'POST':
+        reason = request.form['reason']
+    
+    req = {
+        'url': item['url'],
+        'reporter': {
+            'name': 'user@blocked.org.uk',
+            'email': 'user@blocked.org.uk',
+            },
+        'message': '',
+        'category': None,
+        'report_type': ",".join(make_list(reason)),
+        'date': get_timestamp(),
+        'send_updates': 0,
+        'allow_publish': 0,
+        'allow_contact': 0,
+        'auth': {
+            'email': g.api.username,
+            'signature': '',
+            },
+        'networks': ['ORG']
+        }
+    req['auth']['signature'] = g.api.sign(req,  ['url','date'])
+    data = g.api.POST_JSON('ispreport/submit', req)
+    if not data['success']:
+        return jsonify(success=False, listid=savedlist['id'])
+    
+    # remove item from all lists
+    item.delete_from_all()
+    
+    g.conn.commit()
+    if request.method == 'POST':
+        return jsonify(success=True,listid=savedlist['id'])
+
+    return redirect(url_for('.show_list', name=savedlist['name']))    
 
 @list_pages.route('/list/add', methods=['POST'])
 @check_moderator

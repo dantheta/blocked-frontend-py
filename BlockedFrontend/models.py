@@ -40,6 +40,10 @@ class Item(DBObject):
     def get_list(self):
         return SavedList.select_one(self.conn, self['list_id'])
 
+    def delete_from_all(self):
+        for delitem in Item.select(self.conn, url=self['url']):
+            delitem.delete()
+
     @classmethod
     def get_frontpage_random(cls, conn):
         c = conn.cursor(cursor_factory = DictCursor)

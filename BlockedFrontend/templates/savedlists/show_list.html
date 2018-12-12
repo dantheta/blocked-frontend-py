@@ -84,7 +84,17 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
         <td>
 
             {% if g.admin %}
-            <a class="deletebtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}" title="Remove from this list"><span class="glyphicon glyphicon-trash"></span></a>
+            <div class="btn-group">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Delete <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a class="deletebtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}">Delete</a></li>
+              <li><a class="deleteallbtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}">Delete from all lists</a></li>
+              <li role="separator" class="dropdown-header">Flag:</li>
+            {% for reasoncode, reason in reasons.report_types.iteritems() %}
+              <li><a class="flagbtn" data-id="{{ item.id }}" data-reason="{{ reasoncode }}" href="{{ url_for('.item_delete_and_flag', id=item.id, reason=reason) }}">{{ reason }}</a></li>
+            {% endfor %}
+            </ul>
+            </div>
             {% endif %}
         </td>
     </tr>
@@ -104,6 +114,20 @@ $(document).ready(function(){
         var deletebtn = this;
         $.post('/list/delete/'+$(this).attr('data-id'), {}, function(data, status, xhr){
             $(deletebtn).parent().parent().children().animate({padding:0}).wrapInner('<div/>').children().slideUp(function(){ $(this).closest('tr').remove()});
+        });
+        return false;
+    });
+    $('.deleteallbtn').click(function(){
+        var deletebtn = this;
+        $.post('/list/delete/'+$(this).attr('data-id'), {'all':1}, function(data, status, xhr){
+            $(deletebtn).parent().parent().children().animate({padding:0}).wrapInner('<div/>').children().slideUp(function(){ $(this).closest('tr').remove()});
+        });
+        return false;
+    });    
+    $('.flagbtn').click(function(){
+        var flagbtn = this;
+        $.post('/list/delete_and_flag/'+$(this).attr('data-id'), {'reason': $(this).attr('data-reason')}, function(data, status, xhr){
+            $(flagbtn).parent().parent().children().animate({padding:0}).wrapInner('<div/>').children().slideUp(function(){ $(this).closest('tr').remove()});
         });
         return false;
     });

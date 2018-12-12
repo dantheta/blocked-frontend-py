@@ -13,3 +13,10 @@ abusetypes:
   redirects: Click fraud/redirects
   malware: Malware
   other: Other
+
+report_types:
+  adult: Site is appropriately blocked
+  squat: Site is a squatted domain
+  parked: Site is showing a registrar/hosting provider holding page
+  sale: Site domain is for sale
+  redirect: URL redirects to another site
