@@ -29,12 +29,17 @@
       <span class="label label-success">Unblocked</span>
     {% endif %}
 
+    
     {% if report.status == 'abuse' %}
     <span class="label label-danger">Abuse</span>
     {% elif report.status == 'sent' %}
-    <span class="label label-success">Sent</span>
+        {% if report.verified == 0 %}
+        <span class="label label-default">Awaiting user verification</span>
+        {% else %}
+        <span class="label label-success">Sent</span>
+        {% endif %}
     {% else %}
-    <span class="label label-default">{{ report.status|title }}</span>
+    <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}
   </td>
   <td>
