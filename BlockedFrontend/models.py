@@ -316,3 +316,55 @@ class Test(DBObject):
         'last_id',
         'status_message',
     ]
+
+class ISPReport(DBObject):
+    TABLE = 'public.isp_reports'
+    FIELDS = [
+        'name',
+        'email',
+        'urlid',
+        'network_name',
+        'message',
+        'report_type',
+        'unblocked',
+        'notified',
+        'send_updates',
+        'submitted',
+        'contact_id',
+        'allow_publish',
+        'status',
+        'site_category',
+        'allow_contact',
+        'mailname'
+    ]
+
+    @classmethod
+    def get_by_url_network(klass, conn, url, network_name):
+        q = Query(conn, """select isp_reports.* 
+            from public.isp_reports isp_reports
+            inner join urls on urls.urlid = isp_reports.urlid
+            where url = %s and network_name = %s""", 
+            [url, network_name])
+        row = q.fetchone()
+        return klass(conn, data=row)
+            
+    def get_emails(self):
+        return ISPReportEmail.select(self.conn, report_id=self['id'])
+        
+    def get_emails_parsed(self):
+        return ( (email, email.decode()) for email in self.get_emails() )
+        
+class ISPReportEmail(DBObject):
+    TABLE = 'public.isp_report_emails'
+    FIELDS = [
+        'report_id',
+        'message',
+    ]
+            
+    def decode(self):
+        import email
+        
+        ret = email.message_from_string(self['message'])
+        print type(ret)
+        return ret
+        

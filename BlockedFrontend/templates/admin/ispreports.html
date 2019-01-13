@@ -51,6 +51,8 @@
     {% elif report.status == 'abuse' %}
     <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning">Unflag</a>
     {% endif %}
+    
+    <a class="btn btn-default" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
   </td>
 </tr>
 

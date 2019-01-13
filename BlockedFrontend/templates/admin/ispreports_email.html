@@ -1,0 +1,90 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "ISP Report Admin: " + url + " on " + report.network_name %}
+
+{% macro show_message(message) %}
+{% if message.is_multipart() %}
+{{ show_message(message.get_payload()[0]) }}
+{% else %}
+{%   if message['content-transfer-encoding'] == 'base64' %}
+{% set msg=message.get_payload().decode('base64').decode('utf8') %}
+{%   else %}
+{% set msg=message.get_payload() %}
+{%   endif %}
+
+{%- for line in msg.splitlines() -%}
+{%- if (line|striptags).strip() -%}
+{{ line|striptags }}
+{% endif -%}
+{%- endfor %}
+
+{%- endif %}
+{%- endmacro %}
+
+{% block pagestyle %}
+.message {
+    white-space: pre-wrap;
+}
+{% endblock %}
+
+{% block page_script %}
+
+$(document).ready(function(){
+    $('.messagetoggle').click(function(){
+        $(this).parents('.panel').find('.message').slideToggle();
+        var span = $(this).children();
+        if (span.hasClass('glyphicon-chevron-down')) {
+            span.removeClass('glyphicon-chevron-down');
+            span.addClass('glyphicon-chevron-up');
+        } else {
+            span.removeClass('glyphicon-chevron-up');
+            span.addClass('glyphicon-chevron-down');
+        }
+    });
+});
+{% endblock %}
+
+{% block body %}
+<h1>{{pagetitle}}</h1>
+
+<div>Reported: {{ report.created|fmtime }}</div>
+<div>User: {{ report.name }} ({{report.email}})</div>
+
+<div class="row">
+<div class="col-md-12">
+
+<p style="margin-top: 1em; font-size: larger; font-style: italic">&ldquo;{{report.message}}&rdquo;</p>
+
+<h4>{{emails|length}} messages received</h4>
+<ul>
+{% for (email, message) in emails %}
+<li><a href="#msg{{loop.index}}">{{message.date}}</a></li>
+{% endfor %}
+</ul>
+
+{% for (email, message) in emails %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-11">
+                <h4><a name="msg{{loop.index}}"></a>{{ message.subject }}</h4>
+                <div>From: {{ message.from }}</div>
+                <div>Date: {{ message.date }}</div>
+            </div>
+            <div class="col-md-1" style="text-align: center">
+                <a class="messagetoggle"><span class="glyphicon glyphicon-chevron-up"></span></a>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel-body">
+        <p class="message" id="msg{{loop.index}}" style="">{{ show_message(message) }}</p>
+    </div>
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+{% endblock body %}

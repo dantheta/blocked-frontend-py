@@ -273,6 +273,32 @@ def ispreports_unflag(url):
         flash("An error occurred unflagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
+@admin_pages.route('/control/ispreports/<network_name>/<path:url>')
+@check_admin
+def ispreports_view(url, network_name):
+    url = fix_path(url)
+    ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
+    emails = list(ispreport.get_emails_parsed())
+    
+    return render_template('ispreports_email.html',
+                           report=ispreport,
+                           url=url,
+                           emails=emails) 
+
+@admin_pages.route('/control/ispreports/reject/<path:url>')
+@check_admin
+def ispreports_reject(url, network_name):
+    url = fix_path(url)
+    ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
+    ispreport.update({
+        'status': 'rejected',
+    })
+    ispreport.store()
+    g.conn.commit()
+    return redirect(url_for('.ispreports'))
+    
+    
+    
 
 #
 # Court Order admin
