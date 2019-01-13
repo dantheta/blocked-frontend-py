@@ -16,11 +16,12 @@
   <th>Network</th>
   <th>Created</th>
   <th>Status</th>
+  <th>Replies</th>
   <th></th>
 </tr>
 {% for report in reports.reports %}
 <tr>
-  <td>{{report.url}}</td>
+  <td>{{report.url|noproto}}</td>
   <td>{{report.email}}</td>
   <td>{{report.network_name}}</td>
   <td>{{ report.created | fmtime }}</td>
@@ -42,6 +43,7 @@
     <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}
   </td>
+  <td>{{ report.reply_count }}</td>
   <td>
 
     {% if report.status == 'pending' %}
