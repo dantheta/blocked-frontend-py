@@ -47,14 +47,14 @@
   <td>
 
     {% if report.status == 'pending' %}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning">Cancel</a>
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning btn-sm">Cancel</a>
     {% elif report.status != 'abuse' %}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning">Flag</a>
+    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning btn-sm">Flag</a>
     {% elif report.status == 'abuse' %}
-    <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning">Unflag</a>
+    <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning btn-sm">Unflag</a>
     {% endif %}
     
-    <a class="btn btn-default" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
+    <a class="btn btn-default btn-sm" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
   </td>
 </tr>
 

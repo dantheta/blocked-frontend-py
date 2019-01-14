@@ -175,6 +175,12 @@ def filter_noproto(url):
         return None
     return re.sub(r'^https?://','', url)
 
+@app.template_filter('stripstyletag')
+def filter_strip_style(s):
+    import re
+    
+    return re.sub(r'<style[^>]+>.*</style>','', s)
+
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))

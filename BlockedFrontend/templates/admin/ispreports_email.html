@@ -4,19 +4,18 @@
 {% set pagetitle = "ISP Report Admin: " + url + " on " + report.network_name %}
 
 {% macro show_message(message) %}
-{% if message.is_multipart() %}
+{%- if message.is_multipart() -%}
 {{ show_message(message.get_payload()[0]) }}
-{% else %}
-{%   if message['content-transfer-encoding'] == 'base64' %}
-{% set msg=message.get_payload().decode('base64').decode('utf8') %}
-{%   else %}
-{% set msg=message.get_payload() %}
-{%   endif %}
-
-{%- for line in msg.splitlines() -%}
-{%- if (line|striptags).strip() -%}
+{%- else %}
+{%-   if message['content-transfer-encoding'] == 'base64' %}
+{%- set msg=message.get_payload().decode('base64').decode('utf8') %}
+{%-   else %}
+{%- set msg=message.get_payload() %}
+{%-   endif %}
+{%- for line in (msg|stripstyletag).splitlines() %}
+{%- if (line|striptags).strip() %}
 {{ line|striptags }}
-{% endif -%}
+{% endif %}
 {%- endfor %}
 
 {%- endif %}
@@ -76,7 +75,6 @@ $(document).ready(function(){
                 <a class="messagetoggle"><span class="glyphicon glyphicon-chevron-up"></span></a>
             </div>
         </div>
-
     </div>
     <div class="panel-body">
         <p class="message" id="msg{{loop.index}}" style="">{{ show_message(message) }}</p>
