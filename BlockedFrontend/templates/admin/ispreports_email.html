@@ -47,13 +47,18 @@ $(document).ready(function(){
 {% block body %}
 <h1>{{pagetitle}}</h1>
 
-<div>Reported: {{ report.created|fmtime }}</div>
-<div>User: {{ report.name }} ({{report.email}})</div>
+
 
 <div class="row">
-<div class="col-md-12">
+<div class="col-md-6">
+
+<div><strong>Reported:</strong> {{ report.created|fmtime }}</div>
+<div><strong>User:</strong> {{ report.name }} ({{report.email}})</div>
 
 <p style="margin-top: 1em; font-size: larger; font-style: italic">&ldquo;{{report.message}}&rdquo;</p>
+
+</div>
+<div class="col-md-6">
 
 <h4>{{emails|length}} messages received</h4>
 <ul>
@@ -61,6 +66,14 @@ $(document).ready(function(){
 <li><a href="#msg{{loop.index}}">{{message.date}}</a></li>
 {% endfor %}
 </ul>
+
+</div>
+</div> <!-- /.row -->
+
+<div class="row">
+<div class="col-md-12">
+
+<h3>Messages received:</h3>
 
 {% for (email, message) in emails %}
 <div class="panel panel-default">
