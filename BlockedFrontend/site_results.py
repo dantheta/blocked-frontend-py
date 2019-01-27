@@ -168,7 +168,9 @@ def site(url=None):
                            
                            alt_url_data = alt_url_data,
 
-                           page_title = data.get('title')
+                           page_title = data.get('title'),
+
+                           categories = data.get('categories', [])
                            )
 
 
