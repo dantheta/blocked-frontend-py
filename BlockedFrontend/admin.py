@@ -274,16 +274,26 @@ def ispreports_unflag(url):
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
 @admin_pages.route('/control/ispreports/<network_name>/<path:url>')
+@admin_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')
 @check_admin
-def ispreports_view(url, network_name):
+def ispreports_view(url, network_name, msgid=None):
     url = fix_path(url)
     ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
     emails = list(ispreport.get_emails_parsed())
+    if msgid:
+        email = ISPReportEmail.select_one(g.conn, id=msgid)
+        msg = email.decode()
+    else:
+        email, msg = emails[0]
+        
     
     return render_template('ispreports_email.html',
+                           network_name=network_name, 
                            report=ispreport,
                            url=url,
-                           emails=emails) 
+                           emails=emails,
+                           selected_msg=msg,
+                           selected_email=email) 
 
 @admin_pages.route('/control/ispreports/reject/<path:url>')
 @check_admin

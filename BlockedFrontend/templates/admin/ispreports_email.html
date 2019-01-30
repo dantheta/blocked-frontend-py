@@ -30,17 +30,7 @@
 {% block page_script %}
 
 $(document).ready(function(){
-    $('.messagetoggle').click(function(){
-        $(this).parents('.panel').find('.message').slideToggle();
-        var span = $(this).children();
-        if (span.hasClass('glyphicon-chevron-down')) {
-            span.removeClass('glyphicon-chevron-down');
-            span.addClass('glyphicon-chevron-up');
-        } else {
-            span.removeClass('glyphicon-chevron-up');
-            span.addClass('glyphicon-chevron-down');
-        }
-    });
+
 });
 {% endblock %}
 
@@ -58,14 +48,28 @@ $(document).ready(function(){
 <p style="margin-top: 1em; font-size: larger; font-style: italic">&ldquo;{{report.message}}&rdquo;</p>
 
 </div>
-<div class="col-md-6">
+</div> <!-- /.row -->
+<div class="row">
+<div class="col-md-12">
 
 <h4>{{emails|length}} messages received</h4>
-<ul>
+<table class="table table-consdensed table-bordered">
+    <tr>
+        <th>#</th>
+    <th>From</th>
+    <th>Subject</th>
+    <th>Date</th>
+    </tr>
 {% for (email, message) in emails %}
-<li><a href="#msg{{loop.index}}">{{message.date}}</a></li>
+<tr class="emailrow" data-id="{{ email['id'] }}" class="{{ 'bg-info' if email['id'] == selected_email['id'] else '' }}">
+    <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email['id']) }}">{{loop.index}}</a></td>
+    <td>{{message.from}}</td>
+    <td>{{message.subject}}</td>
+    <td>{{message.date}}</td>
+</tr>
+
 {% endfor %}
-</ul>
+</table>
 
 </div>
 </div> <!-- /.row -->
@@ -73,28 +77,21 @@ $(document).ready(function(){
 <div class="row">
 <div class="col-md-12">
 
-<h3>Messages received:</h3>
 
-{% for (email, message) in emails %}
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-11">
-                <h4><a name="msg{{loop.index}}"></a>{{ message.subject }}</h4>
-                <div>From: {{ message.from }}</div>
-                <div>Date: {{ message.date }}</div>
-            </div>
-            <div class="col-md-1" style="text-align: center">
-                <a class="messagetoggle"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                <h4><a name="msg{{loop.index}}"></a>{{ selected_msg.subject }}</h4>
+                <div>From: {{ selected_msg.from }}</div>
+                <div>Date: {{ selected_msg.date }}</div>
             </div>
         </div>
     </div>
     <div class="panel-body">
-        <p class="message" id="msg{{loop.index}}" style="">{{ show_message(message) }}</p>
+        <p class="message" id="msg{{loop.index}}" style="">{{ show_message(selected_msg) }}</p>
     </div>
 </div>
-
-{% endfor %}
 
 </div>
 </div>
