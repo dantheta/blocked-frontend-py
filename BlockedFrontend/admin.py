@@ -273,6 +273,30 @@ def ispreports_unflag(url):
         flash("An error occurred unflagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
+@admin_pages.route('/control/ispreports/unblocked/<int:id>')
+@check_admin
+def ispreports_status_unblocked(id):
+    email = ISPReportEmail.select_one(g.conn, id)
+    report = email.get_report()
+    url = report.get_url()
+    
+    report.set_status('unblocked', report['created'])
+    g.conn.commit()
+    
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
+
+@admin_pages.route('/control/ispreports/rejected/<int:id>')
+@check_admin
+def ispreports_status_rejected(id):
+    email = ISPReportEmail.select_one(g.conn, id)
+    report = email.get_report()
+    url = report.get_url()
+    
+    report.set_status('rejected', report['created'])
+    g.conn.commit()
+    
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
+
 @admin_pages.route('/control/ispreports/<network_name>/<path:url>')
 @admin_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')
 @check_admin

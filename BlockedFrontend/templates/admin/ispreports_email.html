@@ -48,6 +48,15 @@ $(document).ready(function(){
 <p style="margin-top: 1em; font-size: larger; font-style: italic">&ldquo;{{report.message}}&rdquo;</p>
 
 </div>
+<div class="col-md-6" style="text-align: right">
+<h2>
+{% if report['status'] == 'unblocked' %}
+<div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Unblocked</div>
+{% elif report['status'] == 'rejected' %}
+<div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove success"></span> Rejected</div>
+{% endif %}
+</h2>
+</div>
 </div> <!-- /.row -->
 <div class="row">
 <div class="col-md-12">
@@ -81,10 +90,21 @@ $(document).ready(function(){
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-md-11">
+
+            <div class="col-md-9">
                 <h4><a name="msg{{loop.index}}"></a>{{ selected_msg.subject }}</h4>
                 <div>From: {{ selected_msg.from }}</div>
                 <div>Date: {{ selected_msg.date }}</div>
+            </div>
+            
+            <div class="col-md-3" style="text-align: left">
+                {% if report['status'] == 'sent' %}
+                    <a class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Close Report <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                    <li><a class="deletebtn" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Unblocked</a></li>
+                    <li><a class="deletebtn" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
+                    </ul>                     
+                {% endif %}
             </div>
         </div>
     </div>

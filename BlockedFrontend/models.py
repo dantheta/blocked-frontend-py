@@ -354,6 +354,20 @@ class ISPReport(DBObject):
     def get_emails_parsed(self):
         return ( (email, email.decode()) for email in self.get_emails() )
         
+    def set_status(self, newstatus, date):        
+        self['last_updated'] = date
+        if newstatus == 'unblocked':
+            self['unblocked'] = 1
+        self['status'] = newstatus
+        
+        q = Query(self.conn, "update public.isp_reports set status = %s, unblocked = %s, last_updated = %s where id = %s",
+            [self['status'], self['unblocked'], self['last_updated'], self['id']]
+            )
+        
+        
+    def get_url(self):
+        return Url.select_one(self.conn, urlid=self['urlid'])
+        
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'
     FIELDS = [
@@ -368,3 +382,5 @@ class ISPReportEmail(DBObject):
         print type(ret)
         return ret
         
+    def get_report(self):
+        return ISPReport.select_one(self.conn, self['report_id'])
