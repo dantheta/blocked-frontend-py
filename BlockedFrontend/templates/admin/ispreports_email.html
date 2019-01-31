@@ -50,9 +50,9 @@ $(document).ready(function(){
 </div>
 <div class="col-md-6" style="text-align: right">
 <h2>
-{% if report['status'] == 'unblocked' %}
+{% if report.status == 'unblocked' %}
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Unblocked</div>
-{% elif report['status'] == 'rejected' %}
+{% elif report.status == 'rejected' %}
 <div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove success"></span> Rejected</div>
 {% endif %}
 </h2>
@@ -70,8 +70,8 @@ $(document).ready(function(){
     <th>Date</th>
     </tr>
 {% for (email, message) in emails %}
-<tr data-id="{{ email['id'] }}" class="emailrow {{ 'bg-info' if email['id'] == selected_email['id'] else '' }}">
-    <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email['id']) }}">{{loop.index}}</a></td>
+<tr data-id="{{ email.id }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
+    <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}">{{loop.index}}</a></td>
     <td>{{message.from}}</td>
     <td>{{message.subject}}
     {% if email.id == report.resolved_email_id %}
@@ -104,13 +104,33 @@ $(document).ready(function(){
             </div>
             
             <div class="col-md-3" style="text-align: left">
-                {% if report['status'] == 'sent' %}
+                {% if report.status == 'sent' %}
                     <a class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Close Report <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                    <li><a class="deletebtn" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Unblocked</a></li>
-                    <li><a class="deletebtn" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
+                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Unblocked</a></li>
+                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
                     </ul>                     
                 {% endif %}
+                <div style="float: right">
+                {% for (email, message) in emails %}                
+                {% if email.id == selected_email.id %}
+                  {% if loop.first %}
+                  <a href="#" class="disabled btn btn-link">
+                  {% else %}
+                  <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=previtem.id) }}" class="btn btn-link" title="Previous message">
+                  {% endif %}
+                  <span class="glyphicon glyphicon-chevron-left"></span></a>
+                {% endif %}
+
+                {% if previtem is defined and (previtem.id == selected_email.id) %}
+                  <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="btn btn-link" title="Next message">
+                  <span class="glyphicon glyphicon-chevron-right"></span></a>
+                {% elif loop.last %}
+                  <a href="#" class="disabled btn btn-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                {% endif %}
+                {% set previtem = email %}
+                {% endfor %}
+                </div>
             </div>
         </div>
     </div>
