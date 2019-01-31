@@ -335,7 +335,8 @@ class ISPReport(DBObject):
         'status',
         'site_category',
         'allow_contact',
-        'mailname'
+        'mailname',
+        'resolved_email_id'
     ]
 
     @classmethod
@@ -354,14 +355,17 @@ class ISPReport(DBObject):
     def get_emails_parsed(self):
         return ( (email, email.decode()) for email in self.get_emails() )
         
-    def set_status(self, newstatus, date):        
-        self['last_updated'] = date
+    def set_status(self, newstatus, email):
+        self['last_updated'] = max([self['last_updated'], email['created']])
         if newstatus == 'unblocked':
             self['unblocked'] = 1
         self['status'] = newstatus
+        self['resolved_email_id'] = email['id']
         
-        q = Query(self.conn, "update public.isp_reports set status = %s, unblocked = %s, last_updated = %s where id = %s",
-            [self['status'], self['unblocked'], self['last_updated'], self['id']]
+        q = Query(self.conn, """update public.isp_reports set 
+            status = %s, unblocked = %s, last_updated = %s, resolved_email_id = %s
+            where id = %s""",
+            [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
         

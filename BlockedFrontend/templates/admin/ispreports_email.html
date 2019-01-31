@@ -73,7 +73,13 @@ $(document).ready(function(){
 <tr data-id="{{ email['id'] }}" class="emailrow {{ 'bg-info' if email['id'] == selected_email['id'] else '' }}">
     <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email['id']) }}">{{loop.index}}</a></td>
     <td>{{message.from}}</td>
-    <td>{{message.subject}}</td>
+    <td>{{message.subject}}
+    {% if email.id == report.resolved_email_id %}
+    <span style="float: right" class="label label-{{ 'danger' if report.status == 'rejected' else 'success'}}">
+      <span title="This email contains a status update" class="glyphicon glyphicon-{{ 'remove' if report.status == 'rejected' else 'ok' }}"></span>
+    </span>
+    {% endif %}
+    </td>
     <td class="num">{{message.date.split(' +')|first}}</td>
 </tr>
 

@@ -280,7 +280,7 @@ def ispreports_status_unblocked(id):
     report = email.get_report()
     url = report.get_url()
     
-    report.set_status('unblocked', report['created'])
+    report.set_status('unblocked', email)
     g.conn.commit()
     
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
@@ -292,7 +292,7 @@ def ispreports_status_rejected(id):
     report = email.get_report()
     url = report.get_url()
     
-    report.set_status('rejected', report['created'])
+    report.set_status('rejected', email)
     g.conn.commit()
     
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
@@ -319,20 +319,7 @@ def ispreports_view(url, network_name, msgid=None):
                            selected_msg=msg,
                            selected_email=email) 
 
-@admin_pages.route('/control/ispreports/reject/<path:url>')
-@check_admin
-def ispreports_reject(url, network_name):
-    url = fix_path(url)
-    ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
-    ispreport.update({
-        'status': 'rejected',
-    })
-    ispreport.store()
-    g.conn.commit()
-    return redirect(url_for('.ispreports'))
-    
-    
-    
+  
 
 #
 # Court Order admin

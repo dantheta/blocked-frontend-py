@@ -9,7 +9,15 @@
 
 <h1>{{pagetitle}}</h1>
 
-<table class="table">
+{# TODO: switch between open & all 
+<div>
+  <ul class="nav nav-pills">
+    <li role="presentation"><a href="">Open <span class="badge">42</span></a> </li>
+    <li role="presentation"><a href="">All</a></li>
+  </ul>
+</div> #}
+
+<table class="table table-condensed">
 <tr>
   <th>URL</th>
   <th>Email</th>
@@ -39,6 +47,8 @@
         {% else %}
         <span class="label label-success">Sent</span>
         {% endif %}
+    {% elif report.status == 'rejected' %}
+    <span class="label label-danger">{{ report.status|title }}</span>    
     {% else %}
     <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}
