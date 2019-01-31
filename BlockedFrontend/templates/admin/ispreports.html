@@ -9,13 +9,13 @@
 
 <h1>{{pagetitle}}</h1>
 
-{# TODO: switch between open & all 
-<div>
+
+<div style="margin-bottom: 1em">
   <ul class="nav nav-pills">
-    <li role="presentation"><a href="">Open <span class="badge">42</span></a> </li>
-    <li role="presentation"><a href="">All</a></li>
+    <li role="presentation" class="{{ 'active' if not request.args.get('open', 0) else '' }}"><a href="{{ url_for('.ispreports', page=request.args.get('page') ) }}">All</a></li>
+    <li role="presentation" class="{{ 'active' if request.args.get('open', 0) else '' }}"><a href="{{ url_for('.ispreports', open=1, page=request.args.get('page') ) }}">Open <span class="badge">{{ reports.open_count }}</span></a> </li>
   </ul>
-</div> #}
+</div> 
 
 <table class="table table-condensed">
 <tr>
@@ -71,7 +71,7 @@
 {% endfor %}
 </table>
 
-  {{ paging.page_list('.ispreports', page, pagecount, 25) }}
+  {{ paging.page_list('.ispreports', page, pagecount, 25, open=request.args.get('open', omit) ) }}
 
 </div>
 </div>
