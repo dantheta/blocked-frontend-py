@@ -111,6 +111,7 @@ $(document).ready(function(){
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
                     </ul>                     
                 {% endif %}
+                {#
                 <div style="float: right">
                 {% for (email, message) in emails %}                
                 {% if email.id == selected_email.id %}
@@ -131,6 +132,7 @@ $(document).ready(function(){
                 {% set previtem = email %}
                 {% endfor %}
                 </div>
+                #}
             </div>
         </div>
     </div>
