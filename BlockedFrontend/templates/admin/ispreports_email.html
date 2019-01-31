@@ -70,11 +70,11 @@ $(document).ready(function(){
     <th>Date</th>
     </tr>
 {% for (email, message) in emails %}
-<tr class="emailrow" data-id="{{ email['id'] }}" class="{{ 'bg-info' if email['id'] == selected_email['id'] else '' }}">
+<tr data-id="{{ email['id'] }}" class="emailrow {{ 'bg-info' if email['id'] == selected_email['id'] else '' }}">
     <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email['id']) }}">{{loop.index}}</a></td>
     <td>{{message.from}}</td>
     <td>{{message.subject}}</td>
-    <td>{{message.date}}</td>
+    <td class="num">{{message.date.split(' +')|first}}</td>
 </tr>
 
 {% endfor %}
