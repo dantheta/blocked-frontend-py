@@ -34,6 +34,11 @@
                 
             </div>
             <div role="tabpanel" class="tab-pane" id="networks">
+                {% if config.AMQP_VHOSTS|length > 1 %}
+                {{ forms.select_field('AMQP VirtualHost', 'vhost', test.vhost or '/', config.AMQP_VHOSTS) }}
+                {% else %}
+                <input type="hidden" name="vhost" value="{{ test.vhost or config.AMQP_VHOSTS[0] }}" />
+                {% endif %}
                 <h3>ISPs</h3>
                 <table class="table table-condensed">
                     <tr>

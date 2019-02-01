@@ -34,7 +34,10 @@ CREATE TABLE tests.test_cases (
 );
 
 CREATE TABLE tests.queue_status (
-	queue_name varchar primary key,
+	queue_name varchar ,
 	message_count int default 0,
-	last_updated timestamptz
+	last_updated timestamptz,
+    vhost varchar(16) null default '/'
 );
+
+alter table tests.queue_status add primary key (queue_name, vhost);

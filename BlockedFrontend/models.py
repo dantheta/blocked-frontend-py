@@ -315,6 +315,7 @@ class Test(DBObject):
         'batch_size',
         'last_id',
         'status_message',
+        'vhost',
     ]
 
 class ISPReport(DBObject):

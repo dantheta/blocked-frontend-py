@@ -79,3 +79,5 @@ SITE_CATEGORIES = {
 RANDOMSITE = 'frontpagelists'
 
 DEFAULT_REGION = 'gb'
+
+AMQP_VHOSTS = ['/']

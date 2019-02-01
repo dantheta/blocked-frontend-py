@@ -912,7 +912,8 @@ def tests_update():
         'description': f['description'],
         'check_interval': "{0} {1}".format(f['check_interval_num'], f['check_interval_unit']),
         'repeat_interval': f.get('repeat_interval') or None,
-        'batch_size': f['batch_size']
+        'batch_size': f['batch_size'],
+        'vhost': f['vhost']
     })
     
     if f.get('source') == 'query':
