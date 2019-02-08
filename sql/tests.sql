@@ -29,8 +29,7 @@ CREATE TABLE tests.test_cases (
     last_run timestamptz,
     batch_size int default 250,
     last_id int default 0,
-    status_message varchar null,
-    vhost varchar(16) not null default '/'
+    status_message varchar null
 );
 
 CREATE TABLE tests.queue_status (
