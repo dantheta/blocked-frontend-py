@@ -20,23 +20,28 @@
 <table class="table table-condensed">
 <tr>
   <th>URL</th>
+  <th>URL Status</th>
   <th>Email</th>
   <th>Network</th>
   <th>Created</th>
-  <th>Status</th>
+  <th>Report Status</th>
   <th>Replies</th>
   <th></th>
 </tr>
 {% for report in reports.reports %}
 <tr>
   <td>{{report.url|noproto}}</td>
+  <td>  
+    {% if report.unblocked %}
+    <span class="label label-success" title="URL is not blocked"><span class="glyphicon glyphicon-ok"></span> Unblocked</span>
+    {% else %}
+    <span class="label label-danger" title="URL is blocked"><span class="glyphicon glyphicon-error"></span> Unblocked</span>
+    {% endif %}
+  </td>
   <td>{{report.email}}</td>
   <td>{{report.network_name}}</td>
   <td>{{ report.created | fmtime }}</td>
   <td>
-    {% if report.unblocked %}
-      <span class="label label-success">Unblocked</span>
-    {% endif %}
 
     
     {% if report.status == 'abuse' %}
