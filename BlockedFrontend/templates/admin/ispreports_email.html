@@ -25,12 +25,18 @@
 .message {
     white-space: pre-wrap;
 }
+#messagelist tr {
+    cursor: pointer;
+}
+
 {% endblock %}
 
 {% block page_script %}
 
 $(document).ready(function(){
-
+    $('#messagelist tr').click(function(){
+        window.location.href = $(this).data('href');
+    });
 });
 {% endblock %}
 
@@ -62,7 +68,7 @@ $(document).ready(function(){
 <div class="col-md-12">
 
 <h4>{{emails|length}} messages received</h4>
-<table class="table table-consdensed table-bordered">
+<table id="messagelist" class="table table-consdensed table-bordered">
     <tr>
         <th>#</th>
     <th>From</th>
@@ -70,7 +76,7 @@ $(document).ready(function(){
     <th>Date</th>
     </tr>
 {% for (email, message) in emails %}
-<tr data-id="{{ email.id }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
+<tr data-id="{{ email.id }}" data-href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
     <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}">{{loop.index}}</a></td>
     <td>{{message.from}}</td>
     <td>{{message.subject}}
