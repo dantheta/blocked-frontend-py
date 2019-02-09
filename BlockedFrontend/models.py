@@ -296,6 +296,41 @@ class Url(DBObject):
     def id(self):
         return self['urlid']
 
+    def get_categories(self):
+        q = Query(self.conn, """select cat.*, urlcat.id as url_category_id, urlcat.enabled
+            from public.categories cat
+            inner join public.url_categories urlcat on cat.id = urlcat.category_id
+            where urlid = %s
+            order by display_name""",
+            [ self['urlid'] ])
+        for row in q:
+            yield Category(self.conn, data=row)
+        q.close()
+      
+class Category(DBObject):
+    TABLE = 'public.categories'
+    UPDATABLE = False
+    FIELDS = ['display_name','org_category_id','block_count', 'blocked_url_count',
+              'total_block_count', 'total_blocked_url_count',
+              'tree', 'name','namespace']
+              
+    @classmethod
+    def select_active(cls, conn):
+        q = Query(conn, """select categories.* 
+            from public.categories 
+            where display_name is not null 
+            order by namespace,display_name""", [])
+        for row in q:
+            yield cls(conn, data=row)
+        q.close()
+                    
+              
+class UrlCategory(DBObject):
+    TABLE = 'public.url_categories'
+    FIELDS = ['urlid','category_id','enabled','userid']              
+    
+    def get_category(self):
+        return Category(self.conn, self['category_id'])
 
 class Test(DBObject):
     TABLE = 'tests.test_cases'
@@ -317,6 +352,7 @@ class Test(DBObject):
         'status_message',
     ]
 
+
 class ISPReport(DBObject):
     TABLE = 'public.isp_reports'
     FIELDS = [
@@ -336,7 +372,11 @@ class ISPReport(DBObject):
         'site_category',
         'allow_contact',
         'mailname',
-        'resolved_email_id'
+        'resolved_email_id',
+        
+        'category_notes',
+        'review_notes',
+        'matches_policy'
     ]
 
     @classmethod
@@ -348,6 +388,9 @@ class ISPReport(DBObject):
             [url, network_name])
         row = q.fetchone()
         return klass(conn, data=row)
+
+    def get_url(self):
+        return Url(self.conn, self['urlid'])
             
     def get_emails(self):
         return ISPReportEmail.select(self.conn, report_id=self['id'])
@@ -368,6 +411,14 @@ class ISPReport(DBObject):
             [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
+    def update_notes(self, notes):
+        q = Query(self.conn, """update public.isp_reports 
+                                set category_notes = %s, last_updated=now() where id = %s 
+                                returning last_updated as last_updated""",
+                  [ notes, self['id'] ])
+        self['category_notes'] = notes
+        row = q.fetchone()
+        self['last_updated'] = row['last_updated']
         
     def get_url(self):
         return Url.select_one(self.conn, urlid=self['urlid'])

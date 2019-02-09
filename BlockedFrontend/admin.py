@@ -302,6 +302,7 @@ def ispreports_status_rejected(id):
 @check_admin
 def ispreports_view(url, network_name, msgid=None):
     url = fix_path(url)
+    urlobj = Url.select_one(g.conn, url=url)
     ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
     emails = list(ispreport.get_emails_parsed())
     if msgid:
@@ -310,17 +311,69 @@ def ispreports_view(url, network_name, msgid=None):
     else:
         email, msg = emails[0]
         
+    all_categories = ( (cat['id'], cat['namespace'], cat['display_name'])
+                       for cat in Category.select_active(g.conn) )
     
     return render_template('ispreports_email.html',
                            network_name=network_name, 
                            report=ispreport,
                            url=url,
+                           categories = urlobj.get_categories(),
+                           all_categories=all_categories,
                            emails=emails,
                            selected_msg=msg,
                            selected_email=email) 
 
-  
+@admin_pages.route('/control/ispreports/category/<mode>/<int:id>')
+def ispreports_addremove_category(mode, id):
+    urlcat = UrlCategory(g.conn, id)
+    urlcat['enabled'] = False if mode == 'disable' else True
+    urlcat['userid'] = session['userid']
+    cat = urlcat.get_category()
+    urlcat.store()
+    g.conn.commit()
+    if mode == 'disable':
+        flash("Removed from category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+    else:
+        flash("Reinstated category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+    report = ISPReport(g.conn, request.args['report'])
+    url = report.get_url()
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
 
+@admin_pages.route('/control/ispreports/category/update', methods=['POST'])
+def ispreports_update_category():
+    f = request.form
+    print f.keys()
+    
+    report = ISPReport(g.conn, f['report_id'])
+    report.update_notes(f['category_notes'])
+    
+    if f['category_id']:
+        cat = Category(g.conn, f['category_id'])
+        urlcat = UrlCategory.find_or_create(g.conn, 
+                                            ['category_id', 'urlid'], # key fields
+                                            {
+                                                'category_id': f['category_id'],
+                                                'urlid': report['urlid'],
+                                                'enabled': True,
+                                                'userid': session['userid']
+                                            })
+        if urlcat['enabled'] == False:
+            urlcat.update({
+                'enabled': True,
+                'userid': session['userid']
+            })
+
+            urlcat.store()
+
+            flash("Reinstated category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+        else:
+            # we actually can't tell if an object was created by find_or_create.  That's a bug.
+            flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+    g.conn.commit()
+    
+    url = report.get_url()
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
 #
 # Court Order admin
 # ------------------

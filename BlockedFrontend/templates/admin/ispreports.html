@@ -3,6 +3,12 @@
 
 {% set pagetitle = "ISP Report Admin" %}
 
+{% block pagestyle %}
+td.center, th.center {
+    text-align: center;
+}
+{% endblock %}
+
 {% block body %}
 <div class="row">
 <div class="col-md-12">
@@ -20,28 +26,30 @@
 <table class="table table-condensed">
 <tr>
   <th>URL</th>
-  <th>URL<br/>Status</th>
+  <th class="center">URL<br/>Status</th>
   <th>Email</th>
   <th>Network</th>
   <th>Created</th>
-  <th>Report<br/>Status</th>
+  <th class="center"Report<br/>Status</th>
   <th>Replies</th>
   <th></th>
 </tr>
 {% for report in reports.reports %}
 <tr>
   <td>{{report.url|noproto}}</td>
-  <td>  
+  <td class="center">  
+    <a href="{{ url_for('site.site', url=report.url) }}">
     {% if report.unblocked %}
     <span class="text-success glyphicon glyphicon-ok-sign" title="URL is not blocked"></span>
     {% else %}
     <span class="text-danger glyphicon glyphicon-remove-sign" title="URL is blocked"></span>
     {% endif %}
+    </a>
   </td>
   <td>{{report.email}}</td>
   <td>{{report.network_name}}</td>
   <td>{{ report.created | fmtime }}</td>
-  <td>
+  <td class="center">
 
     
     {% if report.status == 'abuse' %}
@@ -58,18 +66,16 @@
     <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}
   </td>
-  <td>{{ report.reply_count }}</td>
+  <td class="num">{{ report.reply_count }}</td>
   <td>
 
-    {% if report.status == 'pending' %}
+    {%- if report.status == 'pending' -%}
     <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning btn-sm">Cancel</a>
-    {% elif report.status != 'abuse' %}
+    {%- elif report.status != 'abuse' -%}
     <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning btn-sm">Flag</a>
-    {% elif report.status == 'abuse' %}
+    {%- elif report.status == 'abuse' -%}
     <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning btn-sm">Unflag</a>
-    {% endif %}
-    
-    <a class="btn btn-default btn-sm" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
+    {%- endif -%}&nbsp;<a class="btn btn-default btn-sm" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
   </td>
 </tr>
 
