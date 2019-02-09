@@ -18,7 +18,7 @@
 
 {% macro static_field(label, id, value='', placeholder='') %}
 <div class="form-group">
-    <label class="control-label" >{{label}}</label>
+    <label class="control-label" >{{label}}:</label>
     <p class="form-control-static" id="{{id}}">{{ value or '' }}</p>
 </div>
 {% endmacro %}
