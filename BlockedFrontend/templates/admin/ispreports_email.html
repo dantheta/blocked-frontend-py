@@ -47,22 +47,10 @@ $(document).ready(function(){
 
 {% block body %}
 <h1>{{pagetitle}}</h1>
-<h3>"{{ urlobj.title }}"</h3>
-<ul class="nav nav-tabs">
-  <li class="{{ activetab('report','report') }}"><a href="#report" role="tab" data-toggle="tab">Report</a></li>
-  <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories</a></li>
-  <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
-  {% if report.matches_policy != None -%}
-  <span class="text-success glyphicon glyphicon-ok"></span>
-  {%- endif %}
-  </a></li>
-</ul>
-
-<div class="tab-content">
-<div id="report" class="tab-pane {{ activetab('report','report') }}">
 
 <div class="row">
-<div class="col-md-6">
+<div class="col-md-5">
+<h3>Report details</h3>    
 
 {{ forms.static_field("Reported", 'reported', report.created|fmtime) }}
 {{ forms.static_field("Updated", 'reported', report.last_updated|fmtime) }}
@@ -72,7 +60,26 @@ $(document).ready(function(){
 <p style="margin-top: 1em; font-size: larger; font-style: italic" class="well">&ldquo;{{report.message}}&rdquo;</p>
 
 </div>
-<div class="col-md-6" style="text-align: right">
+
+<div class="col-md-4">
+<h3>Site details</h3>
+
+{{ forms.static_field("Site title", 'site_title', urlobj.title) }}
+
+{% if latest_status[report.network_name] is defined %}
+{% set status = latest_status[report.network_name] %}
+
+{{ forms.static_field("Current Status", 'current_status', "<strong>%s</strong> (%s)"|format(status.status|title, status.created|fmtime)|safe) }}
+{{ forms.static_field("First Blocked", 'first_block', status.first_blocked|fmtime) }}
+{{ forms.static_field("Last Blocked", 'first_block', status.last_blocked|fmtime) }}
+
+{% else %}
+<p>No current status information</p>
+{% endif %}
+
+</div>
+
+<div class="col-md-3" style="text-align: right">
 <h2>
 {% if report.status == 'unblocked' %}
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Unblocked</div>
@@ -83,79 +90,21 @@ $(document).ready(function(){
 </div>
 </div> <!-- /.row -->
 
-</div> <!-- /#report -->
-
-<div id="categories" class="tab-pane {{ activetab('categories') }}">
-    <h4>Categories</h4>
-    <div class="row">
-        <div class="col-md-6">
-    <ul>
-        {% for cat in categories %}
-        <li>
-        {% if cat.enabled %}
-        {{ cat.display_name }} ({{ cat.namespace }})
-        <a href="{{ url_for('.ispreports_addremove_category', mode='disable', id=cat.url_category_id, report=report.id) }}" class=""><span class="glyphicon glyphicon-trash"></span></a>
-        {% else %}
-        <strike>{{ cat.display_name }} ({{cat.namespace}})</strike>
-        <a href="{{ url_for('.ispreports_addremove_category', mode='enable', id=cat.url_category_id, report=report.id) }}" class=""><span class="glyphicon glyphicon-repeat"></span></a>
-        {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-        </div>
-        <div class="col-md-6">
-        
-        <form method="POST" action="{{ url_for('.ispreports_update_category') }}">
-            <input type="hidden" name="report_id" value="{{ report.id }}" />
-            
-            <div class="form-group">
-                <label class="control-label" for="category_id">Add Category</label>
-                <select class="form-control" name="category_id">
-                    <option value="" selected>(None)</option>
-                    {% for group in all_categories|groupby('1') %}
-                    <optgroup label="{{ group.grouper }}">
-                    {% for cat in group.list %}                    
-                    <option value="{{cat.0}}" >{{ cat.2 }}</option>
-                    {% endfor %}
-                    </optgroup>
-                    {% endfor %}
-                </select>
-            </div>
-            
-        {{  forms.textarea_field('Category notes', 'category_notes', report.category_notes|default('') ) }}
-        
-        <input type="submit" value="Update" class="btn btn-primary" />
-        </form>
-        
-        
-        </div>
-    </div>
-</div> <!-- /#categories -->
-
-<div id="block" class="tab-pane {{ activetab('block') }}">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="well" style="margin-top: 1em">
-            {{ networks[ report.network_name ]|safe }}
-            </div>
-        </div>
-        <div class="col-md-6">
-            <form action="{{ url_for('.ispreports_review_update') }}" method="POST">
-                <input type="hidden" name="report_id" value="{{ report.id }}" />
-                {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
-                {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
-                {{ forms.textarea_field("Notes", "review_notes", report.review_notes) }} 
-                <input type="submit" value="Update" class="btn btn-primary" />
-            </form>
-        </div>
-    </div>
-    
-    
-</div> <!-- /#block -->
-
-</div> <!-- /.tab-content -->
-
 <hr />
+
+<ul class="nav nav-tabs">
+  <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
+  <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories</a></li>
+  <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
+  {% if report.matches_policy != None -%}
+  <span class="text-success glyphicon glyphicon-ok"></span>
+  {%- endif %}
+  </a></li>
+</ul>
+
+<div class="tab-content">
+<div id="messages" class="tab-pane {{ activetab('messages','messages') }}">
+
 
 <div class="row">
 <div class="col-md-12">
@@ -187,6 +136,8 @@ $(document).ready(function(){
 
 </div>
 </div> <!-- /.row -->
+
+
 
 <div class="row">
 <div class="col-md-12">
@@ -243,4 +194,75 @@ $(document).ready(function(){
 
 </div>
 </div>
+</div> <!-- /#report -->
+
+<div id="categories" class="tab-pane {{ activetab('categories') }}">
+    <h4>Categories</h4>
+    <div class="row">
+        <div class="col-md-5">
+    <ul>
+        {% for cat in categories %}
+        <li>
+        {% if cat.enabled %}
+        {{ cat.display_name }} ({{ cat.namespace }})
+        <a href="{{ url_for('.ispreports_addremove_category', mode='disable', id=cat.url_category_id, report=report.id) }}" class=""><span class="glyphicon glyphicon-trash"></span></a>
+        {% else %}
+        <strike>{{ cat.display_name }} ({{cat.namespace}})</strike>
+        <a href="{{ url_for('.ispreports_addremove_category', mode='enable', id=cat.url_category_id, report=report.id) }}" class=""><span class="glyphicon glyphicon-repeat"></span></a>
+        {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+        </div>
+        <div class="col-md-5">
+        
+        <form method="POST" action="{{ url_for('.ispreports_update_category') }}">
+            <input type="hidden" name="report_id" value="{{ report.id }}" />
+            
+            <div class="form-group">
+                <label class="control-label" for="category_id">Add Category</label>
+                <select class="form-control" name="category_id">
+                    <option value="" selected>(None)</option>
+                    {% for group in all_categories|groupby('1') %}
+                    <optgroup label="{{ group.grouper }}">
+                    {% for cat in group.list %}                    
+                    <option value="{{cat.0}}" >{{ cat.2 }}</option>
+                    {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            
+        {{  forms.textarea_field('Category notes', 'category_notes', report.category_notes|default(''), rows=6 ) }}
+        
+        <input type="submit" value="Update" class="btn btn-primary" />
+        </form>
+        
+        
+        </div>
+    </div>
+</div> <!-- /#categories -->
+
+<div id="block" class="tab-pane {{ activetab('block') }}">
+    <div class="row">
+        <div class="col-md-5">
+            <p></p>
+            <div class="well">
+                <h3>Policy Summary</h3>
+            {{ networks[ report.network_name ]|safe }}
+            </div>
+        </div>
+        <div class="col-md-5">
+            <form action="{{ url_for('.ispreports_review_update') }}" method="POST">
+                <input type="hidden" name="report_id" value="{{ report.id }}" />
+                {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
+                {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
+                {{ forms.textarea_field("Notes", "review_notes", report.review_notes, rows=6) }} 
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </form>
+        </div>
+    </div>
+</div> <!-- /#block -->
+
+</div> <!-- /.tab-content -->
 {% endblock body %}

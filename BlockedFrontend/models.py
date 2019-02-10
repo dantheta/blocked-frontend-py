@@ -307,6 +307,17 @@ class Url(DBObject):
             yield Category(self.conn, data=row)
         q.close()
       
+    def get_latest_status(self):
+        q = Query(self.conn, 
+                  "select * from public.url_latest_status where urlid = %s",
+                  [ self['urlid'] ])
+        out = {}
+        for row in q:
+            network = row['network_name']
+            out[network] = row
+        q.close()
+        return out
+      
 class Category(DBObject):
     TABLE = 'public.categories'
     UPDATABLE = False

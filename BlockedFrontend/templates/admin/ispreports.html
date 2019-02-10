@@ -58,10 +58,12 @@ td.center, th.center {
         {% if report.verified == 0 %}
         <span class="label label-default">Awaiting user verification</span>
         {% else %}
-        <span class="label label-success">Sent</span>
+        <span class="label label-info">Sent</span>
         {% endif %}
     {% elif report.status == 'rejected' %}
     <span class="label label-danger">{{ report.status|title }}</span>    
+    {% elif report.status == 'unblocked' %}
+    <span class="label label-success">{{ report.status|title }}</span>    
     {% else %}
     <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}

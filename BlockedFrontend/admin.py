@@ -322,6 +322,7 @@ def ispreports_view(url, network_name, msgid=None):
                            report=ispreport,
                            url=url,
                            urlobj = urlobj,
+                           latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
                            emails=emails,
