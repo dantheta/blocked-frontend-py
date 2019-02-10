@@ -327,10 +327,9 @@ class Category(DBObject):
               
     @classmethod
     def select_active(cls, conn):
-        q = Query(conn, """select categories.* 
-            from public.categories 
-            where display_name is not null 
-            order by namespace,display_name""", [])
+        q = Query(conn, """select *
+            from public.selected_categories 
+            order by namespace, name""", [])
         for row in q:
             yield cls(conn, data=row)
         q.close()

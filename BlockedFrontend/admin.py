@@ -314,7 +314,7 @@ def ispreports_view(url, network_name, msgid=None):
         else:
             email, msg = None, None
         
-    all_categories = ( (cat['id'], cat['namespace'], cat['display_name'])
+    all_categories = ( (cat['id'], cat['namespace'], cat['name'])
                        for cat in Category.select_active(g.conn) )
     
     return render_template('ispreports_email.html',
