@@ -52,26 +52,27 @@ $(document).ready(function(){
 <div class="col-md-5">
 <h3>Report details</h3>    
 
-{{ forms.static_field("Reported", 'reported', report.created|fmtime) }}
-{{ forms.static_field("Updated", 'reported', report.last_updated|fmtime) }}
-{{ forms.static_field("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
+{{ forms.labelled_text("Reported", 'reported', report.created|fmtime) }}
+{{ forms.labelled_text("Updated", 'reported', report.last_updated|fmtime) }}
+{{ forms.labelled_text("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
 
 
 <p style="margin-top: 1em; font-size: larger; font-style: italic" class="well">&ldquo;{{report.message}}&rdquo;</p>
 
 </div>
 
-<div class="col-md-4">
+<div class="col-md-5">
 <h3>Site details</h3>
 
-{{ forms.static_field("Site title", 'site_title', urlobj.title) }}
+{{ forms.labelled_text("Site title", 'site_title', urlobj.title) }}
 
 {% if latest_status[report.network_name] is defined %}
 {% set status = latest_status[report.network_name] %}
 
-{{ forms.static_field("Current Status", 'current_status', "<strong>%s</strong> (%s)"|format(status.status|title, status.created|fmtime)|safe) }}
-{{ forms.static_field("First Blocked", 'first_block', status.first_blocked|fmtime) }}
-{{ forms.static_field("Last Blocked", 'first_block', status.last_blocked|fmtime) }}
+{{ forms.labelled_text("Current Status", 'current_status', "<strong>%s</strong>"|format(status.status|title)|safe) }}
+{{ forms.labelled_text("Last Checked", 'last_check', status.created|fmtime) }}
+{{ forms.labelled_text("First Blocked", 'first_block', status.first_blocked|fmtime) }}
+{{ forms.labelled_text("Last Blocked", 'first_block', status.last_blocked|fmtime) }}
 
 {% else %}
 <p>No current status information</p>
@@ -79,7 +80,7 @@ $(document).ready(function(){
 
 </div>
 
-<div class="col-md-3" style="text-align: right">
+<div class="col-md-2" style="text-align: right">
 <h2>
 {% if report.status == 'unblocked' %}
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Unblocked</div>

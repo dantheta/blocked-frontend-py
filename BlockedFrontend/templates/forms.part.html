@@ -100,3 +100,10 @@
 
     });
 {% endmacro %}
+
+{% macro labelled_text(label, name, value) %}
+<div class="labelled_text">
+<label>{{ label }}:</label>
+<span>{{ value }}</span>
+</div>
+{% endmacro %}
