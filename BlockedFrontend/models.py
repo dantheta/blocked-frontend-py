@@ -411,12 +411,31 @@ class ISPReport(DBObject):
             [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
-    def update_notes(self, notes):
+    def update_category_notes(self, notes):
         q = Query(self.conn, """update public.isp_reports 
                                 set category_notes = %s, last_updated=now() where id = %s 
                                 returning last_updated as last_updated""",
                   [ notes, self['id'] ])
         self['category_notes'] = notes
+        row = q.fetchone()
+        self['last_updated'] = row['last_updated']
+    
+    def update_review_notes(self, notes):
+        q = Query(self.conn, """update public.isp_reports 
+                                set review_notes = %s, last_updated=now() where id = %s 
+                                returning last_updated as last_updated""",
+                  [ notes, self['id'] ])
+        self['review_notes'] = notes
+        row = q.fetchone()
+        self['last_updated'] = row['last_updated']
+        
+    def update_matches_policy(self, value):
+        q = Query(self.conn, """update public.isp_reports 
+                                set matches_policy = %s, last_updated=now() 
+                                where id = %s 
+                                returning last_updated as last_updated""",
+                             [ value, self['id'] ])
+        self['matches_policy'] = value
         row = q.fetchone()
         self['last_updated'] = row['last_updated']
         

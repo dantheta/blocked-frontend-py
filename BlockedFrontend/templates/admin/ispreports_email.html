@@ -47,11 +47,15 @@ $(document).ready(function(){
 
 {% block body %}
 <h1>{{pagetitle}}</h1>
-
+<h3>"{{ urlobj.title }}"</h3>
 <ul class="nav nav-tabs">
   <li class="{{ activetab('report','report') }}"><a href="#report" role="tab" data-toggle="tab">Report</a></li>
   <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories</a></li>
-  <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block</a></li>
+  <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
+  {% if report.matches_policy != None -%}
+  <span class="text-success glyphicon glyphicon-ok"></span>
+  {%- endif %}
+  </a></li>
 </ul>
 
 <div class="tab-content">
@@ -129,6 +133,24 @@ $(document).ready(function(){
 </div> <!-- /#categories -->
 
 <div id="block" class="tab-pane {{ activetab('block') }}">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well" style="margin-top: 1em">
+            {{ networks[ report.network_name ]|safe }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form action="{{ url_for('.ispreports_review_update') }}" method="POST">
+                <input type="hidden" name="report_id" value="{{ report.id }}" />
+                {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
+                {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
+                {{ forms.textarea_field("Notes", "review_notes", report.review_notes) }} 
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </form>
+        </div>
+    </div>
+    
+    
 </div> <!-- /#block -->
 
 </div> <!-- /.tab-content -->
@@ -169,7 +191,7 @@ $(document).ready(function(){
 <div class="row">
 <div class="col-md-12">
 
-
+{% if selected_email %}
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
@@ -217,6 +239,7 @@ $(document).ready(function(){
         <p class="message" style="">{{ show_message(selected_msg) }}</p>
     </div>
 </div>
+{% endif %}
 
 </div>
 </div>

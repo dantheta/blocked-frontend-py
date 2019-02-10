@@ -309,7 +309,10 @@ def ispreports_view(url, network_name, msgid=None):
         email = ISPReportEmail.select_one(g.conn, id=msgid)
         msg = email.decode()
     else:
-        email, msg = emails[0]
+        if len(emails):
+            email, msg = emails[0]
+        else:
+            email, msg = None, None
         
     all_categories = ( (cat['id'], cat['namespace'], cat['display_name'])
                        for cat in Category.select_active(g.conn) )
@@ -318,11 +321,13 @@ def ispreports_view(url, network_name, msgid=None):
                            network_name=network_name, 
                            report=ispreport,
                            url=url,
+                           urlobj = urlobj,
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
                            emails=emails,
                            selected_msg=msg,
-                           selected_email=email) 
+                           selected_email=email,
+                           networks=g.remote.get_networks()) 
 
 @admin_pages.route('/control/ispreports/category/<mode>/<int:id>')
 def ispreports_addremove_category(mode, id):
@@ -346,7 +351,7 @@ def ispreports_update_category():
     print f.keys()
     
     report = ISPReport(g.conn, f['report_id'])
-    report.update_notes(f['category_notes'])
+    report.update_category_notes(f['category_notes'])
     
     if f['category_id']:
         cat = Category(g.conn, f['category_id'])
@@ -374,6 +379,18 @@ def ispreports_update_category():
     
     url = report.get_url()
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
+    
+@admin_pages.route('/control/ispreports/review/update', methods=['POST'])
+def ispreports_review_update():
+    f = request.form
+    report = ISPReport(g.conn, f['report_id'])
+    url = report.get_url()
+    report.update_review_notes(f['review_notes'])
+    if 'matches_policy' in f:
+        report.update_matches_policy(True if f['matches_policy'] == 'true' else False)
+    g.conn.commit()
+    flash("Review notes updated")
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='block'))
 #
 # Court Order admin
 # ------------------
