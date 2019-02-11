@@ -211,6 +211,9 @@ $(document).ready(function(){
         <strike>{{ cat.display_name }} ({{cat.namespace}})</strike>
         <a href="{{ url_for('.ispreports_addremove_category', mode='enable', id=cat.url_category_id, report=report.id) }}" class=""><span class="glyphicon glyphicon-repeat"></span></a>
         {% endif %}
+		{% if cat.url_category_userid %}
+		<span class="glyphicon glyphicon-user" title="Category added/removed by administrator"></span>
+		{% endif %}
         </li>
         {% endfor %}
     </ul>
