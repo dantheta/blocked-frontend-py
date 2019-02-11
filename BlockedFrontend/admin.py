@@ -304,6 +304,7 @@ def ispreports_view(url, network_name, msgid=None):
     url = fix_path(url)
     urlobj = Url.select_one(g.conn, url=url)
     ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
+    isp = ispreport.get_isp()
     emails = list(ispreport.get_emails_parsed())
     if msgid:
         email = ISPReportEmail.select_one(g.conn, id=msgid)
@@ -322,6 +323,7 @@ def ispreports_view(url, network_name, msgid=None):
                            report=ispreport,
                            url=url,
                            urlobj = urlobj,
+                           isp=isp,
                            comments = urlobj.get_category_comments(),
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),

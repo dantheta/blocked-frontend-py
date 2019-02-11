@@ -381,6 +381,9 @@ class Test(DBObject):
         'status_message',
     ]
 
+class ISP(DBObject):
+    TABLE = 'public.isps'
+    FIELDS = ['name','description']
 
 class ISPReport(DBObject):
     TABLE = 'public.isp_reports'
@@ -420,6 +423,9 @@ class ISPReport(DBObject):
 
     def get_url(self):
         return Url(self.conn, self['urlid'])
+            
+    def get_isp(self):
+        return ISP.select_one(self.conn, name=self['network_name'])
             
     def get_emails(self):
         return ISPReportEmail.select(self.conn, report_id=self['id'])
