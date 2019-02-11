@@ -322,6 +322,7 @@ def ispreports_view(url, network_name, msgid=None):
                            report=ispreport,
                            url=url,
                            urlobj = urlobj,
+                           comments = urlobj.get_category_comments(),
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
@@ -330,37 +331,27 @@ def ispreports_view(url, network_name, msgid=None):
                            selected_email=email,
                            networks=g.remote.get_networks()) 
 
-@admin_pages.route('/control/ispreports/category/<mode>/<int:id>')
-def ispreports_addremove_category(mode, id):
-    urlcat = UrlCategory(g.conn, id)
-    urlcat['enabled'] = False if mode == 'disable' else True
-    urlcat['userid'] = session['userid']
-    cat = urlcat.get_category()
-    urlcat.store()
-    g.conn.commit()
-    if mode == 'disable':
-        flash("Removed from category: {0} ({1})".format(cat['display_name'], cat['namespace']))
-    else:
-        flash("Reinstated category: {0} ({1})".format(cat['display_name'], cat['namespace']))
-    report = ISPReport(g.conn, request.args['report'])
-    url = report.get_url()
-    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
 
 @admin_pages.route('/control/ispreports/category/update', methods=['POST'])
 def ispreports_update_category():
     f = request.form
-    print f.keys()
     
-    report = ISPReport(g.conn, f['report_id'])
-    report.update_category_notes(f['category_notes'])
+    # helper functions
     
-    if f['category_id']:
-        cat = Category(g.conn, f['category_id'])
+    def add_notes(urlid):
+        comment = UrlCategoryComment(g.conn, data={
+            'urlid': urlid,
+            'description': f['category_notes'],
+            'userid': session['userid']
+            })
+        comment.store()   
+    
+    def add_association(catid, urlid):
         urlcat = UrlCategory.find_or_create(g.conn, 
                                             ['category_id', 'urlid'], # key fields
                                             {
-                                                'category_id': f['category_id'],
-                                                'urlid': report['urlid'],
+                                                'category_id': catid,
+                                                'urlid': urlid,
                                                 'enabled': True,
                                                 'userid': session['userid']
                                             })
@@ -371,11 +362,44 @@ def ispreports_update_category():
             })
 
             urlcat.store()
+        return urlcat
+    
+    # main controller
+    
+    report = ISPReport(g.conn, f['report_id'])
 
-            flash("Reinstated category: {0} ({1})".format(cat['display_name'], cat['namespace']))
-        else:
-            # we actually can't tell if an object was created by find_or_create.  That's a bug.
-            flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+    if 'url_category_id' in f:
+        for urlcatid in make_list(f['url_category_id']):
+            urlcat = UrlCategory(g.conn, int(urlcatid))
+            urlcat['enabled'] = not urlcat['enabled']
+            urlcat['userid'] = session['userid']
+            urlcat.store()
+            
+    if f['add_category_name']:
+        cat = Category.find_or_create(g.conn, 
+                                      ['name','namespace'],
+                                      {
+                                          'namespace':'ORG', 
+                                          'name': f['add_category_name'].strip(),
+                                          'display_name': f['add_category_name'].strip()
+                                      })
+            
+        urlcat = add_association(cat['id'], report['urlid'])
+
+        flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+                
+    
+    if f['add_category_id']:
+        
+        cat = Category(g.conn, f['add_category_id'])
+        
+        urlcat = add_association(cat['id'], report['urlid'])
+        
+        flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
+        
+    if f['category_notes'].strip():
+        add_notes(report['urlid'])
+        
     g.conn.commit()
     
     url = report.get_url()

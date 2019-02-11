@@ -301,7 +301,7 @@ class Url(DBObject):
             from public.categories cat
             inner join public.url_categories urlcat on cat.id = urlcat.category_id
             where urlid = %s
-            order by display_name""",
+            order by enabled desc, name""",
             [ self['urlid'] ])
         for row in q:
             yield Category(self.conn, data=row)
@@ -317,10 +317,22 @@ class Url(DBObject):
             out[network] = row
         q.close()
         return out
+
+    def get_category_comments(self):
+        q = Query(self.conn, 
+                  """select url_category_comments.*, users.id as userid, users.username as username
+                     from public.url_category_comments
+                     inner join frontend.users on url_category_comments.userid = users.id
+                     where urlid = %s
+                     order by id""",
+                  [ self['urlid'] ])
+        for row in q:
+            yield UrlCategoryComment(self.conn, data=row)
+        q.close()
+
       
 class Category(DBObject):
     TABLE = 'public.categories'
-    UPDATABLE = False
     FIELDS = ['display_name','org_category_id','block_count', 'blocked_url_count',
               'total_block_count', 'total_blocked_url_count',
               'tree', 'name','namespace']
@@ -341,6 +353,13 @@ class UrlCategory(DBObject):
     
     def get_category(self):
         return Category(self.conn, self['category_id'])
+        
+        
+                          
+
+class UrlCategoryComment(DBObject):
+    TABLE = 'public.url_category_comments'
+    FIELDS = ['url_id','description','userid']
 
 class Test(DBObject):
     TABLE = 'tests.test_cases'
