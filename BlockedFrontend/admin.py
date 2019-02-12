@@ -325,6 +325,7 @@ def ispreports_view(url, network_name, msgid=None):
                            urlobj = urlobj,
                            isp=isp,
                            comments = urlobj.get_category_comments(),
+                           review_comments = ispreport.get_comments(),
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
@@ -412,9 +413,19 @@ def ispreports_review_update():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
     url = report.get_url()
-    report.update_review_notes(f['review_notes'])
+
     if 'matches_policy' in f:
         report.update_matches_policy(True if f['matches_policy'] == 'true' else False)
+
+    if 'matches_policy' in f or f['review_notes'].strip():
+        comment = ISPReportComment(g.conn)
+        comment.update({
+            'userid': session['userid'],
+            'report_id': report['id'],
+            'review_notes': f['review_notes'],
+            'matches_policy': f.get('matches_policy', None)
+        })
+        comment.store()
     g.conn.commit()
     flash("Review notes updated")
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='block'))

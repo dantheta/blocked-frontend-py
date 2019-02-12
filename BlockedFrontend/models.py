@@ -446,24 +446,6 @@ class ISPReport(DBObject):
             [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
-    def update_category_notes(self, notes):
-        q = Query(self.conn, """update public.isp_reports 
-                                set category_notes = %s, last_updated=now() where id = %s 
-                                returning last_updated as last_updated""",
-                  [ notes, self['id'] ])
-        self['category_notes'] = notes
-        row = q.fetchone()
-        self['last_updated'] = row['last_updated']
-    
-    def update_review_notes(self, notes):
-        q = Query(self.conn, """update public.isp_reports 
-                                set review_notes = %s, last_updated=now() where id = %s 
-                                returning last_updated as last_updated""",
-                  [ notes, self['id'] ])
-        self['review_notes'] = notes
-        row = q.fetchone()
-        self['last_updated'] = row['last_updated']
-        
     def update_matches_policy(self, value):
         q = Query(self.conn, """update public.isp_reports 
                                 set matches_policy = %s, last_updated=now() 
@@ -476,6 +458,17 @@ class ISPReport(DBObject):
         
     def get_url(self):
         return Url.select_one(self.conn, urlid=self['urlid'])
+        
+    def get_comments(self):
+        q = Query(self.conn, """select isp_report_comments.*, users.id as userid, users.username as username
+                     from public.isp_report_comments
+                     inner join frontend.users on isp_report_comments.userid = users.id
+                     where report_id = %s
+                     order by id""",
+                  [ self['id'] ])
+        for row in q:
+            yield ISPReportComment(self.conn, data=row)
+        q.close()
         
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'
@@ -493,3 +486,12 @@ class ISPReportEmail(DBObject):
         
     def get_report(self):
         return ISPReport.select_one(self.conn, self['report_id'])
+
+class ISPReportComment(DBObject):
+    TABLE = 'public.isp_report_comments'
+    FIELDS = [
+        'report_id',
+        'matches_policy',
+        'review_notes',
+        'userid'
+        ]

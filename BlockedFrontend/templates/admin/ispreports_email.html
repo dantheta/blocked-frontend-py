@@ -286,11 +286,28 @@ $(document).ready(function(){
                 <input type="hidden" name="report_id" value="{{ report.id }}" />
                 {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
                 {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
-                {{ forms.textarea_field("Notes", "review_notes", report.review_notes, rows=6) }} 
+                {{ forms.textarea_field("Notes", "review_notes", '', rows=6) }} 
                 <input type="submit" value="Update" class="btn btn-primary" />
             </form>
         </div>
     </div>
+    <h4>Review notes</h4>
+        <table class="table table-striped table-condensed">
+    <tr>
+    <th>User</th>
+    <th>Date</th>
+    <th>Matches Policy</th>
+    <th>Comment</th>
+    </tr>
+    {% for comment in review_comments %}
+    <tr>
+    <td>{{ comment.username }}</td>
+    <td>{{ comment.created|fmtime }}</td>
+    <td>{{ comment.matches_policy|null }}</td>
+    <td>{{ comment.review_notes }}</td>
+    </tr>
+    {% endfor %}
+    </table>
 </div> <!-- /#block -->
 
 </div> <!-- /.tab-content -->
