@@ -9,9 +9,9 @@
 {{ show_message(message.get_payload()[0]) }}
 {%- else %}
 {%-   if message['content-transfer-encoding'] == 'base64' %}
-{%- set msg=message.get_payload().decode('base64').decode('utf8') %}
+{%- set msg=message.get_payload().decode('base64').decode('utf8','replace') %}
 {%-   elif message['content-transfer-encoding'] == 'quoted-printable' %}  
-{%- set msg=message.get_payload().decode('quoted-printable').decode('utf8') %}
+{%- set msg=message.get_payload().decode('quoted-printable').decode('utf8','replace') %}
 {%-   else %}
 {%- set msg=message.get_payload() %}
 {%-   endif %}
