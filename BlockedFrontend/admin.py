@@ -415,17 +415,21 @@ def ispreports_review_update():
     url = report.get_url()
 
     if 'matches_policy' in f:
-        report.update_matches_policy(True if f['matches_policy'] == 'true' else False)
+        report.update_flag('matches_policy', (True if f['matches_policy'] == 'true' else False))
 
-    if 'matches_policy' in f or f['review_notes'].strip():
-        comment = ISPReportComment(g.conn)
-        comment.update({
-            'userid': session['userid'],
-            'report_id': report['id'],
-            'review_notes': f['review_notes'],
-            'matches_policy': f.get('matches_policy', None)
-        })
-        comment.store()
+    report.update_flag('egregious_block', 'egregious_block' in f)
+    report.update_flag('featured_block', 'featured_block' in f)
+
+    comment = ISPReportComment(g.conn)
+    comment.update({
+        'userid': session['userid'],
+        'report_id': report['id'],
+        'review_notes': f['review_notes'],
+        'matches_policy': f.get('matches_policy', None),
+        'egregious_block': 'egregious_block' in f,
+        'featured_block': 'featured_block' in f,
+    })
+    comment.store()
     g.conn.commit()
     flash("Review notes updated")
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='block'))

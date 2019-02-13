@@ -446,13 +446,15 @@ class ISPReport(DBObject):
             [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
-    def update_matches_policy(self, value):
+    def update_flag(self, name, value):
+        assert name in ('matches_policy','egregious_block','featured_block'), \
+                "{0} is not an accepted flag".format(name)
         q = Query(self.conn, """update public.isp_reports 
-                                set matches_policy = %s, last_updated=now() 
+                                set {0} = %s, last_updated=now() 
                                 where id = %s 
-                                returning last_updated as last_updated""",
+                                returning last_updated as last_updated""".format(name),
                              [ value, self['id'] ])
-        self['matches_policy'] = value
+        self[name] = value
         row = q.fetchone()
         self['last_updated'] = row['last_updated']
         
