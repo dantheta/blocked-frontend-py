@@ -18,8 +18,56 @@ td.center, th.center {
 
 <div style="margin-bottom: 1em">
   <ul class="nav nav-pills">
-    <li role="presentation" class="{{ 'active' if not request.args.get('open', 0) else '' }}"><a href="{{ url_for('.ispreports', page=request.args.get('page') ) }}">All</a></li>
-    <li role="presentation" class="{{ 'active' if request.args.get('open', 0) else '' }}"><a href="{{ url_for('.ispreports', open=1, page=request.args.get('page') ) }}">Open <span class="badge">{{ reports.open_count }}</span></a> </li>
+    <li role="presentation" class="{{ 'active' if not request.args.state  else '' }}">
+        <a href="{{ url_for('.ispreports', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">All</a>
+    </li>
+    <li role="presentation" class="{{ 'active' if request.args.state == 'open' else '' }}">
+        <a href="{{ url_for('.ispreports', state='open', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Open <span class="badge">{{ reports.open_count }}</span></a>
+    </li>
+    <li role="presentation" class="{{ 'active' if request.args.state == 'reviewed' else '' }}">
+        <a href="{{ url_for('.ispreports', state='reviewed', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Reviewed <span class="badge">{{ reports.review_count }}</span></a>
+    </li>
+    <li role="presentation" class="{{ 'active' if request.args.state == 'featured' else '' }}">
+        <a href="{{ url_for('.ispreports', state='featured', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Featured <span class="badge">{{ reports.feature_count }}</span></a>
+    </li>
+    <li role="presentation" class="">|</li>
+    
+    <li role="presentation" class="dropdown {{'active' if request.args.network else ''}}">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      Filter by ISP 
+      {%- if request.args.get('network') %} ({{ request.args.network }}){% endif -%}
+       <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li role="presentation" class="">
+          <a href="{{ url_for('.ispreports', state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">(all)</a> 
+      </li>
+    {% for isp in ['Vodafone','O2','EE','Three','Sky','VirginMedia','TalkTalk','BT','BT-Strict'] %}
+    <li role="presentation" class="{{ 'active' if request.args.network == isp else '' }}">
+        <a href="{{ url_for('.ispreports', network=isp, state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">{{ isp }}</a>
+    </li>
+    {% endfor %}
+    </ul>
+    </li>
+    
+    <li role="presentation" class="dropdown {{'active' if request.args.category else ''}}">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      Filter by Category 
+      {%- if request.args.category %} ({{ request.args.category }}){% endif -%}
+       <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li role="presentation" class="">
+          <a href="{{ url_for('.ispreports', state=request.args.state, page=request.args.get('page') ) }}">(all)</a> 
+      </li>
+    {% for cat in all_categories %}
+    <li role="presentation" class="{{ 'active' if request.args.category == cat else '' }}">
+        <a href="{{ url_for('.ispreports', network=request.args.network, category=cat, state=request.args.state, page=request.args.get('page') ) }}">{{ cat }}</a>
+    </li>
+    {% endfor %}
+    </ul>
+    </li>
+    
   </ul>
 </div> 
 
@@ -90,7 +138,7 @@ td.center, th.center {
 {% endfor %}
 </table>
 
-  {{ paging.page_list('.ispreports', page, pagecount, 25, open=request.args.get('open', omit) ) }}
+  {{ paging.page_list('.ispreports', page, pagecount, 25, state=request.args.state, category=request.args.category, network=request.args.network ) }}
 
 </div>
 </div>
