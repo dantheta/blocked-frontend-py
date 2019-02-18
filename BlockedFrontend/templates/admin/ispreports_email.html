@@ -81,7 +81,10 @@ $(document).ready(function(){
 {% endif %}
 
 <div>
-<a target="_blank" href="{{ url_for('site.site', url=url) }}" class="btn btn-link" title="View status page on the public site; opens in a new window">View site status on Blocked</a>
+<a target="_blank" href="{{ url_for('site.site', url=url) }}" class="btn btn-link" title="View status page on the public site; opens in a new window">View site status on Blocked <span class="glyphicon glyphicon-share"></span></a>
+</div>
+<div>
+<a target="_blank" href="{{ url }}" class="btn btn-link" title="View reported website; opens in a new window">View {{ url|domain }} <span class="glyphicon glyphicon-share"></span></a>
 </div>
 
 </div>
