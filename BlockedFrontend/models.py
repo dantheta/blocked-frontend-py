@@ -471,6 +471,19 @@ class ISPReport(DBObject):
         for row in q:
             yield ISPReportComment(self.conn, data=row)
         q.close()
+     
+    def get_next(self):
+        q = Query(self.conn, """select url, network_name from public.isp_reports inner join public.urls using (urlid)
+            where id < %s order by id desc limit 1""",
+            [self['id']])
+        row = q.fetchone()
+        q.close()
+        if row is None:
+            return None
+        return {
+            'url': row[0],
+            'network_name': row[1]
+            }
         
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'

@@ -337,6 +337,7 @@ def ispreports_view(url, network_name, msgid=None):
                            emails=emails,
                            selected_msg=msg,
                            selected_email=email,
+                           report_next=ispreport.get_next(),
                            networks=g.remote.get_networks()) 
 
 
