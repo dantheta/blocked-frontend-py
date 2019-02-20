@@ -323,6 +323,12 @@ def ispreports_view(url, network_name, msgid=None):
     all_categories = ( (cat['id'], cat['namespace'], cat['name'])
                        for cat in Category.select_active(g.conn) )
     
+    reporter_categories =  ( (cat['id'], cat['name']) for cat in
+                           ISPReportCategory.select(g.conn, category_type = 'reporter', _orderby='name'))
+                           
+    damage_categories =  ( (cat['id'], cat['name']) for cat in
+                           ISPReportCategory.select(g.conn, category_type = 'damage', _orderby='name'))                           
+    
     return render_template('ispreports_email.html',
                            network_name=network_name, 
                            report=ispreport,
@@ -331,6 +337,7 @@ def ispreports_view(url, network_name, msgid=None):
                            isp=isp,
                            comments = urlobj.get_category_comments(),
                            review_comments = ispreport.get_comments(),
+                           report_comments = ispreport.get_report_comments(),
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
@@ -338,6 +345,9 @@ def ispreports_view(url, network_name, msgid=None):
                            selected_msg=msg,
                            selected_email=email,
                            report_next=ispreport.get_next(),
+                           reporter_categories=reporter_categories,
+                           damage_categories=damage_categories,
+                           report_damage_categories=ispreport.get_damage_categories(),
                            networks=g.remote.get_networks()) 
 
 
@@ -413,6 +423,67 @@ def ispreports_update_category():
     
     url = report.get_url()
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
+    
+@admin_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
+def ispreports_update_report_category():
+    f = request.form
+    report = ISPReport(g.conn, f['report_id'])
+    
+    if f['new_reporter_category']:
+        reportercat = ISPReportCategory(g.conn)
+        reportercat.update({
+            'name': f['new_reporter_category'],
+            'category_type': 'reporter'
+        })
+        reportercat.store()
+        report.update_reporter_category(reportercat['id'])
+        flash("Added reporter category: {0}".format(f['new_reporter_category']))
+    elif f['reporter_category_id']:
+        reportercat = ISPReportCategory(g.conn, f['reporter_category_id'])
+        report.update_reporter_category(f['reporter_category_id'])
+        
+    damagecat = None
+    if f['add_category_name'].strip():
+        damagecat = ISPReportCategory(g.conn)
+        damagecat.update({
+            'name': f['add_category_name'],
+            'category_type': 'damage'
+        })
+        damagecat.store()
+        
+        report_cat_asgt = ISPReportCategoryAsgt(g.conn)
+        report_cat_asgt.update({
+            'category_id': damagecat['id'],
+            'report_id': report['id'],
+        })
+        report_cat_asgt.store()
+        
+        flash("Added damage category: {0}".format(f['add_category_name']))
+    if f.get('damage_category_id'):
+        damagecat = ISPReportCategory(g.conn, f['damage_category_id'])
+        
+        report_cat_asgt = ISPReportCategoryAsgt(g.conn)
+        report_cat_asgt.update({
+            'category_id': damagecat['id'],
+            'report_id': report['id'],
+        })
+        report_cat_asgt.store()
+        
+        flash("Added damage category: {0}".format(damagecat['name']))
+        
+    comment = ISPReportCategoryComment(g.conn)
+    comment.update({
+        'report_id': report['id'],
+        'userid': session['userid'],
+        'damage_category_id': damagecat['id'] if damagecat else None,
+        'reporter_category_id': reportercat['id'] if reportercat else None,
+        'review_notes': f['review_notes']
+    })
+    comment.store()
+        
+    g.conn.commit()
+    url = report.get_url()
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='rptcategories'))    
     
 @admin_pages.route('/control/ispreports/review/update', methods=['POST'])
 def ispreports_review_update():

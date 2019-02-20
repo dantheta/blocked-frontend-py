@@ -30,10 +30,13 @@
 </div>
 {% endmacro %}
 
-{% macro select_field(label, name, value=None, options=[]) %}
+{% macro select_field(label, name, value=None, options=[], includenull=False) %}
 <div class="form-group">
     <label class="control-label" for="{{name}}">{{label}}</label>
     <select class="form-control" name="{{ name}}">
+        {% if includenull %}
+        <option value="">(None selected)</option>
+        {% endif %}
         {% for opt in options %}
         {% if opt is string %}
         <option value="{{opt}}" {{'selected' if opt == value else ''}}>{{opt}}</option>
