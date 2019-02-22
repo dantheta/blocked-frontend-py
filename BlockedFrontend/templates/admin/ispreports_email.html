@@ -319,7 +319,7 @@ $(document).ready(function(){
     <select class="form-control" name="reporter_category_id">
         <option value="">(None selected)</option>
         {% for opt in reporter_categories %}
-        <option value="{{opt[0]}}" {{ 'selected' if opt[0] == report.reporter_category_id else '' }}>{{opt[1]}}</option>
+        <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
         {% endfor %}
     </select>
     <div class="input-group-addon"><a id="switchnewtag" title="Enter a new tag"><span class="glyphicon glyphicon-plus-sign"></span></a></div>

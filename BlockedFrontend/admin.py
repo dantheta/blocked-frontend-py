@@ -324,10 +324,10 @@ def ispreports_view(url, network_name, msgid=None):
                        for cat in Category.select_active(g.conn) )
     
     reporter_categories =  ( (cat['id'], cat['name']) for cat in
-                           ISPReportCategory.select(g.conn, category_type = 'reporter', _orderby='name'))
+                           UrlReportCategory.select(g.conn, category_type = 'reporter', _orderby='name'))
                            
     damage_categories =  ( (cat['id'], cat['name']) for cat in
-                           ISPReportCategory.select(g.conn, category_type = 'damage', _orderby='name'))                           
+                           UrlReportCategory.select(g.conn, category_type = 'damage', _orderby='name'))                           
     
     return render_template('ispreports_email.html',
                            network_name=network_name, 
@@ -337,7 +337,7 @@ def ispreports_view(url, network_name, msgid=None):
                            isp=isp,
                            comments = urlobj.get_category_comments(),
                            review_comments = ispreport.get_comments(),
-                           report_comments = ispreport.get_report_comments(),
+                           report_comments = urlobj.get_report_comments(),
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
@@ -347,7 +347,8 @@ def ispreports_view(url, network_name, msgid=None):
                            report_next=ispreport.get_next(),
                            reporter_categories=reporter_categories,
                            damage_categories=damage_categories,
-                           report_damage_categories=ispreport.get_damage_categories(),
+                           report_damage_categories=urlobj.get_report_categories('damage'),
+                           reporter_category=urlobj.get_reporter_category(),
                            networks=g.remote.get_networks()) 
 
 
@@ -428,52 +429,77 @@ def ispreports_update_category():
 def ispreports_update_report_category():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
+    url = report.get_url()
+    
+    def find_reporter_category():
+        q = Query(g.conn,
+                  """select url_report_category_asgt.* from public.url_report_category_asgt
+                     inner join public.url_report_categories on category_id = url_report_categories.id
+                     where urlid = %s and category_type = 'reporter'""",
+                  [ url['urlid'] ])
+        row = q.fetchone()
+        q.close()
+        if row:
+            print "Found reporter category"
+            return UrlReportCategoryAsgt(g.conn, data=row)
+        return None
+    
     
     if f['new_reporter_category']:
-        reportercat = ISPReportCategory(g.conn)
+        reportercat = UrlReportCategory(g.conn)
         reportercat.update({
             'name': f['new_reporter_category'],
             'category_type': 'reporter'
         })
         reportercat.store()
-        report.update_reporter_category(reportercat['id'])
+        asgt = find_reporter_category()
+        if not asgt:
+            asgt = UrlReportCategoryAsgt(g.conn)
+            asgt['urlid'] = url['urlid']
+        asgt['category_id'] = reportercat['id']
+        asgt.store()
         flash("Added reporter category: {0}".format(f['new_reporter_category']))
     elif f['reporter_category_id']:
-        reportercat = ISPReportCategory(g.conn, f['reporter_category_id'])
-        report.update_reporter_category(f['reporter_category_id'])
+        reportercat = UrlReportCategory(g.conn, f['reporter_category_id'])
+        asgt = find_reporter_category()
+        if not asgt:
+            asgt = UrlReportCategoryAsgt(g.conn)
+            asgt['urlid'] = url['urlid']
+        asgt['category_id'] = reportercat['id']
+        asgt.store()
         
     damagecat = None
     if f['add_category_name'].strip():
-        damagecat = ISPReportCategory(g.conn)
+        damagecat = UrlReportCategory(g.conn)
         damagecat.update({
             'name': f['add_category_name'],
             'category_type': 'damage'
         })
         damagecat.store()
         
-        report_cat_asgt = ISPReportCategoryAsgt(g.conn)
+        report_cat_asgt = UrlReportCategoryAsgt(g.conn)
         report_cat_asgt.update({
             'category_id': damagecat['id'],
-            'report_id': report['id'],
+            'urlid': url['urlid'],
         })
         report_cat_asgt.store()
         
         flash("Added damage category: {0}".format(f['add_category_name']))
     if f.get('damage_category_id'):
-        damagecat = ISPReportCategory(g.conn, f['damage_category_id'])
+        damagecat = UrlReportCategory(g.conn, f['damage_category_id'])
         
-        report_cat_asgt = ISPReportCategoryAsgt(g.conn)
+        report_cat_asgt = UrlReportCategoryAsgt(g.conn)
         report_cat_asgt.update({
             'category_id': damagecat['id'],
-            'report_id': report['id'],
+            'urlid': url['urlid'],
         })
         report_cat_asgt.store()
         
         flash("Added damage category: {0}".format(damagecat['name']))
         
-    comment = ISPReportCategoryComment(g.conn)
+    comment = UrlReportCategoryComment(g.conn)
     comment.update({
-        'report_id': report['id'],
+        'urlid': url['urlid'],
         'userid': session['userid'],
         'damage_category_id': damagecat['id'] if damagecat else None,
         'reporter_category_id': reportercat['id'] if reportercat else None,
@@ -482,7 +508,6 @@ def ispreports_update_report_category():
     comment.store()
         
     g.conn.commit()
-    url = report.get_url()
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='rptcategories'))    
     
 @admin_pages.route('/control/ispreports/review/update', methods=['POST'])

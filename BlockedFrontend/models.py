@@ -330,6 +330,40 @@ class Url(DBObject):
             yield UrlCategoryComment(self.conn, data=row)
         q.close()
 
+    def get_report_comments(self):
+        q = Query(self.conn,
+                  """select url_report_category_comments.*, 
+                            cat1.name as reporter_category_name, 
+                            cat2.name as damage_category_name,
+                            users.id as userid, users.username as username
+                     from public.url_report_category_comments
+                     inner join frontend.users on userid = users.id
+                     left join public.url_report_categories cat1 on reporter_category_id = cat1.id
+                     left join public.url_report_categories cat2 on damage_category_id = cat2.id
+                     where urlid = %s
+                     order by id""",
+                  [ self['urlid'] ])
+        for row in q:
+            yield UrlReportCategoryComment(self.conn, data=row)
+        q.close()
+
+    def get_reporter_category(self):
+        obj = list(self.get_report_categories('reporter'))
+        if len(obj):
+            return obj[0]
+        
+
+    def get_report_categories(self, category_type):
+        q = Query(self.conn,
+                  """select url_report_categories.*
+                     from public.url_report_categories inner join public.url_report_category_asgt on (category_id = url_report_categories.id)
+                     where urlid = %s and category_type = %s
+                     order by name""",
+                  [ self['urlid'], category_type ])
+        for row in q:
+            yield UrlReportCategory(self.conn, data=row)
+        q.close()
+
       
 class Category(DBObject):
     TABLE = 'public.categories'
@@ -458,25 +492,7 @@ class ISPReport(DBObject):
         self[name] = value
         row = q.fetchone()
         self['last_updated'] = row['last_updated']
-        
-    def update_reporter_category(self, category_id):
-        q = Query(self.conn, 
-                  """update public.isp_reports set reporter_category_id = %s, last_updated = now() where id = %s returning last_updated as last_updated""",
-                  [ category_id, self['id'] ])
-        row = q.fetchone()
-        self['last_updated'] = row['last_updated']
-        
-    def get_damage_categories(self):
-        q = Query(self.conn,
-                  """select isp_report_categories.*
-                     from public.isp_report_categories inner join public.isp_report_category_asgt on (category_id = isp_report_categories.id)
-                     where report_id = %s
-                     order by name""",
-                  [ self['id'] ])
-        for row in q:
-            yield ISPReportCategoryAsgt(self.conn, data=row)
-        q.close()
-                  
+
         
     def get_url(self):
         return Url.select_one(self.conn, urlid=self['urlid'])
@@ -492,22 +508,7 @@ class ISPReport(DBObject):
             yield ISPReportComment(self.conn, data=row)
         q.close()
      
-    def get_report_comments(self):
-        q = Query(self.conn,
-                  """select isp_report_category_comments.*, 
-                            cat1.name as reporter_category_name, 
-                            cat2.name as damage_category_name,
-                            users.id as userid, users.username as username
-                     from public.isp_report_category_comments
-                     inner join frontend.users on userid = users.id
-                     left join public.isp_report_categories cat1 on reporter_category_id = cat1.id
-                     left join public.isp_report_categories cat2 on damage_category_id = cat2.id
-                     where report_id = %s
-                     order by id""",
-                  [ self['id'] ])
-        for row in q:
-            yield ISPReportCategoryComment(self.conn, data=row)
-        q.close()
+
      
     def get_next(self):
         q = Query(self.conn, """select url, network_name from public.isp_reports inner join public.urls using (urlid)
@@ -548,25 +549,25 @@ class ISPReportComment(DBObject):
         'userid'
         ]
 
-class ISPReportCategory(DBObject):
-    TABLE = 'public.isp_report_categories'
+class UrlReportCategory(DBObject):
+    TABLE = 'public.url_report_categories'
     FIELDS = [
         'name',
         'category_type'
         ]
         
-class ISPReportCategoryAsgt(DBObject):
-    TABLE = 'public.isp_report_category_asgt'
+class UrlReportCategoryAsgt(DBObject):
+    TABLE = 'public.url_report_category_asgt'
     FIELDS = [
-        'report_id',
+        'urlid',
         'category_id',
         'userid'
         ]
         
-class ISPReportCategoryComment(DBObject):
-    TABLE = 'public.isp_report_category_comments'
+class UrlReportCategoryComment(DBObject):
+    TABLE = 'public.url_report_category_comments'
     FIELDS = [
-        'report_id',
+        'url',
         'damage_category_id',
         'reporter_category_id',
         'review_notes',
