@@ -6,7 +6,7 @@ import logging
 import datetime
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, abort, config, current_app, session, flash, jsonify
+    g, url_for, abort, config, current_app, session, flash, jsonify, Response
 
 from models import *
 from auth import *
@@ -536,6 +536,27 @@ def ispreports_review_update():
     flash("Review notes updated")
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='block'))
 
+
+def group_by_year(q):
+    # reshape into list of (reporter,damage,network),dict(year: count)             
+    return ( (grp, {int(row['yr']): row['ct'] for row in ls})
+            for (grp, ls) in 
+            itertools.groupby(q, lambda row: (row.get('reporter'), row.get('damage'), row.get('network_name')))
+            )
+
+def get_isp_report_stats_data():
+    q = Query(g.conn,
+              """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.urls using (urlid)
+                 inner join public.url_report_category_asgt asgt1 using (urlid)
+                 inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
+                 inner join public.url_report_category_asgt asgt2 using (urlid)
+                 inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
+                 group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
+                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
+    return q
+
 @admin_pages.route('/control/ispreport/stats')
 @check_admin
 def ispreport_stats():
@@ -560,32 +581,47 @@ def ispreport_stats():
                  order by cat2.name, extract('year' from isp_reports.created)"""
                  , [])            
 
-    q = Query(g.conn,
-              """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
-                 inner join public.urls using (urlid)
-                 inner join public.url_report_category_asgt asgt1 using (urlid)
-                 inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
-                 inner join public.url_report_category_asgt asgt2 using (urlid)
-                 inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
-                 group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
-                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
-
- 
-             
-    def group_by_year(q):
-    # reshape into list of (reporter,damage,network),dict(year: count)             
-        return ( (grp, {int(row['yr']): row['ct'] for row in ls})
-                for (grp, ls) in 
-                itertools.groupby(q, lambda row: (row.get('reporter'), row.get('damage'), row.get('network_name')))
-                )
-                
     return render_template('ispreport_stats.html',
                            currentyear = datetime.date.today().year, 
                            reporter_stats=group_by_year(q1),
                            damage_stats=group_by_year(q2),
-                           stats=group_by_year(q)
+                           stats=group_by_year(get_isp_report_stats_data())
                            )
+
+@admin_pages.route('/control/ispreport/csv-stats')
+@check_admin
+def ispreport_stats_csv():
+    import csv
+    import tempfile
+    
+    tmpfile = tempfile.SpooledTemporaryFile(mode='w+t')
+    writer = csv.writer(tmpfile)
+    writer.writerow(['# ISP Reports stats from blocked.org.uk',str(datetime.datetime.now()) ])
+    writer.writerow([''])
+    writer.writerow(['Reporter','Damage','Network'] + [str(x) for x in range(2016, datetime.date.today().year+1)] + ['Total'])
+    
+    for (grp, data) in group_by_year(get_isp_report_stats_data()):
+        row = [ grp[0], grp[1], grp[2] ]
+        for yr in range(2016, datetime.date.today().year+1):
+            row.append(data.get(yr,''))
+        row.append(sum(data.values()))
+        writer.writerow(row)
+        
+    
+    tmpfile.flush()
+    length = tmpfile.tell()
+    tmpfile.seek(0)
+
+    def returnvalue(*args):
+        for line in tmpfile:
+            yield line
+
+    return Response(returnvalue(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename=isp_report_stats.csv',
+        'Content-length': str(length)
+        })
+            
+    
 
 #
 # Court Order admin
