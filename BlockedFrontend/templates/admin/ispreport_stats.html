@@ -7,21 +7,69 @@
 {% block body %}
 <h1>{{ pagetitle }}</h1>
 
+<h2>Reporter stats</h2>
 
 <table class="table table-compressed">
 <tr>
-<th><a href="{{ url_for('.ispreport_stats', o='r') }}">Reporter</a></th>
-<th><a href="{{ url_for('.ispreport_stats', o='d') }}">Damage</a></th>
-<th><a href="{{ url_for('.ispreport_stats', o='n') }}">Network</a></th>
+<th>Reporter</th>
+<th>Network</th>
 {% for yr in range(2016, currentyear) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
 <th class="num">Total</th>
 </tr>
-{% for grp, yeardata in stats %}
+{% for grp, yeardata in reporter_stats %}
 <tr>
 <td>{{ grp[0] }}</td>
+<td>{{ grp[2] }}</td>
+{% for yr in range(2016,currentyear) %}
+<td class="num">{{ yeardata.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ yeardata.values()|sum }}</td>
+</tr>
+
+{% endfor %}
+</table>
+
+
+
+<h2>Damage stats</h2>
+
+<table class="table table-compressed">
+<tr>
+<th>Damage</th>
+<th>Network</th>
+{% for yr in range(2016, currentyear) %}
+<th class="num">{{ yr }}</th>
+{% endfor %}
+<th class="num">Total</th>
+</tr>
+{% for grp, yeardata in damage_stats %}
+<tr>
 <td>{{ grp[1] }}</td>
+<td>{{ grp[2] }}</td>
+{% for yr in range(2016,currentyear) %}
+<td class="num">{{ yeardata.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ yeardata.values()|sum }}</td>
+</tr>
+
+{% endfor %}
+</table>
+
+
+<h2>Network stats</h2>
+
+<table class="table table-compressed">
+<tr>
+<th>Network</th>
+{% for yr in range(2016, currentyear) %}
+<th class="num">{{ yr }}</th>
+{% endfor %}
+<th class="num">Total</th>
+</tr>
+{% for grp, yeardata in network_stats %}
+<tr>
 <td>{{ grp[2] }}</td>
 {% for yr in range(2016,currentyear) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>

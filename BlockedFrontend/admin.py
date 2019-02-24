@@ -540,32 +540,47 @@ def ispreports_review_update():
 @check_admin
 def ispreport_stats():
     import itertools
-    q = Query(g.conn,
-              """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
+    q1 = Query(g.conn,
+              """select cat1.name reporter,  network_name, extract('year' from isp_reports.created) yr, count(*) ct
                  from public.isp_reports
                  inner join public.urls using (urlid)
                  inner join public.url_report_category_asgt asgt1 using (urlid)
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
+                 group by cat1.name, network_name, extract('year' from isp_reports.created)
+                 order by cat1.name, network_name, extract('year' from isp_reports.created)"""
+                 , [])
+
+    q2 = Query(g.conn,
+              """select cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.urls using (urlid)
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
-                 group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
-                 order by {0}""".format(
-                 
-                 "cat2.name, cat1.name, network_name, extract('year' from isp_reports.created)" if request.args.get('o') == 'd' else
-                 "network_name, cat1.name, cat2.name, extract('year' from isp_reports.created)" if request.args.get('o') == 'n' else
-                 "cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)"
-                 
-                 ), [])
-            
+                 group by cat2.name, network_name, extract('year' from isp_reports.created)
+                 order by cat2.name, network_name, extract('year' from isp_reports.created)"""
+                 , [])            
+
+    q3 = Query(g.conn,
+              """select network_name, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.urls using (urlid)
+                 group by network_name, extract('year' from isp_reports.created)
+                 order by network_name, extract('year' from isp_reports.created)"""
+                 , [])   
              
+    def group_by_year(q):
     # reshape into list of (reporter,damage,network),dict(year: count)             
-    data = ( (grp, {int(row['yr']): row['ct'] for row in ls})
-            for (grp, ls) in 
-            itertools.groupby(q, lambda row: (row['reporter'], row['damage'], row['network_name']))
-            )
+        return ( (grp, {int(row['yr']): row['ct'] for row in ls})
+                for (grp, ls) in 
+                itertools.groupby(q, lambda row: (row.get('reporter'), row.get('damage'), row['network_name']))
+                )
+                
     return render_template('ispreport_stats.html',
                            currentyear = datetime.date.today().year, 
-                           stats=data)
+                           reporter_stats=group_by_year(q1),
+                           damage_stats=group_by_year(q2),
+                           network_stats=group_by_year(q3),
+                           )
 
 #
 # Court Order admin
