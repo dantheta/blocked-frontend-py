@@ -556,7 +556,7 @@ def get_isp_report_stats_data():
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
                  group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
-                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
+                 order by network_name, cat1.name, cat2.name, extract('year' from isp_reports.created)""", [])
     return q
 
 @admin_pages.route('/control/ispreport/stats')
@@ -590,7 +590,7 @@ def ispreport_stats():
                  inner join public.url_report_category_asgt asgt1 using (urlid)
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
                  group by cat1.name,  network_name, extract('year' from isp_reports.created)
-                 order by cat1.name,  network_name, extract('year' from isp_reports.created)""", [])
+                 order by network_name, cat1.name, extract('year' from isp_reports.created)""", [])
                  
     q_damage = Query(g.conn,
               """select cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
@@ -599,7 +599,7 @@ def ispreport_stats():
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
                  group by cat2.name, network_name, extract('year' from isp_reports.created)
-                 order by cat2.name, network_name, extract('year' from isp_reports.created)""", [])                 
+                 order by network_name, cat2.name, extract('year' from isp_reports.created)""", [])                 
 
     return render_template('ispreport_stats.html',
                            currentyear = datetime.date.today().year, 
