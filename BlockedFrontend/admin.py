@@ -549,7 +549,13 @@ def ispreport_stats():
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
                  group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
-                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
+                 order by {0}""".format(
+                 
+                 "cat2.name, cat1.name, network_name, extract('year' from isp_reports.created)" if request.args.get('o') == 'r' else
+                 "network_name, cat1.name, cat2.name, extract('year' from isp_reports.created)" if request.args.get('o') == 'n' else
+                 "cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)"
+                 
+                 ), [])
             
              
     # reshape into list of (reporter,damage,network),dict(year: count)             
