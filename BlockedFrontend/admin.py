@@ -551,7 +551,7 @@ def ispreport_stats():
                  group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
                  order by {0}""".format(
                  
-                 "cat2.name, cat1.name, network_name, extract('year' from isp_reports.created)" if request.args.get('o') == 'r' else
+                 "cat2.name, cat1.name, network_name, extract('year' from isp_reports.created)" if request.args.get('o') == 'd' else
                  "network_name, cat1.name, cat2.name, extract('year' from isp_reports.created)" if request.args.get('o') == 'n' else
                  "cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)"
                  
