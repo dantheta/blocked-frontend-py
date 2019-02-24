@@ -5,12 +5,13 @@
 {% set pagetitle = "ISP Report Stats" %}
 
 {% block body %}
+<a class="btn btn btn-primary pull-right" href="{{ url_for('.ispreport_stats_csv') }}">Export to CSV</a>
 <h1>{{ pagetitle }}</h1>
 
 <div class="row">
     <div class="col-md-6">
 
-<h3>Reporter stats</h3>
+<h3>Reporter Summary</h3>
 
 <table class="table table-compressed">
 <tr>
@@ -36,7 +37,7 @@
     <div class="col-md-6">
 
 
-<h3>Damage stats</h3>
+<h3>Damage Summary</h3>
 
 <table class="table table-compressed">
 <tr>
@@ -63,23 +64,21 @@
 
 <hr />
 
-<a class="btn btn btn-primary pull-right" href="{{ url_for('.ispreport_stats_csv') }}">Export to CSV</a>
-<h2>Full detail</h2>
+
+<h2>Reporter by network</h2>
 
 <table class="table table-compressed clearfix">
 <tr>
 <th>Reporter</th>
-<th>Damage</th>
 <th>Network</th>
 {% for yr in range(2016, currentyear+1) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
 <th class="num">Total</th>
 </tr>
-{% for grp, yeardata in stats %}
+{% for grp, yeardata in reporter_full %}
 <tr>
 <td>{{ grp[0] }}</td>
-<td>{{ grp[1] }}</td>
 <td>{{ grp[2] }}</td>
 {% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
@@ -90,5 +89,28 @@
 {% endfor %}
 </table>
 
+<h2>Damage by network</h2>
+
+<table class="table table-compressed clearfix">
+<tr>
+<th>Damage</th>
+<th>Network</th>
+{% for yr in range(2016, currentyear+1) %}
+<th class="num">{{ yr }}</th>
+{% endfor %}
+<th class="num">Total</th>
+</tr>
+{% for grp, yeardata in damage_full %}
+<tr>
+<td>{{ grp[1] }}</td>
+<td>{{ grp[2] }}</td>
+{% for yr in range(2016,currentyear+1) %}
+<td class="num">{{ yeardata.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ yeardata.values()|sum }}</td>
+</tr>
+
+{% endfor %}
+</table>
 
 {% endblock %}
