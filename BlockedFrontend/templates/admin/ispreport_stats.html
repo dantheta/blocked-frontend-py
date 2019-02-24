@@ -7,12 +7,14 @@
 {% block body %}
 <h1>{{ pagetitle }}</h1>
 
-<h2>Reporter stats</h2>
+<div class="row">
+    <div class="col-md-6">
+
+<h3>Reporter stats</h3>
 
 <table class="table table-compressed">
 <tr>
 <th>Reporter</th>
-<th>Network</th>
 {% for yr in range(2016, currentyear) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
@@ -21,7 +23,6 @@
 {% for grp, yeardata in reporter_stats %}
 <tr>
 <td>{{ grp[0] }}</td>
-<td>{{ grp[2] }}</td>
 {% for yr in range(2016,currentyear) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
@@ -31,14 +32,15 @@
 {% endfor %}
 </table>
 
+    </div>
+    <div class="col-md-6">
 
 
-<h2>Damage stats</h2>
+<h3>Damage stats</h3>
 
 <table class="table table-compressed">
 <tr>
 <th>Damage</th>
-<th>Network</th>
 {% for yr in range(2016, currentyear) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
@@ -47,7 +49,6 @@
 {% for grp, yeardata in damage_stats %}
 <tr>
 <td>{{ grp[1] }}</td>
-<td>{{ grp[2] }}</td>
 {% for yr in range(2016,currentyear) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
@@ -57,27 +58,8 @@
 {% endfor %}
 </table>
 
+    </div>
+</div>
 
-<h2>Network stats</h2>
-
-<table class="table table-compressed">
-<tr>
-<th>Network</th>
-{% for yr in range(2016, currentyear) %}
-<th class="num">{{ yr }}</th>
-{% endfor %}
-<th class="num">Total</th>
-</tr>
-{% for grp, yeardata in network_stats %}
-<tr>
-<td>{{ grp[2] }}</td>
-{% for yr in range(2016,currentyear) %}
-<td class="num">{{ yeardata.get(yr)|null }}</td>
-{% endfor %}
-<td class="num">{{ yeardata.values()|sum }}</td>
-</tr>
-
-{% endfor %}
-</table>
 
 {% endblock %}
