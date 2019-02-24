@@ -535,6 +535,32 @@ def ispreports_review_update():
     g.conn.commit()
     flash("Review notes updated")
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='block'))
+
+@admin_pages.route('/control/ispreport/stats')
+@check_admin
+def ispreport_stats():
+    import itertools
+    q = Query(g.conn,
+              """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.urls using (urlid)
+                 inner join public.url_report_category_asgt asgt1 using (urlid)
+                 inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
+                 inner join public.url_report_category_asgt asgt2 using (urlid)
+                 inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
+                 group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
+                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
+            
+             
+    # reshape into list of (reporter,damage,network),dict(year: count)             
+    data = ( (grp, {int(row['yr']): row['ct'] for row in ls})
+            for (grp, ls) in 
+            itertools.groupby(q, lambda row: (row['reporter'], row['damage'], row['network_name']))
+            )
+    return render_template('ispreport_stats.html',
+                           currentyear = datetime.date.today().year, 
+                           stats=data)
+
 #
 # Court Order admin
 # ------------------
