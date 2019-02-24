@@ -521,6 +521,7 @@ def ispreports_review_update():
 
     report.update_flag('egregious_block', 'egregious_block' in f)
     report.update_flag('featured_block', 'featured_block' in f)
+    report.update_flag('maybe_harmless', 'maybe_harmless' in f)
 
     comment = ISPReportComment(g.conn)
     comment.update({
@@ -530,6 +531,7 @@ def ispreports_review_update():
         'matches_policy': f.get('matches_policy', None),
         'egregious_block': 'egregious_block' in f,
         'featured_block': 'featured_block' in f,
+        'maybe_harmless': 'maybe_harmless' in f,
     })
     comment.store()
     g.conn.commit()

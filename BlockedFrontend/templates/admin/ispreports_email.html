@@ -400,8 +400,10 @@ $(document).ready(function(){
                 {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
                 {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
                 
+                
                 {{ forms.check_field("This is an egregious block", 'egregious_block', 't', report.egregious_block) }}
                 {{ forms.check_field("Add to frontend site \"featured blocks\".", 'featured_block', 't', report.featured_block) }}
+                {{ forms.check_field("May be harmless", 'maybe_harmless', 't', report.maybe_harmless) }}
                 
                 {{ forms.textarea_field("Notes", "review_notes", '', rows=6) }} 
                 <input type="submit" value="Update" class="btn btn-primary" />
@@ -416,6 +418,7 @@ $(document).ready(function(){
     <th>Matches Policy</th>
     <th>Egregious</th>
     <th>Featured</th>
+    <th>Harmless</th>
     <th>Comment</th>
     </tr>
     {% for comment in review_comments %}
@@ -425,6 +428,7 @@ $(document).ready(function(){
     <td>{{ comment.matches_policy|null }}</td>
     <td>{{ comment.egregious_block|null }}</td>
     <td>{{ comment.featured_block|null }}</td>
+    <td>{{ comment.maybe_harmless|null }}</td>
     <td>{{ comment.review_notes }}</td>
     </tr>
     {% endfor %}

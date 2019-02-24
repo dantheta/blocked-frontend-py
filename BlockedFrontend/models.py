@@ -482,7 +482,7 @@ class ISPReport(DBObject):
             )
         
     def update_flag(self, name, value):
-        assert name in ('matches_policy','egregious_block','featured_block'), \
+        assert name in ('matches_policy','egregious_block','featured_block','maybe_harmless'), \
                 "{0} is not an accepted flag".format(name)
         q = Query(self.conn, """update public.isp_reports 
                                 set {0} = %s, last_updated=now() 
