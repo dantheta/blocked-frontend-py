@@ -540,10 +540,11 @@ def ispreports_review_update():
 
 
 def group_by_year(q):
+    import itertools
     # reshape into list of (reporter,damage,network),dict(year: count)             
     return ( (grp, {int(row['yr']): row['ct'] for row in ls})
             for (grp, ls) in 
-            itertools.groupby(q, lambda row: (row.get('reporter'), row.get('damage'), row.get('network_name')))
+            itertools.groupby(q, lambda row: (row.get('reporter'), row.get('damage'), row.get('network_name'), row.get('isp_type') ))
             )
 
 def get_isp_report_stats_data():
@@ -572,6 +573,13 @@ def ispreport_stats():
                  group by cat1.name, extract('year' from isp_reports.created)
                  order by cat1.name, extract('year' from isp_reports.created)"""
                  , [])
+                 
+    q1_1, q1_2 = itertools.tee(q1, 2)
+    q1_totals = {}
+    for row in q1_1:
+        q1_totals.setdefault(row['yr'], 0)
+        q1_totals[row['yr']] += row['ct']
+                            
 
     q2 = Query(g.conn,
               """select cat2.name damage, extract('year' from isp_reports.created) yr, count(*) ct
@@ -601,12 +609,38 @@ def ispreport_stats():
                  group by cat2.name, network_name, extract('year' from isp_reports.created)
                  order by network_name, cat2.name, extract('year' from isp_reports.created)""", [])                 
 
+    q_isps = Query(g.conn,
+              """select network_name, isp_type, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.isps on network_name = isps.name
+                 group by network_name, isp_type, extract('year' from isp_reports.created)
+                 order by isp_type, network_name, extract('year' from isp_reports.created)""", [])                 
+
+    q_isps1, q_isps2 = itertools.tee(q_isps, 2)
+    
+    totalrows = {'_all':{} }
+    for hdr, iter in itertools.groupby(q_isps1, lambda row: row['isp_type']):
+        for row in iter:
+            if row['isp_type'] not in totalrows:
+                totalrows[ row['isp_type'] ] = {}
+            if row['yr'] not in totalrows[ row['isp_type'] ]:
+                totalrows[ row['isp_type'] ][ row['yr'] ] = row['ct']
+            else:
+                totalrows[ row['isp_type'] ][ row['yr'] ] += row['ct']
+            if row['yr'] not in totalrows['_all']:
+                totalrows[ '_all' ][ row['yr'] ] = row['ct']
+            else:
+                totalrows[ '_all' ][ row['yr'] ] += row['ct']
+
     return render_template('ispreport_stats.html',
                            currentyear = datetime.date.today().year, 
-                           reporter_stats=group_by_year(q1),
+                           reporter_stats=group_by_year(q1_2),
+                           q1_totals=q1_totals,
                            damage_stats=group_by_year(q2),
                            reporter_full=group_by_year(q_reporter),
-                           damage_full=group_by_year(q_damage)
+                           damage_full=group_by_year(q_damage),
+                           isp_stats=group_by_year(q_isps2),
+                           totalrows=totalrows
                            )
 
 @admin_pages.route('/control/ispreport/csv-stats')

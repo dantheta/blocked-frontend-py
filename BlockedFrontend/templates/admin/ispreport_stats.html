@@ -4,6 +4,13 @@
 
 {% set pagetitle = "ISP Report Stats" %}
 
+{% block pagestyle %}
+
+.totalrow {
+    background-color: #ededed;
+}
+{% endblock %}
+
 {% block body %}
 <a class="btn btn btn-primary pull-right" href="{{ url_for('.ispreport_stats_csv') }}">Export to CSV</a>
 <h1>{{ pagetitle }}</h1>
@@ -29,8 +36,14 @@
 {% endfor %}
 <td class="num">{{ yeardata.values()|sum }}</td>
 </tr>
-
 {% endfor %}
+<tr class="totalrow">
+<td>Totals:</td>
+{% for yr in range(2016,currentyear+1) %}
+<td class="num">{{ q1_totals.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ q1_totals.values()|sum }}</td>
+</tr>
 </table>
 
     </div>
@@ -64,6 +77,42 @@
 
 <hr />
 
+<h3>Reports by ISP</h3>
+
+<table class="table table-compressed">
+<tr>
+<th>Damage</th>
+{% for yr in range(2016, currentyear+1) %}
+<th class="num">{{ yr }}</th>
+{% endfor %}
+<th class="num">Total</th>
+</tr>
+{% for header,iter in isp_stats|groupby('0.3') %}
+{% for grp, yeardata in iter %}
+<tr>
+<td>{{ grp[2] }}</td>
+{% for yr in range(2016,currentyear+1) %}
+<td class="num">{{ yeardata.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ yeardata.values()|sum }}</td>
+</tr>
+{% endfor %}
+<tr class="totalrow">
+    <td>{{header}} total:</td>
+    {% for yr in range(2016,currentyear+1) %}
+    <td class="num">{{ totalrows[header][yr] }}</td>
+    {% endfor %}
+    <td class="num">{{ totalrows[header].values()|sum }}</td>
+</tr>
+{% endfor %}
+<tr class="totalrow">
+    <td>Grand total:</td>
+    {% for yr in range(2016,currentyear+1) %}
+    <td class="num">{{ totalrows['_all'][yr] }}</td>
+    {% endfor %}
+    <td class="num">{{ totalrows['_all'].values()|sum }}</td>
+</tr>
+</table>
 
 <h2>Reporter by network</h2>
 
