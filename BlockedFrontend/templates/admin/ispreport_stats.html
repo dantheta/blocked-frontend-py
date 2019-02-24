@@ -15,7 +15,7 @@
 <table class="table table-compressed">
 <tr>
 <th>Reporter</th>
-{% for yr in range(2016, currentyear) %}
+{% for yr in range(2016, currentyear+1) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
 <th class="num">Total</th>
@@ -23,7 +23,7 @@
 {% for grp, yeardata in reporter_stats %}
 <tr>
 <td>{{ grp[0] }}</td>
-{% for yr in range(2016,currentyear) %}
+{% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
 <td class="num">{{ yeardata.values()|sum }}</td>
@@ -41,7 +41,7 @@
 <table class="table table-compressed">
 <tr>
 <th>Damage</th>
-{% for yr in range(2016, currentyear) %}
+{% for yr in range(2016, currentyear+1) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
 <th class="num">Total</th>
@@ -49,7 +49,7 @@
 {% for grp, yeardata in damage_stats %}
 <tr>
 <td>{{ grp[1] }}</td>
-{% for yr in range(2016,currentyear) %}
+{% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
 <td class="num">{{ yeardata.values()|sum }}</td>
@@ -71,7 +71,7 @@
 <th>Reporter</th>
 <th>Damage</th>
 <th>Network</th>
-{% for yr in range(2016, currentyear) %}
+{% for yr in range(2016, currentyear+1) %}
 <th class="num">{{ yr }}</th>
 {% endfor %}
 <th class="num">Total</th>
@@ -81,7 +81,7 @@
 <td>{{ grp[0] }}</td>
 <td>{{ grp[1] }}</td>
 <td>{{ grp[2] }}</td>
-{% for yr in range(2016,currentyear) %}
+{% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
 <td class="num">{{ yeardata.values()|sum }}</td>
