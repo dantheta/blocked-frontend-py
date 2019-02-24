@@ -560,6 +560,17 @@ def ispreport_stats():
                  order by cat2.name, extract('year' from isp_reports.created)"""
                  , [])            
 
+    q = Query(g.conn,
+              """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
+                 from public.isp_reports
+                 inner join public.urls using (urlid)
+                 inner join public.url_report_category_asgt asgt1 using (urlid)
+                 inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
+                 inner join public.url_report_category_asgt asgt2 using (urlid)
+                 inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
+                 group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
+                 order by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)""", [])
+
  
              
     def group_by_year(q):
@@ -572,7 +583,8 @@ def ispreport_stats():
     return render_template('ispreport_stats.html',
                            currentyear = datetime.date.today().year, 
                            reporter_stats=group_by_year(q1),
-                           damage_stats=group_by_year(q2)
+                           damage_stats=group_by_year(q2),
+                           stats=group_by_year(q)
                            )
 
 #

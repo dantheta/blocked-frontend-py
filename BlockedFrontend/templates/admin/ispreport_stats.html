@@ -61,5 +61,34 @@
     </div>
 </div>
 
+<hr />
+
+<a class="btn btn btn-primary pull-right" href="#">Export to CSV</a>
+<h2>Full detail</h2>
+
+<table class="table table-compressed clearfix">
+<tr>
+<th>Reporter</th>
+<th>Damage</th>
+<th>Network</th>
+{% for yr in range(2016, currentyear) %}
+<th class="num">{{ yr }}</th>
+{% endfor %}
+<th class="num">Total</th>
+</tr>
+{% for grp, yeardata in stats %}
+<tr>
+<td>{{ grp[0] }}</td>
+<td>{{ grp[1] }}</td>
+<td>{{ grp[2] }}</td>
+{% for yr in range(2016,currentyear) %}
+<td class="num">{{ yeardata.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ yeardata.values()|sum }}</td>
+</tr>
+
+{% endfor %}
+</table>
+
 
 {% endblock %}
