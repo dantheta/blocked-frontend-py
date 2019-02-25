@@ -565,13 +565,12 @@ def get_isp_report_stats_data():
 def ispreport_stats():
     import itertools
     q1 = Query(g.conn,
-              """select cat1.name reporter,  extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
-                 inner join public.urls using (urlid)
+              """select cat1.name reporter,  extract('year' from urls.last_reported) yr, count(*) ct
+                 from public.urls
                  inner join public.url_report_category_asgt asgt1 using (urlid)
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
-                 group by cat1.name, extract('year' from isp_reports.created)
-                 order by cat1.name, extract('year' from isp_reports.created)"""
+                 group by cat1.name, extract('year' from urls.last_reported)
+                 order by cat1.name, extract('year' from urls.last_reported)"""
                  , [])
                  
     q1_1, q1_2 = itertools.tee(q1, 2)
@@ -582,13 +581,12 @@ def ispreport_stats():
                             
 
     q2 = Query(g.conn,
-              """select cat2.name damage, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
-                 inner join public.urls using (urlid)
+              """select cat2.name damage, extract('year' from urls.last_reported) yr, count(*) ct
+                 from public.urls 
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
-                 group by cat2.name, extract('year' from isp_reports.created)
-                 order by cat2.name, extract('year' from isp_reports.created)"""
+                 group by cat2.name, extract('year' from urls.last_reported)
+                 order by cat2.name, extract('year' from urls.last_reported)"""
                  , [])            
 
     q_reporter = Query(g.conn,
