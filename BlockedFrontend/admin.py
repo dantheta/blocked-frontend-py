@@ -689,14 +689,15 @@ def ispreport_reply_stats():
     sent_stats = q.fetchone()
 
     reply_stats = Query(g.conn,
-              """select network_name, 
+              """select network_name, extract('year' from isp_reports.created)::int as year,
                     count(distinct isp_reports.id) reports_sent,
                     count(distinct isp_report_emails.report_id) auto_replies_logged,
                     count(isp_report_emails.id) replies_logged,
-                    avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time
+                    avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time,
+                    sum(case when status = 'sent' and unblocked = 0 then 1 else 0 end) count_open
                     from public.isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
-                    group by network_name""",
+                    group by network_name, extract('year' from isp_reports.created)::int""",
               [])
 
 
