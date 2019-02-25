@@ -674,7 +674,24 @@ def ispreport_stats_csv():
         'Content-length': str(length)
         })
             
-    
+@admin_pages.route('/control/ispreport/reply-stats')
+@check_admin
+def ispreport_reply_stats():
+
+    q = Query(g.conn,
+              """
+              select count(*) count_reported, count(distinct urlid) count_sites,
+                sum(case when status >= 'sent' then 1 else 0 end) count_sent,
+                sum(case when status >= 'unblocked' or status = 'rejected' or unblocked =1 then 1 else 0 end) count_responded,
+                sum(case when status = 'unblocked' or unblocked =1 then 1 else 0 end) count_unblocked,
+                sum(case when status = 'rejected' then 1 else 0 end) count_rejected
+                from public.isp_reports""", [])
+    sent_stats = q.fetchone()
+
+
+
+    return render_template('ispreport_reply_stats.html',
+                           sent_stats=sent_stats)
 
 #
 # Court Order admin
