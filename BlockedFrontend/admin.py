@@ -688,10 +688,22 @@ def ispreport_reply_stats():
                 from public.isp_reports""", [])
     sent_stats = q.fetchone()
 
+    reply_stats = Query(g.conn,
+              """select network_name, 
+                    count(distinct isp_reports.id) reports_sent,
+                    count(distinct isp_report_emails.report_id) auto_replies_logged,
+                    count(isp_report_emails.id) replies_logged,
+                    avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time
+                    from public.isp_reports
+                    left join public.isp_report_emails on report_id = isp_reports.id
+                    group by network_name""",
+              [])
+
 
 
     return render_template('ispreport_reply_stats.html',
-                           sent_stats=sent_stats)
+                           sent_stats=sent_stats,
+                           reply_stats=reply_stats)
 
 #
 # Court Order admin
