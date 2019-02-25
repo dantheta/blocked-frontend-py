@@ -18,27 +18,43 @@
 {% block body %}
 <h1>ISP Reply Stats</h1>
 
+{% macro year_col(name) %}
+{% for year in range(2017,2020) %}
+<td class="num">{{ sent_stats.get(year,{})[name] }}</td>
+{% endfor %}
+<td class="num">{{ sent_stats.get('_total',{})[name] }}</td>
+{% endmacro %}
+
 <div class="row">
     <div class="col-md-6">
         <div class="well">
 <table class="table table-compressed">
     <tr>
-        <td>Sites reported:</td>   <td class="num">{{ sent_stats.count_sites }}</td>
+        <th></th>
+        {% for yr in range(2017,2020) %}
+        <th class="num">{{yr}}</th>
+        {% endfor %}
+        <th class="num">Total</th>
+    <tr>
+        <td>Sites reported:</td>   {{ year_col('count_sites') }}
     </tr>
     <tr>
-        <td>Reports logged:</td>   <td class="num">{{ sent_stats.count_reported }}</td>
+        <td>Reports logged:</td>    {{ year_col('count_reported') }}
     </tr>
     <tr>
-        <td>Reports sent:</td>     <td class="num">{{ sent_stats.count_sent }}</td>
+        <td>Reports sent:</td>      {{ year_col('count_sent') }}
     </tr>
     <tr>
-        <td>Reports answered:</td> <td class="num">{{ sent_stats.count_responded }}</td>
+        <td>Reports answered:</td>  {{ year_col('count_responded') }}
     </tr>
     <tr>
-        <td>Reports unblocked:</td><td class="num">{{ sent_stats.count_unblocked }}</td>
+        <td>Reports unblocked:</td> {{ year_col('count_unblocked') }}
     </tr>
     <tr>
-        <td>Reports rejected:</td> <td class="num">{{ sent_stats.count_rejected }}</td>
+        <td>Reports rejected:</td>  {{ year_col('count_rejected') }}
+    </tr>
+    <tr>
+        <td>Reports unresolved:</td> {{ year_col('count_unresolved') }}
     </tr>
 </table>
         </div>
@@ -54,10 +70,11 @@
         <th class="num">Auto-replies logged</th>
         <th class="num">Total replies logged</th>
         <th class="num">Avg reply interval (WIP)</th>
+        <th class="num">Unresolved count</th>
         <th class="num">Open report count</th>
     </tr>
     {% for group, list in reply_stats|groupby('network_name') %}
-    <tr><td colspan="6" class="headerrow">{{ group }}</td></tr>
+    <tr><td colspan="7" class="headerrow">{{ group }}</td></tr>
     {% for row in list %}
     <tr>
         <td class="sub">{{ row.year }}</td>
@@ -65,6 +82,7 @@
         <td class="num">{{ row.auto_replies_logged }}</td>
         <td class="num">{{ row.replies_logged }}</td>
         <td class="num">{{ (row.avg_response_time|string).split(', ',1)|first if row.avg_response_time else '' }}</td>
+        <td class="num">{{ row.count_unresolved }}</td>
         <td class="num"><a href="{{ url_for('.ispreports', state='open', network=row.network_name) }}">{{ row.count_open }}</a></td>
     </tr>
     {% endfor %}
