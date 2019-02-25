@@ -1,0 +1,37 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "ISP Report Reply Stats" %}
+
+{% block body %}
+<h1>ISP Reply Stats</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="well">
+<table class="table table-compressed">
+    <tr>
+        <td>Sites reported:</td>   <td class="num">{{ sent_stats.count_sites }}</td>
+    </tr>
+    <tr>
+        <td>Reports logged:</td>   <td class="num">{{ sent_stats.count_reported }}</td>
+    </tr>
+    <tr>
+        <td>Reports sent:</td>     <td class="num">{{ sent_stats.count_sent }}</td>
+    </tr>
+    <tr>
+        <td>Reports answered:</td> <td class="num">{{ sent_stats.count_responded }}</td>
+    </tr>
+    <tr>
+        <td>Reports unblocked:</td><td class="num">{{ sent_stats.count_unblocked }}</td>
+    </tr>
+    <tr>
+        <td>Reports rejected:</td> <td class="num">{{ sent_stats.count_rejected }}</td>
+    </tr>
+</table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
