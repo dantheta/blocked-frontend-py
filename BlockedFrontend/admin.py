@@ -685,7 +685,8 @@ def ispreport_reply_stats():
                 sum(case when status >= 'unblocked' or status = 'rejected' or unblocked =1 then 1 else 0 end) count_responded,
                 sum(case when status = 'unblocked' or unblocked =1 then 1 else 0 end) count_unblocked,
                 sum(case when status = 'rejected' then 1 else 0 end) count_rejected
-                from public.isp_reports""", [])
+                from public.isp_reports
+                where network_name <> 'ORG'""", [])
     sent_stats = q.fetchone()
 
     reply_stats = Query(g.conn,
@@ -697,6 +698,7 @@ def ispreport_reply_stats():
                     sum(case when status = 'sent' and unblocked = 0 then 1 else 0 end) count_open
                     from public.isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
+                    where network_name <> 'ORG'
                     group by network_name, extract('year' from isp_reports.created)::int""",
               [])
 
