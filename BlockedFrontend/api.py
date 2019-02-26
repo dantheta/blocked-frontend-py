@@ -145,7 +145,7 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/country-stats', req)
 
-    def reports(self, page, state=None, isp=None, category=None, admin=False):
+    def reports(self, page, state=None, isp=None, category=None, reportercategory=None, admin=False):
         req = {'date': self.timestamp(), 'page': str(page)}
         if isp:
             req['isp'] = isp
@@ -155,6 +155,8 @@ class ApiClient(BaseApiClient):
             req[state] = 1
         if category:
             req['category'] = category
+        if reportercategory:
+            req['reportercategory'] = reportercategory
         return self._request('status/ispreports', req)
 
     def isp_stats(self):

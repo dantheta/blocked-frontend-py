@@ -52,6 +52,24 @@ td.center, th.center {
     {% endfor %}
     </ul>
     </li>
+
+    <li role="presentation" class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      Filter by Reporter
+      {%- if request.args.get('reportercategory') %} ({{ request.args.reportercategory }}){% endif -%}
+       <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li role="presentation" class="">
+          <a href="{{ url_for('.ispreports', state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">(all)</a> 
+      </li>
+    {% for cat in reporter_categories %}
+    <li role="presentation" class="{{ 'active' if request.args.reportercategory == cat.name else '' }}">
+        <a href="{{ url_for('.ispreports', network=request.args.network, state=request.args.state, category=request.args.category, reportercategory=cat.name, page=request.args.get('page') ) }}">{{ cat.name }}</a>
+    </li>
+    {% endfor %}
+    </ul>
+    </li>
     
     <li role="presentation" class="dropdown {{'active' if request.args.category else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">

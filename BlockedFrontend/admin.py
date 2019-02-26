@@ -251,13 +251,20 @@ def user_generate_password(id):
 def ispreports():
     page = int(request.args.get('page',1))
     network = request.args.get('network', None)
-    reports = g.api.reports(page-1, state=request.args.get('state'), isp=network, category=request.args.get('category'), admin=True)
+    reports = g.api.reports(page-1, 
+                            state=request.args.get('state'), 
+                            isp=network, 
+                            category=request.args.get('category'), 
+                            reportercategory=request.args.get('reportercategory'), 
+                            admin=True)
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
     
+    reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')
     
     return render_template('ispreports.html', reports=reports,
                            page=page,
                            all_categories=all_categories,
+                           reporter_categories=reporter_categories,
                            pagecount = get_pagecount(reports['count'], 25))
 
 @admin_pages.route('/control/ispreports/flag/<path:url>')
