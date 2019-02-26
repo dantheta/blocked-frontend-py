@@ -53,7 +53,7 @@ td.center, th.center {
     </ul>
     </li>
 
-    <li role="presentation" class="dropdown">
+    <li role="presentation" class="dropdown {{'active' if request.args.reportercategory else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
       Filter by Reporter
       {%- if request.args.get('reportercategory') %} ({{ request.args.reportercategory }}){% endif -%}
