@@ -485,13 +485,10 @@ class ISPReport(DBObject):
         assert name in ('matches_policy','egregious_block','featured_block','maybe_harmless'), \
                 "{0} is not an accepted flag".format(name)
         q = Query(self.conn, """update public.isp_reports 
-                                set {0} = %s, last_updated=now() 
-                                where id = %s 
-                                returning last_updated as last_updated""".format(name),
+                                set {0} = %s
+                                where id = %s """.format(name),
                              [ value, self['id'] ])
         self[name] = value
-        row = q.fetchone()
-        self['last_updated'] = row['last_updated']
 
         
     def get_url(self):
