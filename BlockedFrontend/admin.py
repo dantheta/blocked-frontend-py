@@ -693,7 +693,8 @@ def ispreport_reply_stats():
                 sum(case when status >= 'unblocked' or status = 'rejected' or exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) then 1 else 0 end) count_responded,
                 sum(case when status = 'unblocked' or unblocked =1 then 1 else 0 end) count_unblocked,
                 sum(case when status = 'rejected' then 1 else 0 end) count_rejected,
-                sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) then 1 else 0 end) count_unresolved
+                sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) then 1 else 0 end) count_unresolved,
+                sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) and matches_policy is false then 1 else 0 end) count_unresolved_badblock
                 from public.isp_reports
                 where network_name <> 'ORG'
                 group by extract('year' from isp_reports.created)::int 

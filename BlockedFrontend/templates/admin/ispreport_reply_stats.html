@@ -56,6 +56,9 @@
     <tr>
         <td>Reports unresolved:</td> {{ year_col('count_unresolved') }}
     </tr>
+    <tr>
+        <td>Non-policy block reports unresolved:</td> {{ year_col('count_unresolved_badblock') }}
+    </tr>
 </table>
         </div>
     </div>
@@ -69,7 +72,7 @@
         <th class="num">Reports Sent</th>
         <th class="num">Auto-replies logged</th>
         <th class="num">Total replies logged</th>
-        <th class="num">Avg reply interval (WIP)</th>
+        <th class="num">Avg reply interval</th>
         <th class="num">Unresolved count</th>
         <th class="num">Unresolved non-policy block count</th>
         <th class="num">Open report count</th>
