@@ -71,10 +71,11 @@
         <th class="num">Total replies logged</th>
         <th class="num">Avg reply interval (WIP)</th>
         <th class="num">Unresolved count</th>
+        <th class="num">Unresolved non-policy block count</th>
         <th class="num">Open report count</th>
     </tr>
     {% for group, list in reply_stats|groupby('network_name') %}
-    <tr><td colspan="7" class="headerrow">{{ group }}</td></tr>
+    <tr><td colspan="8" class="headerrow">{{ group }}</td></tr>
     {% for row in list %}
     <tr>
         <td class="sub">{{ row.year }}</td>
@@ -83,6 +84,7 @@
         <td class="num">{{ row.replies_logged }}</td>
         <td class="num">{{ (row.avg_response_time|string).split(', ',1)|first if row.avg_response_time else '' }}</td>
         <td class="num">{{ row.count_unresolved }}</td>
+        <td class="num">{{ row.count_unresolved_badblock }}</td>
         <td class="num"><a href="{{ url_for('.ispreports', state='open', network=row.network_name) }}">{{ row.count_open }}</a></td>
     </tr>
     {% endfor %}
