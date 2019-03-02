@@ -17,6 +17,7 @@ eu:
     - talktalk
     - plusnet
     - virginmedia
+    - fakeisp
   "no":
     - canaldigital_no
     - get_no

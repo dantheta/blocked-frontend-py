@@ -8,7 +8,7 @@ from flask import Flask
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect_single
 from BlockedFrontend.utils import parse_timestamp
-from BlockedFrontend.models import User
+from BlockedFrontend.models import User,SavedList,Item
 from NORM.exceptions import ObjectNotFound
 
 conn = None
@@ -105,3 +105,73 @@ def create_admin():
     conn.commit()
     app.logger.info("Created admin with password: %s", password)
     
+@app.cli.command()
+def create_mobile_inconsistency_lists():
+    from NORM import Query
+    conn = db_connect_single()
+
+    lists = {}
+    q = Query(conn, "select * from public.isps where isp_type = 'mobile' and show_results=1",[])
+    for row in q:
+        lists[ row['name'] ] = SavedList.find_or_create(conn,
+                                                        ['name'],
+                                                        {
+                                                            'name': 'Mobile Inconsistency - blocked only on {0}'.format(row['name']),
+                                                            'username': 'admin',
+                                                            'public': False
+                                                        })
+        lists[row['name']].store()
+        conn.commit()
+        app.logger.info("Set up list: %s", lists[row['name']]['name'])
+
+    q = Query(conn,
+              """select urls.urlid, urls.url, urls.title, urls.last_reported,
+                    count(*), array_agg(network_name) as network_name
+                 from public.urls
+                 inner join public.url_latest_status uls using (urlid)
+                 inner join public.isps on isps.name = uls.network_name
+                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1
+                 group by urlid, url, title, last_reported
+                 having count(*) = 1""", [])
+    for row in q:
+        item = Item(conn)
+        item.update({
+            'url': row['url'],
+            'title': row['title'],
+            'blocked': True,
+            'reported': True if row['last_reported'] else False,
+            'list_id': lists[ row['network_name'][0] ]['id']
+        })
+        item.store()
+    conn.commit()
+
+    q = Query(conn,
+              """select urls.urlid, urls.url, urls.title, urls.last_reported,
+                    count(*) ct, array_agg(network_name) as network_name
+                 from public.urls
+                 inner join public.url_latest_status uls using (urlid)
+                 inner join public.isps on isps.name = uls.network_name
+                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1
+                 group by urlid, url, title, last_reported
+                 having count(*) > 1""", [])
+
+    for row in q:
+        ls = SavedList.find_or_create(conn,
+                                      ['name'],
+                                      {
+                                          'name': 'Mobile Inconsistency - blocked on {0} networks'.format(row['ct']),
+                                          'username': 'admin',
+                                          'public': False
+                                      })
+        ls.store()
+
+        item = Item(conn)
+        item.update({
+            'url': row['url'],
+            'title': row['title'],
+            'blocked': True,
+            'reported': True if row['last_reported'] else False,
+            'list_id': ls['id']
+        })
+        item.store()
+    conn.commit()
