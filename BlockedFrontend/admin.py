@@ -4,6 +4,7 @@ import re
 import psycopg2
 import logging
 import datetime
+import itertools
 
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, flash, jsonify, Response
@@ -547,7 +548,6 @@ def ispreports_review_update():
 
 
 def group_by_year(q):
-    import itertools
     # reshape into list of (reporter,damage,network),dict(year: count)             
     return ( (grp, {int(row['yr']): row['ct'] for row in ls})
             for (grp, ls) in 
@@ -570,7 +570,6 @@ def get_isp_report_stats_data():
 @admin_pages.route('/control/ispreport/stats')
 @check_admin
 def ispreport_stats():
-    import itertools
     q1 = Query(g.conn,
               """select cat1.name reporter,  extract('year' from urls.last_reported) yr, count(*) ct
                  from public.urls
@@ -729,6 +728,38 @@ def ispreport_reply_stats():
     return render_template('ispreport_reply_stats.html',
                            sent_stats=sent_stats,
                            reply_stats=reply_stats)
+
+
+@admin_pages.route('/control/ispreport/consistency')
+@check_admin
+def ispreport_consistency():
+    q = Query(g.conn,
+                         """select savedlists.id, savedlists.name, count(*) ct
+                            from savedlists
+                            inner join items on list_id = savedlists.id
+                            where name like 'Mobile Inconsistency%%'
+                            group by savedlists.id, savedlists.name
+                            order by savedlists.name""",[])
+
+    list_summary, counter = itertools.tee(q)
+
+    counts = {}
+    for row in counter:
+        if 'only on' in row['name']:
+            counts.setdefault(1, 0)
+            counts[1] += row['ct']
+        else:
+            num = int(row['name'].rsplit(' ', 2)[1])
+            counts[num] = row['ct']
+    counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.iteritems()) ]
+
+
+    return render_template("ispreport_consistency.html",
+                           list_summary=list_summary,
+                           counts=counts
+                           )
+
+
 
 #
 # Court Order admin
