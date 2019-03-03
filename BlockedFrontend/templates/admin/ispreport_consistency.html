@@ -53,8 +53,12 @@ $(document).ready(function(){
         labels: {{ networks  | sort(attribute='network_name') | map(attribute='network_name') | list |tojson }},
         datasets:[
           {
-              data: {{ networks |sort(attribute='network_name')|map(attribute='count') | list | tojson }},
+              data: {{ networks |sort(attribute='network_name')|map(attribute='block_count') | list | tojson }},
               backgroundColor: 'red'
+          },
+          {
+              data: {{ networks |sort(attribute='network_name')|map(attribute='count') | list | tojson }},
+              backgroundColor: 'gray'
           },
 
         ]
@@ -69,7 +73,8 @@ $(document).ready(function(){
           scaleLabel: {
             labelString: "Blocked URL count",
             display: true
-          }
+          },
+          stacked: true,
         }],
         yAxes: [{
           scaleLabel: {
