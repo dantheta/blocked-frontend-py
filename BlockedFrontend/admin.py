@@ -734,12 +734,12 @@ def ispreport_reply_stats():
 @check_admin
 def ispreport_consistency():
     q = Query(g.conn,
-                         """select savedlists.id, savedlists.name, count(*) ct
-                            from savedlists
-                            inner join items on list_id = savedlists.id
-                            where name like 'Mobile Inconsistency%%'
-                            group by savedlists.id, savedlists.name
-                            order by savedlists.name""",[])
+              """select savedlists.id, savedlists.name, count(*) ct, sum(case when reported is true then 1 else 0 end) reported
+                 from savedlists
+                 inner join items on list_id = savedlists.id
+                 where name like 'Mobile Inconsistency%%'
+                 group by savedlists.id, savedlists.name
+                 order by savedlists.name""",[])
 
     list_summary, counter = itertools.tee(q)
 

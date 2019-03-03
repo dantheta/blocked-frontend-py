@@ -110,13 +110,15 @@ $(document).ready(function(){
 <table class="table table-compressed">
     <tr>
     <th>List name</th>
-    <th class="num">Item count</th>
+    <th class="num">URL count</th>
+    <th class="num">Report count</th>
     <th></th>
     </tr>
     {% for row in list_summary %}
     <tr>
         <td>{{ row.name }}</td>
         <td class="num">{{ row.ct }}</td>
+        <td class="num">{{ row.reported }}</td>
         <td><a class="btn btn-sm btn-default" href="{{ url_for('list.show_list', name=row.name) }}">View list</a></td>
     </tr>
     {% endfor %}
