@@ -753,10 +753,13 @@ def ispreport_consistency():
             counts[num] = row['ct']
     counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.iteritems()) ]
 
+    networks = Query(g.conn,
+                     """select * from stats.mobile_blocks order by network_name""", [])
 
     return render_template("ispreport_consistency.html",
                            list_summary=list_summary,
-                           counts=counts
+                           counts=counts,
+                           networks=networks
                            )
 
 
