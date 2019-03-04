@@ -55,7 +55,7 @@ td.center, th.center {
 
     <li role="presentation" class="dropdown {{'active' if request.args.reportercategory else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Filter by Reporter
+      Filter by Report Category
       {%- if request.args.get('reportercategory') %} ({{ request.args.reportercategory }}){% endif -%}
        <span class="caret"></span>
     </a>
@@ -63,7 +63,14 @@ td.center, th.center {
       <li role="presentation" class="">
           <a href="{{ url_for('.ispreports', state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">(all)</a> 
       </li>
+      <li class="dropdown-header">Report Categories</li>
     {% for cat in reporter_categories %}
+    <li role="presentation" class="{{ 'active' if request.args.reportercategory == cat.name else '' }}">
+        <a href="{{ url_for('.ispreports', network=request.args.network, state=request.args.state, category=request.args.category, reportercategory=cat.name, page=request.args.get('page') ) }}">{{ cat.name }}</a>
+    </li>
+    {% endfor %}
+    <li class="dropdown-header">Damage Categories</li>
+    {% for cat in damage_categories %}
     <li role="presentation" class="{{ 'active' if request.args.reportercategory == cat.name else '' }}">
         <a href="{{ url_for('.ispreports', network=request.args.network, state=request.args.state, category=request.args.category, reportercategory=cat.name, page=request.args.get('page') ) }}">{{ cat.name }}</a>
     </li>
@@ -73,7 +80,7 @@ td.center, th.center {
     
     <li role="presentation" class="dropdown {{'active' if request.args.category else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Filter by Category 
+      Filter by Site Category 
       {%- if request.args.category %} ({{ request.args.category }}){% endif -%}
        <span class="caret"></span>
     </a>
