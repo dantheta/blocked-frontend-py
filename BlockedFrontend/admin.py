@@ -261,11 +261,13 @@ def ispreports():
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
     
     reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')
+    damage_categories = UrlReportCategory.select(g.conn, category_type='damage', _orderby='name')
     
     return render_template('ispreports.html', reports=reports,
                            page=page,
                            all_categories=all_categories,
                            reporter_categories=reporter_categories,
+                           damage_categories=damage_categories,
                            pagecount = get_pagecount(reports['count'], 25))
 
 @admin_pages.route('/control/ispreports/flag/<path:url>')
