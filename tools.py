@@ -130,7 +130,7 @@ def create_mobile_inconsistency_lists():
                  from public.urls
                  inner join public.url_latest_status uls using (urlid)
                  inner join public.isps on isps.name = uls.network_name
-                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1
+                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1 and urls.status = 'ok'
                  group by urlid, url, title, last_reported
                  having count(*) = 1""", [])
     for row in q:
@@ -151,7 +151,7 @@ def create_mobile_inconsistency_lists():
                  from public.urls
                  inner join public.url_latest_status uls using (urlid)
                  inner join public.isps on isps.name = uls.network_name
-                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1
+                 where uls.status = 'blocked' and isp_type = 'mobile' and show_results=1 and urls.status = 'ok'
                  group by urlid, url, title, last_reported
                  having count(*) > 1""", [])
 
