@@ -88,6 +88,9 @@ td.center, th.center {
       <li role="presentation" class="">
           <a href="{{ url_for('.ispreports', state=request.args.state, page=request.args.get('page') ) }}">(all)</a> 
       </li>
+      <li role="presentation" class="">
+          <a href="{{ url_for('.ispreports', state=request.args.state, page=request.args.get('page'), category='_unassigned_' ) }}">(unassigned)</a> 
+      </li>
     {% for cat in all_categories %}
     <li role="presentation" class="{{ 'active' if request.args.category == cat else '' }}">
         <a href="{{ url_for('.ispreports', network=request.args.network, category=cat, state=request.args.state, page=request.args.get('page') ) }}">{{ cat }}</a>
