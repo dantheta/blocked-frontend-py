@@ -1,0 +1,51 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as form %}
+
+{% set pagetitle = "Search Filter Admin" %}
+
+{% block body %}
+<h1>{{ pagetitle }}</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="POST" action="{{ url_for('.search_filter_add') }}">
+        {{ form.text_field('Add term', 'term', '') }}
+        <div>
+            <input type="submit" value="Add" class="btn btn-default" />
+        </div>
+        </form>
+    </div>
+    <div class="col-md-6 well">
+        <h4>Word stemming</h4>
+        <p class="hint">
+        Suffix values with <strong>'~'</strong> to enable word stem matching. Eg: <em>strip~</em> will match <em>strip</em>, <em>stripping</em>, <em>stripper</em>, <em>strips</em>.
+        </p>
+    </div>
+</div>
+
+<form method="POST" action="{{ url_for('.search_filter_update') }}">
+<table class="table table-compressed">
+    <tr>
+        <th>Term</th>
+        <th>Enabled</th>
+    </tr>
+    {% for term in terms %}
+    <tr>
+        <td><span  class="{{ 'text-muted' if not term.enabled  else '' }}">{{ term.term }}</span></td>
+        <td>
+            {% if term.enabled %}
+            <input type="hidden" name="term" value="{{ term.id }}" />
+            {% endif %}
+            {{ form.check_field('', 'enabled', term.id, term.enabled) }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<div>
+    <input type="submit" class="btn btn-default" value="Update" />
+</div>
+</form>
+
+
+{% endblock %}

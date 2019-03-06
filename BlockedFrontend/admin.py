@@ -781,6 +781,61 @@ def ispreport_category_stats():
 
 
 #
+#  Search filter admin
+#  -------------------
+#
+
+@admin_pages.route('/control/search-filter')
+@check_admin
+def search_filter():
+    terms = SearchIgnoreTerm.select(g.conn, _orderby=['-enabled','term'])
+
+    return render_template('search_filter.html',
+                           terms=terms)
+
+
+@admin_pages.route('/control/search-filter/add', methods=['POST'])
+@check_admin
+def search_filter_add():
+    f = request.form
+    term = SearchIgnoreTerm(g.conn)
+    term.update({
+        'term': f['term'],
+        'enabled': True
+    })
+    term.store()
+    g.conn.commit()
+
+    return redirect(url_for('.search_filter'))
+
+@admin_pages.route('/control/search-filter/update', methods=['POST'])
+@check_admin
+def search_filter_update():
+    f = request.form
+    enabled = set(make_list(f.getlist('enabled')))
+    terms = set(make_list(f.getlist('term')))
+
+    remove = terms - enabled
+    add = enabled - terms
+
+    current_app.logger.info("Terms: %s, Enabled: %s", terms, enabled)
+    current_app.logger.info("Add: %s, Remove: %s", add, remove)
+
+    for termid in remove:
+        term = SearchIgnoreTerm(g.conn, id=int(termid))
+        term['enabled'] = False
+        term.store()
+
+    for termid in add:
+        term = SearchIgnoreTerm(g.conn, id=int(termid))
+        term['enabled'] = True
+        term.store()
+
+    g.conn.commit()
+    return redirect(url_for('.search_filter'))
+
+
+#
 # Court Order admin
 # ------------------
 #

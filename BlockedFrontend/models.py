@@ -570,3 +570,10 @@ class UrlReportCategoryComment(DBObject):
         'review_notes',
         'userid'
         ]
+
+class SearchIgnoreTerm(DBObject):
+    TABLE = 'public.search_ignore_terms'
+    FIELDS = [
+        'term',
+        'enabled'
+        ]

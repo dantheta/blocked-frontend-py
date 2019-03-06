@@ -49,14 +49,18 @@
 {% endmacro %}
 
 {% macro check_field(label, name, value, checked=False) %}
+{% if label %}
 <div class="form-group">
 <div class="checkbox">
   <label class="control-label">
+{% endif %}
     <input type="checkbox" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
+{% if label %}
     {{ label }}
   </label>
 </div>
 </div>
+{% endif %}
 {% endmacro %}
 
 {% macro radio_field(label, name, value, checked=False) %}
