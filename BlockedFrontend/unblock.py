@@ -135,6 +135,12 @@ def submit_unblock():
     if not request.form.get('checkedsite'):
         return None #TODO: message template
     form = request.form
+
+    usertype = []
+    for d in ('owner','user','bystander'):
+        if d in form:
+            usertype.append(d)
+
     req = {
         'url': form['url'],
         'reporter': {
@@ -143,6 +149,7 @@ def submit_unblock():
             },
         'message': form['message'],
         'category': form.get('site_category',''),
+        'usertype': usertype,
         'report_type': ",".join(make_list(form['report_type'])),
         'date': get_timestamp(),
         'send_updates': 1 if form.get('send_updates') else 0,
