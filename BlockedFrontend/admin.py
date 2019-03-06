@@ -768,16 +768,34 @@ def ispreport_consistency():
 @admin_pages.route('/control/ispreports/category-status')
 @check_admin
 def ispreport_category_stats():
-    q = Query(g.conn,
-              """select name, count(*) ct
-                 from public.categories
-                 inner join public.url_categories on category_id = categories.id
-                 where namespace = 'ORG'
-                 group by name
-                 order by name""", [])
+
+    reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')
+
+    if request.args.get('reporter'):
+        cat = UrlReportCategory(g.conn, id=request.args['reporter'])
+        q = Query(g.conn,
+                  """select name, count(*) ct
+                     from public.categories
+                     inner join public.url_categories on category_id = categories.id
+                     inner join public.url_report_category_asgt asgt on asgt.urlid = url_categories.urlid
+                     where namespace = 'ORG' and asgt.category_id = %s
+                     group by name
+                     order by name""",
+                  [request.args['reporter']])
+    else:
+        cat = None
+        q = Query(g.conn,
+                  """select name, count(*) ct
+                     from public.categories
+                     inner join public.url_categories on category_id = categories.id
+                     where namespace = 'ORG'
+                     group by name
+                     order by name""", [])
 
     return render_template('ispreport_category_stats.html',
-                           categories=q) 
+                           categories=q,
+                           cat=cat,
+                           reporter_categories=reporter_categories) 
 
 
 #

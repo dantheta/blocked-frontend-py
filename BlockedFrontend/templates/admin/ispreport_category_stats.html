@@ -5,7 +5,27 @@
 
 {% block body %}
 
+
+<div class="row">
+    <div class="col-md-9">
 <h1>{{ pagetitle }}</h1>
+    </div>
+    <div class="col-md-3" style="padding-top: 1.55em">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn {{ 'btn-primary' if request.args.reporter else 'btn-default' }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Filter by Reporter Category 
+                {%- if cat %} ({{ cat.name }}) {%- endif -%}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="{{ url_for('.ispreport_category_stats') }}">( all )</a></li>
+                {% for reporter in reporter_categories %}
+                <li><a href="{{ url_for('.ispreport_category_stats', reporter=reporter.id) }}">{{ reporter.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 
 <table class="table table-compressed">
     <tr>
