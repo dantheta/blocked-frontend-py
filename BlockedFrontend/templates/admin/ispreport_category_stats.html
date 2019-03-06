@@ -1,0 +1,24 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "ISP Report URL Category stats" %}
+
+{% block body %}
+
+<h1>{{ pagetitle }}</h1>
+
+<table class="table table-compressed">
+    <tr>
+        <th>ORG Category name</th>
+        <th class="num">URL Count</th>
+    </tr>
+    {% for row in categories %}
+    <tr>
+        <td>{{ row.name }}</td>
+        <td class="num">{{ row.ct }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+

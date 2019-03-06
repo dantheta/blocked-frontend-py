@@ -270,6 +270,7 @@ def ispreports():
                            damage_categories=damage_categories,
                            pagecount = get_pagecount(reports['count'], 25))
 
+
 @admin_pages.route('/control/ispreports/flag/<path:url>')
 @check_admin
 def ispreports_flag(url):
@@ -764,6 +765,19 @@ def ispreport_consistency():
                            networks=networks
                            )
 
+@admin_pages.route('/control/ispreports/category-status')
+@check_admin
+def ispreport_category_stats():
+    q = Query(g.conn,
+              """select name, count(*) ct
+                 from public.categories
+                 inner join public.url_categories on category_id = categories.id
+                 where namespace = 'ORG'
+                 group by name
+                 order by name""", [])
+
+    return render_template('ispreport_category_stats.html',
+                           categories=q) 
 
 
 #
