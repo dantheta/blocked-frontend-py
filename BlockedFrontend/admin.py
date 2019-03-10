@@ -583,7 +583,7 @@ def ispreport_stats():
                  order by cat1.name, extract('year' from urls.last_reported)"""
                  , [])
                  
-    q1_1, q1_2 q1_3 = itertools.tee(q1, 3)
+    q1_1, q1_2, q1_3 = itertools.tee(q1, 3)
     q1_totals = {}
     for row in q1_1:
         q1_totals.setdefault(row['yr'], 0)
