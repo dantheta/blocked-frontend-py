@@ -30,7 +30,7 @@ class SavedList(DBObject):
     def select_with_totals(cls, conn, public):
         q = Query(conn,
                   """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
-                     count(distinct isp_reports.id) reported_count, count(distinct items.id) item_count, sum(case when items.blocked is false then 1 else 0 end) unblock_count
+                     count(distinct isp_reports.urlid) reported_count, count(distinct items.id) item_count, sum(case when items.blocked is false then 1 else 0 end) unblock_count
                      from savedlists
                      left join items on list_id = savedlists.id
                      left join urls using (url)
