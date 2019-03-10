@@ -402,8 +402,8 @@ $(document).ready(function(){
         <div class="col-md-5">
             <form action="{{ url_for('.ispreports_review_update') }}" method="POST">
                 <input type="hidden" name="report_id" value="{{ report.id }}" />
-                {{ forms.radio_field("Block matches the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
-                {{ forms.radio_field("Block does not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
+                {{ forms.radio_field("Block matched the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
+                {{ forms.radio_field("Block did not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
                 
                 
                 {{ forms.check_field("This is an egregious block", 'egregious_block', 't', report.egregious_block) }}
