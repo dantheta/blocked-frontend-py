@@ -26,6 +26,23 @@ class SavedList(DBObject):
         return Item.count(self.conn, list_id=self['id'])
 
 
+    @classmethod
+    def select_with_totals(cls, conn, public):
+        q = Query(conn,
+                  """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
+                     count(distinct isp_reports.id) reported_count, count(distinct items.id) item_count, sum(case when items.blocked is false then 1 else 0 end) unblock_count
+                     from savedlists
+                     left join items on list_id = savedlists.id
+                     left join urls using (url)
+                     left join public.isp_reports on isp_reports.status >= 'new' and isp_reports.urlid = urls.urlid
+                     where savedlists.public = %s
+                     group by savedlists.id, savedlists.name
+                     order by savedlists.name""", [public])
+        for row in q:
+            yield cls(conn, data=row)
+        q.close()
+
+
 class Item(DBObject):
     TABLE = 'items'
     FIELDS = [
