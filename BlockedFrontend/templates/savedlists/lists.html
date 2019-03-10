@@ -26,8 +26,8 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
 {% for lst in lists %}
 <tr>
   <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
-  <td class="num">{{ lst.reported_count }}</td>
   <td class="num">{{ lst.item_count }}</td>
+  <td class="num">{{ lst.reported_count }}</td>
   <td class="num">{{ lst.unblock_count }}</td>
 </tr>
 
