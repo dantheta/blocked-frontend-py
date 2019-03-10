@@ -28,20 +28,34 @@
 {% endfor %}
 <th class="num">Total</th>
 </tr>
+
 {% for grp, yeardata in reporter_stats %}
+
+{% if grp[0] == 'Site Owner (Business)' %}
 <tr>
-<td>{{ grp[0] }}</td>
+<td style="background-color: #fdfdfd">Site Owner</td>
+{% for yr in range(2016,currentyear+1) %}
+<td class="num">{{ site_owner_totals.get(yr)|null }}</td>
+{% endfor %}
+<td class="num">{{ site_owner_totals.values()|sum }}</td>
+</tr>
+{% endif %}
+
+<tr>
+<td style="{{ 'padding-left: 1.5em' if grp[0].startswith('Site Owner ') else '' }}">{{ grp[0] }}</td>
 {% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ yeardata.get(yr)|null }}</td>
 {% endfor %}
 <td class="num">{{ yeardata.values()|sum }}</td>
 </tr>
-{% endfor %}
+{% endfor %} {# grp, yeardata #}
+
 <tr class="totalrow">
 <td>Totals:</td>
 {% for yr in range(2016,currentyear+1) %}
 <td class="num">{{ q1_totals.get(yr)|null }}</td>
 {% endfor %}
+
 <td class="num">{{ q1_totals.values()|sum }}</td>
 </tr>
 </table>

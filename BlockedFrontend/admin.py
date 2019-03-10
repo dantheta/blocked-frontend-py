@@ -599,7 +599,7 @@ def ispreport_stats():
                  order by cat2.name, extract('year' from urls.last_reported)"""
                  , [])            
 
-    q_reporter = Query(g.conn,
+    q3 = Query(g.conn,
               """select cat1.name reporter, network_name, extract('year' from isp_reports.created) yr, count(*) ct
                  from public.isp_reports
                  inner join public.urls using (urlid)
@@ -607,6 +607,16 @@ def ispreport_stats():
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
                  group by cat1.name,  network_name, extract('year' from isp_reports.created)
                  order by network_name, cat1.name, extract('year' from isp_reports.created)""", [])
+
+    q_reporter_tmp, q_reporter = itertools.tee(q3, 2)
+    site_owner_totals = {}
+    for grp, yeardata in group_by_year(q_reporter_tmp):
+        if grp[0].startswith('Site Owner '):
+            for k,v in yeardata.iteritems():
+                site_owner_totals.setdefault(k, 0)
+                site_owner_totals[k] += v
+
+
                  
     q_damage = Query(g.conn,
               """select cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
@@ -649,7 +659,8 @@ def ispreport_stats():
                            reporter_full=group_by_year(q_reporter),
                            damage_full=group_by_year(q_damage),
                            isp_stats=group_by_year(q_isps2),
-                           totalrows=totalrows
+                           totalrows=totalrows,
+                           site_owner_totals=site_owner_totals
                            )
 
 @admin_pages.route('/control/ispreport/csv-stats')
