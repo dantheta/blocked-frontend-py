@@ -583,12 +583,18 @@ def ispreport_stats():
                  order by cat1.name, extract('year' from urls.last_reported)"""
                  , [])
                  
-    q1_1, q1_2 = itertools.tee(q1, 2)
+    q1_1, q1_2 q1_3 = itertools.tee(q1, 3)
     q1_totals = {}
     for row in q1_1:
         q1_totals.setdefault(row['yr'], 0)
         q1_totals[row['yr']] += row['ct']
                             
+    site_owner_totals = {}
+    for grp, yeardata in group_by_year(q1_3):
+        if grp[0].startswith('Site Owner '):
+            for k,v in yeardata.iteritems():
+                site_owner_totals.setdefault(k, 0)
+                site_owner_totals[k] += v
 
     q2 = Query(g.conn,
               """select cat2.name damage, extract('year' from urls.last_reported) yr, count(*) ct
@@ -599,7 +605,7 @@ def ispreport_stats():
                  order by cat2.name, extract('year' from urls.last_reported)"""
                  , [])            
 
-    q3 = Query(g.conn,
+    q_reporter = Query(g.conn,
               """select cat1.name reporter, network_name, extract('year' from isp_reports.created) yr, count(*) ct
                  from public.isp_reports
                  inner join public.urls using (urlid)
@@ -608,13 +614,6 @@ def ispreport_stats():
                  group by cat1.name,  network_name, extract('year' from isp_reports.created)
                  order by network_name, cat1.name, extract('year' from isp_reports.created)""", [])
 
-    q_reporter_tmp, q_reporter = itertools.tee(q3, 2)
-    site_owner_totals = {}
-    for grp, yeardata in group_by_year(q_reporter_tmp):
-        if grp[0].startswith('Site Owner '):
-            for k,v in yeardata.iteritems():
-                site_owner_totals.setdefault(k, 0)
-                site_owner_totals[k] += v
 
 
                  
