@@ -2,7 +2,7 @@ import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
-    jsonify, g, url_for, session, current_app, Response, abort
+    jsonify, g, url_for, session, current_app, Response, abort, flash
 
 from utils import *
 
@@ -101,6 +101,20 @@ def show_lists():
     return render_template('lists.html',
         lists=savedlists
         )
+
+@list_pages.route('/lists/check')
+@check_moderator
+def recheck_list():
+    lst = models.SavedList.select_one(g.conn, name=request.args['name'])
+    n = 0
+    for item in lst.get_items():
+        data = g.api.submit_url(item['url'], queue='public.gb')
+        current_app.logger.info("Submitted: %s, queued=%s", item['url'], data['queued'])
+        if data['queued']:
+            n = n + 1
+
+    flash("Submitted {0} URLs for list {1}".format(n, request.args['name']))
+    return redirect(url_for('.show_list', name=request.args['name']))
 
 
 @list_pages.route('/list/delete/<int:id>', methods=['GET','POST'])

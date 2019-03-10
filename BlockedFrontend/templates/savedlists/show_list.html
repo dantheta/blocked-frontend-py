@@ -34,6 +34,10 @@
     </div>
     <div class="col-md-3">
         <a href="{{ url_for('.export_list', name=savedlist.name) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-save"></span> Export</a>
+        {% if g.admin %}
+        <a href="{{ url_for('.recheck_list', name=savedlist.name) }}" class="btn btn-default btn-lg" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Recheck</a>
+        {% endif %}
+
     </div>
 </div>
 
@@ -130,6 +134,9 @@ $(document).ready(function(){
             $(flagbtn).parent().parent().children().animate({padding:0}).wrapInner('<div/>').children().slideUp(function(){ $(this).closest('tr').remove()});
         });
         return false;
+    });
+    $('#refresh').click(function(){
+        $(this).text('Submitting tests ... please wait');
     });
     {{ forms.permalink_js() }}
 });
