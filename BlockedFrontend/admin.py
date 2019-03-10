@@ -621,6 +621,7 @@ def ispreport_stats():
               """select network_name, isp_type, extract('year' from isp_reports.created) yr, count(*) ct
                  from public.isp_reports
                  inner join public.isps on network_name = isps.name
+                 where network_name <> 'ORG'
                  group by network_name, isp_type, extract('year' from isp_reports.created)
                  order by isp_type, network_name, extract('year' from isp_reports.created)""", [])                 
 
