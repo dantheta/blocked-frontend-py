@@ -62,14 +62,12 @@ def run_update():
                order by last_checked nulls first limit 500")
 
     # only evaluate based on test results from the last two weeks
-    cutoff = datetime.datetime.now() - datetime.timedelta(14)
     for row in c:
         try:
             data = api.status_url(row['url'])
 
             # decide if site is still blocked, for the purposes of frontend list selection
-            blocked = any([ (x['status'] == 'blocked' and parse_timestamp(x['status_timestamp']) > cutoff)
-                            for x in data['results']])
+            blocked = any([ (x['status'] == 'blocked') for x in data['results']])
             reported = len(data['reports']) > 0
 
             logging.info("Status: %s, blocked=%s, reported=%s", row['url'], blocked, reported)
