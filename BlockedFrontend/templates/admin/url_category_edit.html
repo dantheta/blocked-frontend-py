@@ -1,0 +1,22 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "URL Category Management" %}
+
+{% block body %}
+<h2>Edit category {{ category.name }}</h2>
+
+<div class="row">
+    <div class="col-md-7">
+<form method="POST" action="{{ url_for('.url_category_update') }}">
+    <input type="hidden" name="id" value="{{ category.id }}" />
+    {{ forms.text_field('Name', 'name', category.name) }}
+    <div>
+        <input type="submit" class="btn btn-primary" value="Update" />
+    </div>
+</form>
+    </div>
+</div>
+
+{% endblock %}

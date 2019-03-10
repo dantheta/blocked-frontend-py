@@ -1,0 +1,37 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "URL Category Management" %}
+
+{% block body %}
+
+
+<h1>{{ pagetitle }}</h1>
+
+<form method="POST" action="{{ url_for('.url_category_merge') }}">
+<table class="table table-compressed">
+    <tr>
+        <th>ORG Category name</th>
+        <th class="num">URL Count</th>
+        <th>Merge</th>
+        <th></th>
+    </tr>
+    {% for row in categories %}
+    <tr>
+        <td>{{ row.name }}</td>
+        <td class="num">{{ row.ct }}</td>
+        <td><input type="checkbox" name="merge" value="{{ row.id }}" /></td>
+        <td>
+            <a href="{{ url_for('.url_category_edit', id=row.id) }}">Edit</a>
+            <a href="{{ url_for('.url_category_delete', id=row.id) }}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<div>
+    <input type="submit" value="Merge" class="btn btn-warning" />
+</div>
+</form>
+
+{% endblock %}
+

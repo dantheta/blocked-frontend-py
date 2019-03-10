@@ -397,6 +397,18 @@ class Category(DBObject):
             yield cls(conn, data=row)
         q.close()
                     
+    @classmethod
+    def select_with_counts(cls, conn):
+        q = Query(conn,
+                  """select categories.id, name, count(*) ct
+                     from public.categories
+                     inner join public.url_categories on category_id = categories.id
+                     where namespace = 'ORG'
+                     group by categories.id, name
+                     order by categories.id, name""", [])
+        for row in q:
+            yield cls(conn, data=row)
+        q.close()
               
 class UrlCategory(DBObject):
     TABLE = 'public.url_categories'

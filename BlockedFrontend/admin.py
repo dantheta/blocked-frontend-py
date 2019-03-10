@@ -1417,6 +1417,85 @@ def urls_upload_post():
     flash("{0} url{1} uploaded".format(addcount, '' if addcount == 1 else 's'))
     return redirect(url_for('.urls_upload'))
 
+@admin_pages.route('/control/url-category')
+@check_admin
+def url_categories():
+
+    return render_template('url_category.html',
+                           categories=Category.select_with_counts(g.conn),
+                           ) 
+
+@admin_pages.route('/control/url-category/edit/<id>')
+@check_admin
+def url_category_edit(id):
+    cat = Category(g.conn, id)
+    return render_template('url_category_edit.html', category=cat)
+
+@admin_pages.route('/control/url-category/update', methods=['POST'])
+@check_admin
+def url_category_update():
+    f = request.form
+    cat = Category(g.conn, f['id'])
+    cat.update({
+        'name': f['name'],
+        'display_name': f['display_name'],
+    })
+    cat.store()
+    g.conn.commit()
+    flash("Category {0} updated".format(f['name']))
+    return redirect(url_for('.url_categories'))
+
+@admin_pages.route('/control/url-category/merge', methods=['POST'])
+@check_admin
+def url_category_merge():
+    f = request.form
+
+    mergelist = f.getlist('merge')
+
+    if len(mergelist) == 1:
+        flash("More than 1 merge category required")
+        return redirect(url_for('.url_categories'))
+
+    cat = Category(g.conn, id=mergelist.pop(0))
+
+    mergenames = []
+    for merge in mergelist:
+        mergecat = Category(g.conn, id=merge)
+        q = Query(g.conn,
+                  """update public.url_categories 
+                     set category_id = %s 
+                     where category_id = %s 
+                        and not exists(select 1 from public.url_categories x where x.urlid = url_categories.urlid and x.category_id = %s)""",
+                  [cat['id'], merge, cat['id']])
+        mergenames.append(mergecat['name'])
+        mergecat.delete()
+    g.conn.commit()
+    flash("Merged categories {0} with {1}".format(", ".join(mergenames), cat['name']))
+    return redirect(url_for('.url_categories'))
+
+
+@admin_pages.route('/control/url-category/delete/<id>', methods=['GET','POST']) # should be a post method
+@check_admin
+def url_category_delete(id):
+    cat = Category(g.conn, id=id)
+    if request.method == 'POST':
+        if cat['namespace'] != 'ORG':
+            flash("Cannot delete non-ORG category")
+            return redirect(url_for('.url_categories'))
+
+        cat.delete()
+        g.conn.commit()
+        flash("Category {0} deleted".format(cat['name']))
+        return redirect(url_for('.url_categories'))
+
+    if request.method == 'GET':
+        return render_template('url_category_delete_confirm.html', id=id, cat=cat)
+
+
+
+
+
+    
 
 ## Tests admin
 

@@ -1,0 +1,15 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "URL Category Confirm Delete" %}
+
+{% block body %}
+<h2>Confirm deletion of category {{ cat.name }}</h2>
+
+<form method="POST" action="{{ url_for('.url_category_delete', id=cat.id) }}">
+    <input type="submit" value="Confirm" class="btn btn-danger" />
+    <a class="btn btn-default" href="{{ url_for('.url_categories') }}">Cancel</a>
+</form>
+
+{% endblock %}
+
