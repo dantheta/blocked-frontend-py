@@ -356,6 +356,7 @@ def ispreports_view(url, network_name, msgid=None):
                            selected_msg=msg,
                            selected_email=email,
                            report_next=ispreport.get_next(),
+                           report_prev=ispreport.get_prev(),
                            reporter_categories=reporter_categories,
                            damage_categories=damage_categories,
                            report_damage_categories=urlobj.get_report_categories('damage'),

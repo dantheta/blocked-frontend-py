@@ -113,10 +113,15 @@ $(document).ready(function(){
 {% endif %}
 </h2>
 
-{% if report_next %}
-<div><a href="{{ url_for('.ispreports_view', network_name=report_next.network_name, url=report_next.url) }}" class="btn btn-primary btn-lg">Next Report <span class="glyphicon glyphicon-forward"></span></a></div>
-
+<div>
+{% if report_prev %}
+<a href="{{ url_for('.ispreports_view', network_name=report_prev.network_name, url=report_prev.url) }}" class="btn btn-primary" title="View previous report"><span class="glyphicon glyphicon-backward"></span> Prev</a>
+{%- endif -%}
+&nbsp;
+{%- if report_next -%}
+<a href="{{ url_for('.ispreports_view', network_name=report_next.network_name, url=report_next.url) }}" class="btn btn-primary" title="View next report">Next <span class="glyphicon glyphicon-forward"></span></a>
 {% endif %}
+</div>
 
 </div>
 </div> <!-- /.row -->

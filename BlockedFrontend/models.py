@@ -30,7 +30,7 @@ class SavedList(DBObject):
     def select_with_totals(cls, conn, public):
         q = Query(conn,
                   """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
-                     count(distinct isp_reports.urlid) reported_count, count(distinct items.id) item_count, sum(case when items.blocked is false then 1 else 0 end) unblock_count
+                     count(distinct isp_reports.urlid) reported_count, count(distinct items.id) item_count, count(case when items.blocked is false then 1 else 0 end) unblock_count
                      from savedlists
                      left join items on list_id = savedlists.id
                      left join urls using (url)
@@ -522,6 +522,18 @@ class ISPReport(DBObject):
             yield ISPReportComment(self.conn, data=row)
         q.close()
      
+    def get_prev(self):
+        q = Query(self.conn, """select url, network_name from public.isp_reports inner join public.urls using (urlid)
+            where id > %s order by id limit 1""",
+            [self['id']])
+        row = q.fetchone()
+        q.close()
+        if row is None:
+            return None
+        return {
+            'url': row[0],
+            'network_name': row[1]
+            }
 
      
     def get_next(self):
