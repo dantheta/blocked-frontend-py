@@ -561,7 +561,7 @@ def group_by_year(q):
 def get_isp_report_stats_data():
     q = Query(g.conn,
               """select cat1.name reporter, cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
+                 from public.isp_reports_sent isp_reports
                  inner join public.urls using (urlid)
                  inner join public.url_report_category_asgt asgt1 using (urlid)
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
@@ -607,7 +607,7 @@ def ispreport_stats():
 
     q_reporter = Query(g.conn,
               """select cat1.name reporter, network_name, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
+                 from public.isp_reports_sent isp_reports
                  inner join public.urls using (urlid)
                  inner join public.url_report_category_asgt asgt1 using (urlid)
                  inner join public.url_report_categories cat1 on asgt1.category_id = cat1.id and cat1.category_type = 'reporter'
@@ -619,7 +619,7 @@ def ispreport_stats():
                  
     q_damage = Query(g.conn,
               """select cat2.name damage, network_name, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
+                 from public.isp_reports_sent isp_reports
                  inner join public.urls using (urlid)
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
@@ -628,7 +628,7 @@ def ispreport_stats():
 
     q_isps = Query(g.conn,
               """select network_name, isp_type, extract('year' from isp_reports.created) yr, count(*) ct
-                 from public.isp_reports
+                 from public.isp_reports_sent isp_reports
                  inner join public.isps on network_name = isps.name
                  where network_name <> 'ORG'
                  group by network_name, isp_type, extract('year' from isp_reports.created)
@@ -709,8 +709,8 @@ def ispreport_reply_stats():
                 sum(case when status = 'rejected' then 1 else 0 end) count_rejected,
                 sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) then 1 else 0 end) count_unresolved,
                 sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) and matches_policy is false then 1 else 0 end) count_unresolved_badblock
-                from public.isp_reports
-                where network_name <> 'ORG'
+                from public.isp_reports_sent isp_reports
+                where network_name <> 'ORG' and network_name <> 'BT-Strict'
                 group by extract('year' from isp_reports.created)::int 
                 """, [])
     totals = {}
@@ -733,7 +733,7 @@ def ispreport_reply_stats():
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null then 1 else 0 end) count_unresolved,
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and isp_reports.matches_policy is false then 1 else 0 end) count_unresolved_badblock,
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.matches_policy is null) then 1 else 0 end) count_unresolved_policyblock
-                    from public.isp_reports
+                    from public.isp_reports_sent isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
                     where network_name <> 'ORG'
                     group by network_name, extract('year' from isp_reports.created)::int""",
