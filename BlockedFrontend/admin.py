@@ -602,7 +602,6 @@ def ispreport_stats():
                  from public.urls 
                  inner join public.url_report_category_asgt asgt2 using (urlid)
                  inner join public.url_report_categories cat2 on asgt2.category_id = cat2.id and cat2.category_type = 'damage'
-                 where network_name <> 'ORG' and network_name <> 'BT-Strict'
                  group by cat2.name, extract('year' from urls.last_reported)
                  order by cat2.name, extract('year' from urls.last_reported)"""
                  , [])            
