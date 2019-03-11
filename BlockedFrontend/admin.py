@@ -801,7 +801,7 @@ def ispreport_category_stats():
                   """select name, count(*) ct
                      from public.categories
                      inner join public.url_categories on category_id = categories.id
-                     where namespace = 'ORG'
+                     where namespace = 'ORG' and enabled = true
                      group by name
                      order by name""", [])
 
@@ -1417,6 +1417,12 @@ def urls_upload_post():
     flash("{0} url{1} uploaded".format(addcount, '' if addcount == 1 else 's'))
     return redirect(url_for('.urls_upload'))
 
+################
+#
+# URL category admin
+#
+################
+
 @admin_pages.route('/control/url-category')
 @check_admin
 def url_categories():
@@ -1467,6 +1473,9 @@ def url_category_merge():
                      where category_id = %s 
                         and not exists(select 1 from public.url_categories x where x.urlid = url_categories.urlid and x.category_id = %s)""",
                   [cat['id'], merge, cat['id']])
+        q = Query(g.conn,
+                  """update public.url_categories set enabled = true, last_updated=now() where category_id = %s and enabled = false""",
+                  [cat['id']])
         mergenames.append(mergecat['name'])
         mergecat.delete()
     g.conn.commit()
@@ -1491,11 +1500,6 @@ def url_category_delete(id):
     if request.method == 'GET':
         return render_template('url_category_delete_confirm.html', id=id, cat=cat)
 
-
-
-
-
-    
 
 ## Tests admin
 
