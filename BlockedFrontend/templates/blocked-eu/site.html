@@ -216,22 +216,18 @@
   </div>
 
   <div class="col-md-6">
-    <h4>Link to this result</h4>
-    <form class="form-horizontal">
-      <div class="form-group">
-        <div class="col-sm-12">
-          <div class="input-group">
-            <input class="form-control" type="text" id="permalink" name="permalink" value="{{ config.SITE_URL }}{{  url_for('.site', url=url)  }}">
-            <span class="input-group-btn">
-              <button title="Copy this permalink to the clipboard" id="copybtn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-copy"></span></button>
-            </span>
-          </div>
-        </div>
-      </div>
-    </form>
-
-
-  </div>
+		<h4>Link to this result</h4>
+	<small><a href="{{ config.SITE_URL }}{{  url_for('.site', url=url)  }}">{{ config.SITE_URL }}{{  url_for('.site', url=url)  }}</a></small>
+				  <button title="Copy this permalink to the clipboard" id="copybtn" type="button" class="btn btn-default" style="margin-left: 1.5rem;"><span class="glyphicon glyphicon-copy"></span></button>
+		
+		<h4>Related results</h4>
+		
+		<div id="categorylist">This site is listed in the <span>PG</span> and <span>Technology</span> categories.</div>
+		
+		<p><small><em>Category information provided by <a href="https://categorify.org" target="_blank">Categorify</a> and <a href="https://dmoztools.net" target="_blank">dmoztools.net</a></em></small></p>
+		
+	
+</div>
 
 </div> <!-- /.row -->
 
