@@ -20,14 +20,16 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
 <tr>
   <th>Name</th>
   <th class="num">Entry count</th>
-  <th class="num">Reported URLs</th>
-  <th class="num">Unblocked URLs</th>
+  <th class="num">Entries reported</th>
+  <th class="num">ISP blocks found</th>
+  <th class="num">ISP blocks lifted</th>
 </tr>
 {% for lst in lists %}
 <tr>
   <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
   <td class="num">{{ lst.item_count }}</td>
   <td class="num">{{ lst.reported_count }}</td>
+  <td class="num">{{ lst.block_count }}</td>
   <td class="num">{{ lst.unblock_count }}</td>
 </tr>
 

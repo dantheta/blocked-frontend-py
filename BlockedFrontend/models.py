@@ -30,14 +30,19 @@ class SavedList(DBObject):
     def select_with_totals(cls, conn, public):
         q = Query(conn,
                   """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
-                     count(distinct isp_reports.urlid) reported_count, count(distinct items.id) item_count, count(case when items.blocked is false then 1 else 0 end) unblock_count
+                         count(distinct items.id) item_count,
+                         count(distinct isp_reports.urlid) reported_count,
+                         sum(case when uls.first_blocked is not null then 1 else 0 end) block_count, -- historical blocks
+                         sum(case when uls.first_blocked is not null and (isp_reports.unblocked = 1 or isp_reports.status = 'unblocked') then 1 else 0 end) unblock_count
                      from savedlists
                      left join items on list_id = savedlists.id
                      left join urls using (url)
-                     left join public.isp_reports on isp_reports.status >= 'new' and isp_reports.urlid = urls.urlid
+                     left join url_latest_status uls on uls.urlid = urls.urlid
+                     left join public.isp_reports_sent isp_reports on isp_reports.urlid = uls.urlid and uls.network_name = isp_reports.network_name
                      where savedlists.public = %s
                      group by savedlists.id, savedlists.name
                      order by savedlists.name""", [public])
+
         for row in q:
             yield cls(conn, data=row)
         q.close()
