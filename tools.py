@@ -58,7 +58,7 @@ def run_update():
     c = conn.cursor()
     c2 = conn.cursor()
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
-               where frontpage=true \
+               where public=true \
                order by last_checked nulls first limit 500")
 
     # only evaluate based on test results from the last two weeks
