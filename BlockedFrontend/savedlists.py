@@ -8,6 +8,7 @@ from utils import *
 
 import models
 import NORM.exceptions
+from NORM import Query
 
 from auth import *
 from db import *
