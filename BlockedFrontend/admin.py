@@ -726,6 +726,17 @@ def ispreport_reply_stats():
             totals[col] += row[col]
     sent_stats['_total'] = totals
 
+    q5 = Query(g.conn,
+               """select
+                       avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time,
+                       array_agg(distinct network_name) isps
+                  from public.isp_reports_sent isp_reports
+                  left join public.isp_report_emails on report_id = isp_reports.id
+                  where network_name not in ('ORG','TalkTalk','Plusnet','O2')
+                      and extract('year' from isp_reports.created) = 2018""", [])
+    all_isp_response = q5.fetchone()
+
+
     reply_stats = Query(g.conn,
               """select network_name, extract('year' from isp_reports.created)::int as year,
                     count(distinct isp_reports.id) reports_sent,
@@ -747,6 +758,7 @@ def ispreport_reply_stats():
 
     return render_template('ispreport_reply_stats.html',
                            sent_stats=sent_stats,
+                           all_isp_response=all_isp_response,
                            reply_stats=reply_stats)
 
 
