@@ -378,13 +378,20 @@ def ispreports_update_category():
             })
         comment.store()   
     
-    def add_association(catid, urlid):
+    def add_association(catid, urlid, primary):
+        if primary:
+            # clear primary for all other ORG categories
+            q = Query(g.conn, 
+                      """update public.url_categories set primary_category = False
+                         where urlid = %s and category_id in (select id from public.categories where namespace = 'ORG')""",
+                      [urlid])
         urlcat = UrlCategory.find_or_create(g.conn, 
                                             ['category_id', 'urlid'], # key fields
                                             {
                                                 'category_id': catid,
                                                 'urlid': urlid,
                                                 'enabled': True,
+                                                'primary_category': primary,
                                                 'userid': session['userid']
                                             })
         if urlcat['enabled'] == False:
@@ -392,7 +399,12 @@ def ispreports_update_category():
                 'enabled': True,
                 'userid': session['userid']
             })
-
+            urlcat.store()
+        if primary:
+            urlcat.update({
+                'primary_category': primary,
+                'userid': session['userid']
+            })
             urlcat.store()
         return urlcat
     
@@ -404,6 +416,8 @@ def ispreports_update_category():
         for urlcatid in make_list(f['url_category_id']):
             urlcat = UrlCategory(g.conn, int(urlcatid))
             urlcat['enabled'] = not urlcat['enabled']
+            if not urlcat['enabled'] and urlcat['primary_category']:
+                urlcat['primary_category'] = False
             urlcat['userid'] = session['userid']
             urlcat.store()
             
@@ -416,7 +430,7 @@ def ispreports_update_category():
                                           'display_name': f['add_category_name'].strip()
                                       })
             
-        urlcat = add_association(cat['id'], report['urlid'])
+        urlcat = add_association(cat['id'], report['urlid'], ('primary_category' in f))
 
         flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
                 
@@ -425,7 +439,7 @@ def ispreports_update_category():
         
         cat = Category(g.conn, f['add_category_id'])
         
-        urlcat = add_association(cat['id'], report['urlid'])
+        urlcat = add_association(cat['id'], report['urlid'], ('primary_category' in f))
         
         flash("Added to category: {0} ({1})".format(cat['display_name'], cat['namespace']))
         

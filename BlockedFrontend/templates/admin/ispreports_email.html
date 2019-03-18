@@ -251,6 +251,9 @@ $(document).ready(function(){
             {% if cat.url_category_userid %}
             <span class="glyphicon glyphicon-user admin-comments" title="Category added/removed by administrator" data-id="{{ cat.url_category_id }}"></span>
             {% endif %}
+            {% if cat.primary_category %}
+            <span class="glyphicon glyphicon-star" title="Primary assigned category"></span>
+            {% endif %}
             </li>
             {% endfor %}
         </ul>
@@ -277,6 +280,7 @@ $(document).ready(function(){
             <p><em>Or</em></p>
             {{ forms.text_field('Add new category', 'add_category_name', '') }}
 
+            {{ forms.check_field('Primary category', 'primary_category', '1') }}
         </div>
         <div class="col-md-4">
             

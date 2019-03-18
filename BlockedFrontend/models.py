@@ -319,7 +319,7 @@ class Url(DBObject):
         return self['urlid']
 
     def get_categories(self):
-        q = Query(self.conn, """select cat.*, urlcat.id as url_category_id, urlcat.enabled, urlcat.userid as url_category_userid
+        q = Query(self.conn, """select cat.*, urlcat.id as url_category_id, urlcat.enabled, urlcat.userid as url_category_userid, urlcat.primary_category
             from public.categories cat
             inner join public.url_categories urlcat on cat.id = urlcat.category_id
             where urlid = %s
