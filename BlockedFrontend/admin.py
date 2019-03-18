@@ -817,21 +817,21 @@ def ispreport_category_stats():
     if request.args.get('reporter'):
         cat = UrlReportCategory(g.conn, id=request.args['reporter'])
         q = Query(g.conn,
-                  """select name, count(*) ct
+                  """select name, count(distinct case when primary_category = true then url_categories.id else null end ) primary_ct, count(*) ct
                      from public.categories
-                     inner join public.url_categories on category_id = categories.id
+                     inner join public.url_categories on url_categories.category_id = categories.id
                      inner join public.url_report_category_asgt asgt on asgt.urlid = url_categories.urlid
-                     where namespace = 'ORG' and asgt.category_id = %s
+                     where categories.namespace = 'ORG' and url_categories.enabled = true and asgt.category_id = %s
                      group by name
                      order by name""",
                   [request.args['reporter']])
     else:
         cat = None
         q = Query(g.conn,
-                  """select name, count(*) ct
+                  """select name, count(distinct case when primary_category = true then url_categories.id else null end ) primary_ct, count(*) ct
                      from public.categories
-                     inner join public.url_categories on category_id = categories.id
-                     where namespace = 'ORG' and enabled = true
+                     inner join public.url_categories on url_categories.category_id = categories.id
+                     where categories.namespace = 'ORG' and url_categories.enabled = true
                      group by name
                      order by name""", [])
 

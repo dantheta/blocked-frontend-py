@@ -30,11 +30,13 @@
 <table class="table table-compressed">
     <tr>
         <th>ORG Category name</th>
+        <th class="num">URL Count (primary category) </th>
         <th class="num">URL Count</th>
     </tr>
     {% for row in categories %}
     <tr>
         <td>{{ row.name }}</td>
+        <td class="num">{{ row.primary_ct }}</td>
         <td class="num">{{ row.ct }}</td>
     </tr>
     {% endfor %}
