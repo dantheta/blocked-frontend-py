@@ -34,6 +34,18 @@ A great many websites are being blocked mistakenly as a result of government imp
       <input type="checkbox" name="exclude_adult" value="1" {{ 'checked="1"' if request.args.exclude_adult|default('1') != '0' else '' }} /> Exclude likely pornographic &amp; adult services sites
     </label>
   </div>
+  <div class="control-group">
+      <label>Filter by network:</label>
+      <select class="form-control" name="network">
+          <option value="" {{ 'selected="selected"' if not network else '' }}>(all)</option>
+          <option value="_fixed">All fixed ISPs</option>
+          <option value="_mobile">All mobile ISPs</option>
+          {% for isp in config.ISPS|sort %}
+          <option value="{{ isp }}" {{'selected' if request.args.network == isp else '' }}>{{ isp }}</option>
+          {% endfor %}
+      </select>
+  </div>
+
 </div>
 </form>
 
@@ -53,7 +65,11 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div class="col-md-9">
 
 <div id="categoryname">Blocked sites with keywords: "{{ search }}"</div>
-<div id="blockcount">{{ data.count }} blocked sites</div>
+<div id="blockcount">{{ data.count }} blocked site{{ '' if data.count == 1 else 's' }}
+{% if network %}
+<small>on {{ network|first }}</small>
+{% endif %}
+</div>
 
 </div>
 <div class="col-md-3" style="text-align: right">
@@ -66,6 +82,7 @@ A great many websites are being blocked mistakenly as a result of government imp
                     <legend>Create a list of sites for later review</legend>
                     <input type="hidden" name="search" value="{{ search }}" />
                     <input type="hidden" name="exclude_adult" value="{{ request.args.exclude_adult|default('0') }}" />
+                    <input type="hidden" name="network" value="{{ request.args.network|default('') }}" />
                     <div class="form-group">
                         <label for="title">List title:</label>
                         <input type="text" class="form-control" name="name" />

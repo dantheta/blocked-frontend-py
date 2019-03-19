@@ -127,10 +127,12 @@ class ApiClient(BaseApiClient):
         req['signature'] = self.sign(req, ['url'])
         return self.POST('status/url', req)
 
-    def search_url(self, search, page=0, exclude_adult=0):
+    def search_url(self, search, page=0, exclude_adult=0, networks=None):
         """Search sites by keyword"""
 
         req = {'q': search, 'page': page, 'exclude_adult': exclude_adult}
+        if networks:
+            req['networks[]'] = map(lambda x: x.lower(), networks)
         return self._request('search/url', req)
 
     def recent_blocks(self, page, region, format='networkrow', sort='url'):

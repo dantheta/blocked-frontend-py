@@ -3,7 +3,7 @@ import re
 import logging
 
 from flask import Blueprint, render_template, redirect, request, \
-    g, url_for, session
+    g, url_for, session, current_app
 
 from utils import *
 from models import SavedList
@@ -49,8 +49,14 @@ def sites_search(search=None, page=1):
     if search:
         session['route'] = 'keyword'
 
+        networks = request.args.get('network', None)
+        if networks:
+            networks = [networks]
+
+        current_app.logger.info("Networks: %s", networks)
+
         exclude_adult = request.args.get('exclude_adult', 0)
-        data = g.api.search_url(search, page-1, exclude_adult)
+        data = g.api.search_url(search, page-1, exclude_adult, networks)
         logging.debug(data)
         pagesize = 20 # defined in API
         pagecount = get_pagecount(data['count'], pagesize)
@@ -60,14 +66,16 @@ def sites_search(search=None, page=1):
         pagecount = 0
     g.remote_content = g.remote.get_content('keyword-search')
     return render_template('site-search.html', 
-            data=data, page=page, search=search, pagecount=pagecount
+            data=data, page=page, search=search, pagecount=pagecount,
+            network=networks, 
             )
 
 @category_pages.route('/sites', methods=['POST'])
 def sites_search_post():
     search = request.form['search']
     exclude_adult = request.form.get('exclude_adult', '0')
-    return redirect(url_for('.sites_search', search=search, exclude_adult=exclude_adult))
+    network = request.form.get('network','')
+    return redirect(url_for('.sites_search', search=search, exclude_adult=exclude_adult, network=network))
 
 @category_pages.route('/apicategorysearch')
 def apicategorysearch():
