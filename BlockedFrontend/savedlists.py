@@ -96,12 +96,23 @@ def show_list(name, page=1):
 
 @list_pages.route('/lists')
 def show_lists():
+    import collections
+    import itertools
     g.remote_content = g.remote.get_content('lists')
     #savedlists = models.SavedList.select_with_totals(g.conn, public='t')
-    savedlists = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+    q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+
+    savedlists, qtotal = itertools.tee(2)
+
+    totals = collections.defaultdict(lambda: 0)
+    for row in qtotal:
+        for f in ('item_count','reported_count','item_block_count', 'block_count','unblock_count','active_block_count'):
+            totals[f] = totals[f] + row[f]
+
     g.conn.commit()
     return render_template('lists.html',
-        lists=savedlists
+        lists=savedlists,
+        totals=totals
         )
 
 @list_pages.route('/lists/check')
