@@ -37,7 +37,7 @@ class SavedList(DBObject):
                      from savedlists
                      left join items on list_id = savedlists.id
                      left join urls using (url)
-                     left join url_latest_status uls on uls.urlid = urls.urlid
+                     left join public.url_latest_status uls on uls.urlid = urls.urlid
                      left join public.isp_reports_sent isp_reports on isp_reports.urlid = uls.urlid and uls.network_name = isp_reports.network_name
                      where savedlists.public = %s
                      group by savedlists.id, savedlists.name

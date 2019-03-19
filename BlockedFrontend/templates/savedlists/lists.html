@@ -12,6 +12,13 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
 {% endif %}
 {% endblock %}
 
+{% block pagestyle %}
+
+.totalrow {
+    background-color: #ededed;
+}
+{% endblock %}
+
 {% block body %}
 <div class="row">
 <div class="col-md-12">
@@ -26,6 +33,13 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
   <th class="num">ISP blocks lifted</th>
   <th class="num">Current ISP blocks</th>
 </tr>
+{% set total_item_count = 0 %}
+{% set total_reported_count = 0 %}
+{% set total_item_block_count = 0 %}
+{% set total_block_count = 0 %}
+{% set total_unblock_count = 0 %}
+{% set total_active_block_count = 0 %}
+
 {% for lst in lists %}
 <tr>
   <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
@@ -38,7 +52,24 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
   <td class="num">{{ lst.active_block_count }}</td>
 </tr>
 
+  {% set total_item_count = total_item_count + lst.item_count %}
+  {% set total_reported_count = total_reported_count + lst.reported_count %}
+  {% set total_item_block_count = total_item_block_count + lst.item_block_count %}
+  {% set total_block_count = total_block_count + lst.block_count %}
+  {% set total_unblock_count = total_unblock_count + lst.unblock_count %}
+  {% set total_active_block_count = total_item_count + lst.item_count %}
+
 {% endfor %}
+<tr class="totalrow">
+  <td>Totals:</td>
+  <td class="num">{{ total_item_count }}</td>
+  <td class="num">{{ total_reported_count }}</td>
+  <td class="num">{{ total_item_block_count }}</td>
+  
+  <td class="num">{{ total_block_count }}</td>
+  <td class="num">{{ total_unblock_count }}</td>
+  <td class="num">{{ total_active_block_count }}</td>
+</tr>
 </table>
 
 </div>
