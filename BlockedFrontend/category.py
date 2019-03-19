@@ -64,6 +64,7 @@ def sites_search(search=None, page=1):
     else:
         data = None
         pagecount = 0
+        networks=None
     g.remote_content = g.remote.get_content('keyword-search')
     return render_template('site-search.html', 
             data=data, page=page, search=search, pagecount=pagecount,
