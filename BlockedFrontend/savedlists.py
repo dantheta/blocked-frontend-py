@@ -102,7 +102,7 @@ def show_lists():
     #savedlists = models.SavedList.select_with_totals(g.conn, public='t')
     q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
 
-    savedlists, qtotal = itertools.tee(2)
+    savedlists, qtotal = itertools.tee(q1, 2)
 
     totals = collections.defaultdict(lambda: 0)
     for row in qtotal:
