@@ -38,8 +38,8 @@ A great many websites are being blocked mistakenly as a result of government imp
       <label>Filter by network:</label>
       <select class="form-control" name="network">
           <option value="" {{ 'selected="selected"' if not network else '' }}>(all)</option>
-          <option value="_fixed">All fixed ISPs</option>
-          <option value="_mobile">All mobile ISPs</option>
+          <option value="_fixed" {{ 'selected' if request.args.network == '_fixed' else '' }}>All fixed ISPs</option>
+          <option value="_mobile" {{ 'selected' if request.args.network == '_mobile' else '' }}>All mobile ISPs</option>
           {% for isp in config.ISPS|sort %}
           <option value="{{ isp }}" {{'selected' if request.args.network == isp else '' }}>{{ isp }}</option>
           {% endfor %}
@@ -67,7 +67,15 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div id="categoryname">Blocked sites with keywords: "{{ search }}"</div>
 <div id="blockcount">{{ data.count }} blocked site{{ '' if data.count == 1 else 's' }}
 {% if network %}
-<small>on {{ network|first }}</small>
+<small>on 
+{%   if network|first == '_fixed' %}
+fixed-line ISPs
+{%   elif network|first == '_mobile' %}
+mobile ISPs
+{%   else %}
+    {{ network|first }}
+{%   endif %}
+</small>
 {% endif %}
 </div>
 
