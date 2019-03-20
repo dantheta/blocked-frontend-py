@@ -73,6 +73,8 @@ def create_list():
 @list_pages.route('/list/<name>/<int:page>', methods=['GET'])
 def show_list(name, page=1):
     pagesize=20
+    network = request.args.get('network')
+
     session['route'] = 'savedlist'
     if page < 1:
         return redirect(url_for('.show_list', name=name))
@@ -83,13 +85,19 @@ def show_list(name, page=1):
     if not (savedlist['public'] or g.admin):
         abort(403)
    
-    itemcount = savedlist.count_items()
+    if network:
+        itemcount = savedlist.count_items_on_network(network)
+        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize))
+    else:
+        itemcount = savedlist.count_items()
+        items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
+
     session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
-    items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
     g.conn.commit()
     return render_template('show_list.html',
             savedlist = savedlist,
             itemcount = itemcount,
+            network = request.args.get('network'),
             page = page,
             pagesize = pagesize,
             pagecount = get_pagecount(itemcount, pagesize), 
@@ -225,7 +233,11 @@ def export_list(name):
     writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.show_list', name=name) ])
     writer.writerow([])
     writer.writerow(['URL', 'Report URL'])
-    for item in savedlist.get_items():
+    if request.args.get('network'):
+        it = savedlist.get_items_on_network(request.args['network'])
+    else:
+        it = savedlist.get_items()
+    for item in it:
         writer.writerow([item['url'], current_app.config['SITE_URL']+ url_for('site.site', url=item['url']) ])
 
     tmpfile.flush()
