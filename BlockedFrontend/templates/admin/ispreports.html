@@ -24,6 +24,9 @@ td.center, th.center {
     <li role="presentation" class="{{ 'active' if request.args.state == 'open' else '' }}">
         <a href="{{ url_for('.ispreports', state='open', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Open <span class="badge">{{ reports.open_count }}</span></a>
     </li>
+    <li role="presentation" class="{{ 'active' if request.args.state == 'cancelled' else '' }}">
+        <a href="{{ url_for('.ispreports', state='cancelled', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Cancelled <span class="badge">{{ reports.cancel_count }}</span></a>
+    </li>
     <li role="presentation" class="{{ 'active' if request.args.state == 'reviewed' else '' }}">
         <a href="{{ url_for('.ispreports', state='reviewed', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Reviewed <span class="badge">{{ reports.review_count }}</span></a>
     </li>
