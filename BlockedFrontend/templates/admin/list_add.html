@@ -1,0 +1,31 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Add Saved List" %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-8">
+
+<h1>{{pagetitle}}</h1>
+
+<form method="POST" action="{{ url_for('.savedlists_create') }}" enctype="multipart/form-data">
+    {{ forms.text_field('List name', 'name') }}
+    <div class="form-group">
+        <label for="upload">Upload list:</label>
+        <input type="file" name="upload" id="upload" />
+    </div>
+    <p class="bg-info" style="padding: 8px">Upload file should be plain text, with one URL per line</p>
+
+    <div class="form-group">
+    {{ forms.submit('Add') }}
+    </div>
+
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}

@@ -61,6 +61,7 @@ def admin_post():
 
     session['admin'] = True
     session['userid'] = user['id']
+    session['username'] = user['username']
     session['admin_level'] = user['user_type']
     flash("Admin login successful")
     if session['admin_level'] != 'admin':
@@ -89,6 +90,43 @@ def savedlists():
     return render_template('listindex.html',
         lists=SavedList.select(g.conn, _orderby='name')
         )
+
+@admin_pages.route('/control/savedlists/add')
+@check_admin
+def savedlists_add():
+    return render_template('list_add.html')
+
+@admin_pages.route('/control/savedlists/create', methods=['POST'])
+@check_admin
+def savedlists_create():
+    f = request.form
+
+    savedlist = SavedList(g.conn)
+    savedlist.update({
+        'username': session.get('username','admin'),
+        'name': f['name'],
+        'public': False,
+        'frontpage': False
+    })
+    savedlist.store()
+
+    if 'upload' in request.files and request.files['upload'].filename:
+        for line in request.files['upload'].stream:
+            url = normalize_url(line.strip())
+
+            item = Item(g.conn)
+            item.update({
+                'list_id': savedlist.id,
+                'url': url,
+            })
+            item.store()
+
+    flash("List {0} created".format(f['name']))
+    g.conn.commit()
+    return redirect(url_for('.savedlists'))
+
+
+
 
 @admin_pages.route('/control/savedlists/delete/<int:id>')
 @check_admin
