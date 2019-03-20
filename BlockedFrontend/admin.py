@@ -93,12 +93,12 @@ def savedlists():
 
 @admin_pages.route('/control/savedlists/add')
 @check_admin
-def savedlists_add():
+def savedlist_add():
     return render_template('list_add.html')
 
 @admin_pages.route('/control/savedlists/create', methods=['POST'])
 @check_admin
-def savedlists_create():
+def savedlist_create():
     f = request.form
 
     savedlist = SavedList(g.conn)
@@ -112,6 +112,9 @@ def savedlists_create():
 
     if 'upload' in request.files and request.files['upload'].filename:
         for line in request.files['upload'].stream:
+            if not line.strip():
+                continue
+
             url = normalize_url(line.strip())
 
             item = Item(g.conn)
@@ -124,8 +127,6 @@ def savedlists_create():
     flash("List {0} created".format(f['name']))
     g.conn.commit()
     return redirect(url_for('.savedlists'))
-
-
 
 
 @admin_pages.route('/control/savedlists/delete/<int:id>')

@@ -10,7 +10,7 @@
 
 <h1>{{pagetitle}}</h1>
 
-<form method="POST" action="{{ url_for('.savedlists_create') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ url_for('.savedlist_create') }}" enctype="multipart/form-data">
     {{ forms.text_field('List name', 'name') }}
     <div class="form-group">
         <label for="upload">Upload list:</label>
