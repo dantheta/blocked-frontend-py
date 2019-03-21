@@ -20,10 +20,15 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
         </button>
         <ul class="dropdown-menu">
             <li><a href="{{ url_for('.show_lists') }}">( all )</a></li>
-            {% for isp in ['BT-Strict'] %}
+            {% for isp in config.ISPS|sort %}
+            <li>
+                <a href="{{ url_for('.show_lists', network=isp) }}">{{ isp }} only</a>
+            </li>
+            {% if isp == 'BT-Strict' %}
             <li>
                 <a href="{{ url_for('.show_lists', network=isp, exclude=1) }}">Exclude {{ isp }}</a>
             </li>
+            {% endif %}
             {% endfor %}
         </ul>
     </div>
