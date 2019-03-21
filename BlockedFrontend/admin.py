@@ -407,6 +407,7 @@ def ispreports_view(url, network_name, msgid=None):
 
 
 @admin_pages.route('/control/ispreports/category/update', methods=['POST'])
+@check_admin
 def ispreports_update_category():
     f = request.form
     
@@ -494,6 +495,7 @@ def ispreports_update_category():
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
     
 @admin_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
+@check_admin
 def ispreports_update_report_category():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
@@ -579,6 +581,7 @@ def ispreports_update_report_category():
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='rptcategories'))    
     
 @admin_pages.route('/control/ispreports/review/update', methods=['POST'])
+@check_admin
 def ispreports_review_update():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
