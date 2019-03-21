@@ -114,8 +114,11 @@ def show_lists():
 
     if g.admin:
         if request.args.get('network'):
-            args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
-            q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
+            if request.args['network'] == 'BT-Strict' and request.args['exclude']:
+                q1 = Query(g.conn, "select * from stats.savedlist_summary_no_btstrict order by name", [])
+            else:
+                args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
+                q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
         else:
             q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
     else:
