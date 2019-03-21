@@ -10,6 +10,26 @@
 Blocked sites listed by topic.  These lists have been compiled by ORG staff and volunteers.
 
 {% endif %}
+    <div style="">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="glyphicon glyphicon-filter"></span>
+            Filter by ISP
+            {%- if network %} ({{ network }} {{ 'excluded' if request.args.exclude else 'only' }}) {%- endif %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="{{ url_for('.show_lists') }}">( all )</a></li>
+            {% for isp in config.ISPS|sort %}
+            <li>
+                <a href="{{ url_for('.show_lists', network=isp) }}">{{ isp }} only</a>
+            </li>
+            <li>
+                <a href="{{ url_for('.show_lists', network=isp, exclude=1) }}">Exclude {{ isp }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
 {% endblock %}
 
 {% block pagestyle %}
@@ -23,7 +43,6 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
 <div class="row">
 <div class="col-md-12">
 
-    
 
 <table class="table">
 <tr>

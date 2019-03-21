@@ -56,7 +56,13 @@ class SavedList(DBObject):
 
 
     @classmethod
-    def select_with_totals(cls, conn, public):
+    def select_with_totals(cls, conn, public, network=None, exclude=False):
+        args = [public]
+        crit = ''
+        if network:
+            args.append(network)
+            crit = 'and uls.network_name {0} %s'.format('<>' if exclude else '=')
+
         q = Query(conn,
                   """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
                          count(distinct items.id) item_count,
@@ -68,9 +74,10 @@ class SavedList(DBObject):
                      left join urls using (url)
                      left join public.url_latest_status uls on uls.urlid = urls.urlid
                      left join public.isp_reports_sent isp_reports on isp_reports.urlid = uls.urlid and uls.network_name = isp_reports.network_name
-                     where savedlists.public = %s
+                     where savedlists.public = %s {0}
                      group by savedlists.id, savedlists.name
-                     order by savedlists.name""", [public])
+                     order by savedlists.name""".format(crit),
+                     args)
 
         for row in q:
             yield cls(conn, data=row)

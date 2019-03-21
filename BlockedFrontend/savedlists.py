@@ -111,20 +111,25 @@ def show_lists():
     import collections
     import itertools
     g.remote_content = g.remote.get_content('lists')
-    #savedlists = models.SavedList.select_with_totals(g.conn, public='t')
-    q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+    if request.args.get('network'):
+        args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
+    else:
+        args = {}
+    q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
+    #q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
 
     savedlists, qtotal = itertools.tee(q1, 2)
 
     totals = collections.defaultdict(lambda: 0)
     for row in qtotal:
         for f in ('item_count','reported_count','item_block_count', 'block_count','unblock_count','active_block_count'):
-            totals[f] = totals[f] + row[f]
+            totals[f] = totals[f] + row.get(f, 0)
 
     g.conn.commit()
     return render_template('lists.html',
         lists=savedlists,
-        totals=totals
+        totals=totals,
+        network=request.args.get('network')
         )
 
 @list_pages.route('/lists/check')
