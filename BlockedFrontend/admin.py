@@ -360,6 +360,7 @@ def ispreports_view(url, network_name, msgid=None):
     urlobj = Url.select_one(g.conn, url=url)
     ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
     isp = ispreport.get_isp()
+    contact = ispreport.get_contact()
     emails = list(ispreport.get_emails_parsed())
     if msgid:
         email = ISPReportEmail.select_one(g.conn, id=msgid)
@@ -400,7 +401,9 @@ def ispreports_view(url, network_name, msgid=None):
                            damage_categories=damage_categories,
                            report_damage_categories=urlobj.get_report_categories('damage'),
                            reporter_category=urlobj.get_reporter_category(),
-                           networks=g.remote.get_networks()) 
+                           networks=g.remote.get_networks(),
+                           verified= contact and contact['verified']
+                           ) 
 
 
 @admin_pages.route('/control/ispreports/category/update', methods=['POST'])

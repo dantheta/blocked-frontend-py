@@ -594,6 +594,12 @@ class ISPReport(DBObject):
             'url': row[0],
             'network_name': row[1]
             }
+
+    def get_contact(self):
+        q = Query(self.conn, """select * from public.contacts where id = %s""", [self['contact_id']])
+        row = q.fetchone()
+        q.close()
+        return row
         
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'

@@ -71,7 +71,15 @@ $(document).ready(function(){
 
 {{ forms.labelled_text("Reported", 'reported', report.created|fmtime) }}
 {{ forms.labelled_text("Updated", 'reported', report.last_updated|fmtime) }}
+{% if verified != None %}
+{{ forms.labelled_text("User", 'user', "%s (%s) <span class=\"label label-%s\">%s</span>"|format(
+                                                                report.name, report.email, 
+                                                                'success' if verified else 'default', 
+                                                                'verified' if verified else 'pending'
+                                                                )|safe) }}
+{% else %}
 {{ forms.labelled_text("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
+{% endif %}
 
 
 <p style="margin-top: 1em; font-size: larger; font-style: italic" class="well">&ldquo;{{report.message}}&rdquo;</p>

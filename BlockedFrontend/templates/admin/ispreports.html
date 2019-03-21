@@ -36,11 +36,11 @@ td.center, th.center {
     <li role="presentation" class="{{ 'active' if request.args.state == 'harmless' else '' }}">
         <a href="{{ url_for('.ispreports', state='harmless', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Harmless <span class="badge">{{ reports.harmless_count }}</span></a>
     </li>
-    <li role="presentation" class="">|</li>
+    <li role="presentation" class="dropdown disabled"> <a>| Filters:</a></li>
     
     <li role="presentation" class="dropdown {{'active' if request.args.network else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Filter by ISP 
+      By ISP 
       {%- if request.args.get('network') %} ({{ request.args.network }}){% endif -%}
        <span class="caret"></span>
     </a>
@@ -58,7 +58,7 @@ td.center, th.center {
 
     <li role="presentation" class="dropdown {{'active' if request.args.reportercategory else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Filter by Report Category
+      By Report Category
       {%- if request.args.get('reportercategory') %} ({{ request.args.reportercategory }}){% endif -%}
        <span class="caret"></span>
     </a>
@@ -83,7 +83,7 @@ td.center, th.center {
     
     <li role="presentation" class="dropdown {{'active' if request.args.category else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Filter by Site Category 
+      By Site Category 
       {%- if request.args.category %} ({{ request.args.category }}){% endif -%}
        <span class="caret"></span>
     </a>
