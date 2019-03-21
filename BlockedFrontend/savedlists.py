@@ -111,12 +111,15 @@ def show_lists():
     import collections
     import itertools
     g.remote_content = g.remote.get_content('lists')
-    if request.args.get('network'):
-        args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
+
+    if g.admin:
+        if request.args.get('network'):
+            args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
+        else:
+            args = {}
+        q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
     else:
-        args = {}
-    q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
-    #q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+        q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
 
     savedlists, qtotal = itertools.tee(q1, 2)
 

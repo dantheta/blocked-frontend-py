@@ -10,6 +10,7 @@
 Blocked sites listed by topic.  These lists have been compiled by ORG staff and volunteers.
 
 {% endif %}
+    {% if g.admin %}
     <div style="">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="glyphicon glyphicon-filter"></span>
@@ -28,8 +29,8 @@ Blocked sites listed by topic.  These lists have been compiled by ORG staff and 
             </li>
             {% endfor %}
         </ul>
-
     </div>
+    {% endif %}
 {% endblock %}
 
 {% block pagestyle %}
