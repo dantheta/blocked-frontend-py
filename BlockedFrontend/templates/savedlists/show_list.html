@@ -32,7 +32,7 @@
 
 <h3>{{ itemcount }} {{ "entry" if itemcount == 1 else "entries" }}
     {% if network %}
-    <small>on {{ network }}</small>
+    <small>{% if request.args.exclude %}excluding{% else %}on{% endif %} {{ network }}</small>
     {% endif %}
 </h3>
     </div>
