@@ -87,7 +87,7 @@ def show_list(name, page=1):
    
     if network:
         itemcount = savedlist.count_items_on_network(network)
-        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize))
+        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize), exclude=request.args.get('exclude', None))
     else:
         itemcount = savedlist.count_items()
         items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))

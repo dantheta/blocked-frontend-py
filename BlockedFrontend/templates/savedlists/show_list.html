@@ -48,6 +48,9 @@
             <li><a href="{{ url_for('.show_list', name=savedlist.name) }}">( all )</a></li>
             {% for isp in config.ISPS|sort %}
             <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp) }}">{{ isp }}</a></li>
+            {% if isp == 'BT-Strict' %}
+            <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp, exclude=1) }}">Exclude {{ isp }}</a></li>
+            {% endif %}
             {% endfor %}
         </ul>
 
@@ -122,7 +125,7 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
     </tr>
     {% endfor %}
 </table>
-{{ paging.page_list('.show_list',  page, pagecount, pagesize, name=savedlist.name, network=request.args.network|default('') ) }}
+{{ paging.page_list('.show_list',  page, pagecount, pagesize, name=savedlist.name, network=request.args.network|default(''), exclude=request.args.exclude|default('') ) }}
 
     </div>
 </div>

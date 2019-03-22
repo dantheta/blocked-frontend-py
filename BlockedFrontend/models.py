@@ -22,15 +22,16 @@ class SavedList(DBObject):
     def get_items(self, **kw):
         return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
 
-    def get_items_on_network(self, network, _limit=None):
+    def get_items_on_network(self, network, _limit=None, exclude=None):
         q = Query(self.conn,
-                  """select items.*
+                  """select distinct items.*
                      from items
                      inner join public.urls using (url)
-                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name = %s and uls.status = 'blocked'
-                     where list_id = %s
+                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {1} %s and uls.status = 'blocked'
+                     where list_id = %s 
                      order by url
-                     {0}""".format("limit {limit[0]} offset {limit[1]}".format(limit=_limit) if _limit else ''),
+                     {0}""".format("limit {limit[0]} offset {limit[1]}".format(limit=_limit) if _limit else '',
+                                   "<>" if exclude else "="),
                   [network, self['id']])
         for row in q:
             yield Item(self.conn, data=row)
