@@ -122,8 +122,8 @@ def show_lists():
                 args = {'network': request.args.getlist('network')}
                 q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
         else:
-            #q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
-            q1 = models.SavedList.select_with_totals(g.conn, public='t' )
+            q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+            #q1 = models.SavedList.select_with_totals(g.conn, public='t' )
     else:
         q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
 
