@@ -112,15 +112,18 @@ def show_lists():
     import itertools
     g.remote_content = g.remote.get_content('lists')
 
+
+
     if g.admin:
         if request.args.get('network'):
             if request.args['network'] == 'BT-Strict' and request.args['exclude']:
                 q1 = Query(g.conn, "select * from stats.savedlist_summary_no_btstrict order by name", [])
             else:
-                args = {'network': request.args['network'], 'exclude': request.args.get('exclude',None)}
+                args = {'network': request.args.getlist('network')}
                 q1 = models.SavedList.select_with_totals(g.conn, public='t', **args)
         else:
-            q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+            #q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+            q1 = models.SavedList.select_with_totals(g.conn, public='t' )
     else:
         q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
 
@@ -132,10 +135,15 @@ def show_lists():
             totals[f] = totals[f] + row.get(f, 0)
 
     g.conn.commit()
+
+    def remove_isp(ls, net):
+        return [x for x in ls if x != net]
+
     return render_template('lists.html',
         lists=savedlists,
         totals=totals,
-        network=request.args.get('network')
+        network=request.args.getlist('network'),
+        remove_isp_func=remove_isp
         )
 
 @list_pages.route('/lists/check')

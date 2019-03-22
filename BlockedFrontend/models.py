@@ -61,8 +61,12 @@ class SavedList(DBObject):
         args = [public]
         crit = ''
         if network:
-            args.append(network)
-            crit = 'and uls.network_name {0} %s'.format('<>' if exclude else '=')
+            if isinstance(network, list):
+                args.extend(network)
+                crit = "and uls.network_name in ({0})".format(",".join( ["%s"] * len(network) ) )
+            else:
+                args.append(network)
+                crit = 'and uls.network_name {0} %s'.format('<>' if exclude else '=')
 
         q = Query(conn,
                   """select savedlists.id, savedlists.name, savedlists.username, savedlists.public, savedlists.frontpage,
