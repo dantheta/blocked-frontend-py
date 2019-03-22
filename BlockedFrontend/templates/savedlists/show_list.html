@@ -41,7 +41,7 @@
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="glyphicon glyphicon-filter"></span>
             Filter by ISP
-            {%- if network %} ({{ network }}) {%- endif %}
+            {%- if network %} ({{ 'exc. ' if request.args.exclude|default('') else '' }}{{ network }}) {%- endif %}
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
