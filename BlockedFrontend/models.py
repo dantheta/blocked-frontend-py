@@ -73,7 +73,9 @@ class SavedList(DBObject):
                          count(distinct items.id) item_count,
                          count(distinct isp_reports.urlid) reported_count,
                          sum(case when uls.first_blocked is not null then 1 else 0 end) block_count, -- historical blocks
-                         sum(case when uls.first_blocked is not null and (isp_reports.unblocked = 1 or isp_reports.status = 'unblocked') then 1 else 0 end) unblock_count
+                         sum(case when uls.first_blocked is not null and (isp_reports.unblocked = 1 or isp_reports.status = 'unblocked') then 1 else 0 end) unblock_count,
+                         sum(case when uls.status = 'blocked' then 1 else 0 end) active_block_count, -- active blocks
+                         count( distinct case when uls.status = 'blocked' then items.id else null end) item_block_count -- active blocks
                      from savedlists
                      left join items on list_id = savedlists.id
                      left join urls using (url)
