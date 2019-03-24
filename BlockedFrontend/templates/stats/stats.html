@@ -6,7 +6,106 @@
 
 {% endblock %}
 
+{% block page_style %}
+.headerrow {
+    font-size: small;
+    background-color: #ededed;
+    font-weight: bold;
+    }
+.sub {
+    padding-left: 20px !important;
+    }
+{% endblock %}
+
+{% macro data_table(source, id=None, hide=None) %}
+         <table id="{{ id }}" class="table table-striped table-compressed">
+            {% set header = source.next() %}
+            <tr>
+                <th class="col-md-4">{{ header[0] }}</th>
+                {% for col in header[1:] %}
+                <th class="num">{{ col }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in source %}
+            <tr class="{{ 'hidden' if hide and loop.index > hide else ''}} ">
+                <td>{{ row[0] }}</td>
+                {% for col in row[1:] %}
+                <td class="num">{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+{% endmacro %}
+
 {% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Not only adult content is being blocked</h2>
+        <p>The domains in these categories were identified by keyword searches
+        and then double-checked by hand to ensure the categorisation was
+        accurate.</p>
+        {{ data_table(table_data.notonly_table_1) }}
+
+        <p>The domains in these categories were identified by keyword searches.</p>
+        {{ data_table(table_data.notonly_table_2) }}
+
+        <h3>All kinds of sites are reported as blocked</h3>
+
+        <p>In March 2019, we looked at all the domains that people had reported
+        to an ISP through Blocked as an incorrect block. We categorised all the
+        domains.</p>
+
+        {{ data_table(table_data.allkinds_table_1, 'allkinds1', 15) }}
+        <div style="text-align: right; margin-top: -1.5em"><a id="allkinds_viewall" href="#">View all ...</a></div>
+
+        <h3 class="clearfix">ISP Responses to reports</h3>
+
+        <table class="table">
+            <tr>
+                <th>Network/Year</th>
+                <th class="num">Unresolved non-policy block count</th>
+                <th class="num">Unresolved policy block count</th>
+                <th class="num">Resolved &amp; blocked against policy</th>
+            </tr>
+            {% for group, list in reply_stats|groupby('network_name') %}
+            <tr><td colspan="5" class="headerrow">{{ group }}</td></tr>
+            {% for row in list %}
+            <tr>
+                <td class="sub">{{ row.year }}</td>
+                <td class="num">{{ row.count_unresolved_badblock }}</td>
+                <td class="num">{{ row.count_unresolved_policyblock }}</td>
+                <td class="num">{{ row.count_resolved_badblock }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </table>
+
+        <h3>Reply stats by ISP</h3>
+
+<table class="table">
+    <tr>
+        <th>Network/Year</th>
+        <th class="num">Reports Sent</th>
+        <th class="num">Total replies received</th>
+        <th class="num">Avg reply interval</th>
+    </tr>
+    {% for group, list in reply_stats|groupby('network_name') %}
+    <tr><td colspan="4" class="headerrow">{{ group }}</td></tr>
+    {% for row in list %}
+    <tr>
+        <td class="sub">{{ row.year }}</td>
+        <td class="num">{{ row.reports_sent }}</td>
+        <td class="num">{{ row.replies_logged }}</td>
+        <td class="num">{{ (row.avg_response_time|string).split(', ',1)|first if row.avg_response_time else '' }}</td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+</table>
+
+    </div>
+</div>
+
+
 <div class="row">
 <div class="col-md-12">
 <h2>Alexa top 100,000 sites</h2>
@@ -39,6 +138,12 @@
 
 {% block page_script %}
 $(document).ready(function(){
+  $('#allkinds_viewall').click(function(){
+    $('#allkinds1 * tr').removeClass('hidden');
+    $('#allkinds_viewall').parent().hide();
+    return false;
+  });
+
   var ctx = document.getElementById("alexa100k").getContext('2d');
 
   var isps = {{ isps | tojson }}
@@ -71,7 +176,6 @@ $(document).ready(function(){
         }
     }
   });
-        
 
 
   {% for name,stats in domain_isp_stats.stats|groupby('name') %}

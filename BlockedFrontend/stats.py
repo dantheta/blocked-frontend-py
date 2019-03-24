@@ -3,6 +3,7 @@ import datetime
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
+from models import ISPReport
 from utils import *
 from resources import *
 
@@ -42,19 +43,24 @@ def stats_gb():
     isps = ispstats.keys()
     isps.sort()
 
-    category_stats = g.api.category_stats()
+    table_data = {
+        'notonly_table_1': load_csv('notonly_table_1'),
+        'notonly_table_2': load_csv('notonly_table_2'),
+        'allkinds_table_1': load_csv('allkinds_table_1'),
+        }
+
+    reply_stats = list(ISPReport.get_reply_stats(g.conn))
+    g.conn.commit()
 
     return render_template('stats.html',
-        ispstats=ispstats,
         isps=isps,
         total=[ ispstats[x]['total']  for x in isps ],
         blocked=[ ispstats[x]['blocked'] for x in isps ],
-        category_stats=category_stats['stats'],
-        categories = ["{1} ({0})".format(x['network_name'], x['category']) for x in category_stats['stats']],
 
-        domain_stats = g.api.domain_stats(),
+        domain_isp_stats = g.api.domain_isp_stats(),
 
-        domain_isp_stats = g.api.domain_isp_stats()
+        table_data = table_data,
+        reply_stats = reply_stats
         
         )
 
