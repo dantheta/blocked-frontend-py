@@ -22,8 +22,10 @@
 {%block body %}
 
 <div class="row">
-<div class="col-md-5 well">
-<h3>Get your site unblocked</h3>
+<div class="col-md-12 well">
+
+    <div class="row">
+        <div class="col-md-5">
 
 <form action="{{ url_for('site.check_post') }}" method="POST">
 <input type="hidden" name="submit" value="{{live | lower }}" />
@@ -53,8 +55,8 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
   {% endif %}
-
   </div>
+
   </div> <!-- /.col -->
 
   <div class="col-md-6 col-md-offset-1 frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
@@ -64,8 +66,9 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
   <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
 {% endcall %}
   </div>
+    </div> <!-- /.row -->
 
-
+    </div> <!-- /.col -->
 </div><!-- /.row -->
 
 <!-- template BasicPage -->
