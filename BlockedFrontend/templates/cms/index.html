@@ -73,7 +73,6 @@
       <h3>Blocked in numbers</h3>
     <div class="row" style="padding-bottom: 0px; margin-bottom: 0px">
 
-    <div class="col-md-3"><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
     <div class="col-md-3"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
     <div class="col-md-3"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
     <div class="col-md-3"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of Alexa top 100,000 sites blocked on default filter settings</div>
