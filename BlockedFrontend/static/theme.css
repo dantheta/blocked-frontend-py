@@ -44,7 +44,7 @@ body {
   line-height: 26px;
 }
 
-.shaded-row, .sitelistrow {
+.shaded-row, .sitelistrow, footer {
   background-color: #eee;
 }
 
@@ -56,11 +56,17 @@ body {
   padding-top: 0.5em;
   padding-bottom: 2em;
 }
-.menu {
+.menu, footer {
     text-align: center;
 }
 
-.menu a, #categoryname {
+footer {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+    margin-bottom: 0px;
+}
+
+.menu a, #categoryname, footer a {
   font-family: 'Poppins', sans-serif;
   text-transform: uppercase;
   text-decoration: none;
