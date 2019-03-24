@@ -26,7 +26,7 @@ h3, .pctdesc, .pagerole, .page_title {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 24px;
-  line-height: 34px;
+  line-height: 28px;
 }
 
 a {
@@ -49,12 +49,12 @@ body {
 }
 
 .menurow {
-  margin-top: 1.5em;
+  margin-top: 0.4em;
 }
 
 .row {
-  padding-top: 0.5em;
-  padding-bottom: 2em;
+  /*padding-top: 0.5em;
+  padding-bottom: 1em; */
 }
 .menu, footer {
     text-align: center;
@@ -73,7 +73,7 @@ footer {
   display: inline-block;
   margin-right: 2em;
   color: #111;    
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .menu a.active {
