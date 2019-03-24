@@ -78,11 +78,12 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
       <h3>Blocked - in numbers</h3>
     <div class="row" style="padding-bottom: 0px; margin-bottom: 0px">
 
-    <div class="col-md-2 col-md-offset-1"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
+    <div class="col-md-2"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
     <div class="col-md-2"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
     <div class="col-md-2"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of Alexa top 100,000 sites blocked on default filter settings</div>
     <div class="col-md-2"><span>{{ "{:,}".format(stats.isp_reports_made) }}</span> reports sent by our users</div>
     <div class="col-md-2"><span>{{ "{:,}".format(stats.isp_reports_unblocked) }}</span> blocks removed by our users</div>
+    <div class="col-md-2"><span>{{ "{:,}".format(stats.suspected_errors) }}</span> suspected mistakes identified by search</div>
     </div>
   </div>
 
