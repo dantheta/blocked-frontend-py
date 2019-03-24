@@ -23,7 +23,7 @@
 
 <div class="row">
 <div class="col-md-5 well">
-<h3>Check a website</h3>
+<h3>Get your site unblocked</h3>
 
 <form action="{{ url_for('site.check_post') }}" method="POST">
 <input type="hidden" name="submit" value="{{live | lower }}" />
@@ -41,7 +41,9 @@
 </div>
 
 </form>
-<p>Blocked will check if a site is being blocked by instantly running tests on major fixed line ISPs and mobile networks.</p>
+<p>Blocked will check if a site is being blocked by instantly running tests on
+major fixed line ISPs and mobile networks.  Based on the results, you can submit a request
+to the ISPs to have the site reclassified and removed from their block lists.</p>
 
 
 
