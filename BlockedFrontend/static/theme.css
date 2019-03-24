@@ -50,7 +50,6 @@ body {
 
 .menurow {
   margin-top: 1.5em;
-  margin-bottom: 3em;
 }
 
 .row {
@@ -58,7 +57,7 @@ body {
   padding-bottom: 2em;
 }
 .menu {
-  text-align: right;
+    text-align: center;
 }
 
 .menu a, #categoryname {
@@ -126,7 +125,8 @@ font-size: 125%;
 }
 
 .fpaction .buttonlist {
-padding-left: 2em;
+padding-left: 0.5em;
+padding-top: 4.0em;
 }
 
 /* search results */

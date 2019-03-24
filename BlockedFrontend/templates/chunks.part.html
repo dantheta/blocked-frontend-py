@@ -34,14 +34,6 @@
 <p>With your help we can build bigger and better tools to fight censorship and surveillance</p>
 </div>
 
-<div class="col-md-4">
-<h3>Share your story</h3>
-
-<p>Is a site being blocked affecting your personally?</p>
-
-<p>We are collecting <a href="#">personal stories</a> to help petition ISPs.</p>
-
-</div>
 
 <div class="col-md-4">
 <h3>Spread the word</h3>
@@ -91,17 +83,13 @@
 {% if config.MODULE_UNBLOCK %}
 {{ menu_link("Reported Sites", '/reported-sites') }}
 {% endif %}
-{{ menu_link("Legal Blocks", '/legal-blocks') }}
-<br />
-{{ menu_link("About", '/about') }}
-{{ menu_link("Support" ,'/support') }}
-{{ menu_link("Credits" ,'/credits') }}
+{{ menu_link("Court Order Blocks", '/legal-blocks') }}
+{{ menu_link("Your Stories", '/personal-stories') }}
+
 {{ menu_link_eq("Statistics", '/stats') }}
-{{ menu_link("Status", '/stats/probes') }}
+{{ menu_link("About", '/about') }}
 {% if config.SITE_THEME == 'blocked-eu' %}
 {{ menu_link("Contact", '/contact') }}
-{% else %}
-<a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
 {% endif %}
 
 {% endmacro %}
@@ -120,4 +108,11 @@ piwikTracker.enableLinkTracking();
 </script>
 {% endif %}
     <!-- end piwik -->
+{% endmacro %}
+
+{% macro footer_menu() %}
+            <a class="" href="/stats/probes">Status</a>
+            <a class="" href="/support">Support</a>
+            <a class="" href="/credits">Credits</a>
+            <a class="" href="https://www.openrightsgroup.org/contact/">Contact</a>
 {% endmacro %}

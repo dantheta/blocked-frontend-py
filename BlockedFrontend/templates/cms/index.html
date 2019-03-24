@@ -22,71 +22,7 @@
 {%block body %}
 
 <div class="row">
-
-  <div class="col-md-7 frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
-{% call rmt.remote('banner_text') %}
-  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
-  
-  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
-{% endcall %}
-  </div>
-
-  {% if config.MODULE_UNBLOCK %}
-
-<div class="col-md-5 shaded-row fpaction">
-<h3>Has this site been blocked in error?</h3>
-
-<div class="site" >
-  <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
-  <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
-  <p>{{site.title|null('no title')}}</p>
-</div>
-
-  <div style="padding-bottom: 1em">
-    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
-  </div>
-
-  <div class="buttonlist">
-  <div class="">
-    <a href="{{url_for('unblock.unblock', url=site.url)}}" rel="nofollow" class="btn  btn-primary">Request unblock</a>
-  </div>
-
-  <div class="">
-      <a href="{{ url_for('site.site', url=site.url) }}" class="btn  btn-default">View full results</a>
-  </div>
-
-  <div class="" >
-      <a href="/" class="btn btn-default">See another blocked site</a>
-  </div>
-  </div>
-
-  {% if savedlist %}
-  <div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
-  {% endif %}
-
-</div> <!-- /.col -->
-
-{% endif %}
-
-</div><!-- /.row -->
-
-<!-- template BasicPage -->
-
-<div class="row" style="padding-bottom: 0px">
-  <div class="col-md-7 stats hidden-sm">
-    <div class="row" style="padding-bottom: 0px; margin-bottom: 0px">
-
-    <div class="col-md-6"><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
-    <div class="col-md-6"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
-    <div class="col-md-6"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
-    <div class="col-md-6"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of Alexa top 100,000 sites blocked on default filter settings</div>
-    </div>
-  </div>
-
-</div>
-
-<div class="row" style="padding-top: 0px">
-<div class="col-md-7">
+<div class="col-md-5 well">
 <h3>Check a website</h3>
 
 <form action="{{ url_for('site.check_post') }}" method="POST">
@@ -109,16 +45,92 @@
 
 
 
-</div>
-  <div class="col-md-5 ">
+  <div>
   {% if config.MODULE_CATEGORY %}
-  <h3 style="margin-bottom: 2em">More ways to check blocked sites</h3>
+  <h3>More ways to check blocked sites</h3>
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
   {% endif %}
 
   </div>
-</div> <!--/.row -->
+  </div> <!-- /.col -->
+
+  <div class="col-md-6 col-md-offset-1 frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
+{% call rmt.remote('banner_text') %}
+  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
+  
+  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
+{% endcall %}
+  </div>
+
+
+</div><!-- /.row -->
+
+<!-- template BasicPage -->
+
+<div class="row" style="padding-bottom: 0px">
+  <div class="col-md-12 stats hidden-sm">
+      <h3>Blocked in numbers</h3>
+    <div class="row" style="padding-bottom: 0px; margin-bottom: 0px">
+
+    <div class="col-md-3"><span>{{ "{:,}".format(stats.urls_reported) }}</span> sites submitted</div>
+    <div class="col-md-3"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
+    <div class="col-md-3"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
+    <div class="col-md-3"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of Alexa top 100,000 sites blocked on default filter settings</div>
+    </div>
+  </div>
+
+</div>
+
+{% if config.MODULE_UNBLOCK %}
+
+<div class="row">
+<div class="col-md-8 col-md-offset-2 shaded-row fpaction">
+    <div class="row">
+        <div class="col-md-8">
+
+<h3>Has this site been blocked in error?</h3>
+
+<div class="site" >
+  <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
+  <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
+  <p>{{site.title|null('no title')}}</p>
+</div>
+
+  <div style="padding-bottom: 1em">
+    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
+  </div>
+
+  {% if savedlist %}
+  <div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
+  {% endif %}
+
+        </div> <!-- /.col-8 -->
+        <div class="col-md-4">
+
+  <div class="buttonlist">
+  <div class="">
+    <a href="{{url_for('unblock.unblock', url=site.url)}}" rel="nofollow" class="btn  btn-primary">Request unblock</a>
+  </div>
+
+  <div class="">
+      <a href="{{ url_for('site.site', url=site.url) }}" class="btn  btn-default">View full results</a>
+  </div>
+
+  <div class="" >
+      <a href="/" class="btn btn-default">See another blocked site</a>
+  </div>
+  </div> <!-- /.buttonlist -->
+
+     </div> <!-- /.col-4 -->
+  </div> <!-- /.row -->
+
+
+</div> <!-- /.col -->
+</div> <!-- /.row -->
+
+{% endif %}
+
 
 {#
 <div class="row shaded-row">
