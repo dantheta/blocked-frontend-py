@@ -33,7 +33,7 @@
 {% endmacro %}
 
 {% macro data_table(source, id=None, hide=None) %}
-         <table id="{{ id }}" class="table table-striped table-compressed">
+         <table id="{{ id }}" class="table table-striped table-compressed col-md-10">
             {% set header = source.next() %}
             <tr>
                 <th class="col-md-4">{{ header[0] }}</th>
