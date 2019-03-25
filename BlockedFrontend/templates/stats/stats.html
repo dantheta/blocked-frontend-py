@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% macro backtotop() %}
-<div style="text-align: right"><a href="#topmenu">Back to top</a></div>
+<div style="text-align: right"><a href="#navmenu">Back to top</a></div>
 {% endmacro %}
 
 {% macro data_table(source, id=None, hide=None) %}
@@ -55,7 +55,7 @@
 {% block body %}
 <div class="row">
     <div class="col-md-12">
-        <h2><a name="notonlyadult" />Not only adult content is being blocked</h2>
+        <h2><a name="notonlyadult"></a>Not only adult content is being blocked</h2>
         {{ backtotop() }}
         <p>The domains in these categories were identified by keyword searches
         and then double-checked by hand to ensure the categorisation was
@@ -65,7 +65,7 @@
         <p>The domains in these categories were identified by keyword searches.</p>
         {{ data_table(table_data.notonly_table_2) }}
 
-        <h3><a name="allkinds" />All kinds of sites are reported as blocked</h3>
+        <h3><a name="allkinds"></a>All kinds of sites are reported as blocked</h3>
         {{ backtotop() }}
 
         <p>In March 2019, we looked at all the domains that people had reported
@@ -75,7 +75,7 @@
         {{ data_table(table_data.allkinds_table_1, 'allkinds1', 15) }}
         <div style="text-align: right; margin-top: -1.5em"><a id="allkinds_viewall" href="#">View all ...</a></div>
 
-        <h3 class="clearfix"><a name="ispresponses" />ISP Responses to reports</h3>
+        <h3 class="clearfix"><a name="ispresponses"></a>ISP Responses to reports</h3>
         {{ backtotop() }}
 
         <table class="table">
@@ -98,7 +98,7 @@
             {% endfor %}
         </table>
 
-        <h3><a name="replystats" />Reply stats by ISP</h3>
+        <h3><a name="replystats"></a>Reply stats by ISP</h3>
         {{ backtotop() }}
 
 <table class="table">
@@ -127,7 +127,7 @@
 
 <div class="row">
 <div class="col-md-12">
-    <h2><a name="alexa" />Alexa top 100,000 sites</h2>
+    <h2><a name="alexa"></a>Alexa top 100,000 sites</h2>
         {{ backtotop() }}
 <p>Blocked sites as a proportion of total sites checked</p>
 <canvas id="alexa100k" width="100%" height="40"></canvas>
@@ -137,7 +137,7 @@
 
 <div class="row">
 <div class="col-md-12">
-    <h2><a name="ispblocks" />ISP Blocks by domain</h2>
+    <h2><a name="ispblocks"></a>ISP Blocks by domain</h2>
         {{ backtotop() }}
 </div>
 </div>
