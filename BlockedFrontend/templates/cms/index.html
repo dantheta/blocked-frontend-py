@@ -97,7 +97,7 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
         <div class="col-md-8">
 
 <h3>Help unblock this website</h3>
-
+<a name="helpunblock" />
 <div class="site" >
   <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
   <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
@@ -125,7 +125,7 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
   </div>
 
   <div class="" >
-      <a href="/" class="btn btn-default">See another blocked site</a>
+      <a href="{{url_for('unblock.browse_next',url=url) }}#helpunblock" class="btn btn-default">See another blocked site</a>
   </div>
   </div> <!-- /.buttonlist -->
 
