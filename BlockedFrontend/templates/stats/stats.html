@@ -4,6 +4,17 @@
 
 {% block banner_text %}
 
+<a name="navmenu">
+<ul>
+    <li><a href="#notonlyadult">Not only adult content is being blocked</a></li>
+    <li><a href="#allkinds">All kinds of sites are reported as blocked</a></li>
+    <li><a href="#ispresponses">ISP Responses to reports</a></li>
+    <li><a href="#replystats">Reply stats by ISP</a></li>
+    <li><a href="#alexa">Alexa top 100,000 sites</a></li>
+    <li><a href="#ispblocks">ISP Blocks by domain</a></li>
+</ul>
+</a>
+
 {% endblock %}
 
 {% block page_style %}
@@ -16,6 +27,10 @@
     padding-left: 20px !important;
     }
 {% endblock %}
+
+{% macro backtotop() %}
+<div style="text-align: right"><a href="#topmenu"></a></div>
+{% endmacro %}
 
 {% macro data_table(source, id=None, hide=None) %}
          <table id="{{ id }}" class="table table-striped table-compressed">
@@ -40,7 +55,8 @@
 {% block body %}
 <div class="row">
     <div class="col-md-12">
-        <h2>Not only adult content is being blocked</h2>
+        <h2><a name="notonlyadult">Not only adult content is being blocked</a></h2>
+        {{ backtotop() }}
         <p>The domains in these categories were identified by keyword searches
         and then double-checked by hand to ensure the categorisation was
         accurate.</p>
@@ -49,7 +65,8 @@
         <p>The domains in these categories were identified by keyword searches.</p>
         {{ data_table(table_data.notonly_table_2) }}
 
-        <h3>All kinds of sites are reported as blocked</h3>
+        <h3><a name="allkinds">All kinds of sites are reported as blocked</a></h3>
+        {{ backtotop() }}
 
         <p>In March 2019, we looked at all the domains that people had reported
         to an ISP through Blocked as an incorrect block. We categorised all the
@@ -58,7 +75,8 @@
         {{ data_table(table_data.allkinds_table_1, 'allkinds1', 15) }}
         <div style="text-align: right; margin-top: -1.5em"><a id="allkinds_viewall" href="#">View all ...</a></div>
 
-        <h3 class="clearfix">ISP Responses to reports</h3>
+        <h3 class="clearfix"><a name="ispresponses">ISP Responses to reports</a></h3>
+        {{ backtotop() }}
 
         <table class="table">
             <tr>
@@ -80,7 +98,8 @@
             {% endfor %}
         </table>
 
-        <h3>Reply stats by ISP</h3>
+        <h3><a name="replystats">Reply stats by ISP</a></h3>
+        {{ backtotop() }}
 
 <table class="table">
     <tr>
@@ -108,7 +127,8 @@
 
 <div class="row">
 <div class="col-md-12">
-<h2>Alexa top 100,000 sites</h2>
+    <h2><a name="alexa">Alexa top 100,000 sites</a></h2>
+        {{ backtotop() }}
 <p>Blocked sites as a proportion of total sites checked</p>
 <canvas id="alexa100k" width="100%" height="40"></canvas>
 </div>
@@ -117,7 +137,8 @@
 
 <div class="row">
 <div class="col-md-12">
-<h2>ISP Blocks by domain</h2>
+    <h2><a name="ispblocks">ISP Blocks by domain</a></h2>
+        {{ backtotop() }}
 </div>
 </div>
 <div class="row">
