@@ -1,5 +1,6 @@
 {% extends "layout_1x3.page.html" %}
 
+{% set menu_block_alt=True %}{# show menu block alongside banner text, instead of pagetitle block #}
 {%set pagetitle = content.title %}
 
 {% block banner_text %}
@@ -20,7 +21,6 @@
 {{ content.TextAreaThree |safe }}
 {% endblock %}
 
-
-{% block page_menu %}
+{% block page_menu_alt %}
 {{ content.page_menu | safe }}
 {% endblock %}

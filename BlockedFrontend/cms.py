@@ -262,6 +262,7 @@ def wildcard(page='index'):
             return render_template('remote_content2x3.html',
                 content=g.remote_content
                 )
+
         return render_template('remote_content1x3.html',    
             content=g.remote_content
             )
