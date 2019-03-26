@@ -29,11 +29,11 @@
 {% endblock %}
 
 {% macro backtotop() %}
-<div style="text-align: right"><a href="#navmenu">Back to top</a></div>
+<div class="pull-right" style="margin-top: -2.75em; text-align: right; font-size: smaller; margin-left: 2em"><a style="color: #777" href="#navmenu">Back to top</a></div>
 {% endmacro %}
 
 {% macro data_table(source, id=None, hide=None) %}
-         <table id="{{ id }}" class="table table-striped table-compressed">
+         <table id="{{ id }}" class="table table-striped table-condensed">
             {% set header = source.next() %}
             <tr>
                 <th class="col-md-4">{{ header[0] }}</th>
@@ -78,7 +78,7 @@
         <h3 class="clearfix"><a name="ispresponses"></a>ISP Responses to reports</h3>
         {{ backtotop() }}
 
-        <table class="table">
+        <table class="table table-condensed">
             <tr>
                 <th>Network/Year</th>
                 <th class="num">Unresolved non-policy block count</th>
@@ -101,7 +101,7 @@
         <h3><a name="replystats"></a>Reply stats by ISP</h3>
         {{ backtotop() }}
 
-<table class="table">
+<table class="table table-condensed">
     <tr>
         <th>Network/Year</th>
         <th class="num">Reports Sent</th>
