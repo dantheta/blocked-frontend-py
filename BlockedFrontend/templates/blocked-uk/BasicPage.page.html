@@ -97,7 +97,7 @@ banner_text_block(bool): show banner text block, default true
     </div>
 
     {% if menu_block| default(True) %}
-    <div class="col-md-4 col-md-offset-1 pagemenu">
+    <div class="col-md-4 col-md-offset-1 pagemenu pagemenu-main">
       {% block page_menu %}{% endblock %}
     </div>
     {% endif %}
@@ -109,7 +109,7 @@ banner_text_block(bool): show banner text block, default true
       <p {{rmt.remote_style('banner_text')}}>{%block banner_text%}{% endblock %}</p>
     </div>
     {% if menu_block_alt| default(False) %}
-    <div class="col-md-4 col-md-offset-2 pagemenu pagemenu_alt">
+    <div class="col-md-4 col-md-offset-2 pagemenu pagemenu-alt">
       {% block page_menu_alt %}{% endblock %}
     </div>
     {% endif %}
