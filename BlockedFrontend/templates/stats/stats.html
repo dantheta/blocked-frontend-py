@@ -26,10 +26,20 @@
 .sub {
     padding-left: 20px !important;
     }
+.backtotop {
+     margin-top: -2.75em;
+     text-align: right;
+     font-size: smaller;
+     margin-left: 2em
+    }
+
+.backtotop a {
+    color: #777;
+}
 {% endblock %}
 
 {% macro backtotop() %}
-<div class="pull-right" style="margin-top: -2.75em; text-align: right; font-size: smaller; margin-left: 2em"><a style="color: #777" href="#navmenu">Back to top</a></div>
+<div class="backtotop pull-right"><a href="#navmenu">Back to top</a></div>
 {% endmacro %}
 
 {% macro data_table(source, id=None, hide=None) %}
