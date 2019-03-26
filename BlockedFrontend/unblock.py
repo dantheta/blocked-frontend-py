@@ -120,11 +120,11 @@ def nextsite(current_url):
 
 
 @unblock_pages.route('/next')
-@unblock_pages.route('/next/<path:url>')
-def browse_next(url=None):
-    if url is not None:
-        url = fix_path(url)
-    ret = nextsite(url)
+#@unblock_pages.route('/next/<path:after>')
+def browse_next(after=None):
+    if after is not None:
+        after = fix_path(after)
+    ret = nextsite(after)
     if ret:
         return ret
     # redirect to front page if no nextsite is found

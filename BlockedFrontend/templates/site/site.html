@@ -262,7 +262,7 @@ Your feedback was successfully submitted.
 
 <a href="{{url}}" target="_blank" class="btn btn-primary">Visit site</a>
 {% if session.route is defined and config.MODULE_UNBLOCK%}
-<a href="{{url_for('unblock.browse_next',url=url) }}" class="btn btn-primary">Try another site</a>
+<a href="{{url_for('unblock.browse_next',after=url) }}" class="btn btn-primary">Try another site</a>
 {% endif %}
 </div>
 
