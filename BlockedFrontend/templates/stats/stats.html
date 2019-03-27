@@ -67,26 +67,34 @@
     <div class="col-md-9">
         <h2><a name="notonlyadult"></a>Not only adult content is being blocked</h2>
         {{ backtotop() }}
+    {% call rmt.remote('TextAreaOne') %}
         <p>The domains in these categories were identified by keyword searches
         and then double-checked by hand to ensure the categorisation was
         accurate.</p>
+    {% endcall %}
         {{ data_table(table_data.notonly_table_1) }}
 
+    {% call rmt.remote('TextAreaTwo') %}
         <p>The domains in these categories were identified by keyword searches.</p>
+    {% endcall %}
         {{ data_table(table_data.notonly_table_2) }}
 
         <h3><a name="allkinds"></a>All kinds of sites are reported as blocked</h3>
         {{ backtotop() }}
 
+    {% call rmt.remote('TextAreaThree') %}
         <p>In March 2019, we looked at all the domains that people had reported
         to an ISP through Blocked as an incorrect block. We categorised all the
         domains.</p>
+    {% endcall %}
 
         {{ data_table(table_data.allkinds_table_1, 'allkinds1', 15) }}
         <div style="text-align: right; margin-top: -1.5em"><a id="allkinds_viewall" href="#">View all ...</a></div>
 
         <h3 class="clearfix"><a name="ispresponses"></a>ISP Responses to reports</h3>
         {{ backtotop() }}
+    {% call rmt.remote('TextAreaFour') %}
+    {% endcall %}
 
         <table class="table table-condensed">
             <tr>
@@ -110,6 +118,8 @@
 
         <h3><a name="replystats"></a>Reply stats by ISP</h3>
         {{ backtotop() }}
+    {% call rmt.remote('TextAreaFive') %}
+    {% endcall %}
 
 <table class="table table-condensed">
     <tr>

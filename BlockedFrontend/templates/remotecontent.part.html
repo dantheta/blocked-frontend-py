@@ -5,7 +5,7 @@
 {%- endmacro -%}
 
 {% macro remote(name) %}
-{% if g.remote_content is defined and name in g.remote_content %}
+{% if g.remote_content[name]|default(False) %}
 {{ g.remote_content[name] |safe }}
 {% else %}
 {{ caller() }}
