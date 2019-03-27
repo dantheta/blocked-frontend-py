@@ -1,8 +1,12 @@
 {% extends "BasicPage.page.html" %}
+{% import "remotecontent.part.html" as rmt %}
 
 {%set pagetitle = 'Internet Filtering Statistics' %}
 
 {% block banner_text %}
+
+{% call rmt.remote('banner_text') %}
+{% endcall %}
 
 <a name="navmenu">
 <ul>
