@@ -214,11 +214,11 @@ $(document).ready(function(){
   var category_chart = new Chart(ctx, {
     type: 'horizontalBar',
     data: {
-        labels: {{ stats |sort(attribute='network_name')| selectattr(attribute='block_count') | map(attribute='network_name') | list |tojson }},
+        labels: {{ stats |sort(attribute='network_name')| selectattr('block_count') | map(attribute='network_name') | list |tojson }},
         datasets:[
           {
               label: "Blocked Sites",
-              data: {{ stats | sort(attribute='network_name') |selectattr(attribute='block_count') | map(attribute='block_count') | list | tojson }},
+              data: {{ stats | sort(attribute='network_name') |selectattr('block_count') | map(attribute='block_count') | list | tojson }},
               backgroundColor: 'red'
           },
 
