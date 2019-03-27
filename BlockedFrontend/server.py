@@ -84,6 +84,8 @@ def setup_db():
 
 @app.before_request
 def open_db():
+    if request.path.startswith('/static'):
+        return
     g.conn = db.db_connect_pool()
 
 @app.teardown_appcontext
@@ -97,6 +99,8 @@ def hook_api():
 
 @app.before_request
 def hook_miscdata():
+    if request.path.startswith('/static'):
+        return
     from resources import load_data
     g.miscvars = load_data('misc')
 
