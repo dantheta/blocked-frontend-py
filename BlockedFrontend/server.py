@@ -200,6 +200,8 @@ def check_user():
 
 @app.before_request
 def load_remote_content():
+    if request.path.startswith('/static'):
+        return
     if app.config.get('SITE_THEME') == '451':
         return
     g.remote_content = collections.defaultdict(dict)
