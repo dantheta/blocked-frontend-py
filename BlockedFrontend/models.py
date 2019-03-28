@@ -551,7 +551,7 @@ class ISPReport(DBObject):
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.matches_policy is null) then 1 else 0 end) count_unresolved_policyblock
                     from public.isp_reports_sent isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
-                    where network_name <> 'ORG' and isp_reports.created >= '2018-01-01'
+                    where network_name not in ('ORG','BT-Strict') and isp_reports.created >= '2018-01-01'
                     group by network_name""",
               [])
         return reply_stats
