@@ -23,6 +23,7 @@
     <tr>
         <th>ISP</th>
         <th class="num">Reports Sent</th>
+        <th class="num">Reports answered</th>
         <th class="num">Sites Unblocked</th>
         <th class="num">Avg response time (days)</th>
     </tr>
@@ -31,17 +32,20 @@
             <a id="reveal" href="#"><span class="glyphicon glyphicon-chevron-down"></span> Show all ISPs </a>
         </td>
         <td class="num">{{ stats['all'].sent }}</td>
+        <td class="num">{{ stats['all'].responses }}</td>
         <td class="num">{{ stats['all'].unblocked }}</td>
-        <td class="num">{{ "%0.1f" | format(stats['all'].avg_unblock_time) }}</td>
+        <td class="num">{{ "%0.1f" | format(stats['all'].avg_response_time) }}</td>
     </tr>
-    {% for isp, stat in stats.iteritems() %}
+    {% for isp, stat in stats.iteritems()|sort %}
     {% if isp != 'all' %}
     <tr style="display: none" class="reveal">
         <td>{{ isp }}</td>
         <td class="num">{{ stat.sent }}</td>
+        <td class="num">{{ stat.responses }}</td>
         <td class="num">{{ stat.unblocked }}</td>
-        <td class="num">{% if stat.unblocked %}
-            {{ "%0.1f" | format(stat.avg_unblock_time|float) }}
+        <td class="num">
+            {% if stat.avg_response_time %}
+            {{ "%0.1f" | format(stat.avg_response_time|float) }}
             {% endif %}
         </td>
     </tr>

@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
 from utils import *
-from models import Item
+from models import Item, ISPReport
 import models
 from NORM import Query
 
@@ -84,14 +84,29 @@ def reported_sites(isp=None, page=1):
             abort(404)
     g.remote_content = g.remote.get_content('reported-sites')
     data = g.api.reports(page-1, isp=isp)
-    data2 = g.api.ispreport_stats()
+
+    stats = {'all':{'sent':0, 'responses': 0, 'unblocked': 0, 'avg_response_time': 0 }}
+    for row in ISPReport.get_reply_summary(g.conn):
+        stats[row['network_name']] = {'sent': row['reports_sent'],
+                                      'unblocked': row['unblocked'],
+                                      'responses': row['responses'],
+                                      'avg_unblock_time': (row['avg_unblock_time'].days if row['avg_unblock_time'] is not None else None),
+                                      'avg_response_time': (row['avg_response_time'].days if row['avg_response_time'] is not None else None)}
+        print row['network_name'], stats[row['network_name']]
+        stats['all']['sent'] += row['reports_sent']
+        stats['all']['unblocked'] += row['unblocked']
+        stats['all']['responses'] += row['responses']
+        if row['avg_response_time']:
+            stats['all']['avg_response_time'] += (row['avg_response_time'].days * row['responses'])
+    stats['all']['avg_response_time'] /= stats['all']['responses']
+
     count = data['count']
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
-            stats=data2['unblock-stats'],
+            stats=stats,
             networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
             reports=data['reports'])
