@@ -533,28 +533,6 @@ class ISPReport(DBObject):
         row = q.fetchone()
         return klass(conn, data=row)
 
-    @staticmethod
-    def get_reply_summary(conn):
-        reply_stats = Query(conn,
-              """select network_name, 
-                    count(distinct isp_reports.id) reports_sent,
-                    count(distinct isp_report_emails.report_id) auto_replies_logged,
-                    count(isp_report_emails.id) replies_logged,
-                    sum(case when (status='unblocked' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then 1 else 0 end) unblocked,
-                    sum(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then 1 else 0 end) responses,
-                    avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time,
-                    avg(case when (status='unblocked' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_unblock_time,
-                    sum(case when status = 'sent' and unblocked = 0 then 1 else 0 end) count_open,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null then 1 else 0 end) count_unresolved,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and isp_reports.matches_policy is false then 1 else 0 end) count_unresolved_badblock,
-                    sum(case when unblocked = 0 and status = 'rejected' and matches_policy is false then 1 else 0 end) count_resolved_badblock,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.matches_policy is null) then 1 else 0 end) count_unresolved_policyblock
-                    from public.isp_reports_sent isp_reports
-                    left join public.isp_report_emails on report_id = isp_reports.id
-                    where network_name not in ('ORG','BT-Strict') and isp_reports.created >= '2018-01-01'
-                    group by network_name""",
-              [])
-        return reply_stats
 
     @staticmethod
     def get_reply_stats(conn):
