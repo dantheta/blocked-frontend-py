@@ -1,7 +1,8 @@
 {% extends "BasicPage.page.html" %}
 {% import "paging.part.html" as paging %}
+{% import "remotecontent.part.html" as rmt %}
 
-{%set pagetitle = "Legal blocks - Court orders" %}
+{%set pagetitle = g.remote_content.title|default("Legal blocks - Court orders") %}
 
 {% block page_menu %}
 
@@ -9,6 +10,11 @@
 <div><a href="{{ url_for('.legal_errors') }}">Legal block errors</a></div>
 <div style="margin-top: 1em"><a href="{{ url_for('.export_blocks', region=region) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-save"></span> Export</a></div>
 
+{% endblock %}
+
+{% block banner_text %}
+{% call rmt.remote('banner_text') %}
+{% endcall %}
 {% endblock %}
 
 {% block body %}

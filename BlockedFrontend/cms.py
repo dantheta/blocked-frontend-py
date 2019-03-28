@@ -434,6 +434,7 @@ def legal_blocks(page=1, region=None):
 @cms_pages.route('/legal-blocks')
 def legal_orders():
     
+    g.remote_content = g.remote.get_content('legal-blocks-orders')
     region = current_app.config['DEFAULT_REGION']
     q = Query(g.conn, """select 
             judgment_id as id, judgment_name as name, judgment_date as date, citation, 

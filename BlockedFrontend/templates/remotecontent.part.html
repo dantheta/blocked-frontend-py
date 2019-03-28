@@ -6,6 +6,7 @@
 
 {% macro remote(name) %}
 {% if g.remote_content[name]|default(False) %}
+<!-- remote content: {{ name }} -->
 {{ g.remote_content[name] |safe }}
 {% else %}
 {{ caller() }}
