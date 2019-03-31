@@ -75,7 +75,7 @@ class SavedList(DBObject):
             args.append(True)
 
         sql = flask.render_template_string(
-                 """select count(*) ct
+                 """select count(distinct items.id) ct
                     from items
                     inner join public.urls using (url)
                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op|safe }} %s and uls.status = 'blocked'
