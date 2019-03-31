@@ -45,16 +45,16 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="{{ url_for('.show_list', name=savedlist.name) }}">( all )</a></li>
+            <li><a href="{{ url_for('.show_list', name=savedlist.name, status=request.args.status|default('')) }}">( all )</a></li>
             {% for isp in config.ISPS|sort %}
-            <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp) }}">{{ isp }}</a></li>
+            <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp, status=request.args.status|default('')) }}">{{ isp }}</a></li>
             {% if isp == 'BT-Strict' %}
-            <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp, exclude=1) }}">Exclude {{ isp }}</a></li>
+            <li><a href="{{ url_for('.show_list', name=savedlist.name, network=isp, exclude=1, status=request.args.status|default('')) }}">Exclude {{ isp }}</a></li>
             {% endif %}
             {% endfor %}
         </ul>
 
-        <a href="{{ url_for('.export_list', name=savedlist.name, network=request.args.network|default('')) }}" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Export</a>
+        <a href="{{ url_for('.export_list', name=savedlist.name, network=request.args.network|default('')), status=request.args.status|default('') }}" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Export</a>
         {% if g.admin %}
         <a href="{{ url_for('.recheck_list', name=savedlist.name) }}" class="btn btn-default" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Recheck</a>
         {% endif %}
@@ -125,7 +125,8 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
     </tr>
     {% endfor %}
 </table>
-{{ paging.page_list('.show_list',  page, pagecount, pagesize, name=savedlist.name, network=request.args.network|default(''), exclude=request.args.exclude|default('') ) }}
+{{ paging.page_list('.show_list',  page, pagecount, pagesize, name=savedlist.name, 
+    network=request.args.network|default(''), exclude=request.args.exclude|default(''), status=request.args.status|default('') ) }}
 
     </div>
 </div>
