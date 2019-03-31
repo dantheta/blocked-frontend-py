@@ -52,7 +52,7 @@
 
 {% macro reportslink_category(n, row) -%}
 {% if n == 1 %}
-<a href="{{ url_for('cms.reported_sites', category=row[-1]) }}">{{ caller() }}</a>
+<a href="{{ url_for('cms.reported_sites', list=row[-1]) }}">{{ caller() }}</a>
 {% else %}
 {{ caller() }}
 {% endif %}

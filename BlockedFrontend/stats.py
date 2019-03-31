@@ -45,25 +45,11 @@ def stats_gb():
     isps = ispstats.keys()
     isps.sort()
 
-    category_id_cache={}
-    def get_category_id(n, row):
-        if n == 0:
-            return row + ['_id']
-        try:
-            if row[0] in category_id_cache:
-                return row + [category_id_cache[row[0]]]
-            else:
-                cat = Category.select_one(g.conn, name=row[0], namespace='ORG')
-                category_id_cache[row[0]] = cat['id']
-                return row + [cat['id']]
-        except ObjectNotFound:
-            return row + ['']
-
 
     table_data = {
-        'notonly_table_1':  (get_category_id(n, row) for n,row in enumerate(load_csv('notonly_table_1'))),
-        'notonly_table_2':  (get_category_id(n, row) for n,row in enumerate(load_csv('notonly_table_2'))),
-        'allkinds_table_1': (get_category_id(n, row) for n,row in enumerate(load_csv('allkinds_table_1'))),
+        'notonly_table_1':  load_csv('notonly_table_1'),
+        'notonly_table_2':  load_csv('notonly_table_2'),
+        'allkinds_table_1': load_csv('allkinds_table_1'),
         }
 
     reply_stats = list(ISPReport.get_reply_stats(g.conn))
