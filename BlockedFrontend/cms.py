@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
 from utils import *
-from models import Item, ISPReport
+from models import Item, ISPReport, Category
 import models
 from NORM import Query
 
@@ -74,16 +74,23 @@ def credits():
 @cms_pages.route('/reported-sites/<isp>')
 @cms_pages.route('/reported-sites/<isp>/<int:page>')
 def reported_sites(isp=None, page=1):
+    if request.args.get('category'):
+        cat = Category(g.conn, request.args.get('category'))
+        cat_filter = cat['id']
+    else:
+        cat_filter=None
+
     if isp:
         if isp not in current_app.config['ISPS']:
             # search for case insensitive match and redirect
             for _isp in current_app.config['ISPS']:
                 if _isp.lower() == isp.lower():
-                    return redirect( url_for('.reported_sites', isp=_isp) )
+                    return redirect( url_for('.reported_sites', isp=_isp, cat=request.args.get('category')) )
             # otherwise, return a 404
             abort(404)
     g.remote_content = g.remote.get_content('reported-sites')
-    data = g.api.reports(page-1, isp=isp)
+    data = g.api.reports(page-1, isp=isp, category=cat_filter)
+    reports = data['reports']
 
     count = data['count']
     pagecount = get_pagecount(count, 25)
@@ -91,18 +98,19 @@ def reported_sites(isp=None, page=1):
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
+            current_category=cat,
             networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
-            reports=data['reports'])
+            reports=reports)
 
 @cms_pages.route('/reported-sites', methods=["POST"])
 def reported_sites_post():
     f = request.form
     isp = f['isp']
     if isp:
-        return redirect( url_for('.reported_sites', isp=isp) )
+        return redirect( url_for('.reported_sites', isp=isp, category=f.get('category')) )
     else:
-        return redirect( url_for('.reported_sites') )
+        return redirect( url_for('.reported_sites', category=f.get('category')) )
 
 @cms_pages.route('/legal-blocks/export')
 @cms_pages.route('/legal-blocks/export/<region>')
