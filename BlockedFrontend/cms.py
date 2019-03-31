@@ -75,16 +75,6 @@ def credits():
 @cms_pages.route('/reported-sites/<isp>')
 @cms_pages.route('/reported-sites/<isp>/<int:page>')
 def reported_sites(isp=None, page=1):
-    if request.args.get('category'):
-        try:
-            cat = Category.select_one(g.conn, name=request.args.get('category'))
-            cat_filter = cat['id']
-        except ObjectNotFound:
-            return abort(404)
-    else:
-        cat_filter = None
-        cat = None
-
     if isp:
         if isp not in current_app.config['ISPS']:
             # search for case insensitive match and redirect
@@ -97,7 +87,7 @@ def reported_sites(isp=None, page=1):
             # otherwise, return a 404
             abort(404)
     g.remote_content = g.remote.get_content('reported-sites')
-    data = g.api.reports(page-1, isp=isp, category=cat_filter, list=request.args.get('list'))
+    data = g.api.reports(page-1, isp=isp, category=request.args.get('category'), list=request.args.get('list'))
     reports = data['reports']
 
     count = data['count']
@@ -106,7 +96,6 @@ def reported_sites(isp=None, page=1):
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
-            current_category=cat,
             networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
             reports=reports)

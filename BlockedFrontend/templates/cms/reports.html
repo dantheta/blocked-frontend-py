@@ -22,8 +22,8 @@
 <div class="row">
 <div class="col-lg-8">
   <h2>Incorrectly blocked sites reported to ISPs</h2>
-  {% if current_category %}
-  <p>Viewing reports in category <strong>{{ current_category['display_name'] }}</strong>.</p>
+  {% if request.args.get('category') %}
+  <p>Viewing reports in category <strong>{{ request.args.category }}</strong>.</p>
   {% endif %}
   {% if request.args.get('list') %}
   <p>Viewing reports from the <strong>{{ request.args.list }}</strong> list.</p>
