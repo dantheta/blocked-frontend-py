@@ -74,6 +74,7 @@ def create_list():
 def show_list(name, page=1):
     pagesize=20
     network = request.args.get('network')
+    status = request.args.get('status')
 
     session['route'] = 'savedlist'
     if page < 1:
@@ -87,10 +88,10 @@ def show_list(name, page=1):
    
     if network:
         itemcount = savedlist.count_items_on_network(network)
-        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize), exclude=request.args.get('exclude', None))
+        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize))
     else:
-        itemcount = savedlist.count_items()
-        items = savedlist.get_items(_limit=(pagesize, (page-1)*pagesize))
+        itemcount = savedlist.count_items(status=status)
+        items = savedlist.get_items(status=status, _limit=(pagesize, (page-1)*pagesize))
 
     session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
     g.conn.commit()

@@ -19,27 +19,35 @@ class SavedList(DBObject):
             'frontpage'
             ]
 
-    def get_items(self, **kw):
+    def get_items(self, status=None, **kw):
+        if status == 'unblocked':
+            kw.update({'blocked': False})
+        elif status == 'blocked':
+            kw.update({'blocked': True})
         return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
 
-    def get_items_on_network(self, network, _limit=None, exclude=None):
+    def get_items_on_network(self, network, _limit=None):
         q = Query(self.conn,
                   """select distinct items.*
                      from items
                      inner join public.urls using (url)
-                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {1} %s and uls.status = 'blocked'
+                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name = %s and uls.status = 'blocked'
                      where list_id = %s 
                      order by url
-                     {0}""".format("limit {limit[0]} offset {limit[1]}".format(limit=_limit) if _limit else '',
-                                   "<>" if exclude else "="),
+                     {0}""".format("limit {limit[0]} offset {limit[1]}".format(limit=_limit) if _limit else ''),
                   [network, self['id']])
         for row in q:
             yield Item(self.conn, data=row)
 
         q.close()
 
-    def count_items(self):
-        return Item.count(self.conn, list_id=self['id'])
+    def count_items(self, status=None):
+        kw = {}
+        if status == 'unblocked':
+            kw.update({'blocked': False})
+        elif status == 'blocked':
+            kw.update({'blocked': True})
+        return Item.count(self.conn, list_id=self['id'], **kw)
 
     def count_items_on_network(self, network):
         q = Query(self.conn,
