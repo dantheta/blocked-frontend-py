@@ -61,7 +61,7 @@ th.num {
 
 {% macro reportslink_list(n, row) -%}
 {% if n == 1 %}
-<a href="{{ url_for('list.show_list', name=row[-1], exclude=1, network='BT-Strict') }}">{{ caller() }}</a>
+<a href="{{ url_for('list.show_list', name=row[-1]) }}">{{ caller() }}</a>
 {% elif n == 2 %}
 <a href="{{ url_for('list.show_list', name=row[-1], status='blocked', exclude=1, network='BT-Strict') }}">{{ caller() }}</a>
 {% else %}
