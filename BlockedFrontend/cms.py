@@ -9,6 +9,7 @@ from utils import *
 from models import Item, ISPReport, Category
 import models
 from NORM import Query
+from NORM.exceptions import ObjectNotFound
 
 from resources import load_country_data
 

@@ -50,9 +50,17 @@
 {{ caller() }}
 {%- endmacro %}
 
-{% macro reportslink_category(n, row) -%}
+{% macro reportslink_list(n, row) -%}
 {% if n == 1 %}
 <a href="{{ url_for('cms.reported_sites', list=row[-1]) }}">{{ caller() }}</a>
+{% else %}
+{{ caller() }}
+{% endif %}
+{%- endmacro %}
+
+{% macro reportslink_category(n, row) -%}
+{% if n == 1 %}
+<a href="{{ url_for('cms.reported_sites', category=row[0]) }}">{{ caller() }}</a>
 {% else %}
 {{ caller() }}
 {% endif %}
@@ -99,12 +107,12 @@
         and then double-checked by hand to ensure the categorisation was
         accurate.</p>
     {% endcall %}
-        {{ data_table(table_data.notonly_table_1, viewlink=reportslink_category) }}
+        {{ data_table(table_data.notonly_table_1) }}
 
     {% call rmt.remote('TextAreaTwo') %}
         <p>The domains in these categories were identified by keyword searches.</p>
     {% endcall %}
-        {{ data_table(table_data.notonly_table_2, viewlink=reportslink_category) }}
+        {{ data_table(table_data.notonly_table_2) }}
 
         <h3><a name="allkinds"></a>All kinds of sites are reported as blocked</h3>
         {{ backtotop() }}
