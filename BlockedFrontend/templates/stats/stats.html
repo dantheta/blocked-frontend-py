@@ -40,6 +40,15 @@
 .backtotop a {
     color: #777;
 }
+
+.stats-table * td:first-child {
+    width: 40%;
+}
+
+th.num {
+    padding-left: 1.5em;
+    }
+
 {% endblock %}
 
 {% macro backtotop() %}
@@ -52,7 +61,7 @@
 
 {% macro reportslink_list(n, row) -%}
 {% if n == 1 %}
-<a href="{{ url_for('cms.reported_sites', list=row[-1]) }}">{{ caller() }}</a>
+<a href="{{ url_for('list.show_list', name=row[-1]) }}">{{ caller() }}</a>
 {% else %}
 {{ caller() }}
 {% endif %}
@@ -67,7 +76,7 @@
 {%- endmacro %}
 
 {% macro data_table(source, id=None, hide=None, viewlink=reportslink_none) %}
-         <table id="{{ id }}" class="table table-striped table-condensed">
+         <table id="{{ id }}" class="table table-striped table-condensed stats-table">
             {% set header = source.next() %}
             <tr>
                 <th class="col-md-4">{{ header[0] }}</th>
@@ -107,12 +116,12 @@
         and then double-checked by hand to ensure the categorisation was
         accurate.</p>
     {% endcall %}
-        {{ data_table(table_data.notonly_table_1) }}
+        {{ data_table(table_data.notonly_table_1, viewlink=reportslink_list) }}
 
     {% call rmt.remote('TextAreaTwo') %}
         <p>The domains in these categories were identified by keyword searches.</p>
     {% endcall %}
-        {{ data_table(table_data.notonly_table_2) }}
+        {{ data_table(table_data.notonly_table_2, viewlink=reportslink_list) }}
 
         <h3><a name="allkinds"></a>All kinds of sites are reported as blocked</h3>
         {{ backtotop() }}
