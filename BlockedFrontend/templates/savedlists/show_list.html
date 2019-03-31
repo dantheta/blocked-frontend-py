@@ -36,7 +36,7 @@
     {% endif %}
 </h3>
 {% if request.args.status %}
-<p>Showing <strong>{{ status }}</strong> entries only.</p>
+<p>Showing <strong>{{ request.args.status }}</strong> entries only.</p>
 {% endif %}
     </div>
     <div class="col-md-5">
