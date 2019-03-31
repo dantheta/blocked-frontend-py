@@ -39,14 +39,14 @@ class SavedList(DBObject):
                  """select distinct items.*
                     from items
                     inner join public.urls using (url)
-                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op }} %s and uls.status = 'blocked'
+                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op|safe }} %s and uls.status = 'blocked'
                     where list_id = %s 
                     {% if status != None %}
                         and items.blocked = %s
                     {% endif %}
                     order by url
                     {% if limit %}
-                        limit {{ limit.0 }} offset {{ limit.1 }}
+                        limit {{ limit.0|int }} offset {{ limit.1|int }}
                     {% endif %}""",
                  network_op = "<>" if exclude else "=",
                  status = status, 
@@ -78,7 +78,7 @@ class SavedList(DBObject):
                  """select count(*) ct
                     from items
                     inner join public.urls using (url)
-                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op }} %s and uls.status = 'blocked'
+                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op|safe }} %s and uls.status = 'blocked'
                     where list_id = %s 
                     {% if status != None %}
                         and items.blocked = %s
