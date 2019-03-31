@@ -54,7 +54,7 @@
             {% endfor %}
         </ul>
 
-        <a href="{{ url_for('.export_list', name=savedlist.name, network=request.args.network|default('')), status=request.args.status|default('') }}" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Export</a>
+        <a href="{{ url_for('.export_list', name=savedlist.name, network=request.args.network|default(''), status=request.args.status|default('')) }}" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Export</a>
         {% if g.admin %}
         <a href="{{ url_for('.recheck_list', name=savedlist.name) }}" class="btn btn-default" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Recheck</a>
         {% endif %}
