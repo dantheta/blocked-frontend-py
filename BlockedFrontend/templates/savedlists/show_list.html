@@ -35,6 +35,9 @@
     <small>{% if request.args.exclude %}excluding{% else %}on{% endif %} {{ network }}</small>
     {% endif %}
 </h3>
+{% if status %}
+<p>Showing <strong>{{ status }}</strong> entries only.</p>
+{% endif %}
     </div>
     <div class="col-md-5">
 
