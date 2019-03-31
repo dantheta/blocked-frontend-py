@@ -3,6 +3,8 @@ import itertools
 import psycopg2.extensions
 from psycopg2.extras import DictCursor
 
+import flask
+
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
@@ -26,17 +28,31 @@ class SavedList(DBObject):
             kw.update({'blocked': True})
         return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
 
-    def get_items_on_network(self, network, _limit=None, exclude=None):
-        q = Query(self.conn,
-                  """select distinct items.*
-                     from items
-                     inner join public.urls using (url)
-                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {1} %s and uls.status = 'blocked'
-                     where list_id = %s 
-                     order by url
-                     {0}""".format("limit {limit[0]} offset {limit[1]}".format(limit=_limit) if _limit else '',
-                                   "<>" if exclude else "="),
-                  [network, self['id']])
+    def get_items_on_network(self, network, status=None, _limit=None, exclude=None):
+        args = [network, self['id']]
+        if status == 'unblocked':
+            args.append(False)
+        elif status == 'blocked':
+            args.append(True)
+
+        sql = flask.render_template_string(
+                 """select distinct items.*
+                    from items
+                    inner join public.urls using (url)
+                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op }} %s and uls.status = 'blocked'
+                    where list_id = %s 
+                    {% if status != None %}
+                        and items.blocked = %s
+                    {% endif %}
+                    order by url
+                    {% if limit %}
+                        limit {{ limit.0 }} offset {{ limit.1 }}
+                    {% endif %}""",
+                 network_op = "<>" if exclude else "=",
+                 status = status, 
+                 limit=_limit)
+
+        q = Query(self.conn, sql, args)
         for row in q:
             yield Item(self.conn, data=row)
 
@@ -50,14 +66,27 @@ class SavedList(DBObject):
             kw.update({'blocked': True})
         return Item.count(self.conn, list_id=self['id'], **kw)
 
-    def count_items_on_network(self, network):
-        q = Query(self.conn,
-                  """select count(*) ct
-                     from items
-                     inner join public.urls using (url)
-                     inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name = %s and uls.status = 'blocked'
-                     where list_id = %s""",
-                  [network, self['id']])
+    def count_items_on_network(self, network, status=None, exclude=None):
+
+        args = [network, self['id']]
+        if status == 'unblocked':
+            args.append(False)
+        elif status == 'blocked':
+            args.append(True)
+
+        sql = flask.render_template_string(
+                 """select count(*) ct
+                    from items
+                    inner join public.urls using (url)
+                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op }} %s and uls.status = 'blocked'
+                    where list_id = %s 
+                    {% if status != None %}
+                        and items.blocked = %s
+                    {% endif %} """,
+                 network_op = "<>" if exclude else "=",
+                 status = status)
+
+        q = Query(self.conn, sql, args)
         row = q.fetchone()
         q.close()
         return row['ct']

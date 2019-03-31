@@ -87,8 +87,13 @@ def show_list(name, page=1):
         abort(403)
    
     if network:
-        itemcount = savedlist.count_items_on_network(network)
-        items = savedlist.get_items_on_network(network, _limit=(pagesize, (page-1)*pagesize), exclude=request.args.get('exclude', None))
+        itemcount = savedlist.count_items_on_network(network,
+                                                     status=request.args.get('status'),
+                                                     exclude=request.args.get('exclude'))
+        items = savedlist.get_items_on_network(network,
+                                               status=request.args.get('status'),
+                                               _limit=(pagesize, (page-1)*pagesize),
+                                               exclude=request.args.get('exclude'))
     else:
         itemcount = savedlist.count_items(status=status)
         items = savedlist.get_items(status=status, _limit=(pagesize, (page-1)*pagesize))
