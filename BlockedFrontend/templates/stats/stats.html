@@ -77,6 +77,18 @@ th.num {
 {% endif %}
 {%- endmacro %}
 
+{% macro reportslink_policy(n, row) -%}
+{% if n == 1 %}
+<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='sent', policy='false') }}">{{ caller() }}</a>
+{% elif n == 2 %}
+<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='sent', policy='true') }}">{{ caller() }}</a>
+{% elif n == 3 %}
+<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='rejected', policy='false') }}">{{ caller() }}</a>
+{% else %}
+{{ caller() }}
+{% endif %}
+{%- endmacro %}
+
 {% macro data_table(source, id=None, hide=None, viewlink=reportslink_none) %}
          <table id="{{ id }}" class="table table-striped table-condensed stats-table">
             {% set header = source.next() %}
@@ -154,9 +166,9 @@ th.num {
             {% for row in list %}
             <tr>
                 <td class="sub">{{ row.year }}</td>
-                <td class="num">{{ row.count_unresolved_badblock }}</td>
-                <td class="num">{{ row.count_unresolved_policyblock }}</td>
-                <td class="num">{{ row.count_resolved_badblock }}</td>
+                <td class="num">{% call reportslink_policy(1, row) %}{{ row.count_unresolved_badblock }}{% endcall %}</td>
+                <td class="num">{% call reportslink_policy(2, row) %}{{ row.count_unresolved_policyblock }}{% endcall %}</td>
+                <td class="num">{% call reportslink_policy(3, row) %}{{ row.count_resolved_badblock }}{% endcall %}</td>
             </tr>
             {% endfor %}
             {% endfor %}
