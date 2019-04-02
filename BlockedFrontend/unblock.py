@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, redirect, request, current_app, se
 from utils import *
 from models import *
 from db import *
+from resources import load_data
 
 
 unblock_pages = Blueprint('unblock', __name__,
@@ -130,6 +131,11 @@ def browse_next(after=None):
     # redirect to front page if no nextsite is found
     return redirect(url_for('cms.index'))
 
+def random_name():
+    import random
+    name_data = load_data('names')
+    return random.choice(name_data['names'])
+
 @unblock_pages.route('/submit-unblock', methods=['POST'])
 def submit_unblock():
     if not request.form.get('checkedsite'):
@@ -144,7 +150,7 @@ def submit_unblock():
     req = {
         'url': form['url'],
         'reporter': {
-            'name': form['name'],
+            'name': random_name() if (g.admin and form.get('use_random')) else form['name'],
             'email': form['email'],
             },
         'message': form['message'],

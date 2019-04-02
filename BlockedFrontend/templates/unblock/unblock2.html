@@ -87,6 +87,17 @@
 </div>
 </div>
 
+{% if g.admin %}
+<div class="form-group">
+<div class="checkbox">
+  <label>
+    <input type="checkbox" value="1" checked="checked" name="use_random"/>
+    Use random name for report submission <span class="label label-default">Admin</span>
+  </label>
+</div>
+</div>
+{% endif %}
+
 <div class="form-group">
 <div class="checkbox">
   <label>
