@@ -154,7 +154,7 @@ class ApiClient(BaseApiClient):
         if admin:
             req['admin'] = 1
         if state:
-            assert state in ('open','sent','closed','rejected','cancelled','reviewed','featured','egregious','harmless')
+            assert state in ('open','sent','closed','rejected','cancelled','reviewed','featured','egregious','harmless','unresolved')
             req[state] = 1
         if category:
             req['category'] = category
