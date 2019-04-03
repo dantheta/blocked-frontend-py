@@ -79,9 +79,9 @@ th.num {
 
 {% macro reportslink_policy(n, row) -%}
 {% if n == 1 %}
-<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='sent', policy='false') }}">{{ caller() }}</a>
+<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='unresolved', policy='false') }}">{{ caller() }}</a>
 {% elif n == 2 %}
-<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='sent', policy='true') }}">{{ caller() }}</a>
+<a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='unresolved', policy='true') }}">{{ caller() }}</a>
 {% elif n == 3 %}
 <a href="{{ url_for('cms.reported_sites', isp=row[0], year=row[1], state='rejected', policy='false') }}">{{ caller() }}</a>
 {% else %}
