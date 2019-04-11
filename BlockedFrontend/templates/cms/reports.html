@@ -81,8 +81,8 @@
 </table>
 
 {{ paging.page_list('.reported_sites', page, pagecount, 
-    isp=current_isp, status=request.args.get('status'), category=request.args.get('category'),
-    list=request.args.get('list'), year=request.args.get('year')
+    isp=current_isp, state=request.args.get('state'), category=request.args.get('category'), 
+    list=request.args.get('list'), year=request.args.get('year'), policy=request.args.get('policy')
     ) }}
 
 </div>
