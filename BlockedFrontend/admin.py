@@ -856,13 +856,7 @@ def ispreport_category_stats():
                   [request.args['reporter']])
     else:
         cat = None
-        q = Query(g.conn,
-                  """select name, count(distinct case when primary_category = true then url_categories.id else null end ) primary_ct, count(*) ct
-                     from public.categories
-                     inner join public.url_categories on url_categories.category_id = categories.id
-                     where categories.namespace = 'ORG' and url_categories.enabled = true
-                     group by name
-                     order by name""", [])
+        q = ISPReport.get_category_stats(g.conn)
 
     return render_template('ispreport_category_stats.html',
                            categories=q,

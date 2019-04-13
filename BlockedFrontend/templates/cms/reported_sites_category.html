@@ -1,0 +1,25 @@
+{% extends "BasicPage.page.html" %}
+{% import "paging.part.html" as paging %}
+
+{% set pagetitle = "Reported sites, by category" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-10">
+
+        <table class="table table-condensed">
+            <tr>
+                <th>Category</th>
+                <th class="num">URL Count</th>
+            </tr>
+            {% for row in categories %}
+            <tr>
+                <td><a href="{{ url_for('.reported_sites', category=row.name) }}">{{ row.name }}</a></td>
+                <td class="num">{{ row.ct }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+{% endblock %}

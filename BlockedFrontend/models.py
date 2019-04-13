@@ -571,6 +571,16 @@ class ISPReport(DBObject):
         row = q.fetchone()
         return klass(conn, data=row)
 
+    @staticmethod
+    def get_category_stats(conn):
+        q = Query(conn,
+                  """select name, count(distinct case when primary_category = true then url_categories.id else null end ) primary_ct, count(*) ct
+                     from public.categories
+                     inner join public.url_categories on url_categories.category_id = categories.id
+                     where categories.namespace = 'ORG' and url_categories.enabled = true
+                     group by name
+                     order by name""", [])
+        return q
 
     @staticmethod
     def get_reply_stats(conn):

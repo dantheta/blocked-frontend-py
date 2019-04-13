@@ -69,6 +69,12 @@ def credits():
     g.remote_content = g.remote.get_content('credits')
     return render_template('credits.html')
 
+@cms_pages.route('/reported-sites/by-category')
+def reported_sites_category():
+    q = ISPReport.get_category_stats(g.conn)
+
+    return render_template('reported_sites_category.html',
+                           categories=q)
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
