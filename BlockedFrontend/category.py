@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, redirect, request, \
 from utils import *
 from models import SavedList
 from db import *
+from NORM import Query
 
 category_pages = Blueprint('category', __name__,
                            template_folder='templates/category')
@@ -61,14 +62,52 @@ def sites_search(search=None, page=1):
         pagesize = 20 # defined in API
         pagecount = get_pagecount(data['count'], pagesize)
         session['keyword'] = (search, pagecount)
+        savedlists = None
+        totals = None
+
     else:
         data = None
         pagecount = 0
         networks=None
+
+        import collections
+        import itertools
+        g.remote_content = g.remote.get_content('lists')
+
+        if g.admin:
+            if request.args.get('network'):
+                if request.args['network'] == 'BT-Strict' and request.args['exclude']:
+                    q1 = Query(g.conn, "select * from stats.savedlist_summary_no_btstrict order by name", [])
+                else:
+                    args = {'network': request.args.getlist('network')}
+                    q1 = SavedList.select_with_totals(g.conn, public='t', **args)
+            else:
+                q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+                #q1 = SavedList.select_with_totals(g.conn, public='t' )
+        else:
+            q1 = Query(g.conn, "select * from stats.savedlist_summary order by name", [])
+
+        savedlists, qtotal = itertools.tee(q1, 2)
+
+        totals = collections.defaultdict(lambda: 0)
+        for row in qtotal:
+            for f in ('item_count','reported_count','item_block_count', 'block_count','unblock_count','active_block_count'):
+                totals[f] = totals[f] + row.get(f, 0)
+
+        g.conn.commit()
+
+    def remove_isp(ls, net):
+        return [x for x in ls if x != net]
+
     g.remote_content = g.remote.get_content('keyword-search')
     return render_template('site-search.html', 
             data=data, page=page, search=search, pagecount=pagecount,
-            network=networks, 
+            sel_network=networks, 
+
+            lists=savedlists,
+            totals=totals,
+            network=request.args.getlist('network'),
+            remove_isp_func=remove_isp
             )
 
 @category_pages.route('/sites', methods=['POST'])

@@ -12,9 +12,22 @@ A great many websites are being blocked mistakenly as a result of government imp
 {% endcall %}
 {% endblock %}
 
+{% block page_style %}
+
+.totalrow {
+    background-color: #ededed;
+}
+.category-form {
+    margin-top: 0px;
+    }
+.well {
+    padding-top: 1.2em;
+    }
+{% endblock %}
+
 {% block body %}
 <!-- template BasicPage -->
-<div class="row">
+<div class="row well">
 <div class="col-md-6">
 
 <form class="form category-form" action="{{ url_for('.sites_search_post', _method='POST') }}" method="POST">
@@ -55,7 +68,6 @@ A great many websites are being blocked mistakenly as a result of government imp
 <div><a href="{{ url_for('site.check', mode='live') }}">Check a specific website</a></div>
 <div><a href="{{ url_for('category.blocked_sites') }}">Search sites by category</a></div>
 <div><a href="{{ url_for('.random_category') }}">Browse a random category</a></div>
-<div><a href="{{ url_for('list.show_lists') }}">Browse site lists</a></div>
 
 </div>
 </div> <!-- /.row -->
@@ -66,14 +78,14 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 <div id="categoryname">Blocked sites with keywords: "{{ search }}"</div>
 <div id="blockcount">{{ data.count }} blocked site{{ '' if data.count == 1 else 's' }}
-{% if network %}
+{% if sel_network %}
 <small>on 
-{%   if network|first == '_fixed' %}
+{%   if sel_network|first == '_fixed' %}
 fixed-line ISPs
-{%   elif network|first == '_mobile' %}
+{%   elif sel_network|first == '_mobile' %}
 mobile ISPs
 {%   else %}
-    {{ network|first }}
+    {{ sel_network|first }}
 {%   endif %}
 </small>
 {% endif %}
@@ -90,7 +102,7 @@ mobile ISPs
                     <legend>Create a list of sites for later review</legend>
                     <input type="hidden" name="search" value="{{ search }}" />
                     <input type="hidden" name="exclude_adult" value="{{ request.args.exclude_adult|default('0') }}" />
-                    <input type="hidden" name="network" value="{{ request.args.network|default('') }}" />
+                    <input type="hidden" name="network" value="{{ sel_network|default([''])|first }}" />
                     <div class="form-group">
                         <label for="title">List title:</label>
                         <input type="text" class="form-control" name="name" />
@@ -123,6 +135,85 @@ mobile ISPs
 
 </div>
 </div> <!-- /.sitelistrow -->
+
+{% else %} {# no data #}
+
+<div class="row">
+    <div class="col-md-12">
+<h3>Saved searches</h3>
+
+Blocked sites listed by topic.  These lists have been compiled by ORG staff and volunteers.
+
+    {% if g.admin %}
+    <div style="">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="glyphicon glyphicon-filter"></span>
+            Filter by ISP
+            {%- if network %} ({{ network|join(", ") }} ) {%- endif %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="{{ url_for('.sites_search') }}">( all )</a></li>
+            {% for isp in config.ISPS|sort %}
+            <li>
+                {% if isp in network %}
+                <a href="{{ url_for('.sites_search', network=remove_isp_func(network, isp)) }}">✓ {{ isp }}</a>
+                {% else %}
+                <a href="{{ url_for('.sites_search', network=network+[isp]) }}">{{ isp }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    </div>
+</div>
+
+<!-- mid -->
+<div class="row">
+<div class="col-md-12">
+
+
+<table class="table">
+<tr>
+  <th>Name</th>
+  <th class="num">Entry count</th>
+  <th class="num">Entries reported</th>
+  <th class="num">Entries still blocked</th>
+  <th class="num">ISP blocks found</th>
+  <th class="num">ISP blocks lifted</th>
+  <th class="num">Current ISP blocks</th>
+</tr>
+
+{% for lst in lists %}
+<tr>
+  <td><a name="{{lst.id}}"></a><a href="{{ url_for('list.show_list', name=lst.name) }}">{{ lst.name }}</a> </td>
+  <td class="num">{{ lst.item_count }}</td>
+  <td class="num">{{ lst.reported_count }}</td>
+  <td class="num">{{ lst.item_block_count }}</td>
+  
+  <td class="num">{{ lst.block_count }}</td>
+  <td class="num">{{ lst.unblock_count }}</td>
+  <td class="num">{{ lst.active_block_count }}</td>
+</tr>
+
+{% endfor %}
+<tr class="totalrow">
+  <td>Totals:</td>
+  <td class="num">{{ totals.item_count }}</td>
+  <td class="num">{{ totals.reported_count }}</td>
+  <td class="num">{{ totals.item_block_count }}</td>
+  
+  <td class="num">{{ totals.block_count }}</td>
+  <td class="num">{{ totals.unblock_count }}</td>
+  <td class="num">{{ totals.active_block_count }}</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+
 {% endif %}
 {% endblock %}
 
