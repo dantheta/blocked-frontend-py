@@ -114,7 +114,7 @@ def show_list(name, page=1):
 
 @list_pages.route('/lists')
 def show_lists():
-    return redirect('category.sites_search')
+    return redirect(url_for('category.sites_search'))
 
 @list_pages.route('/lists/check')
 @check_moderator
