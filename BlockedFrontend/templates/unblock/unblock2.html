@@ -55,9 +55,16 @@
 <div class="form-group">
   <label for="message">Please explain why this site should be unblocked</label>
   <div class="control-group">
-    <textarea  rows="6" type="text" name="message" id="message" class="form-control"></textarea>
+    <textarea  rows="6" type="text" name="message" id="message" class="form-control">
+        {%- if session.get('resend') and session.resend[0] == url -%}
+        {{- session.resend[1].message }}
+        {%- endif -%}
+    </textarea>
   </div>
   <p class="sendisps">Your email will be sent to {{ block_names | join_en(True) | safe}}.</p>
+  {% if session.get('resend') %}
+  <p> Originally submitted by {{ session.resend[1].name }} </p>
+  {% endif %}
 </div>
 
 <div class="form-group">

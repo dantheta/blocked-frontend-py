@@ -328,6 +328,20 @@ def ispreports_unflag(url):
         flash("An error occurred unflagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
+@admin_pages.route('/control/ispreports/resend/<path:url>')
+@check_admin
+def ispreports_resend(url):
+    url = fix_path(url)
+    req = g.api.reports_flag(url, 'cancelled')
+    urlobj = Url.select_one(g.conn, url=url)
+    report = ISPReport.select_one(g.conn, urlid=urlobj['urlid'])
+    session['resend'] = (url, report.data)
+    if 'name' in session and 'email' in session:
+        return redirect(url_for('unblock.unblock2', url=url))
+    else:
+        return redirect(url_for('unblock.unblock', url=url))
+
+
 @admin_pages.route('/control/ispreports/unblocked/<int:id>')
 @check_admin
 def ispreports_status_unblocked(id):

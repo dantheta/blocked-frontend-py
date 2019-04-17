@@ -40,8 +40,13 @@ def unblock2():
             session[k] = data[k]
     else:
         data = request.args.copy()
-        data['name'] = session['name']
-        data['email'] = session['email']
+        if g.admin:
+            data['name'] = session.get('name')
+            data['email'] = session.get('email')
+        else:
+            data['name'] = session['name']
+            data['email'] = session['email']
+
 
     req = {
         'url': data['url'],

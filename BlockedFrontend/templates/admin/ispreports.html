@@ -7,6 +7,19 @@
 td.center, th.center {
     text-align: center;
 }
+
+td {
+    height: 3em !important;
+    }
+
+.action-button {
+    display: none;
+    }
+
+tr:hover * .action-button {
+    display: inline-block;
+}
+
 {% endblock %}
 
 {% block body %}
@@ -115,7 +128,7 @@ td.center, th.center {
   <th class="center"Report<br/>Status</th>
   <th>Replies</th>
   <th class="center">Reviewed</th>
-  <th></th>
+  <th style="width: 8%"></th>
 </tr>
 {% for report in reports.reports %}
 <tr>
@@ -157,15 +170,25 @@ td.center, th.center {
       <span class="text-success glyphicon glyphicon-ok-sign" title="Block has been reviewed"></span>
   {% endif %}
   </td>
-  <td>
-
-    {%- if report.status == 'pending' -%}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="btn btn-warning btn-sm">Cancel</a>
-    {%- elif report.status != 'abuse' -%}
-    <a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="btn btn-warning btn-sm">Flag</a>
-    {%- elif report.status == 'abuse' -%}
-    <a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="btn btn-warning btn-sm">Unflag</a>
-    {%- endif -%}&nbsp;<a class="btn btn-default btn-sm" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View</a>
+  <td class="">
+      <div class="btn-group action-button">
+          <button class="dropdown-toggle btn btn-link btn-sm" title="Actions for {{ report.url }}" data-toggle="dropdown">
+              <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+              <li><a class="" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View report</a></li>
+    {% if report.status in ('new','pending') %}
+    <li><a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="text-warning">Cancel report</a></li>
+    <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Cancel report and Re-send</a></li>
+    {% elif report.status == 'cancelled' %}
+    <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Re-send report</a></li>
+    {% elif report.status != 'abuse' %}
+    <li><a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="text-warning">Flag report</a></li>
+    {% elif report.status == 'abuse' %}
+    <li><a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="text-warning">Unflag report</a></li>
+    {% endif %}
+          </ul>
+      </div>
   </td>
 </tr>
 
