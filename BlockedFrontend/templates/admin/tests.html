@@ -73,7 +73,7 @@ danger
           </tr>
           {% for queue in queues: %}
           <tr class="{{ queue_status(queue.message_count)}}">
-              <td>{{ queue.queue_name }}</td>
+              <td>{{ queue.queue_name }} {% if queue.vhost != '/' %}({{queue.vhost}}){% endif %}</td>
               <td class="num">{{ queue.last_updated|fmtime }}</td>
               <td class="num">{{ queue.message_count }}</td>
           </tr>
