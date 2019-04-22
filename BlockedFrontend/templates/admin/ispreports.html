@@ -128,7 +128,7 @@ tr:hover * .action-button {
   <th class="center"Report<br/>Status</th>
   <th>Replies</th>
   <th class="center">Reviewed</th>
-  <th style="width: 8%"></th>
+  <th style="width: 8%"><span class="glyphicon glyphicon-cog" title="Actions menu"></span></th>
 </tr>
 {% for report in reports.reports %}
 <tr>
@@ -177,15 +177,16 @@ tr:hover * .action-button {
           </button>
           <ul class="dropdown-menu">
               <li><a class="" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View report</a></li>
-    {% if report.status in ('new','pending') %}
-    <li><a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="text-warning">Cancel report</a></li>
-    <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Cancel report and Re-send</a></li>
+    {% if report.status in ('new','pending') or (report.status == 'sent' and report.verified == 0) %}
+        <li><a href="{{url_for('.ispreports_flag', url=report.url, status='cancelled', page=page)}}" class="text-warning">Cancel report</a></li>
+        <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Cancel report and Re-send</a></li>
     {% elif report.status == 'cancelled' %}
-    <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Re-send report</a></li>
-    {% elif report.status != 'abuse' %}
-    <li><a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="text-warning">Flag report</a></li>
+        <li><a href="{{url_for('.ispreports_resend', url=report.url)}}" class="text-warning">Re-send report</a></li>
+    {% endif %}
+    {% if report.status != 'abuse' %}
+        <li><a href="{{url_for('.ispreports_flag', url=report.url, status='abuse', page=page)}}" class="text-warning">Flag report</a></li>
     {% elif report.status == 'abuse' %}
-    <li><a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="text-warning">Unflag report</a></li>
+        <li><a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="text-warning">Unflag report</a></li>
     {% endif %}
           </ul>
       </div>
