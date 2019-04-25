@@ -49,8 +49,10 @@ danger
               </td>
               <td>
                   {% if test.total %}
-                  {{ test.sent }} / {{test.total}}
-                  ({{ test.sent * 100 / test.total|float }}%)
+                  <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: {{ (test.sent * 100.0 / test.total)|int }}%" aria-valuenow="{{ (test.sent * 100.0 / test.total)|int }}" aria-valuemin="0" aria-valuemax="100">
+                          <span>{{ test.sent }} / {{test.total}}</span>
+                      </div>
                   {% endif %}
               </td>
 
