@@ -21,17 +21,51 @@
 <div><a href="{{ url_for('.reported_sites_category') }}">Reported sites, by category</a></div>
 {% endblock %}
 
+{% block page_style %}
+
+.filters ul {
+    display: inline-block;
+}
+
+{% endblock %}
 
 {% block bodyrow2 %}
 
 <div class="row">
 <div class="col-lg-8">
+  {% if not filters %}
   <h2>Incorrectly blocked sites reported to ISPs</h2>
+  {% else %}
+  <h2>Blocked sites reported to ISPs</h2>
+  <div class="filters"><h4>Filters:</h4>
+      <ul>
+  {% if current_isp %}
+  <li class="label label-default">ISP: <strong>{{ current_isp }}</strong></li>
+  {% endif %}
   {% if request.args.get('category') %}
-  <p>Viewing reports in category <strong>{{ request.args.category }}</strong>.</p>
+  <li class="label label-default">Category: <strong>{{ request.args.category }}</strong></li>
   {% endif %}
   {% if request.args.get('list') %}
-  <p>Viewing reports from the <strong>{{ request.args.list }}</strong> list.</p>
+  <li class="label label-default">List: <strong>{{ request.args.list }}</strong></li>
+  {% endif %}
+  {% if request.args.get('state') == 'unresolved' %}
+  <li class="label label-default">Status: <strong>unresolved (open)</strong></li>
+  {% endif %}
+  {% if request.args.get('state') == 'rejected' %}
+  <li class="label label-default">Status: <strong>closed (rejected)</strong></li>
+  {% endif %}
+  {% if request.args.get('policy') != None %}
+    {% if request.args.policy == 'true' %}
+    <li class="label label-default">Matches ISP policy</li>
+    {% else %}
+    <li class="label label-default">Does not match ISP policy</li>
+    {% endif %}
+  {% endif %}
+  {% if request.args.get('year') %}
+  <li class="label label-default">Year: <strong>{{ request.args.year }}</strong></li>
+  {% endif %}
+      </ul>
+  </div>
   {% endif %}
 </div>
 <div class="col-lg-4">

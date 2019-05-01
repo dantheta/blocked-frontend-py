@@ -95,6 +95,8 @@ def reported_sites(isp=None, page=1):
                                              list=a.get('list')) )
             # otherwise, return a 404
             abort(404)
+    filter_args = set(['state','category','list','policy','year'])
+
     g.remote_content = g.remote.get_content('reported-sites')
     data = g.api.reports(page-1, 
                          isp=isp,
@@ -112,6 +114,7 @@ def reported_sites(isp=None, page=1):
         abort(404)
     return render_template('reports.html',
             current_isp=isp,
+            filters=filter_args & set(a.keys()),
             networks = g.remote.get_networks(),
             page=page, count=count, pagecount=pagecount, 
             reports=reports)
