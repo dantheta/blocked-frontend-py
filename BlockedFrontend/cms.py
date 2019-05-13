@@ -62,7 +62,8 @@ def index():
 @cms_pages.route('/personal-stories')
 def personal_stories():
     g.remote_content = g.remote.get_content('personal-stories')
-    return render_template('personal-stories.html')
+    return render_template('personal-stories.html',
+                           featured=models.ISPReport.get_featured(g.conn))
 
 @cms_pages.route('/credits')
 def credits():

@@ -571,6 +571,19 @@ class ISPReport(DBObject):
         row = q.fetchone()
         return klass(conn, data=row)
 
+    @classmethod
+    def get_featured(klass, conn):
+        q = Query(conn,
+                  """select isp_reports.*, urls.url
+                     from public.isp_reports
+                     inner join urls using (urlid)
+                     where featured_block = true
+                     order by random()
+                     limit 10""", [])
+        for row in q:
+            yield klass(conn, data=row)
+
+
     @staticmethod
     def get_category_stats(conn):
         q = Query(conn,
