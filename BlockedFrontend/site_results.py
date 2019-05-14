@@ -170,7 +170,7 @@ def site(url=None):
 
                            page_title = data.get('title'),
 
-                           categories = data.get('categories', [])
+                           categories = data.get('categories_full', [])
                            )
 
 

@@ -322,7 +322,13 @@ Your feedback was successfully submitted.
     {% endif %}
 
     {% if categories %}
-    <div id="categorylist">This site is listed in the {{ categories|join_en(markup=True)|safe }} categor{{ 'y' if categories|length == 1 else 'ies' }}.</div>
+    <div id="categorylist">This site is listed in the 
+        {% for cat in categories %}
+        {% if loop.last %} and {% endif %}
+        {% if not loop.last and not loop.first %},{% endif %}
+        <span class="label label-default" style="cursor: help" title="{{ cat.1|title }} {{ cat.0 }} category">{{ cat.0 }}</span>
+        {% endfor %}
+        categor{{ 'y' if categories|length == 1 else 'ies' }}.</div>
     
     <p><small><em>Category information provided by <a href="https://categorify.org" target="_blank">Categorify</a> and <a href="https://dmoztools.net" target="_blank">dmoztools.net</a></em></small></p>
     {% endif %}
