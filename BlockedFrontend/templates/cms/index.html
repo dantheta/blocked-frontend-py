@@ -55,7 +55,38 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
   <h3>More ways to check blocked sites</h3>
   <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
   <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
+
   {% endif %}
+
+  {# unblock this site #}
+
+{% if config.MODULE_UNBLOCK %}
+<h3>Help unblock this website</h3>
+<p>Has this site been blocked incorrectly?</p>
+<div style="min-height: 3em; background-color: #fafafa; margin: 4px">
+<div id="siteinfo" class="site" >
+  <div  class="randomurl"><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
+  <p id="sitetitle">{{site.title|null('(no title)')}}</p>
+</div>
+</div>
+
+{% if False %}
+  <div style="padding-bottom: 1em">
+    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
+  </div>
+{% endif %}
+
+
+  <div class="buttonlist btn-group btn-group-justified" style="margin-top: 0.5em">
+    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">Report this site</a>
+    <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-default">See another site</a>
+  </div> <!-- /.buttonlist -->
+
+  {% endif %}
+
+  {# end unblock #}
+  
+
   </div>
 
   </div> <!-- /.col -->
@@ -97,40 +128,6 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
     <div class="row">
         <div class="col-md-8">
 
-<h3>Help unblock this website</h3>
-<div class="site" >
-  <div  class="randomurl hidden-xs"><a href="{{site.url}}" target="_blank" rel="nofollow">{{site.url}}</a></div>
-  <div  class="randomurl hidden-sm hidden-md hidden-lg"><a href="{{site.url}}" target="_blank" title="{{ site.url }}" rel="nofollow">{{site.url|domain}}</a></div>
-  <p>{{site.title|null('no title')}}</p>
-</div>
-
-  <div style="padding-bottom: 1em">
-    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
-  </div>
-
-  {% if savedlist %}
-  <div>This site was selected from the <a href="{{ url_for('list.show_list', name=savedlist.name) }}">{{ savedlist.name }}</a> curated list.</div>
-  {% endif %}
-
-        </div> <!-- /.col-8 -->
-        <div class="col-md-4">
-
-  <div class="buttonlist">
-  <div class="">
-    <a href="{{url_for('unblock.unblock', url=site.url)}}" rel="nofollow" class="btn  btn-primary">Request unblock</a>
-  </div>
-
-  <div class="">
-      <a href="{{ url_for('site.site', url=site.url) }}" class="btn  btn-default">View full results</a>
-  </div>
-
-  <div class="" >
-      <a href="{{url_for('unblock.browse_next',after=site.url) }}" class="btn btn-default">See another blocked site</a>
-  </div>
-  </div> <!-- /.buttonlist -->
-
-     </div> <!-- /.col-4 -->
-  </div> <!-- /.row -->
 
 
 </div> <!-- /.col -->
@@ -144,8 +141,27 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
 {{chunks.contactChunk() }}
 </div>
 
-
-
-
-
 {%endblock%}
+
+{% block page_script %}
+
+$(document).ready(function(){
+    $('#tryanother').click(function(){
+        $('#siteinfo').fadeOut(400, function() {
+            $.get('{{ url_for('unblock.browse_next_js') }}', function(data, status, xhr) {
+                $('#sitelink').attr('href', data.url);
+                $('#sitelink').text(data.url);
+                $('#sitetitle').text(data.title || '(no title)');
+
+                $('#unblock').attr('href', '{{ url_for('unblock.unblock', url='') }}' + escape(data.url));
+                $('#siteinfo').fadeIn();
+
+            });
+        });
+        return false;
+    });
+
+});
+
+{% endblock %}
+

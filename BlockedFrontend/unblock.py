@@ -86,7 +86,7 @@ def selectnext(searchdata, url):
     if len(candidates) > 0:
         return random.choice(candidates)
 
-def nextsite(current_url):
+def nextsite(current_url, redir=True):
     logging.info("Route: %s", session.get('route'))
     if session.get('route') == 'category':
 
@@ -101,7 +101,10 @@ def nextsite(current_url):
         searchdata = g.api.GET('category/sites/'+str(session['category'][0]), req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
-            return redirect(url_for('site.site', url=nextsite))
+            if redir:
+                return redirect(url_for('site.site', url=nextsite))
+            else:
+                return nextsite, None
 
     elif session.get('route') == 'keyword':
 
@@ -111,18 +114,28 @@ def nextsite(current_url):
         searchdata = g.api.GET('search/url', req)
         nextsite = selectnext(searchdata, current_url)
         if nextsite:
-            return redirect(url_for('site.site', url=nextsite))
+            if redir:
+                return redirect(url_for('site.site', url=nextsite))
+            else:
+                return nextsite, None
 
     elif session.get('route') == 'oldrandom':
         logging.info("Getting random site")
         data = g.api.GET('ispreport/candidates',{'count':1})
-        return redirect(url_for('site.site', url=data['results'][0]))
+        if redir:
+            return redirect(url_for('site.site', url=data['results'][0]))
+        else:
+            return data['results'][0], None
 
 
     # use savedlists if there's no other route defined
     logging.info("Getting savedlist random site")
     for item in Item.get_frontpage_random(g.conn):
-        return redirect(url_for('site.site', url=item['url']))
+        if redir:
+            return redirect(url_for('site.site', url=item['url']))
+        else:
+            return item['url'], item['title']
+
 
 
 @unblock_pages.route('/next')
@@ -135,6 +148,13 @@ def browse_next(after=None):
         return ret
     # redirect to front page if no nextsite is found
     return redirect(url_for('cms.index'))
+
+@unblock_pages.route('/next_js')
+#@unblock_pages.route('/next/<path:after>')
+def browse_next_js():
+    from flask import jsonify
+    nexturl, title = nextsite(None, False)
+    return jsonify(url=nexturl, domain=get_domain(nexturl), title=title)
 
 def random_name():
     import random
