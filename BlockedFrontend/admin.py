@@ -116,11 +116,18 @@ def savedlist_create():
                 continue
 
             url = normalize_url(line.strip())
+            
+            try:
+                urlobj = Url.select_one(g.conn, url=url)
+            except ObjectNotFound:
+                urlobj = {}
+
 
             item = Item(g.conn)
             item.update({
                 'list_id': savedlist.id,
                 'url': url,
+                'title': urlobj.get('title')
             })
             item.store()
 
