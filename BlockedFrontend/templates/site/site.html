@@ -202,7 +202,7 @@ Your feedback was successfully submitted.
     <span class="glyphicon glyphicon-info-sign" style="margin-left: -1.75em; float: left; font-size: 1.5em"></span>
 <p>Parental control filter systems can have difficulty providing human readable responses for HTTPS requests, due to certificate errors.  </p>
 
-<p><a href="{{ url_for('.site', url=url.replace('https:','http:')) }}" rel="nofollow">View the non-HTTPS results</a> for this site.</p>
+<p><a href="{{ url_for('.site', url=alt_url_data.url) }}" rel="nofollow">View the non-HTTPS results</a> for this site.</p>
 </div>
 {% endif %}
 
@@ -314,7 +314,7 @@ Your feedback was successfully submitted.
     </form>
     <h4>Related results</h4>
     {% if alt_url_data %}
-    <p><a href="{{ url_for('.site', url=url.replace('http:','https:')) }}">View results for the HTTPS version of this site.</a></p>
+    <p><a href="{{ url_for('.site', url=alt_url_data.url) }}">View results for the {{ alt_url_data.scheme|upper }} version of this site.</a></p>
     {% endif %}
 
     {% if savedlist and not live and config.MODULE_SAVEDLIST %}

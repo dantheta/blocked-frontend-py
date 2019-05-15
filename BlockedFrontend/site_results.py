@@ -77,13 +77,8 @@ def site(url=None):
     prev_unblock_type = None
 
     try:
-        if 'http:' in url:
-            alt_url = url.replace('http:','https:')
-        else:
-            alt_url = url.replace('https:','http:')
-            
-        alt_url_data = g.api.status_url(alt_url, current_app.config['DEFAULT_REGION'])
-    except Exception:
+        alt_url_data = [ x for x in data['related'] if x['rel'] == "scheme"][0]
+    except IndexError:
         alt_url_data = None
 
     url_status = data['url-status']
