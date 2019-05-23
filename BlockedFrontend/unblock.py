@@ -38,6 +38,11 @@ def unblock2():
         data = request.form
         for k in 'name','email':
             session[k] = data[k]
+        session['reporter'] = {
+                'owner': data.get('owner'),
+                'user': data.get('user'),
+                'bystander': data.get('bystander'),
+                }
     else:
         data = request.args.copy()
         if g.admin:
@@ -46,6 +51,7 @@ def unblock2():
         else:
             data['name'] = session['name']
             data['email'] = session['email']
+        data['reporter'] = session.get('reporter', {})
 
 
     req = {
@@ -169,7 +175,7 @@ def submit_unblock():
 
     usertype = []
     for d in ('owner','user','bystander'):
-        if d in form:
+        if session.get('reporter', {}).get(d):
             usertype.append(d)
 
     req = {
@@ -191,6 +197,7 @@ def submit_unblock():
             'signature': '',
             }
         }
+    
     if 'networks' in form:
         req['networks'] = make_list(form['networks'])
     req['auth']['signature'] = g.api.sign(req,  ['url','date'])
@@ -210,6 +217,10 @@ def submit_unblock():
             message="Blocked is not able to report blacklisted sites for unblocking."
             )
             
+    session['reporter'].pop('user')
+    session['reporter'].pop('owner')
+
+    print session['reporter']
 
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])
