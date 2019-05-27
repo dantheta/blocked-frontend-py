@@ -79,18 +79,21 @@ Your feedback was successfully submitted.
 {% block page_script %}
   $(document).ready(function(){
 {% if activecount > 0 and not live %}
-    $('#pastblock').hide();
-    $('#allresults').hide();
+    var parms = new URLSearchParams(window.location.search);
+    if (!parms.has("expand")) {
+        $('#pastblock').hide();
+        $('#allresults').hide();
 
-    $('#showpast').click(function() {
-      $('#pastblock').slideDown();
-      return false;
-    });
-    $('#showallresults').click(function(){
-      $('#pastblock').slideDown();
-      $('#allresults').slideDown();
-      return false;
-    });
+        $('#showpast').click(function() {
+          $('#pastblock').slideDown();
+          return false;
+        });
+        $('#showallresults').click(function(){
+          $('#pastblock').slideDown();
+          $('#allresults').slideDown();
+          return false;
+        });
+    }
 {% endif %}
 {% if live %}
     $('#unblockbtn').addClass('btn-disabled');
