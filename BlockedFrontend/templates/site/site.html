@@ -78,6 +78,7 @@ Your feedback was successfully submitted.
 
 {% block page_script %}
   $(document).ready(function(){
+    var thisurl = "{{ config.SITE_URL }}{{  url_for('.site', url=url)  }}";
 {% if activecount > 0 and not live %}
     var parms = new URLSearchParams(window.location.search);
     if (!parms.has("expand")) {
@@ -100,11 +101,15 @@ Your feedback was successfully submitted.
         $(this).text("Hide other results");
         $('#showpast').text("Hide past blocks for this site");
 
+        $('#permalink').attr('value', thisurl + '?expand=1');
+
         $('#pastblock').slideDown();
         $('#allresults').slideDown();
       } else {
         $(this).text("Show all results");
         $('#showpast').text("Show past blocks for this site");
+
+        $('#permalink').attr('value', thisurl);
 
         $('#pastblock').slideUp();
         $('#allresults').slideUp();
