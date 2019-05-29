@@ -217,10 +217,10 @@ def submit_unblock():
             message="Blocked is not able to report blacklisted sites for unblocking."
             )
             
-    session['reporter'].pop('user')
-    session['reporter'].pop('owner')
+    if 'reporter' in session:
+        session['reporter'].pop('user', None)
+        session['reporter'].pop('owner', None)
 
-    print session['reporter']
 
     if 'ORG' in form.get('networks',[]):
         ret = nextsite(form['url'])
