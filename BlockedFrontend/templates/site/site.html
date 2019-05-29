@@ -83,17 +83,34 @@ Your feedback was successfully submitted.
     if (!parms.has("expand")) {
         $('#pastblock').hide();
         $('#allresults').hide();
-
-        $('#showpast').click(function() {
-          $('#pastblock').slideDown();
-          return false;
-        });
-        $('#showallresults').click(function(){
-          $('#pastblock').slideDown();
-          $('#allresults').slideDown();
-          return false;
-        });
     }
+
+    $('#showpast').click(function() {
+      if ($('#pastblock').is(':hidden')) {
+        $(this).text("Hide past blocks for this site");
+        $('#pastblock').slideDown();
+      } else {
+        $(this).text("Show past blocks for this site");
+        $('#pastblock').slideUp();
+      }
+      return false;
+    });
+    $('#showallresults').click(function(){
+      if ($('#allresults').is(':hidden')) {
+        $(this).text("Hide other results");
+        $('#showpast').text("Hide past blocks for this site");
+
+        $('#pastblock').slideDown();
+        $('#allresults').slideDown();
+      } else {
+        $(this).text("Show all results");
+        $('#showpast').text("Show past blocks for this site");
+
+        $('#pastblock').slideUp();
+        $('#allresults').slideUp();
+      }
+      return false;
+    });
 {% endif %}
 {% if live %}
     $('#unblockbtn').addClass('btn-disabled');
@@ -222,7 +239,7 @@ Your feedback was successfully submitted.
 
 <div class="showmore">
 {% if pastcount > 0 %}
-  <a href="#" id="showpast">View past blocks for this site</a>
+  <a href="#" id="showpast">Show past blocks for this site</a>
 {% endif %}
 {% if activecount > 0 %}
   <a href="#" id="showallresults">Show all results</a>
