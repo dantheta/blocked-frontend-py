@@ -84,6 +84,9 @@ Your feedback was successfully submitted.
     if (!parms.has("expand")) {
         $('#pastblock').hide();
         $('#allresults').hide();
+    } else {
+        $('#showpast').text("Hide past blocks for this site");
+        $('#showallresults').text("Hide other results");
     }
 
     $('#showpast').click(function() {
@@ -102,6 +105,7 @@ Your feedback was successfully submitted.
         $('#showpast').text("Hide past blocks for this site");
 
         $('#permalink').attr('value', thisurl + '?expand=1');
+        history.replaceState(null, null, thisurl + '?expand=1');
 
         $('#pastblock').slideDown();
         $('#allresults').slideDown();
@@ -110,6 +114,7 @@ Your feedback was successfully submitted.
         $('#showpast').text("Show past blocks for this site");
 
         $('#permalink').attr('value', thisurl);
+        history.replaceState(null, null, thisurl);
 
         $('#pastblock').slideUp();
         $('#allresults').slideUp();
