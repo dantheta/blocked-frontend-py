@@ -148,15 +148,14 @@ class Item(DBObject):
             delitem.delete()
 
     @classmethod
-    def get_frontpage_random(cls, conn, exclude_networks=[]):
+    def get_frontpage_random(cls, conn, exclude_networks=''):
         c = conn.cursor(cursor_factory = DictCursor)
         c.execute("""select items.* 
             from items 
             inner join savedlists on list_id = savedlists.id
-            inner join public.urls on items.url = urls.url
-            where frontpage = true and blocked = true and reported = false and public.get_blocked_networks(urlid) <> '{BT-Strict}'
+            where frontpage = true and blocked = true and reported = false and networks <> %s and networks is not null
             order by random()""",
-            exclude_networks)
+            [exclude_networks])
         for row in c:
             yield cls(conn, data=row)
         c.close()
