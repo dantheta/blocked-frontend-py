@@ -32,7 +32,7 @@ def custom_routing(site):
 
 def frontpage_lists():
     
-    for item in Item.get_frontpage_random(g.conn):
+    for item in Item.get_frontpage_random(g.conn, current_app.config['RANDOM_EXCLUDE_NETWORKS']):
         site = g.api.status_url(item['url'])
         savedlist = item.get_list()
         return site, savedlist
