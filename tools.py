@@ -71,7 +71,7 @@ def run_update():
             networks = [x['network_id'] for x in data['results'] if x['status'] == 'blocked' ]
             reported = len(data['reports']) > 0
 
-            logging.info("Status: %s, blocked=%s, reported=%s", row['url'], blocked, reported)
+            logging.info("Status: %s, blocked=%s, reported=%s, networks=%s", row['url'], blocked, reported, networks)
 
             c2.execute("update items set blocked=%s, reported=%s, networks=%s, last_checked=now() where url=%s",
                        [ blocked, reported, networks, row['url'] ])
