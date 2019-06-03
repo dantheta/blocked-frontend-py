@@ -21,7 +21,7 @@ def db_connect_pool() :
     
 def db_disconnect(conn):
     # TODO: transaction cleanup
-    current_app.logger.debug("Transaction status: %s", conn.get_transaction_status())
+    # current_app.logger.debug("Transaction status: %s", conn.get_transaction_status())
     if conn.get_transaction_status() in (2,3):
         current_app.logger.warn("Transaction status: %s", conn.get_transaction_status())
 

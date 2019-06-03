@@ -23,14 +23,7 @@ if app.config.get('SITE_THEME'):
     searchpath = app.jinja_loader.searchpath
     app.jinja_loader.searchpath.insert(0, searchpath[0] + '/' + app.config['SITE_THEME'])
 
-api = ApiClient(
-    app.config['API_EMAIL'],
-    app.config['API_SECRET']
-    )
-if 'API' in app.config:
-    api.API = app.config['API']
-
-app.secret_key = app.config['SESSION_KEY']
+#app.secret_key = app.config['SESSION_KEY']
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -95,7 +88,12 @@ def close_db(error):
 
 @app.before_request
 def hook_api():
-    g.api = api
+    g.api = ApiClient(
+        app.config['API_EMAIL'],
+        app.config['API_SECRET']
+        )
+    if 'API' in app.config:
+        g.api.API = app.config['API']
 
 @app.before_request
 def hook_miscdata():

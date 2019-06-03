@@ -136,7 +136,7 @@ def nextsite(current_url, redir=True):
 
     # use savedlists if there's no other route defined
     logging.info("Getting savedlist random site")
-    for item in Item.get_frontpage_random(g.conn):
+    for item in Item.get_frontpage_random(g.conn, current_app.config['RANDOM_EXCLUDE_NETWORKS']):
         if redir:
             return redirect(url_for('site.site', url=item['url']))
         else:

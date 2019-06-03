@@ -35,6 +35,7 @@ PIWIK = False
 
 DUMMY = False
 
+RANDOM_EXCLUDE_NETWORKS = '{}' # PG array for excluding randomly selected URLs based on network
 
 REMOTE_CONTENT_STYLE = 'style="background-color: light-blue"'
 

@@ -55,6 +55,7 @@ def index():
 
     blockednetworks = [ x['network_id'] for x in site['results']
         if x['status'] == 'blocked' ]
+    g.conn.commit()
     return render_template('index.html', site=site, savedlist=savedlist,
                            stats=stats['stats'],
                            blockednetworks=blockednetworks)
