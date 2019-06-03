@@ -26,7 +26,7 @@ def check(mode=None):
 
 @site_pages.route('/check', methods=['POST'])
 def check_post():
-    url = request.form['url']
+    url = request.form['url'].strip()
     if not url.lower().startswith(('http://', 'https://')):
         url = 'http://' + url
 
