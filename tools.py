@@ -68,12 +68,13 @@ def run_update():
 
             # decide if site is still blocked, for the purposes of frontend list selection
             blocked = any([ (x['status'] == 'blocked') for x in data['results']])
+            networks = [x['network_id'] for x in data['results'] if x['status'] == 'blocked' ]
             reported = len(data['reports']) > 0
 
             logging.info("Status: %s, blocked=%s, reported=%s", row['url'], blocked, reported)
 
-            c2.execute("update items set blocked=%s, reported=%s, last_checked=now() where url=%s",
-                       [ blocked, reported, row['url'] ])
+            c2.execute("update items set blocked=%s, reported=%s, networks=%s, last_checked=now() where url=%s",
+                       [ blocked, reported, networks, row['url'] ])
         except APIError as exc:
             if 'UrlLookupError' in exc.args[0]:
                 # URL no longer present on the backend?

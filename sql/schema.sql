@@ -16,6 +16,7 @@ CREATE TABLE items (
     title varchar not null,
     reported bool default false not null,
     blocked bool null,
+    networks varchar[] null,
     created timestamptz not null,
     last_updated timestamptz null,
     last_checked timestamptz null
