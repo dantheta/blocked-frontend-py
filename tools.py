@@ -59,7 +59,7 @@ def run_update():
     c2 = conn.cursor()
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
                where public=true \
-               order by last_checked nulls first limit 500")
+               order by last_checked nulls first limit 200")
 
     # only evaluate based on test results from the last two weeks
     for row in c:
@@ -79,8 +79,8 @@ def run_update():
             if 'UrlLookupError' in exc.args[0]:
                 # URL no longer present on the backend?
                 c2.execute("delete from items where url = %s", [row['url']])
+        conn.commit()
     c.close()
-    conn.commit()
 
 @app.cli.command()
 def create_admin():
