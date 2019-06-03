@@ -4,6 +4,7 @@ import logging
 import datetime
 
 from flask import Flask
+import click
 
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect_single
@@ -53,13 +54,14 @@ def run_submit():
 
 
 @app.cli.command()
-def run_update():
+@click.argument('count', default=200)
+def run_update(count=200):
     conn = db_connect_single()
     c = conn.cursor()
     c2 = conn.cursor()
     c.execute("select distinct url, last_checked from items inner join savedlists on list_id = savedlists.id \
                where public=true \
-               order by last_checked nulls first limit 200")
+               order by last_checked nulls first limit "+ str(count))
 
     # only evaluate based on test results from the last two weeks
     for row in c:
