@@ -198,6 +198,10 @@ padding-top: 4.0em;
     font-size: 1.5em;
 }
 
+.info-panel small {
+    color: #ddd;
+}
+
 #active * td {
     background-color: #ffeded;
 }
