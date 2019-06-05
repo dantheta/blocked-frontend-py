@@ -198,7 +198,7 @@ padding-top: 4.0em;
     font-size: 1.5em;
 }
 
-.info-panel small {
+.info-panel small a {
     color: #ddd;
 }
 
