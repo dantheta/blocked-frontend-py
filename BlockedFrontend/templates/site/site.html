@@ -1,6 +1,8 @@
 {% extends "BasicPage.page.html" %}
 {% from "network_description.part.html" import isp_info, popover_js %}
 
+{% set banner_text_block = False %}
+
 {% macro status_names(status) %}
 {{ config.STATUS_NAMES.get(status, status) }}
 {% endmacro %}
