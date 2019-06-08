@@ -250,9 +250,8 @@ Your feedback was successfully submitted.
 
 {{results_table('active', results_blocked, show_category=True) }}
 
-
 <div class="showmore">
-{% if pastcount > 0 %}
+{% if activecount > 0 and pastcount > 0 %}
   <a href="#" id="showpast">Show past blocks for this site</a>
 {% endif %}
 {% if activecount > 0 %}
