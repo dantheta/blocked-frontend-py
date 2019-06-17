@@ -41,6 +41,9 @@
     {% else %}
     {{ d.name }}
     {% endif %}
+    {% if g.admin %}
+    <div>{{ d.uuid }}</div>
+    {% endif %}
 
   </td>
   <td>

@@ -389,6 +389,12 @@ class CourtJudgmentURLFlag(DBObject):
         return CourtJudgmentUrl(self.conn, self['urlid'])
         
 
+class Tags(DBObject):
+    TABLE = 'public.tags'
+    FIELDS = ['name','description','type']
+    
+    
+
 class Url(DBObject):
     TABLE = 'urls'
     UPDATABLE = False
