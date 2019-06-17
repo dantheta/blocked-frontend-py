@@ -6,6 +6,14 @@
 {% block banner_text %}
 {% endblock %}
 
+{% block pagestyle %}
+
+.probeuuid {
+    color: darkgray;
+}
+
+{% endblock %}
+
 {% block page_script %}
 {{ popover_js() }}
 {% endblock %}
@@ -42,7 +50,7 @@
     {{ d.name }}
     {% endif %}
     {% if g.admin %}
-    <div>{{ d.uuid }}</div>
+    <div class="probeuuid">{{ d.uuid }}</div>
     {% endif %}
 
   </td>
