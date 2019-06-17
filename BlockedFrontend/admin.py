@@ -1600,7 +1600,7 @@ def tests_edit(id=None):
                            isps=load_isp_data(),
                            countries=load_country_data(),
                            filters=load_data('filters'),
-                           tags=Tags.select(g.conn, _orderby='id')
+                           tags=[ x['id'] for x in Tags.select_all(g.conn, _orderby='id')]
                            )
 
 @admin_pages.route('/control/tests/update', methods=['POST'])
