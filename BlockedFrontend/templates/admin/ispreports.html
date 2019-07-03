@@ -22,6 +22,16 @@ tr:hover * .action-button {
 
 {% endblock %}
 
+{% macro tab(active, url, name, count=None ) %}
+    <li role="presentation" class="{{ 'active' if active  else '' }}">
+        <a href="{{ url }}">{{ name }}
+        {% if count != None %}
+         <span class="badge">{{ count }}</span>
+        {% endif %}
+        </a>
+    </li>
+{% endmacro %}
+
 {% block body %}
 <div class="row">
 <div class="col-md-12">
@@ -31,25 +41,44 @@ tr:hover * .action-button {
 
 <div style="margin-bottom: 1em">
   <ul class="nav nav-pills">
-    <li role="presentation" class="{{ 'active' if not request.args.state  else '' }}">
-        <a href="{{ url_for('.ispreports', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">All</a>
-    </li>
-    <li role="presentation" class="{{ 'active' if request.args.state == 'open' else '' }}">
-        <a href="{{ url_for('.ispreports', state='open', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Open <span class="badge">{{ reports.open_count }}</span></a>
-    </li>
-    <li role="presentation" class="{{ 'active' if request.args.state == 'cancelled' else '' }}">
-        <a href="{{ url_for('.ispreports', state='cancelled', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Cancelled <span class="badge">{{ reports.cancel_count }}</span></a>
-    </li>
-    <li role="presentation" class="{{ 'active' if request.args.state == 'reviewed' else '' }}">
-        <a href="{{ url_for('.ispreports', state='reviewed', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Reviewed <span class="badge">{{ reports.review_count }}</span></a>
-    </li>
-    <li role="presentation" class="{{ 'active' if request.args.state == 'featured' else '' }}">
-        <a href="{{ url_for('.ispreports', state='featured', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Featured <span class="badge">{{ reports.feature_count }}</span></a>
-    </li>
-    <li role="presentation" class="{{ 'active' if request.args.state == 'harmless' else '' }}">
-        <a href="{{ url_for('.ispreports', state='harmless', network=request.args.network, category=request.args.category, page=request.args.get('page') ) }}">Harmless <span class="badge">{{ reports.harmless_count }}</span></a>
-    </li>
-    <li role="presentation" class="dropdown disabled"> <a>| Filters:</a></li>
+      <li role="presentation" class="dropdown disabled"> <a> State:</a></li>
+      {{ tab(not request.args.state,
+             url_for('.ispreports', **args(state=None) ),
+             "All")
+      }}
+      {{ tab(request.args.state == 'open',
+             url_for('.ispreports', **args(state='open') ),
+             "Open",
+             reports.open_count)
+      }}
+      {{ tab(request.args.state == 'cancelled',
+             url_for('.ispreports', **args(state='cancelled') ),
+             "Cancelled",
+             reports.cancel_count)
+      }}
+      {{ tab(request.args.state == 'reviewed',
+             url_for('.ispreports', **args(state='reviewed') ),
+             "Reviewed",
+             reports.review_count)
+      }}
+      {{ tab(request.args.state == 'featured',
+             url_for('.ispreports', **args(state='featured') ),
+             "Featured",
+             reports.feature_count)
+      }}
+      {{ tab(request.args.state == 'harmless',
+             url_for('.ispreports', **args(state='harmless') ),
+             "Harmless",
+             reports.harmless_count)
+      }}
+      {{ tab(request.args.state == 'resubmit',
+             url_for('.ispreports', **args(state='resubmit') ),
+             "To resubmit",
+             reports.resubmit_count)
+      }}
+    </ul>
+    <ul class="nav nav-pills">
+    <li role="presentation" class="dropdown disabled"> <a> Filters:</a></li>
     
     <li role="presentation" class="dropdown {{'active' if request.args.network else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -59,11 +88,11 @@ tr:hover * .action-button {
     </a>
     <ul class="dropdown-menu">
       <li role="presentation" class="">
-          <a href="{{ url_for('.ispreports', state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">(all)</a> 
+          <a href="{{ url_for('.ispreports', **args(network=None) ) }}">(all)</a> 
       </li>
     {% for isp in ['Vodafone','O2','EE','Three','Sky','VirginMedia','TalkTalk','BT','BT-Strict'] %}
     <li role="presentation" class="{{ 'active' if request.args.network == isp else '' }}">
-        <a href="{{ url_for('.ispreports', network=isp, state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">{{ isp }}</a>
+        <a href="{{ url_for('.ispreports', **args(network=isp) ) }}">{{ isp }}</a>
     </li>
     {% endfor %}
     </ul>
@@ -77,18 +106,18 @@ tr:hover * .action-button {
     </a>
     <ul class="dropdown-menu">
       <li role="presentation" class="">
-          <a href="{{ url_for('.ispreports', state=request.args.state, category=request.args.category, page=request.args.get('page') ) }}">(all)</a> 
+          <a href="{{ url_for('.ispreports', **args(reportercategory=None) ) }}">(all)</a> 
       </li>
       <li class="dropdown-header">Report Categories</li>
     {% for cat in reporter_categories %}
     <li role="presentation" class="{{ 'active' if request.args.reportercategory == cat.name else '' }}">
-        <a href="{{ url_for('.ispreports', network=request.args.network, state=request.args.state, category=request.args.category, reportercategory=cat.name, page=request.args.get('page') ) }}">{{ cat.name }}</a>
+        <a href="{{ url_for('.ispreports', **args(reportercategory=cat.name) ) }}">{{ cat.name }}</a>
     </li>
     {% endfor %}
     <li class="dropdown-header">Damage Categories</li>
     {% for cat in damage_categories %}
     <li role="presentation" class="{{ 'active' if request.args.reportercategory == cat.name else '' }}">
-        <a href="{{ url_for('.ispreports', network=request.args.network, state=request.args.state, category=request.args.category, reportercategory=cat.name, page=request.args.get('page') ) }}">{{ cat.name }}</a>
+        <a href="{{ url_for('.ispreports', **args(reportercategory=cat.name) ) }}">{{ cat.name }}</a>
     </li>
     {% endfor %}
     </ul>
@@ -102,14 +131,14 @@ tr:hover * .action-button {
     </a>
     <ul class="dropdown-menu">
       <li role="presentation" class="">
-          <a href="{{ url_for('.ispreports', state=request.args.state, page=request.args.get('page') ) }}">(all)</a> 
+          <a href="{{ url_for('.ispreports', **args(category=None) ) }}">(all)</a> 
       </li>
       <li role="presentation" class="">
-          <a href="{{ url_for('.ispreports', state=request.args.state, page=request.args.get('page'), category='_unassigned_' ) }}">(unassigned)</a> 
+          <a href="{{ url_for('.ispreports', **args(category='_unassigned_') ) }}">(unassigned)</a> 
       </li>
     {% for cat in all_categories %}
     <li role="presentation" class="{{ 'active' if request.args.category == cat else '' }}">
-        <a href="{{ url_for('.ispreports', network=request.args.network, category=cat, state=request.args.state, page=request.args.get('page') ) }}">{{ cat }}</a>
+        <a href="{{ url_for('.ispreports', **args(category=cat) ) }}">{{ cat }}</a>
     </li>
     {% endfor %}
     </ul>
@@ -124,7 +153,13 @@ tr:hover * .action-button {
   <th class="center">URL<br/>Status</th>
   <th>Email</th>
   <th>Network</th>
-  <th>Created</th>
+  <th>Created
+  {% if request.args.order == 'asc' %}
+  <a href="{{ url_for('.ispreports', **args(order='desc')) }}" title="Sort by date descending"><span class="glyphicon glyphicon-chevron-up"></span></a>
+  {% else %}
+  <a href="{{ url_for('.ispreports', **args(order='asc')) }}" title="Sort by date ascending"><span class="glyphicon glyphicon-chevron-down"></span></a>
+  {% endif %}
+  </th>
   <th class="center"Report<br/>Status</th>
   <th>Replies</th>
   <th class="center">Reviewed</th>
@@ -196,7 +231,7 @@ tr:hover * .action-button {
 {% endfor %}
 </table>
 
-  {{ paging.page_list('.ispreports', page, pagecount, 25, state=request.args.state, category=request.args.category, network=request.args.network ) }}
+  {{ paging.page_list('.ispreports', page, pagecount, 25, **args() ) }}
 
 </div>
 </div>

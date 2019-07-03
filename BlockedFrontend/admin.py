@@ -292,24 +292,36 @@ def user_generate_password(id):
 # ------------------
 #
 
+def get_args_helper():
+    # returns a helper function that will merge supplied parameters onto the existing state URL parameters
+    args = {x: request.args.get(x) 
+            for x in ['state','category','reportercategory','network','page','order']
+            if x in request.args and request.args[x] is not None}
+    def helper_func(**kw):
+        newargs = args.copy()
+        newargs.update(kw)
+        return newargs
+    return helper_func
 
 @admin_pages.route('/control/ispreports')
 @check_admin
 def ispreports():
     page = int(request.args.get('page',1))
-    network = request.args.get('network', None)
     reports = g.api.reports(page-1, 
                             state=request.args.get('state'), 
-                            isp=network, 
+                            isp=request.args.get('network', None), 
                             category=request.args.get('category'), 
                             reportercategory=request.args.get('reportercategory'), 
+                            order=request.args.get('order','desc'), 
                             admin=True)
+
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
-    
     reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')
     damage_categories = UrlReportCategory.select(g.conn, category_type='damage', _orderby='name')
-    
-    return render_template('ispreports.html', reports=reports,
+
+    return render_template('ispreports.html',
+                           args=get_args_helper(),
+                           reports=reports,
                            page=page,
                            all_categories=all_categories,
                            reporter_categories=reporter_categories,

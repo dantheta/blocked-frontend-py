@@ -147,14 +147,14 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('status/country-stats', req)
 
-    def reports(self, page, state=None, isp=None, category=None, reportercategory=None, list=None, year=None, policy=None, admin=False):
+    def reports(self, page, state=None, isp=None, category=None, reportercategory=None, list=None, year=None, policy=None, admin=False, order=None):
         req = {'date': self.timestamp(), 'page': str(page)}
         if isp:
             req['isp'] = isp
         if admin:
             req['admin'] = 1
         if state:
-            assert state in ('open','sent','closed','rejected','cancelled','reviewed','featured','egregious','harmless','unresolved')
+            assert state in ('open','sent','closed','rejected','cancelled','reviewed','featured','egregious','harmless','unresolved','resubmit')
             req[state] = 1
         if category:
             req['category'] = category
@@ -162,6 +162,9 @@ class ApiClient(BaseApiClient):
             req['reportercategory'] = reportercategory
         if list:
             req['list'] = list
+        if order:
+            assert order in ('asc','desc')
+            req['order'] = order
         if policy is not None:
             if policy == 'true':
                 policy = True
