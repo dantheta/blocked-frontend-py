@@ -231,7 +231,7 @@ tr:hover * .action-button {
 {% endfor %}
 </table>
 
-  {{ paging.page_list('.ispreports', page, pagecount, 25, **args() ) }}
+  {{ paging.page_list('.ispreports', page, pagecount, 25, **args(page=None) ) }}
 
 </div>
 </div>

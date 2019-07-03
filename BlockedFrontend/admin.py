@@ -300,6 +300,9 @@ def get_args_helper():
     def helper_func(**kw):
         newargs = args.copy()
         newargs.update(kw)
+        if 'page' in kw and kw['page'] is None:
+            # remove page when it has been supplied as a positional arg in pagelist macro
+            del newargs['page']
         return newargs
     return helper_func
 
