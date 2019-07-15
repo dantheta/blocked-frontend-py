@@ -97,7 +97,6 @@ $(document).ready(function(){
   {% for order in orders %}
     <div class="row">
       <input type="hidden" name="order_id" value="{{order.id}}" />
-      <input type="hidden" name="network_name" value="{{order.network_name}}" />
         <div class="col-md-2">
             <label for="network_name">Network</label>
             <select name="network_name">
@@ -138,8 +137,6 @@ $(document).ready(function(){
   </div>
   <div class="row" id="template" style="display:none">
   <input type="hidden" name="order_id" value="" />
-  <input type="hidden" name="network_name" value="" />
-  <input type="hidden" name="delete" value="" />
     <div class="col-md-2">
         <label for="network_name">Network</label>
         <select name="network_name">
