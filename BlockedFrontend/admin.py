@@ -1047,26 +1047,24 @@ def courtorders_edit(id=None):
 def courtorders_update(id=None):
     try:
         f = request.form
+        print f
         obj = CourtJudgment(g.conn, id)
         obj.update({x: convertnull(f[x]) for x in CourtJudgment.FIELDS})
         obj.store()
 
-        applies = f.getlist('applies')
+        to_delete = [ int(x) for x in f.getlist('delete') if x ]
+
         for order_id, network_name, url, date, expiry_date in zip(
-                f.getlist('order_id'), f.getlist('network_name'), f.getlist('applies_url'),
-                f.getlist('order_date'), f.getlist('expiry_date')):
+                f.getlist('order_id'),
+                f.getlist('network_name'),
+                f.getlist('applies_url'),
+                f.getlist('order_date'),
+                f.getlist('expiry_date'),
+            ):
 
             order = CourtOrder(g.conn, order_id or None)
-            if network_name in applies:
-                order.update({
-                    'url': url,
-                    'judgment_id': obj['id'],
-                    'date': convertnull(date),
-                    'expiry_date': convertnull(expiry_date),
-                })
-            else:
-                if order_id:
-                    order.delete()
+            if order['id'] in to_delete:
+                order.delete()
                 continue
             order.update({
                 'network_name': network_name,

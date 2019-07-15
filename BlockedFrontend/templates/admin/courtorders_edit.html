@@ -4,6 +4,24 @@
 
 {% set pagetitle = "Legal Requests Admin" %}
 
+{% block page_script %}
+$(document).ready(function(){
+    $('#addrow').click(function(){
+        var newrow = $('#template').clone();
+        newrow.removeAttr('id');
+        newrow.insertBefore($(this).parent());
+        newrow.show();
+        return false;
+    });
+    $('.deletebtn').live("click", function(){
+        alert("delete");
+        $(this).parent().parent().delete();
+        return false;
+    });
+});
+
+{% endblock %}
+
 {% block body %}
 <div class="row">
   <div class="col-md-12">
@@ -12,7 +30,7 @@
   <form action="{{url_for('.courtorders_update', id=obj.id)}}" method="POST">
   <legend>Edit {{ obj.name}}</legend>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
 
   {{forms.text_field('Name','name', obj.name)}}
   {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date)}}
@@ -71,45 +89,35 @@
   {{forms.text_field('Applications represented by','injunction_represented_by', obj.injunction_represented_by)}}
 
   <h3>Injunction applies to</h3>
-      <div class="row">
   {% for order in orders %}
+    <div class="row">
       <input type="hidden" name="order_id" value="{{order.id}}" />
       <input type="hidden" name="network_name" value="{{order.network_name}}" />
-        <div class="col-md-2" style="font-size: large; font-weight: bold; padding-top: 1.00em">
-      {{ forms.check_field(order.network_name, 'applies', order.network_name, True) }}
+        <div class="col-md-2">
+            <label for="network_name">Network</label>
+            <select name="network_name">
+            {% for isp in config.ISPS %}
+              <option value="{{ isp }}" {{'selected' if isp == order.network_name else '' }}>{{ isp }}</option>
+            {% endfor %}
+            </select>
         </div>
         <div class="col-md-4">
       {{ forms.text_field('Court order URL', 'applies_url', order['url']) }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
       {{ forms.text_field('Date', 'order_date', order.date, placeholder='yyyy-mm-dd') }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
       {{ forms.text_field('Expiry Date', 'expiry_date', order.expiry_date, placeholder='yyyy-mm-dd') }}
         </div>
-  {% endfor %}
+        <div class="col-md-2">
+          {{ forms.check_field('Delete', 'delete', order.id, False) }}
+        </div>
     </div>
-    <div class="row">
-  {% for isp in config.ISPS | sort %}
-      {% if isp not in order_networks %}
-      <input type="hidden" name="order_id" value="" />
-      <input type="hidden" name="network_name" value="{{isp}}" />
-        <div class="col-md-2"  style="font-size: large; font-weight: bold; padding-top: 1.0em">
-      {{ forms.check_field(isp, 'applies', isp) }}
-        </div>
-        <div class="col-md-4">
-      {{ forms.text_field('Court order URL', 'applies_url', '') }}
-        </div>
-        <div class="col-md-3">
-      {{ forms.text_field('Date', 'order_date', '', placeholder='yyyy-mm-dd') }}
-        </div>
-        <div class="col-md-3">
-      {{ forms.text_field('Expiry Date', 'expiry_date', '', placeholder='yyyy-mm-dd') }}
-        </div>
-      {% endif %}
   {% endfor %}
-    </div>
-<p>Dates should be entered in yyyy-mm-dd format.</p>
+    
+    <div><button class="btn btn-default" id="addrow">Add new court order</button></div>
+<p class="hint">Dates should be entered in yyyy-mm-dd format.</p>
 
   <h3>Additional information</h3>
 
@@ -122,6 +130,32 @@
   </div>
 </form>
 
+<div class="row" id="template" style="display:none">
+  <input type="hidden" name="order_id" value="" />
+  <input type="hidden" name="network_name" value="" />
+  <input type="hidden" name="delete" value="" />
+    <div class="col-md-2">
+        <label for="network_name">Network</label>
+        <select name="network_name">
+          <option disabled selected></option>
+        {% for isp in config.ISPS %}
+          <option value="{{ isp }}">{{ isp }}</option>
+        {% endfor %}
+        </select>      
+    </div>
+    <div class="col-md-4">
+  {{ forms.text_field('Court order URL', 'applies_url', '') }}
+    </div>
+    <div class="col-md-2">
+  {{ forms.text_field('Date', 'order_date', '', placeholder='yyyy-mm-dd') }}
+    </div>
+    <div class="col-md-2">
+  {{ forms.text_field('Expiry Date', 'expiry_date', '', placeholder='yyyy-mm-dd') }}
+    </div>
+    <div class="col-md-2" style="vertical-align: bottom">
+      <button class="btn btn-sm btn-default deletebtn">Delete</button>
+    </div>
+</div>
 
   </div>
 </div>

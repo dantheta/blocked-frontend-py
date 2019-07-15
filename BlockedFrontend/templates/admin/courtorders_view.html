@@ -6,7 +6,7 @@
 
 {% block body %}
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
 
     <h1>{{pagetitle}}</h1>
     <h2>{{ judgment.name }}</h2>
@@ -15,8 +15,8 @@
 </div>
 
 {% macro field(label,name,obj,type='text') %}
-<div>
-    <strong>{{label}}: </strong>
+<div style="margin-bottom: 0.75em">
+    <strong>{{label}}: </strong><br />
     {% if type == 'text' %}
     <span>{{obj[name]|null}}</span>
     {% elif type == 'url' and obj[name] != None %}
@@ -29,145 +29,157 @@
 {{ s|replace('_',' ')|title }}
 {% endmacro %}
 
+{%macro courtorders() %}
+<h3>Court Orders</h3>
+    <ul>
+    {% for order in orders %}
+        <li>{{ order.network_name }} <a href="{{order.url}}" target="_blank">{{ order.url }}</a></li>
+    {% endfor %}
+    </ul>
+{% endmacro %}
+
+{%macro targetsites() %}
+<form method="POST" action="{{url_for('.courtorders_site_group')}}">
+    {% for sitegrp, grpsites in sites %}
+    <h4 style="padding: 0.25em; background-color: {{'lightblue' if sitegrp else 'lightgray'}}">
+        {{sitegrp or 'Uncategorized'}}
+    </h4>
+    <table class="table">
+        <tr>
+            <th style="width: 5%"></th>
+            <th style="width: 35%">URL</th>
+            <th style="width: 20%">Whois Expiry</th>
+            <th style="width: 20%">Status</th>
+            <th style="width: 20%"></th>
+        </tr>
+    {% for site in grpsites %}
+        <tr>
+            <td>
+            <input type="checkbox" name="site_id" value="{{site.id}}" />
+            </td>
+            <td><a href="{{site.url}}" target="_blank">{{site.url}}</a></td>
+            <td>{{site.whois_expiry|fmdate}}</td>
+            <td>{{site.reason | null | replace('_',' ')|title  }}</td>
+            <td style="text-align: right">
+            
+            <a href="{{ url_for('.courtorders_site_flag',id=site.id) }}" 
+                class="{{ 'btn btn-default active' if site['flag_id'] else 'btn btn-default' }}" 
+                title="{{'This site has been flagged' if site['flag_id'] else 'Flag this site' }}">
+                <span class="glyphicon glyphicon-flag "></span>
+                {% if site.flag_count %}
+                <span class="badge">{{ site.flag_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('.urls',url=site.url) }}" title="Administer URL">
+                <span class="glyphicon glyphicon-tag"></span>
+            </a>
+            <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}" title="Delete this site">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endfor %}
+    {% if groups|length > 0 %}
+    <div class="row">
+        <div class="col-md-6">
+            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+            {{forms.select_field('Add to Group','group_id', None, [('','Uncategorized')]+groups) }}
+            <input type="submit" class="btn btn-primary btn-sm" value="Add selected sites to group" />
+        </div>
+    </div>
+    {% endif %}
+</form>
+
+<div class="well">
+    <h4>Add site</h4>
+    <form class="form" method="POST" action="{{url_for('.courtorders_site_add')}}">
+        <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+        <label for="url">URL:</label>
+        <div class="control-group">
+            <input class="form-control" type="text" name="url" />
+        </div>
+        <input class="btn btn-default" type="submit" value="Add" />
+    </form>
+
+</div>
+
+{% endmacro %}
+
+{%macro additional() %}
+    <h3>Additional Information</h3>
+
+    <h4>Other court documents</h4>
+    <div>{{judgment.other_docs|null|safe}}</div>
+
+    <h4>Sites targeted</h4>
+    <div>{{judgment.sites_description|null|safe}}</div>
+{% endmacro %}
+
+{% macro urlgroups() %}
 <div class="row">
-    <div class="col-md-12">
+  <div class="col-md-6">
+    <h4>Add new group</h4>  
+    <form class="form form-inline" method="POST" action="{{url_for('.courtorders_group_add')}}">
+        <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
+        <label for="url">Name:</label>
+        <div class="control-group">
+            <input class="form-control" type="text" name="name" />
+            <input class="btn btn-default" type="submit" value="Add" />
+        </div>
+    </form>
+  </div>
+  <div class="col-md-6">
+    <h4>Groups</h4>
+    <ul>
+        {% for grp in groups %}
+        <li>
+            {{ grp[1] }}
+            <a href="{{ url_for('.courtorders_group_delete',id=grp[0]) }}">
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
+        </li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endmacro %}
+
+<div class="row" style="margin-top: 1.25em">
+    <div class="col-md-4">
 
         {{ field('Citation','citation',judgment) }}
         {{ field('Judgment URL','judgment_url',judgment,'url') }}
         {{ field('Wiki URL','url',judgment,'url') }}
         {{ field('Date','date',judgment) }}
+        {{ field('Jurisdiction','jurisdiction',judgment) }}
+    </div>
+    <div class="col-md-4">
         {{ field('Case number','case_number',judgment) }}
         {{ field('Restriction type','restriction_type',judgment) }}
         {{ field('Instruction type','instruction_type',judgment) }}
-        {{ field('Jurisdiction','jurisdiction',judgment) }}
+    </div>
+    <div class="col-md-4">
         {{ field('Court/authority','court_authority',judgment) }}
         {{ field('Application made by','injunction_obtained_by',judgment) }}
         {{ field('Applicants represented by','injunction_represented_by',judgment) }}
-
-        <div class="row">
-            <div class="col-md-8">
-        <h3>Additional Information</h3>
-        <h4>Other court documents</h4>
-        <div>{{judgment.other_docs|null|safe}}</div>
-        <h4>Sites targeted</h4>
-        <div>{{judgment.sites_description|null|safe}}</div>
-            </div>
-            <div class="col-md-4">
-        <h3>Court Orders</h3>
-                <ul>
-        {% for order in orders %}
-                <li>{{ order.network_name }} <a href="{{order.url}}" target="_blank">{{ order.url }}</a></li>
-        {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-        <h2>Targeted sites</h2>
-        <div class="row">
-            <div class="col-md-8">
-                <form method="POST" action="{{url_for('.courtorders_site_group')}}">
-                    {% for sitegrp, grpsites in sites %}
-                    <h4 style="padding: 0.25em; background-color: {{'lightblue' if sitegrp else 'lightgray'}}">
-                        {{sitegrp or 'Uncategorized'}}
-                    </h4>
-                    <table class="table">
-                        <tr>
-                            <th style="width: 5%"></th>
-                            <th style="width: 35%">URL</th>
-                            <th style="width: 20%">Whois Expiry</th>
-                            <th style="width: 20%">Status</th>
-                            <th style="width: 20%"></th>
-                        </tr>
-                    {% for site in grpsites %}
-                        <tr>
-                            <td>
-                            <input type="checkbox" name="site_id" value="{{site.id}}" />
-                            </td>
-                            <td><a href="{{site.url}}" target="_blank">{{site.url}}</a></td>
-                            <td>{{site.whois_expiry|fmdate}}</td>
-                            <td>{{site.reason | null | replace('_',' ')|title  }}</td>
-                            <td style="text-align: right">
-                            
-                            <a href="{{ url_for('.courtorders_site_flag',id=site.id) }}" 
-                                class="{{ 'btn btn-default active' if site['flag_id'] else 'btn btn-default' }}" 
-                                title="{{'This site has been flagged' if site['flag_id'] else 'Flag this site' }}">
-                                <span class="glyphicon glyphicon-flag "></span>
-                                {% if site.flag_count %}
-                                <span class="badge">{{ site.flag_count }}</span>
-                                {% endif %}
-                            </a>
-                            <a href="{{ url_for('.urls',url=site.url) }}" title="Administer URL">
-                                <span class="glyphicon glyphicon-tag"></span>
-                            </a>
-                            <a href="{{ url_for('.courtorders_site_delete',id=site.id) }}" title="Delete this site">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                    {% endfor %}
-                    {% if groups|length > 0 %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                            {{forms.select_field('Add to Group','group_id', None, [('','Uncategorized')]+groups) }}
-                            <input type="submit" class="btn btn-primary btn-sm" value="Add selected sites to group" />
-                        </div>
-                    </div>
-                    {% endif %}
-                </form>
-            </div>
-
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">URLs</div>
-                            <div class="panel-body">
-                                <form class="form" method="POST" action="{{url_for('.courtorders_site_add')}}">
-                                    <legend>Add site</legend>
-                                    <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                                    <label for="url">URL:</label>
-                                    <div class="control-group">
-                                        <input class="form-control" type="text" name="url" />
-                                    </div>
-                                    <input class="btn btn-default" type="submit" value="Add" />
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top: 2em">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">URL Groups</div>
-                            <div class="panel-body">
-                                <form class="form form-inline" method="POST" action="{{url_for('.courtorders_group_add')}}">
-                                    <legend>Add Group</legend>
-                                    <input type="hidden" name="judgment_id" value="{{judgment.id}}" />
-                                    <label for="url">Name:</label>
-                                    <div class="control-group">
-                                        <input class="form-control" type="text" name="name" />
-                                        <input class="btn btn-default" type="submit" value="Add" />
-                                    </div>
-                                </form>
-                                <h4>Groups</h4>
-                                <ul>
-                                    {% for grp in groups %}
-                                    <li>
-                                        {{ grp[1] }}
-                                        <a href="{{ url_for('.courtorders_group_delete',id=grp[0]) }}">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    </div>
+</div>
+<div class="row" style="margin-top: 1.25em">
+    <div class="col-md-12">        
+        
+        <ul class="nav nav-tabs" id="tabs">
+            <li role="presentation" class="active"><a href="#courtorders" data-toggle="tab">Court orders</a></li>
+            <li role="presentation"><a href="#targetsites" data-toggle="tab">Target sites</a></li>
+            <li role="presentation"><a href="#additional" data-toggle="tab">Additional Information</a></li>
+            <li role="presentation"><a href="#urlgroups" data-toggle="tab">URL Groups</a></li>
+        </ul>
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="courtorders">{{ courtorders() }}</div>
+          <div role="tabpanel" class="tab-pane" id="targetsites">{{ targetsites() }}</div>
+          <div role="tabpanel" class="tab-pane" id="additional">{{ additional() }}</div>
+          <div role="tabpanel" class="tab-pane" id="urlgroups">{{ urlgroups() }}</div>
         </div>
     </div>
 </div>
