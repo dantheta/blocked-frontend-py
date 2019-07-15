@@ -10,12 +10,13 @@ $(document).ready(function(){
         var newrow = $('#template').clone();
         newrow.removeAttr('id');
         newrow.insertBefore($(this).parent());
+        newrow.find('.deletebtn').click(function(){
+            $(this).parent().parent().fadeOut(400, function(){
+                $(this).remove();
+            });
+            return false;
+        });
         newrow.show();
-        return false;
-    });
-    $('.deletebtn').live("click", function(){
-        alert("delete");
-        $(this).parent().parent().delete();
         return false;
     });
 });
@@ -27,17 +28,17 @@ $(document).ready(function(){
   <div class="col-md-12">
 
   <h1>{{pagetitle}}</h1>
-  <form action="{{url_for('.courtorders_update', id=obj.id)}}" method="POST">
+  <form class="form" action="{{url_for('.courtorders_update', id=obj.id)}}" method="POST">
   <legend>Edit {{ obj.name}}</legend>
   <div class="row">
     <div class="col-md-12">
 
-  {{forms.text_field('Name','name', obj.name)}}
-  {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date)}}
-  {{forms.text_field('Judgment URL','judgment_url', obj.judgment_url)}}
-  {{forms.text_field('Wiki URL','url', obj.url)}}
-  {{forms.text_field('Citation','citation', obj.citation)}}
-  {{forms.text_field('Case Number','case_number', obj.case_number)}}
+  {{forms.text_field('Name','name', obj.name, css="col-md-6")}}
+  {{forms.text_field('Date (yyyy-mm-dd)','date', obj.date, css="col-md-6")}}
+  {{forms.text_field('Judgment URL','judgment_url', obj.judgment_url, css="col-md-6")}}
+  {{forms.text_field('Wiki URL','url', obj.url, css="col-md-6")}}
+  {{forms.text_field('Citation','citation', obj.citation, css="col-md-6")}}
+  {{forms.text_field('Case Number','case_number', obj.case_number, css="col-md-6")}}
 
   {{forms.select_field('Restriction type', 'restriction_type', obj.restriction_type,
       [
@@ -46,7 +47,7 @@ $(document).ready(function(){
         ('domain_suspension','Domain Suspension'),
         ('isp_block','ISP Block'),
         ('content_removal','Content Removal'),
-      ])
+      ], css="col-md-6")
     }}
 
   {{forms.select_field('Instruction type', 'instruction_type', obj.instruction_type,
@@ -54,7 +55,7 @@ $(document).ready(function(){
       ('',''),
       ('injunction','Injunction'),
       ('administrative_order', 'Administrative order'),
-      ])
+      ], css="col-md-6")
   }}
 
   {{forms.select_field('Jurisdiction', 'jurisdiction', obj.jurisdiction,
@@ -63,30 +64,24 @@ $(document).ready(function(){
       ('uk','UK'),
       ('scotland','UK (Scotland only)'),
       ('us','USA'),
-      ])
+      ], css="col-md-6")
   }}
 
-  {{forms.select_field('Power used', 'power_id', obj.power_id, [('','')] + powers) }}
+  {{forms.select_field('Power used', 'power_id', obj.power_id, [('','')] + powers, css="col-md-6") }}
 
   {{forms.select_field('Court/Authority', 'court_authority', obj.court_authority,
       [
       ('',''),
       ('high_court','High Court'),
       ('bbfc_order','BBFC Administrative Order'),
-      ])
+      ], css="col-md-6")
   }}
 
-    <div class="row">
-        <div class="col-md-6">
-    {{forms.text_field('Application made by','injunction_obtained_by', obj.injunction_obtained_by)}}
-        </div>
-        <div class="col-md-6">
-    {{forms.text_field('Contact address (URL)','injunction_obtained_by_url', obj.injunction_obtained_by_url)}}
-        </div>
-    </div>
+    {{forms.text_field('Application made by','injunction_obtained_by', obj.injunction_obtained_by, css="col-md-6")}}
+    {{forms.text_field('Contact address (URL)','injunction_obtained_by_url', obj.injunction_obtained_by_url, css="col-md-6")}}
 
 
-  {{forms.text_field('Applications represented by','injunction_represented_by', obj.injunction_represented_by)}}
+  {{forms.text_field('Applications represented by','injunction_represented_by', obj.injunction_represented_by, css="col-md-6")}}
 
   <h3>Injunction applies to</h3>
   {% for order in orders %}
@@ -130,7 +125,8 @@ $(document).ready(function(){
   </div>
 </form>
 
-<div class="row" id="template" style="display:none">
+  </div>
+  <div class="row" id="template" style="display:none">
   <input type="hidden" name="order_id" value="" />
   <input type="hidden" name="network_name" value="" />
   <input type="hidden" name="delete" value="" />
@@ -153,10 +149,8 @@ $(document).ready(function(){
   {{ forms.text_field('Expiry Date', 'expiry_date', '', placeholder='yyyy-mm-dd') }}
     </div>
     <div class="col-md-2" style="vertical-align: bottom">
-      <button class="btn btn-sm btn-default deletebtn">Delete</button>
+      <button class="btn btn-sm btn-default deletebtn"><span class="glyphicon glyphicon-icon-delete"></span></button>
     </div>
-</div>
-
   </div>
 </div>
 {% endblock %}

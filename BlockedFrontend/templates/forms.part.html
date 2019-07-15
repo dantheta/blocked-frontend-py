@@ -8,8 +8,8 @@
     {% endif %}
 {% endmacro %}
 
-{% macro text_field(label, name, value='', placeholder='', hint=None) %}
-<div class="form-group">
+{% macro text_field(label, name, value='', placeholder='', hint=None, css='') %}
+<div class="form-group  {{ css }}">
     <label class="control-label" for="{{name}}">{{label}}</label>
     <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
     {{ hint_para(hint) }}
@@ -30,8 +30,8 @@
 </div>
 {% endmacro %}
 
-{% macro select_field(label, name, value=None, options=[], includenull=False) %}
-<div class="form-group">
+{% macro select_field(label, name, value=None, options=[], includenull=False, css='') %}
+<div class="form-group {{css}}">
     <label class="control-label" for="{{name}}">{{label}}</label>
     <select class="form-control" name="{{ name}}">
         {% if includenull %}
