@@ -1606,8 +1606,10 @@ def tests():
 @check_admin
 def tests_edit(id=None):
     test = Test(g.conn, id=id)
+    logging.debug("Repeat interval: %s", test['repeat_interval'])
     if not id:
         test['check_interval'] = datetime.timedelta(0)
+        test['repeat_interval'] = datetime.timedelta(0)
     return render_template('tests_edit.html',
                            test=test,
                            isps=load_isp_data(),
@@ -1626,14 +1628,18 @@ def tests_update():
         'name': f['name'],
         'description': f['description'],
         'check_interval': "{0} {1}".format(f['check_interval_num'], f['check_interval_unit']),
-        'repeat_interval': f.get('repeat_interval') or None,
+        'repeat_interval': 
+            "{0} {1}".format(f['repeat_interval_num'], f['repeat_interval_unit'])
+            if f.get('repeat_enable') else None,
         'batch_size': f['batch_size']
     })
+    
     
     if f.get('source') == 'query':
         test['filter'] = f['filter']
     elif f.get('source') == 'tag':
         test['tags'] = [f['tag']]
+        test['filter'] = None
         
     if 'isps' in f:
         test['isps'] = f.getlist('isps')
@@ -1661,6 +1667,8 @@ def tests_status(id, status):
     t['status'] = status.upper()
     if status.upper() == 'RUNNING':
         t['status_message'] = ''
+        if not t.get('last_run'):
+            t['last_run'] = datetime.datetime.now()
     t.store()
     g.conn.commit()
     flash("Test status updated.")

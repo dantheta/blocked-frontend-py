@@ -35,7 +35,16 @@ danger
               <td>{{ test.name }}</td>
               <td>
                   {{ test.status }}
+                  {% if test.repeat_interval %}
+                  <span class="glyphicon glyphicon-repeat"></span>
+                  {% endif %}
                   <div>{{ test.status_message }}</div>
+                  {% if test.repeat_interval %}
+                  <div>
+                      <div>Last run: {{ test.last_run|fmtime }}</div>
+                      <div>Repeat after: {{ test.repeat_interval }}</div>
+                  </div>
+                  {% endif %}
               </td>
               <td>
                   {% if test.status in ('RUNNING','WAITING') %}
@@ -46,6 +55,7 @@ danger
                   {% if test.status in ('RUNNING','PAUSED','WAITING','ERROR') %}
                   <a href="{{url_for('.tests_status', id=test.id, status='cancelled')}}"><span class="glyphicon glyphicon-stop"></span></a>
                   {% endif %}
+                  
               </td>
               <td>
                   {% if test.total %}
