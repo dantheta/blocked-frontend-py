@@ -1593,7 +1593,7 @@ def url_category_delete(id):
 @admin_pages.route('/control/tests')
 @check_admin
 def tests():
-    tests = Test.select(g.conn, _orderby='name')
+    tests = Test.select(g.conn, _orderby='last_run')
     queues = Query(g.conn, """select * 
         from tests.queue_status 
         where queue_name like '%%.public'

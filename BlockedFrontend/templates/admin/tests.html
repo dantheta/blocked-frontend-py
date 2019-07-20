@@ -18,6 +18,7 @@ danger
 {% block body %}
 <div>
     <a href="{{ url_for('.tests_edit') }}" class="btn btn-default">Add Test Case</a>
+    <input type="checkbox" id="showcomplete" /> Show completed
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -31,7 +32,7 @@ danger
               <th></th>
           </tr>
           {% for test in tests %}
-          <tr>
+          <tr class="{{ 'completed' if test.status == 'COMPLETE' and test.repeat_interval == None else '' }}">
               <td>{{ test.name }}</td>
               <td>
                   {{ test.status }}
@@ -94,4 +95,18 @@ danger
 
   </div>
 </div>
+{% endblock %}
+
+{% block page_script %}
+$(document).ready(function(){
+    $('.completed').hide();
+    $('#showcomplete').click(function(){
+        if ($(this).is(':checked')) {
+            $('.completed').show();
+        } else {
+            $('.completed').hide();
+        }
+    });
+});
+
 {% endblock %}
