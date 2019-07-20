@@ -1054,8 +1054,6 @@ def courtorders_update(id=None):
 
         to_delete = [ int(x) for x in f.getlist('delete') if x ]
 
-        print f.getlist('network_name')
-
         for order_id, network_name, url, date, expiry_date in zip(
                 f.getlist('order_id'),
                 f.getlist('network_name'),
