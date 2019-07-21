@@ -47,8 +47,9 @@ def create_list():
         networks = f.get('network', None)
         if networks:
             networks=[networks]
+        tld = f.get('tld', None)
 
-        data = g.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'), networks=networks)
+        data = g.api.search_url(f['search'], page, exclude_adult = f.get('exclude_adult','0'), networks=networks, tld=tld)
 
         for site in data['sites']:
             newitem = models.Item(g.conn)

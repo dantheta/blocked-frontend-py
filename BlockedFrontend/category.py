@@ -57,7 +57,7 @@ def sites_search(search=None, page=1):
         current_app.logger.info("Networks: %s", networks)
 
         exclude_adult = request.args.get('exclude_adult', 0)
-        data = g.api.search_url(search, page-1, exclude_adult, networks)
+        data = g.api.search_url(search, page-1, exclude_adult, networks, tld=request.args.get('tld'))
         logging.debug(data)
         pagesize = 20 # defined in API
         pagecount = get_pagecount(data['count'], pagesize)
@@ -115,7 +115,12 @@ def sites_search_post():
     search = request.form['search']
     exclude_adult = request.form.get('exclude_adult', '0')
     network = request.form.get('network','')
-    return redirect(url_for('.sites_search', search=search, exclude_adult=exclude_adult, network=network))
+    tld = request.form.get('tld','')
+    return redirect(url_for('.sites_search',
+                            search=search,
+                            exclude_adult=exclude_adult,
+                            network=network,
+                            tld=tld))
 
 @category_pages.route('/apicategorysearch')
 def apicategorysearch():

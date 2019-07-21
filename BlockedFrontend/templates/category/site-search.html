@@ -47,16 +47,27 @@ A great many websites are being blocked mistakenly as a result of government imp
       <input type="checkbox" name="exclude_adult" value="1" {{ 'checked="1"' if request.args.exclude_adult|default('1') != '0' else '' }} /> Exclude likely pornographic &amp; adult services sites
     </label>
   </div>
-  <div class="control-group">
-      <label>Filter by network:</label>
-      <select class="form-control" name="network">
-          <option value="" {{ 'selected="selected"' if not network else '' }}>(all)</option>
-          <option value="_fixed" {{ 'selected' if request.args.network == '_fixed' else '' }}>All fixed ISPs</option>
-          <option value="_mobile" {{ 'selected' if request.args.network == '_mobile' else '' }}>All mobile ISPs</option>
-          {% for isp in config.ISPS|sort %}
-          <option value="{{ isp }}" {{'selected' if request.args.network == isp else '' }}>{{ isp }}</option>
-          {% endfor %}
-      </select>
+  <div class="row">
+      <div class="control-group col-md-6">
+          <label>Filter by network:</label>
+          <select class="form-control" name="network">
+              <option value="" {{ 'selected="selected"' if not network else '' }}>(all)</option>
+              <option value="_fixed" {{ 'selected' if request.args.network == '_fixed' else '' }}>All fixed ISPs</option>
+              <option value="_mobile" {{ 'selected' if request.args.network == '_mobile' else '' }}>All mobile ISPs</option>
+              {% for isp in config.ISPS|sort %}
+              <option value="{{ isp }}" {{'selected' if request.args.network == isp else '' }}>{{ isp }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div class="control-group col-md-6">
+        <label>Filter by top-level domain:</label>
+        <select class="form-control" name="tld">
+            <option value="" {{ 'selected="selected"' if not tld else '' }}>(all)</option>
+            {% for domain in ['uk','org','com','net'] %}
+            <option value="{{ domain }}" {{'selected' if request.args.tld == domain else '' }}>.{{ domain }}</option>
+            {% endfor %}
+          </select>
+      </div>
   </div>
 
 </div>
@@ -103,6 +114,7 @@ mobile ISPs
                     <input type="hidden" name="search" value="{{ search }}" />
                     <input type="hidden" name="exclude_adult" value="{{ request.args.exclude_adult|default('0') }}" />
                     <input type="hidden" name="network" value="{{ sel_network|default([''])|first }}" />
+                    <input type="hidden" name="tld" value="{{ request.args.tld|default('') }}" />
                     <div class="form-group">
                         <label for="title">List title:</label>
                         <input type="text" class="form-control" name="name" />
