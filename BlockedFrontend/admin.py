@@ -292,20 +292,6 @@ def user_generate_password(id):
 # ------------------
 #
 
-def get_args_helper():
-    # returns a helper function that will merge supplied parameters onto the existing state URL parameters
-    args = {x: request.args.get(x) 
-            for x in ['state','category','reportercategory','network','page','order']
-            if x in request.args and request.args[x] is not None}
-    def helper_func(**kw):
-        newargs = args.copy()
-        newargs.update(kw)
-        if 'page' in kw and kw['page'] is None:
-            # remove page when it has been supplied as a positional arg in pagelist macro
-            del newargs['page']
-        return newargs
-    return helper_func
-
 @admin_pages.route('/control/ispreports')
 @check_admin
 def ispreports():
@@ -323,7 +309,7 @@ def ispreports():
     damage_categories = UrlReportCategory.select(g.conn, category_type='damage', _orderby='name')
 
     return render_template('ispreports.html',
-                           args=get_args_helper(),
+                           args=get_args_helper(['state','category','reportercategory','network','page','order']),
                            reports=reports,
                            page=page,
                            all_categories=all_categories,

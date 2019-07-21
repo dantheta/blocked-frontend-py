@@ -89,10 +89,10 @@ def show_list(name, page=1):
    
     if network:
         itemcount = savedlist.count_items_on_network(network,
-                                                     status=request.args.get('status'),
+                                                     status=status,
                                                      exclude=request.args.get('exclude'))
         items = savedlist.get_items_on_network(network,
-                                               status=request.args.get('status'),
+                                               status=status,
                                                _limit=(pagesize, (page-1)*pagesize),
                                                exclude=request.args.get('exclude'))
     else:
@@ -104,12 +104,13 @@ def show_list(name, page=1):
     return render_template('show_list.html',
             savedlist = savedlist,
             itemcount = itemcount,
-            network = request.args.get('network'),
             page = page,
             pagesize = pagesize,
             pagecount = get_pagecount(itemcount, pagesize), 
             items = items,
-            reasons = load_data('flagreasons')
+            reasons = load_data('flagreasons'),
+            args = get_args_helper(['name','network','status','tld'],
+                                   {'name': name, 'page': page})
             )
 
 

@@ -5,7 +5,7 @@ import datetime
 import urlparse
 
 __all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount',
-           'fix_path','normalize_url','is_tag_valid']
+           'fix_path','normalize_url','is_tag_valid','get_args_helper']
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
@@ -24,7 +24,22 @@ def is_tag_valid(tag):
         return True
     return False
 
-    
+def get_args_helper(arglist, initial={}):
+    from flask import request
+    # returns a helper function that will merge supplied parameters onto the existing state URL parameters
+    args = initial.copy()
+    args.update({x: request.args.get(x) 
+            for x in arglist
+            if x in request.args and request.args[x] is not None and x not in initial})
+
+    def helper_func(**kw):
+        newargs = args.copy()
+        newargs.update(kw)
+        if 'page' in kw and kw['page'] is None:
+            # remove page when it has been supplied as a positional arg in pagelist macro
+            del newargs['page']
+        return newargs
+    return helper_func
 
 def make_list(item):
     if isinstance(item, list):
