@@ -90,14 +90,16 @@ def show_list(name, page=1):
     if network:
         itemcount = savedlist.count_items_on_network(network,
                                                      status=status,
+                                                     domain=request.args.get('tld'),
                                                      exclude=request.args.get('exclude'))
         items = savedlist.get_items_on_network(network,
                                                status=status,
+                                               domain=request.args.get('tld'),
                                                _limit=(pagesize, (page-1)*pagesize),
                                                exclude=request.args.get('exclude'))
     else:
-        itemcount = savedlist.count_items(status=status)
-        items = savedlist.get_items(status=status, _limit=(pagesize, (page-1)*pagesize))
+        itemcount = savedlist.count_items(status=status, domain=request.args.get('tld'))
+        items = savedlist.get_items(status=status, domain=request.args.get('tld'), _limit=(pagesize, (page-1)*pagesize))
 
     session['savedlist'] = (name, get_pagecount(itemcount, pagesize))
     g.conn.commit()

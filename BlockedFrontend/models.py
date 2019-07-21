@@ -21,14 +21,16 @@ class SavedList(DBObject):
             'frontpage'
             ]
 
-    def get_items(self, status=None, **kw):
+    def get_items(self, status=None, domain=None, **kw):
         if status == 'unblocked':
             kw.update({'blocked': False})
         elif status == 'blocked':
             kw.update({'blocked': True})
+        if domain:
+            kw.update({'url': ('~*', '://[^/]+\.{0}(/|$)'.format(domain))})
         return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
 
-    def get_items_on_network(self, network, status=None, _limit=None, exclude=None):
+    def get_items_on_network(self, network, status=None, domain=None, _limit=None, exclude=None):
         args = [network, self['id']]
         if status == 'unblocked':
             args.append(False)
@@ -44,29 +46,35 @@ class SavedList(DBObject):
                     {% if status %}
                         and items.blocked = %s
                     {% endif %}
+                    {% if domain %}
+                        and items.url ~* '://[^/]+\.{{domain}}(/|$)'
+                    {% endif %}
                     order by url
                     {% if limit %}
                         limit {{ limit.0|int }} offset {{ limit.1|int }}
                     {% endif %}""",
                  network_op = "<>" if exclude else "=",
-                 status = status, 
+                 status = status,
+                 domain=domain,
                  limit=_limit)
-
+        print sql
         q = Query(self.conn, sql, args)
         for row in q:
             yield Item(self.conn, data=row)
 
         q.close()
 
-    def count_items(self, status=None):
+    def count_items(self, status=None, domain=None):
         kw = {}
         if status == 'unblocked':
             kw.update({'blocked': False})
         elif status == 'blocked':
             kw.update({'blocked': True})
+        if domain:
+            kw.update({'url': ('~*', '://[^/]+\.{0}(/|$)'.format(domain))})
         return Item.count(self.conn, list_id=self['id'], **kw)
 
-    def count_items_on_network(self, network, status=None, exclude=None):
+    def count_items_on_network(self, network, status=None, domain=None, exclude=None):
 
         args = [network, self['id']]
         if status == 'unblocked':
@@ -82,9 +90,14 @@ class SavedList(DBObject):
                     where list_id = %s 
                     {% if status %}
                         and items.blocked = %s
-                    {% endif %} """,
+                    {% endif %}
+                    {% if domain %}
+                        and items.url ~* '://[^/]+\.{{domain}}(/|$)'
+                    {% endif %}
+                    """,
                  network_op = "<>" if exclude else "=",
-                 status = status)
+                 status = status,
+                 domain=domain)
 
         q = Query(self.conn, sql, args)
         row = q.fetchone()
