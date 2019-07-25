@@ -241,7 +241,7 @@ Your feedback was successfully submitted.
 {% endif %}
 
 {% if live %}
-<h3>Active blocks</h3>
+<h3>ISPs currently blocking this site</h3>
 {% else %}
 <h3>{{activecount if activecount > 0 else 'No'}} active block{{ '' if activecount == 1 else 's' }}</h3>
 {% endif %}
@@ -262,7 +262,7 @@ Your feedback was successfully submitted.
 {% if pastcount > 0 or live %}
 <div id="pastblock">
 {% if live %}
-<h3>Past blocks</h3>
+<h3>ISPs who have previously blocked this site</h3>
 {% else %}
 <h3>{{pastcount if pastcount > 0 else 'No'}} past block{{ '' if pastcount == 1 else 's' }}</h3>
 {% endif %}
@@ -273,7 +273,7 @@ Your feedback was successfully submitted.
 {% endif %}
 
 <div id="allresults">
-<h3>All results</h3>
+<h3>All other results</h3>
 
 {{ results_table('all', results_all, show_lastblocked = False, show_status=True) }}
 </div>
