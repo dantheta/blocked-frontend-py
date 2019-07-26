@@ -63,6 +63,7 @@ function updateResultsTable(response) {
     }
 
     console.log(trid + " " + destTable);
+    $(destTable).show();
     isp_tr = $('#'+trid);
 
     console.log(isp_tr.length);

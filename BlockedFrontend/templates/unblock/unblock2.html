@@ -29,7 +29,7 @@
 {% endif %}
 <tr class="{{ 'disabled' if block.last_report_timestamp != None else ''}}">
   <td>
-    {{ isp_info(block.network_name, networks) }}
+    {{ isp_info(block.network_name) }}
   {% if block.category and block.category != block.network_name %}
     <span class="category" style="padding-left: 0.5em"><em>({{ block.category |title}})</em></span>
   {% endif %}

@@ -104,7 +104,7 @@
         {% endif %}
         </td>
         <td>
-          {{ isp_info(row.description, networks) }}
+          {{ isp_info(row.description) }}
         </td>
         <td><a href="{{ url_for('site.site', url=row.url) }}">View site report</a></td>
         <td>{{ row.submitted | fmtime if row.submitted else "On hold" }}</td>
