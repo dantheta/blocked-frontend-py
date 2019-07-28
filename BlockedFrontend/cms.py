@@ -114,7 +114,6 @@ def reported_sites(isp=None, page=1):
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
         abort(404)
-    g.networks = g.remote.get_networks()
     return render_template('reports.html',
             current_isp=isp,
             filters=filter_args & set(a.keys()),

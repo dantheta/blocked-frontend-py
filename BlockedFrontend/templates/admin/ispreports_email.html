@@ -408,7 +408,7 @@ $(document).ready(function(){
             <p></p>
             <div class="well">
                 <h3>Policy Summary</h3>
-            {{ networks[ isp.description ]|safe }}
+            {{ g.remote.get_network(isp.description,'')|safe }}
             </div>
         </div>
         <div class="col-md-5">

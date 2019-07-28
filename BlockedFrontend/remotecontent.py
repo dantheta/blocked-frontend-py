@@ -15,6 +15,7 @@ class RemoteContent(object):
         self.cachefile = cachefile
         self.reload = reload
         self.session = self.get_session()
+        self._cache_networks = None
 
 
     def get_content(self, page):
@@ -44,6 +45,12 @@ class RemoteContent(object):
             if child.tag == 'network':
                 networks[child.attrib['name']] = content
         return networks
+        
+    def get_network(self, name, default=''):
+        if not self._cache_networks:
+            self._cache_networks = self.get_networks()
+            
+        return self._cache_networks.get(name, default)
 
     def get_session(self):
         if self.reload:

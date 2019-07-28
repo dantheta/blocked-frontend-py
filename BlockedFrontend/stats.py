@@ -83,7 +83,6 @@ def probe_stats():
             d['age'] = None
         d['country'] = country_names.get([x for x in d['regions'] if x != 'eu'][0])
 
-    g.networks=g.remote.get_networks()
     return render_template('stats/probes.html',
         data=data,
         country_names=country_names,

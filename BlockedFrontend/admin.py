@@ -423,7 +423,6 @@ def ispreports_view(url, network_name, msgid=None):
                            damage_categories=damage_categories,
                            report_damage_categories=urlobj.get_report_categories('damage'),
                            reporter_category=urlobj.get_reporter_category(),
-                           networks=g.remote.get_networks(),
                            verified= contact and contact['verified']
                            ) 
 

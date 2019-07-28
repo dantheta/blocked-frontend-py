@@ -132,7 +132,6 @@ def site(url=None):
         pass
     print judgment_orders
     g.conn.commit()
-    g.networks=g.remote.get_networks()
 
     return render_template('site.html',
                            results_blocked=(result for result in results if result['status'] == 'blocked'),

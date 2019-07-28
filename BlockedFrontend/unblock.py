@@ -67,7 +67,6 @@ def unblock2():
         if blk['status'] == 'blocked' 
         ]
 
-    g.networks = g.remote.get_networks()
     return render_template('unblock2.html',
         data=data,
         url=data['url'],
