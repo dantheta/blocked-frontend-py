@@ -203,11 +203,6 @@ Your feedback was successfully submitted.
   </th>
   {{ headings() }}
   
-  {% if show_category %}
-  {% elif show_lastblocked %}
-  {% elif show_status %}
-  {% else %}
-  {% endif %}
 </tr>
 {% for item in results %}
 <tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if show_status and item.status in ('error','dnserror','sslerror') else ''}}">
@@ -221,10 +216,6 @@ Your feedback was successfully submitted.
   </td>
   {{ itemrow(item) }}
   
-  {% if show_category %}
-  {% elif show_lastblocked %}
-  {% elif show_status %}
-  {% endif %}
 </tr>
 {% endfor %}
 </table>
