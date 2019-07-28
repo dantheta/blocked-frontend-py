@@ -287,7 +287,7 @@ Your feedback was successfully submitted.
 {% endif %}
 
 <div id="allresults">
-<h3>All other results</h3>
+<h3>All {% if pastcount or activecount or live %}other {% endif %}results</h3>
 
 {{ results_table('all', results_all, headings_status, itemrow_status) }}
 </div>
