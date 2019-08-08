@@ -131,6 +131,12 @@ $(document).ready(function(){
 {% endif %}
 </div>
 
+{% if report.status == 'rejected' %}
+<div style="margin-top: 2em">
+    <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
+</div>
+{% endif %}
+
 </div>
 </div> <!-- /.row -->
 

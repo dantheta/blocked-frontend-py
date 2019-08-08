@@ -1,0 +1,25 @@
+
+Dear BBFC Content Administrator,
+
+Please could you review:
+
+  {{ url }}
+  {{title}}
+
+on behalf of {{ username }}.
+
+This site is currently blocked on:
+
+Network        |  Last checked  | Category
+---------------+----------------+----------------
+{% for siteblock in blocks %}
+{{ siteblock.network_name|lpad(14) }} | {{ siteblock.last_checked }} | {{ siteblock.category }}
+{% endfor %}
+
+{{ username }} comments:
+
+  {{ comment }}
+
+Kind regards,
+
+Blocked.org.uk administrators, on behalf of {{ username }}.

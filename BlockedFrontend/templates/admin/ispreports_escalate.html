@@ -1,0 +1,26 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "ISP Report Admin: " + url.url + " on " + report.network_name %}
+
+
+{% block body %}
+
+<h1>{{ pagetitle }}</h1>
+<h2>Escalate to BBFC</h2>
+
+
+<div class="row">
+    <div class="col-md-12">
+
+        <form method="POST" action="{{ url_for('.ispreports_escalate_post', id=report.id) }}">
+        
+            <textarea rows="14" style="width: 100%; font-family: mono" name="emailtext">{{ email_text }}</textarea>
+            <div><input type="submit" value="Send" class="btn btn-default btn-lg" /></div>
+        </form>
+    
+    </div>
+</div>
+
+{% endblock %}

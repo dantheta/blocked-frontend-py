@@ -349,6 +349,41 @@ def ispreports_resend(url):
     else:
         return redirect(url_for('unblock.unblock', url=url))
 
+@admin_pages.route('/control/ispreports/escalate/<int:id>')
+@check_admin
+def ispreports_escalate(id):
+    report = ISPReport(g.conn, id)
+    urlobj = report.get_url()
+    
+    status = g.api.status_url(urlobj['url'])
+    
+    results = [x for x in status['results'] if x['isp_active']]
+
+    blocks = [ block for block in results if results['status'] == 'blocked' ]
+    pastblocks = [ block for block in results if results['status'] == 'ok' and results['last_blocked_timestamp'] ]
+    
+    email_text = render_template('bbfc_email.txt',
+                                 blocks=blocks,
+                                 url=urlobj['url'],
+                                 title=urlobj['title'],
+                                 pastblocks=pastblocks,
+                                 username=report['name'],
+                                 comment=report['message'])
+                                 
+        
+    if report['status'] != 'rejected':
+        return "Cannot escalate report unless report has been rejected by ISP", 400
+    return render_template('ispreports_escalate.html',    
+                           report=report,
+                           url=urlobj,
+                           email_text=email_text
+                           )
+
+@admin_pages.route('/control/ispreports/escalate/<int:id>', methods=['POST'])
+@check_admin
+def ispreports_escalate_post(id):
+    pass
+
 
 @admin_pages.route('/control/ispreports/unblocked/<int:id>')
 @check_admin

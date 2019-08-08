@@ -183,6 +183,10 @@ def filter_strip_style(s):
     
     return re.sub(r'<style[^>]+>.*</style>','', s)
 
+@app.template_filter('lpad')
+def lpad(s, width=20):
+    return s.ljust(width)
+
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))
