@@ -4,6 +4,24 @@
 
 {% set pagetitle = "ISP Report Admin: " + url.url + " on " + report.network_name %}
 
+{% macro show_message(message) %}
+{%- if message.is_multipart() -%}
+{{ show_message(message.get_payload()[0]) }}
+{%- else %}
+{%-   if message['content-transfer-encoding'] == 'base64' %}
+{%- set msg=message.get_payload().decode('base64').decode('utf8','replace') %}
+{%-   elif message['content-transfer-encoding'] == 'quoted-printable' %}  
+{%- set msg=message.get_payload().decode('quoted-printable').decode('utf8','replace') %}
+{%-   else %}
+{%- set msg=message.get_payload() %}
+{%-   endif %}
+{%- for line in (msg|stripstyletag).splitlines() %}
+{%- if (line|striptags).strip() %}
+{{ line|striptags }}
+{% endif %}
+{%- endfor %}
+{%- endif %}
+{%- endmacro %}
 
 {% block body %}
 
@@ -15,8 +33,22 @@
     <div class="col-md-12">
 
         <form method="POST" action="{{ url_for('.ispreports_escalate_post', id=report.id) }}">
-        
-            <textarea rows="14" style="width: 100%; font-family: mono" name="emailtext">{{ email_text }}</textarea>
+            {{ forms.static_field('Mobile network operator', 'network_name', report.network_name) }}
+            {{ forms.static_field('Mobile network contacted', 'created', report.created|fmtime) }}
+            <h3>Mobile network response</h3>
+            {{ forms.static_field('Date', 'reply_created', emailreply.created|fmtime) }}
+            
+            {{ forms.textarea_field('Reply','previous', show_message(emailreply.decode()), rows=8) }}            
+            
+            <h3>Additional contact information</h3>
+            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.email) }}
+            
+            <h3>Site details</h3>
+            {{ forms.static_field('URL','url', url.url) }}
+            
+            <h3>Nature of complaint</h3>
+            
+            <textarea rows="8" style="width: 100%; font-family: mono" name="emailtext">{{ email_text }}</textarea>
             <div><input type="submit" value="Send" class="btn btn-default btn-lg" /></div>
         </form>
     

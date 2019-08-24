@@ -355,34 +355,55 @@ def ispreports_escalate(id):
     report = ISPReport(g.conn, id)
     urlobj = report.get_url()
     
-    status = g.api.status_url(urlobj['url'])
-    
-    results = [x for x in status['results'] if x['isp_active']]
-
-    blocks = [ block for block in results if results['status'] == 'blocked' ]
-    pastblocks = [ block for block in results if results['status'] == 'ok' and results['last_blocked_timestamp'] ]
-    
-    email_text = render_template('bbfc_email.txt',
-                                 blocks=blocks,
-                                 url=urlobj['url'],
-                                 title=urlobj['title'],
-                                 pastblocks=pastblocks,
-                                 username=report['name'],
-                                 comment=report['message'])
-                                 
-        
+    g.conn.commit()
     if report['status'] != 'rejected':
         return "Cannot escalate report unless report has been rejected by ISP", 400
     return render_template('ispreports_escalate.html',    
                            report=report,
+                           emailreply=report.get_final_reply(),
                            url=urlobj,
-                           email_text=email_text
                            )
 
 @admin_pages.route('/control/ispreports/escalate/<int:id>', methods=['POST'])
 @check_admin
 def ispreports_escalate_post(id):
-    pass
+    emailtext = request.form['emailtext']
+    report = ISPReport(g.conn, id)
+    urlobj = report.get_url()
+    
+    req = {
+    'url': urlobj['url'],
+    'reporter': {
+        'name': "Blocked admin",
+        'email': "blocked@localhost",
+        },
+    'original_network': report['network_name'],
+    'message': emailtext,
+    'previous': request.form['previous'],
+    'additional_contact': request.form['additional_contact'],
+    'report_type': "unblock",
+    'date': get_timestamp(),
+    'send_updates': 0,
+    'allow_publish': 1,
+    'allow_contact': 1,
+    'networks': ["BBFC"],
+    'auth': {
+        'email': g.api.username,
+        'signature': '',
+        }
+    }
+    
+    req['auth']['signature'] = g.api.sign(req,  ['url','date'])
+    if current_app.config['DUMMY']:
+        # demo mode - don't really submit
+        logging.warn("Dummy mode: not really submitting")
+        data = {'verification_required':  False, 'success': True}
+    else:
+        data = g.api.POST_JSON('ispreport/submit', req)
+
+    logging.info("Submission: %s", data)
+
+    return redirect(url_for('.ispreports'))
 
 
 @admin_pages.route('/control/ispreports/unblocked/<int:id>')
@@ -458,7 +479,8 @@ def ispreports_view(url, network_name, msgid=None):
                            damage_categories=damage_categories,
                            report_damage_categories=urlobj.get_report_categories('damage'),
                            reporter_category=urlobj.get_reporter_category(),
-                           verified= contact and contact['verified']
+                           verified= contact and contact['verified'],
+                           bbfc_report=ispreport.get_report_for("BBFC")
                            ) 
 
 

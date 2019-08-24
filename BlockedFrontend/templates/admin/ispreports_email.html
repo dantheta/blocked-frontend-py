@@ -132,9 +132,15 @@ $(document).ready(function(){
 </div>
 
 {% if report.status == 'rejected' %}
+{%   if bbfc_report == None %}
 <div style="margin-top: 2em">
     <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
 </div>
+{%   else %}
+<div style=margin-top: 2em">
+Request sent to BBFC on {{ bbfc_report.created }}
+</div>
+{%   endif %}
 {% endif %}
 
 </div>

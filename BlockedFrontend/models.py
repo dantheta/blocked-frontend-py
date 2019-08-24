@@ -717,6 +717,22 @@ class ISPReport(DBObject):
         q.close()
         return row
         
+    def get_related(self):
+        """Get all reports for the same URL"""
+        return ISPReport.select(self.conn, urlid=self['urllid'])
+        
+    def get_reported_networks(self):
+        return [x['network_name'] for x in self.get_related()]
+        
+    def get_report_for(self, network_name):
+        try:
+            return ISPReport.select_one(self.conn, urlid=self['urlid'], network_name=network_name)
+        except ObjectNotFound:
+            return None
+
+    def get_final_reply(self):
+        return ISPReportEmail(self.conn, self['resolved_email_id'])
+        
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'
     FIELDS = [

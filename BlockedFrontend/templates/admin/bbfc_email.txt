@@ -3,23 +3,29 @@ Dear BBFC Content Administrator,
 
 Please could you review:
 
-  {{ url }}
-  {{title}}
+  {{ url }}{% if title %}  
+  {{ title }}
+{%- endif %}  
 
-on behalf of {{ username }}.
+on behalf of {{ username|trim }}.
 
 This site is currently blocked on:
 
-Network        |  Last checked  | Category
----------------+----------------+----------------
-{% for siteblock in blocks %}
-{{ siteblock.network_name|lpad(14) }} | {{ siteblock.last_checked }} | {{ siteblock.category }}
+Network        |  Last checked       | Category
+---------------+---------------------+----------------
+{%- for siteblock in blocks %}
+{{ siteblock.network_name|lpad(14) }} | {{ siteblock.status_timestamp }} | {{ siteblock.category }}
 {% endfor %}
 
 {{ username }} comments:
 
   {{ comment }}
 
+Reviewers notes:
+
+<< add your comments here >>
+
 Kind regards,
 
-Blocked.org.uk administrators, on behalf of {{ username }}.
+Blocked.org.uk administrators
+on behalf of {{ username|trim }}.
