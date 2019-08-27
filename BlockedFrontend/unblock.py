@@ -292,5 +292,5 @@ def view_replies(url):
     for report in ISPReport.select(g.conn, urlid = urlobj['urlid']):
         emails[report['network_name']] = list(ISPReportEmail.select(g.conn, report_id=report['id'], _orderby='id'))
         
-    return render_template('replies.html', messagelist=emails, url=urlobj)
+    return render_template('replies.html', messagelist=emails, urlobj=urlobj, url=urlobj['url'])
         

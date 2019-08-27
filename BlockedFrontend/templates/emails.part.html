@@ -18,6 +18,7 @@
 {%-       if line.startswith('Website blocking enquiry') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('-----Original Message') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('NOTICE AND DISCLAIMER') %}{% set display=False %}{% endif -%}
+{%-       if line.startswith('BT is a founding') %}{% set display=False %}{% endif -%}
 {%-     endif -%}
 {%-     if display -%}
 {{        line|striptags }}

@@ -4,7 +4,7 @@
 
 {% set banner_text_block = False %}
 
-{% set page_title = "foo" %}
+{% set pagetitle = "ISP Replies" %}
 
 {% block page_script %}
 
@@ -32,6 +32,7 @@ $(document).ready(function(){
 .msg {
     white-space: pre-wrap;
     font-family: mono;
+    margin-bottom: 0.5em;
     
 }
 
@@ -70,6 +71,8 @@ div.expand {
 {% endif %}
 {% endfor %}
 </ul>
+
+<div><a href="{{ url_for('site.site', url=url) }}">Back to site results</a></div>
 {% endblock %}
 
 {% block body %}

@@ -335,7 +335,7 @@ Your feedback was successfully submitted.
         <p>Reported on {{reports[0].created|fmtime}}</p>
         <p class="report-message"><span>&ldquo;</span>{{ reports[0].message }}<span>&rdquo;</span></p>
         {% if reports|selectattr('reply_count')|select %}
-        <a class="btn btn-default" href="{{ }}">View ISP replies</a>
+        <a class="btn btn-default" href="{{ url_for('unblock.view_replies', url=url) }}">View ISP replies</a>
         {% endif %}
       {% endif %}
     {% elif cjuf and cjuf.reason != 'block_appears_correct' %}
