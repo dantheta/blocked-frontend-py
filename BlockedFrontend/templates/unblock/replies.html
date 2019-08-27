@@ -1,0 +1,98 @@
+{% extends "BasicPage.page.html" %}
+{% from "network_description.part.html" import isp_info, popover_js %}
+{% import "emails.part.html" as emails %}
+
+{% set banner_text_block = False %}
+
+{% set page_title = "foo" %}
+
+{% block page_script %}
+
+$(document).ready(function(){
+    $('a.expandx').click(function(){
+        $(this).parent().parent().find('.msg').removeClass('msg-hidden');
+        $(this).hide();
+        return false;
+    });
+});
+
+{% endblock %}
+
+{% block page_style %}
+
+.msg-wrap {
+    
+    background-color: #fafafe;
+
+    clear: both;
+    margin-left: 4em;
+    margin-bottom: 1em;
+}
+
+.msg {
+    white-space: pre-wrap;
+    font-family: mono;
+    
+}
+
+.msg-hidden {
+    max-height: 16em;
+    overflow-y: hidden;
+}
+
+
+.header {
+    background-color: #f8f8fc;
+    margin-bottom: 0.5em;
+}
+
+.header div span {
+    font-weight: bold;
+}
+
+div.expand {
+    text-align: right;
+}
+
+.toplink {
+    float: right; 
+    top: -2.5em;
+    position: relative;
+}
+
+{% endblock %}
+
+{% block page_menu %}
+<ul>
+{% for k in messagelist %}
+{% if messagelist[k] %}
+<li><a href="#{{k}}">{{k}}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block body %}
+
+
+{% for k in messagelist %}
+{% if messagelist[k] %}
+<a name="{{ k }}"><h3>{{ k }}</h3></a>
+<a href="#top" class="toplink"><small>Back to top</small></a>
+
+{% for msg in messagelist[k] %}
+{% set decoded = msg.decode() %}
+<div class="msg-wrap"><!-- {{ msg.id }} -->
+  <div class="header">
+    <div><span>From: </span>{{ decoded.from }}</div>
+    <div><span>Date: </span>{{ decoded.date }}</div>
+  </div>
+  <div class="msg msg-hidden">{{ emails.show_message(decoded, True) }}</div>
+  <div class="expandx"><a href="#" class="expandx">Read more ...</a></div>
+</div>
+{% endfor %}
+<hr />
+{% endif %}
+{% endfor %}
+
+{% endblock %}

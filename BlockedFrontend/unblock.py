@@ -282,3 +282,15 @@ def recheck():
     logging.info("urldata: %s", urldata)
     return "OK"
 
+
+@unblock_pages.route('/replies/<path:url>')
+def view_replies(url):
+    url = fix_path(url)
+    urlobj = Url.select_one(g.conn, url=url)
+    
+    emails = {}
+    for report in ISPReport.select(g.conn, urlid = urlobj['urlid']):
+        emails[report['network_name']] = list(ISPReportEmail.select(g.conn, report_id=report['id'], _orderby='id'))
+        
+    return render_template('replies.html', messagelist=emails, url=urlobj)
+        
