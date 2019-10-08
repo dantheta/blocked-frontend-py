@@ -149,7 +149,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 <div class="row">
 <div class="col-md-12">
 
-<h4>{{emails|length}} messages received</h4>
+<h4>{{messagelist|length}} messages received</h4>
 <table id="messagelist" class="table table-consdensed table-bordered">
     <tr>
         <th>#</th>
@@ -157,7 +157,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
     <th>Subject</th>
     <th>Date</th>
     </tr>
-{% for (email, message) in emails %}
+{% for (email, message) in messagelist %}
 <tr data-id="{{ email.id }}" data-href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
     <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}">{{loop.index}}</a></td>
     <td>{{message.from}}</td>
@@ -203,7 +203,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
                 {% endif %}
                 {#
                 <div style="float: right">
-                {% for (email, message) in emails %}                
+                {% for (email, message) in messagelist %}
                 {% if email.id == selected_email.id %}
                   {% if loop.first %}
                   <a href="#" class="disabled btn btn-link">

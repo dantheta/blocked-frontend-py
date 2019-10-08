@@ -439,13 +439,13 @@ def ispreports_view(url, network_name, msgid=None):
     ispreport = ISPReport.get_by_url_network(g.conn, url, network_name)
     isp = ispreport.get_isp()
     contact = ispreport.get_contact()
-    emails = list(ispreport.get_emails_parsed())
+    messagelist = list(ispreport.get_emails_parsed())
     if msgid:
         email = ISPReportEmail.select_one(g.conn, id=msgid)
         msg = email.decode()
     else:
-        if len(emails):
-            email, msg = emails[0]
+        if len(messagelist):
+            email, msg = messagelist[0]
         else:
             email, msg = None, None
         
@@ -470,7 +470,7 @@ def ispreports_view(url, network_name, msgid=None):
                            latest_status = urlobj.get_latest_status(),
                            categories = urlobj.get_categories(),
                            all_categories=all_categories,
-                           emails=emails,
+                           messagelist=messagelist,
                            selected_msg=msg,
                            selected_email=email,
                            report_next=ispreport.get_next(),
