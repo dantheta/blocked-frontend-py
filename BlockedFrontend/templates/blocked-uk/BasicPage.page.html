@@ -44,7 +44,7 @@ banner_text_block(bool): show banner text block, default true
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/theme.css?cb={{config.CACHEBUST}}" />
+    <link rel="stylesheet" href="/static/theme2.css?cb={{config.CACHEBUST}}" />
     <style type="text/css">
       {% block page_style %}
       {% endblock %}
@@ -67,8 +67,8 @@ banner_text_block(bool): show banner text block, default true
         <div class="col-md-5">
             <a href="/" title="Return to homepage">
                 <div class="sitetitle">BLOCKED</div>
-                <div>A web transparency campaign from OPEN RIGHTS GROUP</div>
             </a>
+            <div>A web transparency campaign from OPEN RIGHTS GROUP</div>
         </div>
         <div class="col-md-7">
           {{ chunks.main_menu() }}
@@ -124,9 +124,7 @@ banner_text_block(bool): show banner text block, default true
     </div> <!-- /.container -->
     </div> <!-- /.middlerow -->
 
-    <div class="container">
     {% block body_after_row %}{% endblock %}
-    </div> <!-- /.container -->
 
     <div class="container">
 <div class="row">

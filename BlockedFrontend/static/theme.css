@@ -28,8 +28,13 @@ body {
 .sitetitle {
     font-size: 48pt;
     font-weight: bold;
-    color: #cc0000;
-    text-shadow: 
+    // color: #cc0000;
+    background-color: #565656;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+  -webkit-background-clip: text;
+     -moz-background-clip: text;
+          background-clip: text;    
 }
 
 #blockcount {

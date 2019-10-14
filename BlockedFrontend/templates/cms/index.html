@@ -23,55 +23,89 @@
 
 
 
-<h3>Unblock your website</h3>
 <form action="{{ url_for('site.check_post') }}" method="POST">
 <input type="hidden" name="submit" value="{{live | lower }}" />
 
 <div class="form-group">
-  <label for="url" class="sr-only">Website address</label>
+  <label for="url">Enter a web address</label>
   <div class="control-group">
     <div class="input-group">
     <input type="text"  placeholder="http://" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="url" id="url" class="form-control" />
     <span class="input-group-btn">
-    <input type="submit" value="Check site" class="btn btn-primary" />
+    <input type="submit" value="Check site &#x27f6;" class="btn btn-primary" />
     </span>
     </div>
   </div>
 </div>
 
 </form>
-<p>Blocked will check if a site is being blocked by instantly running tests on
-major fixed line ISPs and mobile networks.  Based on the results, you can submit a request
-to the ISPs to have the site reclassified and removed from their block lists.</p>
+<p>Blocked instantly tells you if a website is blocked by the parental control filters
+of the UK's major broadband and mobile internet providers.</p>
 
-
-
-
-
-
-
-<!-- template BasicPage -->
-
-
-
-
-
+<p>If the website is blocked, you'll be able to report the mistake to the ISPs so
+they can correct it.</p>
 
 {%endblock%}
 
 
 {% block body_right %}
-<div class="frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt; margin-top: 2em">
-{% call rmt.remote('banner_text') %}
-  <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
-  
-  <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
-{% endcall %}
+<div class="frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
+<h3>Why are websites being blocked?</h3>
+
+<p>At least 3.5 million households in the UK are using their broadband or mobile internet provider's
+web filters that are meant to stop under-18s seeing harmful content online.</p>
+
+<p>Unfortunately, these filters block many websites by mistake.</p>
+
+<p><strong>Hundreds of websites have been incorrectly blocked, including websites for charities,
+businesses, schools, the LGBTQ+ community, mental health and addiction support, and 
+survivors of sexual assault and domestic violence.</strong></p>
+
+<p>Website owners often don't know this is happening.</p>
+
+<p><a href="#">Find out more about web blocking in the UK.</a></p>
+
 </div>
 
 {% endblock %}
 
 {% block body_after_row %}
+
+<div class="shaded">
+<div class="container">
+
+
+<div class="row">
+<div class="col-md-4">
+<h3>See blocked websites</h3>
+
+<p>We've identified lots of websites that are blocked in the UK by filters.
+Find out what sites are blocked and then report incorrectly blocked sites.</p>
+
+<p><strong>Browse blocked websites by specific categories, such as Mental Health, 
+Relationships, or Addictions.</strong></p>
+
+<a href="#" class="btn btn-default">Browse blocked sites by category &#x27f6;</a>
+
+<p>Search for blocked websites by keywords.  Try looking for sites you are 
+interested in.</p>
+
+<a href="#" class="btn btn-default">Search blocked sites by keyword &#x27f6;</a>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+{{ unblock_help() }}
+</div>
+
+</div> <!-- /.row -->
+
+</div> <!-- /.container -->
+</div> <!-- /.shaded -->
+
+
+<div class="shaded">
+<div class="container">
+
 <div class="row" style="padding-bottom: 0px">
   <div class="col-md-12 stats hidden-sm">
       <h3>Blocked - in numbers</h3>
@@ -85,8 +119,10 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
     <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.suspected_errors) }}</span> suspected mistakes identified by search</div>
     </div>
   </div>
+</div> <!-- /.row -->
 
-</div>
+</div> <!-- /.container -->
+</div> <!-- /.shaded -->
 {% endblock %}
 
 
@@ -112,9 +148,8 @@ $(document).ready(function(){
 
 {% endblock %}
 
-{% macro unblock() %}
-<h3>Help unblock this website</h3>
-<p>Has this site been blocked incorrectly?</p>
+{% macro unblock_help() %}
+<h3>Is this website blocked incorrectly?</h3>
 <div style="min-height: 3em; background-color: #fafafa; margin: 4px">
 <div id="siteinfo" class="site" >
   <div  class="randomurl"><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
