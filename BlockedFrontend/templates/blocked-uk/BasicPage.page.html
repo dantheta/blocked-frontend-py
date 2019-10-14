@@ -53,38 +53,40 @@ banner_text_block(bool): show banner text block, default true
   <body>
     {{ chunks.piwik() }}
     <!-- ADMIN MODE: {{ g.admin }} -->
-    <div class="topstrip">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-1">
+
+<!-- 
               {% if session.admin %}
               <a href="{{ url_for('admin.logout') }}" title="Log out"><span class="badge badge-info">{{ session.admin_level|title }}</span></a>
               {% endif %}
-          </div>
-          <div class="col-md-11">
-          A transparency campaign from <a href="https://www.openrightsgroup.org"><img src="/static/img/org_horiz.png" title="Open Rigts Group Logo" /></a>
-          </div>
-        </div>
-      </div>
-    </div>
-
+-->
+              
+    <div class="toprow">
     <div class="container">
 
     <div class="row menurow">
         <div class="col-md-5">
-            <a href="/" title="Return to homepage"><img width="100%" src="/static/img/blocked-logo.svg" alt="Blocked logo" /></a>
+            <a href="/" title="Return to homepage">
+                <div class="sitetitle">BLOCKED</div>
+                <div>A web transparency campaign from OPEN RIGHTS GROUP</div>
+            </a>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12 menu">
+        <div class="col-md-7">
           {{ chunks.main_menu() }}
         </div>
     </div>
     
+    </div>
+    </div> <!-- /.toprow -->
+    
+    <div class="middlerow">
+    <div class="container">
+
     <div class="row">
-    <div class="col-md-{{ title_width | default(7) }}">
+        
+    <div class="col-md-6 body-left">
+      {% if pagerole %}
       <div class="pagerole">{{pagerole}}</div>
+      {% endif %}
       <h1>{{ pagetitle }}</h1>
       {% block subtitle %}{% endblock %}
       {% block urllink %}
@@ -94,17 +96,18 @@ banner_text_block(bool): show banner text block, default true
       </div>
       {% endif %}
       {% endblock %}
+      
+    {% block body %}{%endblock%}      
     </div>
+    <div class="col-md-6 body-right">
 
     {% if menu_block| default(True) %}
-    <div class="col-md-4 col-md-offset-1 pagemenu pagemenu-main">
+    <div class="pagemenu pagemenu-main">
       {% block page_menu %}{% endblock %}
     </div>
     {% endif %}
-    </div>
 
     {% if banner_text_block | default(True) %}
-    <div class="row">
     <div class="col-md-{{ banner_text_columns | default('6') }}">
       <p {{rmt.remote_style('banner_text')}}>{%block banner_text%}{% endblock %}</p>
     </div>
@@ -113,11 +116,25 @@ banner_text_block(bool): show banner text block, default true
       {% block page_menu_alt %}{% endblock %}
     </div>
     {% endif %}
-    </div>
     {% endif %}
+    {% block body_right %}{% endblock %}
+    </div> <!-- /.body-right -->
+    </div> <!-- /.row -->
+    
+    </div> <!-- /.container -->
+    </div> <!-- /.middlerow -->
 
+    <div class="container">
+    {% block body_after_row %}{% endblock %}
+    </div> <!-- /.container -->
 
-    {% block body %}{%endblock%}
+    <div class="container">
+<div class="row">
+{{chunks.contactChunk() }}
+</div>
+    </div> <!-- /.container -->
+
+<div class="container">
     <div class="row">
         <div class="col-md-12">
     <footer>
@@ -125,6 +142,7 @@ banner_text_block(bool): show banner text block, default true
     </footer>
         </div>
     </div> <!-- /.container -->
+    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/jquery/jquery.min.js"></script>

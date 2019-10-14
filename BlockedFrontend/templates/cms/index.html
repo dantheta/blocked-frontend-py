@@ -21,11 +21,7 @@
 
 {%block body %}
 
-<div class="row">
-<div class="col-md-12 well">
 
-    <div class="row">
-        <div class="col-md-5">
 
 <h3>Unblock your website</h3>
 <form action="{{ url_for('site.check_post') }}" method="POST">
@@ -50,61 +46,32 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
 
 
 
-  <div>
-  {% if config.MODULE_CATEGORY %}
-  <h3>More ways to check blocked sites</h3>
-  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
-  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
-
-  {% endif %}
-
-  {# unblock this site #}
-
-{% if config.MODULE_UNBLOCK %}
-<h3>Help unblock this website</h3>
-<p>Has this site been blocked incorrectly?</p>
-<div style="min-height: 3em; background-color: #fafafa; margin: 4px">
-<div id="siteinfo" class="site" >
-  <div  class="randomurl"><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
-  <p id="sitetitle">{{site.title|null('(no title)')}}</p>
-</div>
-</div>
-
-{% if False %}
-  <div style="padding-bottom: 1em">
-    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
-  </div>
-{% endif %}
 
 
-  <div class="buttonlist btn-group btn-group-justified" style="margin-top: 0.5em">
-    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">Report this site</a>
-    <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-default">See another site</a>
-  </div> <!-- /.buttonlist -->
 
-  {% endif %}
 
-  {# end unblock #}
-  
+<!-- template BasicPage -->
 
-  </div>
 
-  </div> <!-- /.col -->
 
-  <div class="col-md-6 col-md-offset-1 frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
+
+
+
+{%endblock%}
+
+
+{% block body_right %}
+<div class="frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt; margin-top: 2em">
 {% call rmt.remote('banner_text') %}
   <p>The UK government has pressured Internet Service Providers (ISPs) into promoting filters to prevent children and young people from seeing internet content that is supposed to be for over 18s.  This may seem like a good idea, but in reality filters block much more than they are supposed to, which means information is being censored.</p>
   
   <p>It is very possible sites you care about are being restricted.  The Blocked project is here to help prevent this from happening.  <a href="#">Read more.</a></p>
 {% endcall %}
-  </div>
-    </div> <!-- /.row -->
+</div>
 
-    </div> <!-- /.col -->
-</div><!-- /.row -->
+{% endblock %}
 
-<!-- template BasicPage -->
-
+{% block body_after_row %}
 <div class="row" style="padding-bottom: 0px">
   <div class="col-md-12 stats hidden-sm">
       <h3>Blocked - in numbers</h3>
@@ -120,13 +87,8 @@ to the ISPs to have the site reclassified and removed from their block lists.</p
   </div>
 
 </div>
+{% endblock %}
 
-
-<div class="row">
-{{chunks.contactChunk() }}
-</div>
-
-{%endblock%}
 
 {% block page_script %}
 
@@ -150,3 +112,44 @@ $(document).ready(function(){
 
 {% endblock %}
 
+{% macro unblock() %}
+<h3>Help unblock this website</h3>
+<p>Has this site been blocked incorrectly?</p>
+<div style="min-height: 3em; background-color: #fafafa; margin: 4px">
+<div id="siteinfo" class="site" >
+  <div  class="randomurl"><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
+  <p id="sitetitle">{{site.title|null('(no title)')}}</p>
+</div>
+</div>
+
+{% if False %}
+  <div style="padding-bottom: 1em">
+    <strong>{{blockednetworks|join_en }}</strong> {% if blockednetworks|length == 1 %}is{% else %}are{% endif %} blocking this site for customers using filters.
+  </div>
+{% endif %}
+
+
+  <div class="buttonlist btn-group btn-group-justified" style="margin-top: 0.5em">
+    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">Report this site</a>
+    <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-default">See another site</a>
+  </div> <!-- /.buttonlist -->
+
+{% endmacro %}
+
+{% macro more_blocks() %}
+  <div>
+  {% if config.MODULE_CATEGORY %}
+  <h3>More ways to check blocked sites</h3>
+  <div><a href="{{ url_for('category.blocked_sites') }}">Browse blocked sites by category</a></div>
+  <div><a href="{{ url_for('category.sites_search') }}">Search blocked sites by keyword</a></div>
+
+  {% endif %}
+
+{% if config.MODULE_UNBLOCK %}
+{{ unblock() }}
+  {% endif %}
+  
+
+  </div>
+
+{% endmacro %}

@@ -9,6 +9,29 @@ h1, .pctlg, #blockcount {
   line-height: 52px;
 }
 
+body {
+}
+
+.toprow {
+
+    background-color: #fff3c1;
+}    
+
+.middlerow {
+    background-color: #fdd835;
+}
+
+.frontpage-text {
+    background-color: #fff3c1;
+}
+
+.sitetitle {
+    font-size: 48pt;
+    font-weight: bold;
+    color: #cc0000;
+    text-shadow: 
+}
+
 #blockcount {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
