@@ -68,10 +68,17 @@ banner_text_block(bool): show banner text block, default true
             <a href="/" title="Return to homepage">
                 <div class="sitetitle">BLOCKED</div>
             </a>
-            <div>A web transparency campaign from OPEN RIGHTS GROUP</div>
+            <div class="subtitle">A web transparency campaign from <strong>OPEN RIGHTS GROUP</strong></div>
         </div>
-        <div class="col-md-7">
-          {{ chunks.main_menu() }}
+        <div class="col-md-7 mainmenu">
+          {# chunks.main_menu() #}
+          <div>
+            <a class="active" href="/">Home</a>
+            <a class="" href="/reported-sites">Reported Sites</a>
+            <a class="" href="/personal-stories">Personal Stories</a>
+            <a class="" href="/stats">Statistics</a>
+            <a class="" href="/about">About</a>
+          </div>
         </div>
     </div>
     

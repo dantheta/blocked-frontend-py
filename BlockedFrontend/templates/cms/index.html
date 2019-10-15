@@ -32,7 +32,7 @@
     <div class="input-group">
     <input type="text"  placeholder="http://" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="url" id="url" class="form-control" />
     <span class="input-group-btn">
-    <input type="submit" value="Check site &#x27f6;" class="btn btn-primary" />
+    <input type="submit" value="Check site &#x27f6;" style="text-transform: uppercase" class="btn btn-primary" />
     </span>
     </div>
   </div>
@@ -49,7 +49,7 @@ they can correct it.</p>
 
 
 {% block body_right %}
-<div class="frontpage-text" style="font-family: Roboto, sans-serif; font-size: 16pt">
+<div class="frontpage-text" style="">
 <h3>Why are websites being blocked?</h3>
 
 <p>At least 3.5 million households in the UK are using their broadband or mobile internet provider's
@@ -76,7 +76,7 @@ survivors of sexual assault and domestic violence.</strong></p>
 
 
 <div class="row">
-<div class="col-md-4">
+<div class="col-md-5">
 <h3>See blocked websites</h3>
 
 <p>We've identified lots of websites that are blocked in the UK by filters.
@@ -85,15 +85,15 @@ Find out what sites are blocked and then report incorrectly blocked sites.</p>
 <p><strong>Browse blocked websites by specific categories, such as Mental Health, 
 Relationships, or Addictions.</strong></p>
 
-<a href="#" class="btn btn-default">Browse blocked sites by category &#x27f6;</a>
+<a href="{{ url_for('category.blocked_sites') }}" class="btn btn-primary">Browse blocked sites by category &#x27f6;</a>
 
-<p>Search for blocked websites by keywords.  Try looking for sites you are 
+<p style="margin-top: 1.5em">Search for blocked websites by keywords.  Try looking for sites you are 
 interested in.</p>
 
-<a href="#" class="btn btn-default">Search blocked sites by keyword &#x27f6;</a>
+<a href="{{ url_for('category.sites_search') }}" class="btn btn-primary">Search blocked sites by keyword &#x27f6;</a>
 </div>
 
-<div class="col-md-6 col-md-offset-2">
+<div class="col-md-6 col-md-offset-1">
 {{ unblock_help() }}
 </div>
 
@@ -150,10 +150,12 @@ $(document).ready(function(){
 
 {% macro unblock_help() %}
 <h3>Is this website blocked incorrectly?</h3>
-<div style="min-height: 3em; background-color: #fafafa; margin: 4px">
+<p>We've identified that this website is being blocked by some UK ISPs.
+See which ISPs are blocking the website.  Reported it to the ISPs if it's incorrectly blocked.</p>
+<div style="min-height: 3em; background-color: #fafafa; margin: 4px; padding: 4px">
 <div id="siteinfo" class="site" >
-  <div  class="randomurl"><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
-  <p id="sitetitle">{{site.title|null('(no title)')}}</p>
+  <div  class="randomurl"><strong>Website: </strong><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
+  <p id="sitetitle"><strong>Title: </strong>{{site.title|null('(no title)')}}</p>
 </div>
 </div>
 
@@ -165,8 +167,8 @@ $(document).ready(function(){
 
 
   <div class="buttonlist btn-group btn-group-justified" style="margin-top: 0.5em">
-    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">Report this site</a>
-    <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-default">See another site</a>
+    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">See the ISPs blocking site site &#x27f6;</a>
+    <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-primary">See another site &#x21ba;</a>
   </div> <!-- /.buttonlist -->
 
 {% endmacro %}
