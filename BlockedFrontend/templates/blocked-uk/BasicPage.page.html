@@ -94,7 +94,9 @@ banner_text_block(bool): show banner text block, default true
       {% if pagerole %}
       <div class="pagerole">{{pagerole}}</div>
       {% endif %}
-      <h1>{{ pagetitle }}</h1>
+      {% block h1_title %}
+      <h1>{{ title }}</h1>
+      {% endblock %}
       {% block subtitle %}{% endblock %}
       {% block urllink %}
       {% if url %}

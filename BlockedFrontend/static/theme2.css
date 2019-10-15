@@ -57,8 +57,8 @@ p {
 
 h1, .pctlg, #blockcount {
   margin-top: 0px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
   font-size: 52px;
   line-height: 56px;
 }
@@ -92,6 +92,7 @@ a {
 
 .btn {
     font-weight: normal;
+    font-size: 10pt;
 }
 
 /* frontpage stats row */
@@ -148,3 +149,9 @@ a {
 .randomurl {
     margin-bottom: 0.75em;
     }
+
+.descriptor {
+    color: white;
+    background-color: #6044fd !important;
+    padding: 2px;
+}

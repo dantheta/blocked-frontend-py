@@ -125,6 +125,9 @@ interested in.</p>
 </div> <!-- /.shaded -->
 {% endblock %}
 
+{% block h1_title %}
+<h1>Is your <span class="descriptor">favourite</span> website blocked in the UK?</h1>
+{% endblock %}
 
 {% block page_script %}
 
@@ -167,7 +170,7 @@ See which ISPs are blocking the website.  Reported it to the ISPs if it's incorr
 
 
   <div class="buttonlist btn-group btn-group-justified" style="margin-top: 0.5em">
-    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">See the ISPs blocking site site &#x27f6;</a>
+    <a href="{{url_for('unblock.unblock', url=site.url)}}" id="unblock" rel="nofollow" class="btn  btn-primary">See the ISPs blocking this site &#x27f6;</a>
     <a href="{{url_for('unblock.browse_next',after=site.url) }}" id="tryanother" class="btn btn-primary">See another site &#x21ba;</a>
   </div> <!-- /.buttonlist -->
 
