@@ -1,0 +1,1 @@
+blocked.org.dretzq.co.uk ansible_user=ubuntu ansible_ssh_key=deploy.pem
