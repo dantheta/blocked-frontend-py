@@ -17,7 +17,8 @@ after_script:
 
 deploy1:
   stage: deploy
-  only: reskin
+  only:
+    - reskin
   script:
     - cd deploy
     - ansible-playbook -i inventory deploy.yml
