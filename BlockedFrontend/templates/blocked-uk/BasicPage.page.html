@@ -84,7 +84,7 @@ banner_text_block(bool): show banner text block, default true
     
     </div>
     </div> <!-- /.toprow -->
-    
+    <div class="topbar"></div>
     <div class="middlerow">
     <div class="container">
 
@@ -135,21 +135,69 @@ banner_text_block(bool): show banner text block, default true
 
     {% block body_after_row %}{% endblock %}
 
+<div class="shaded">
     <div class="container">
 <div class="row">
-{{chunks.contactChunk() }}
-</div>
-    </div> <!-- /.container -->
+    <div class="col-md-5">
+<h3>We are grateful for support offered to Blocked by:</h3>
 
+<div>A&amp;A</div>
+<div>Bytemark</div>
+<div>Top10VPN</div>
+
+{#chunks.contactChunk() #}
+    </div>
+
+    <div class="col-md-6 col-md-offset-1 shaded-light">
+    <h3>Spread the word</h3>
+    <p>Many people don't know about the problems with web filters yet.</p>
+    <p>Please share the Blocked tool on social media to help raise awareness.  The more
+    mistakes we can correct, the more people will have access to critical websites.
+    </p>
+        <div class="connect">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//blocked.org.uk"><img src="https://www.openrightsgroup.org/assets/images/site/icons/social/svg/facebook.svg" alt="" title="" width="40" height="40"></a>
+<a href="https://twitter.com/home?status=Websites%20are%20being%20blocked%20in%20the%20UK.%20Find%20out%20if%20your%20site%20is%20one%20of%20them%20at%20https%3A//blocked.org.uk"><img src="https://www.openrightsgroup.org/assets/images/site/icons/social/svg/twitter.svg" alt="" title="" width="40" height="40"></a>
+			
+		</div>    
+    </div>
+</div> <!-- /.row -->
+
+    </div> <!-- /.container -->
+</div>    
+
+<div class="shaded shaded-light">
 <div class="container">
     <div class="row">
         <div class="col-md-12">
     <footer>
-        {{ chunks.footer_menu() }}
+        <h3 style="text-align: center">More links</h3>
+        
+        <div class="morelinks class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <div><a class="" href="https://action.openrightsgroup.org/sign-up-for-org-email-updates">Stay in touch</a></div>
+            <!-- <a class="" href="/support">Support</a> -->
+            <div><a class="" href="/credits">Credits</a></div>
+            <div><a class="" href="/stats/probes">Probe Status</a></div>
+        </div>
+        <div class="col-md-3">
+            <div><a class="" href="/legal-blocks">Court Ordered Blocks</a></div>
+            <div><a class="" href="/dea-blocking-orders">Age-verification Blocks</a></div>
+            <div><a class="" href="/support">Get involved</a></div>
+        </div>
+        <div class="col-md-3">
+            <div><a class="" href="https://www.openrightsgroup.org/donate/">Donate</a></div>
+            <div><a class="" href="https://www.openrightsgroup.org/contact/">Contact</a></div>
+            <div><a class="" href="https://www.openrightsgroup.org/privacy/">Privacy Policy</a></div>
+        </div>
+        </div>
+        
+        
+        
+        
     </footer>
         </div>
     </div> <!-- /.container -->
-    
+</div>    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/jquery/jquery.min.js"></script>

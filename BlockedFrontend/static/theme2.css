@@ -12,9 +12,17 @@ p {
 .toprow, .shaded {
 
     background-color: #fff3c1;
-    padding-bottom: 0.75em;
+    /* padding-bottom: 0.75em; */
 }    
 
+.topbar {
+    height: 3em;
+    background-color: #fdd835;
+    }
+
+.shaded-light {
+    background-color: #fffcef;
+    }
 
 .shaded {
     margin-top: 2.5em;
@@ -22,13 +30,20 @@ p {
     padding-bottom: 1.25em;
     }
 
-.middlerow {
-    background-color: #fdd835;
-    padding-top: 3em;
+@media (max-width: 991.98px) {
+    .middlerow {
+        background-color:  #fdd835;
+    }
+}
+@media (min-width: 992px) {
+    .middlerow {
+        background: linear-gradient(to right, #fdd835 55%, #fff3c1 55%);
+    }
 }
 
 .body-right {
     background-color: #fff3c1;
+    padding-bottom: 2em;
 }
 
 .sitetitle {
@@ -144,6 +159,15 @@ a {
  
 }
 
+/* footer */
+
+.morelinks div div {
+    margin-bottom: 1.0em;
+    }
+
+.morelinks * a {
+    color: black !important;
+    }
 /* front page */
 
 .randomurl {
@@ -155,3 +179,4 @@ a {
     background-color: #6044fd !important;
     padding: 2px;
 }
+

@@ -111,11 +111,11 @@ interested in.</p>
       <h3>Blocked - in numbers</h3>
     <div class="row" style="padding-bottom: 0px; margin-bottom: 0px">
 
-    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites tested</div>
-    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites detected</div>
-    <div class="col-lg-2 col-md-4"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of Alexa top 100,000 sites blocked on default filter settings</div>
-    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.isp_reports_made) }}</span> reports sent by our users</div>
-    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.isp_reports_unblocked) }}</span> blocks removed by our users</div>
+    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.urls_tested) }}</span> sites checked</div>
+    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.blocked_sites_detected_total) }}</span> blocked sites identified</div>
+    <div class="col-lg-2 col-md-4"><span>{{ "%0.02f%%"|format(100*stats.blocked_sites_detected_default_filter/stats.blocked_sites_sample_size) }}</span> of top 100k most popular sites blocked on default filter settings</div>
+    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.isp_reports_made) }}</span> reports of incorrect blocks sent by our users to ISPs</div>
+    <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.isp_reports_unblocked) }}</span> blocks removed thanks to reports by our users</div>
     <div class="col-lg-2 col-md-4"><span>{{ "{:,}".format(stats.suspected_errors) }}</span> suspected mistakes identified by search</div>
     </div>
   </div>
@@ -155,7 +155,7 @@ $(document).ready(function(){
 <h3>Is this website blocked incorrectly?</h3>
 <p>We've identified that this website is being blocked by some UK ISPs.
 See which ISPs are blocking the website.  Reported it to the ISPs if it's incorrectly blocked.</p>
-<div style="min-height: 3em; background-color: #fafafa; margin: 4px; padding: 4px">
+<div style="min-height: 3em; background-color: #fffcef; margin: 4px; padding: 4px">
 <div id="siteinfo" class="site" >
   <div  class="randomurl"><strong>Website: </strong><a id="sitelink" href="{{site.url}}" target="_blank" rel="nofollow">{{site.url|domain}}</a></div>
   <p id="sitetitle"><strong>Title: </strong>{{site.title|null('(no title)')}}</p>
