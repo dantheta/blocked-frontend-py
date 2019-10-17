@@ -1,0 +1,13 @@
+- hosts: all
+  tasks:
+    - name: fetch changes
+      git:
+        accept_hostkey: yes
+        repo: https://github.com/dantheta/blocked-frontend-py.git
+        version: reskin
+        dest: /srv/blocked-frontend-py
+      notify: reload apache
+  handlers:
+    - name: reload apache
+      service: name=apache2 state=reloaded
+      
