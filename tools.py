@@ -5,6 +5,7 @@ import datetime
 
 from flask import Flask
 import click
+import requests
 
 from BlockedFrontend.api import ApiClient, APIError
 from BlockedFrontend.db import db_connect_single
@@ -176,3 +177,49 @@ def create_mobile_inconsistency_lists():
         })
         item.store()
     conn.commit()
+
+@app.cli.command()
+@click.argument('do_chunks', default=False)
+def migrate_content(do_chunks=False):
+    import pprint
+    from BlockedFrontend.remotecontent import RemoteContent
+    remote = RemoteContent(
+        app.config['REMOTE_SRC'],
+        app.config['REMOTE_AUTH'],
+        app.config['CACHE_PATH'],
+        False
+    )
+
+    if do_chunks:
+        chunks = remote.get_content('chunks')
+        pprint.pprint(chunks)
+
+        for (k,v) in chunks.iteritems():
+            req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/save/chunks',
+                    params={'token': app.config['COCKPIT_AUTH']},
+                    json={'data':{'name': k, 'content': v}},
+                    headers={'Content-type': 'application/json'}
+                    )
+            app.logger.info("Created %s, ret: %s: %s", k, req.status_code, req.content)
+            app.logger.info("Req: %s", req.request.body)
+
+
+    page_elements = ['TextAreaOne','TextAreaTwo','TextAreaThree','TextAreaFour','TextAreaFive','TextAreaSix','mainContent','page_menu','banner_text','title']
+    for page in app.config['REMOTE_PAGES']:
+        remote_content = remote.get_content(page)
+        pprint.pprint(remote_content)
+
+        if set(remote_content.keys()) - set(page_elements):
+            app.logger.error("Unknown keys: %s", set(remote_content.keys()) - set(page_elements))
+            return 2
+
+        data = {'name': page}
+        data.update({k: remote_content.get(k,'') for k in page_elements})
+        req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/save/pages',
+                params={'token': app.config['COCKPIT_AUTH']},
+                json={'data': data},
+                headers={'Content-type': 'application/json'}
+                )
+        app.logger.info("Created %s, ret: %s: %s", page, req.status_code, req.content)
+        app.logger.info("Req: %s", req.request.body)
+
