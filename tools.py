@@ -223,3 +223,23 @@ def migrate_content(do_chunks=False):
         app.logger.info("Created %s, ret: %s: %s", page, req.status_code, req.content)
         app.logger.info("Req: %s", req.request.body)
 
+@app.cli.command()
+def create_cockpit_collections():
+    req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection/newpages',
+                        params={'token': app.config['COCKPIT_AUTH2']},
+                        json={"data":{"fields":[
+                            {"name":"name","type":"text","localize":False,"options":[]},
+                            {"name":"title","type":"text","localize":False,"options":[]},
+                            {"name":"page_menu","type":"html","localize":False,"options":[]},
+                            {"name":"banner_text","type":"html","localize":False,"options":[]},
+                            {"name":"mainContent","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaOne","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaFour","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaTwo","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaFive","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaThree","type":"html","localize":False,"options":[]},
+                            {"name":"TextAreaSix","type":"html","localize":False,"options":[]}
+                            ]}},
+
+                        headers={'Content-type': 'application/json'})
+    app.logger.info("Ret: %s", req.status_code)
