@@ -238,21 +238,33 @@ def migrate_content(do_chunks=False, do_pages=False, do_networks=True):
 
 @app.cli.command()
 def create_cockpit_collections():
-    req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection/newpages',
+    req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection',
                         params={'token': app.config['COCKPIT_AUTH2']},
-                        json={"data":{"fields":[
-                            {"name":"name","type":"text","localize":False,"options":[]},
-                            {"name":"title","type":"text","localize":False,"options":[]},
-                            {"name":"page_menu","type":"html","localize":False,"options":[]},
-                            {"name":"banner_text","type":"html","localize":False,"options":[]},
-                            {"name":"mainContent","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaOne","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaFour","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaTwo","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaFive","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaThree","type":"html","localize":False,"options":[]},
-                            {"name":"TextAreaSix","type":"html","localize":False,"options":[]}
-                            ]}},
-
+                        json={
+                            "name": "newpages",
+                            "data": {
+                                "label": "Newpages",
+                                "fields":[
+                                    {"name":"name","type":"text","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"title","type":"text","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"page_menu","type":"html","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"banner_text","type":"html","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"mainContent","type":"html","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"TextAreaOne","type":"html","localize":False,"options":[],"width":"1-2"},
+                                    {"name":"TextAreaFour","type":"html","localize":False,"options":[],"width":"1-2"},
+                                    {"name":"TextAreaTwo","type":"html","localize":False,"options":[],"width":"1-2"},
+                                    {"name":"TextAreaFive","type":"html","localize":False,"options":[],"width":"1-2"},
+                                    {"name":"TextAreaThree","type":"html","localize":False,"options":[],"width":"1-2"},
+                                    {"name":"TextAreaSix","type":"html","localize":False,"options":[],"width":"1-2"}
+                                    ],
+                                "acl": {
+                                    "public": {
+                                        "entries_view": True,
+                                        "entries_edit": True,
+                                        "entries_create": True,
+                                        }
+                                    }
+                                }
+                            },
                         headers={'Content-type': 'application/json'})
     app.logger.info("Ret: %s", req.status_code)
