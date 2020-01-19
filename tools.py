@@ -179,13 +179,13 @@ def create_mobile_inconsistency_lists():
     conn.commit()
 
 @app.cli.command()
-@click.argument('do_chunks', default=False)
-def migrate_content(do_chunks=False):
+@click.argument('do_chunks', default=True)
+def migrate_content(do_chunks=True):
     import pprint
-    from BlockedFrontend.remotecontent import RemoteContent
-    remote = RemoteContent(
-        app.config['REMOTE_SRC'],
-        app.config['REMOTE_AUTH'],
+    from BlockedFrontend.remotecontent import RemoteContent,RemoteContentModX
+    remote = RemoteContentModX(
+        app.config['REMOTE_SRC_MODX'],
+        app.config['REMOTE_AUTH_MODX'],
         app.config['CACHE_PATH'],
         False
     )
@@ -205,7 +205,7 @@ def migrate_content(do_chunks=False):
 
 
     page_elements = ['TextAreaOne','TextAreaTwo','TextAreaThree','TextAreaFour','TextAreaFive','TextAreaSix','mainContent','page_menu','banner_text','title']
-    for page in app.config['REMOTE_PAGES']:
+    for page in app.config['REMOTE_PAGES'] + app.config.get('REMOTE_PAGES_MIGRATE',[]):
         remote_content = remote.get_content(page)
         pprint.pprint(remote_content)
 

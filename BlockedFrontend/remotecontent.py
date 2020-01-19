@@ -8,7 +8,46 @@ try:
 except ImportError:
     import xml.etree as et
 
-class RemoteContent(object):
+class RemoteContentCockpit(object):
+    def __init__(self, src, auth, cachefile, reload=False):
+        self.src = src
+        self.auth = auth
+        self.cachefile = cachefile
+        self.reload = reload
+        #self.session = self.get_session()
+        self._cache_networks = None
+
+    def get_content(self, page):
+        if page == 'chunks':
+            return self.get_chunks()
+        req = requests.post(self.src + '/api/collections/get/pages',
+                            params={'token': self.auth},
+                            json={'filter':{'name':page}})
+        print page
+        ret = req.json()
+        print ret
+        if 'error' in ret:
+            raise ValueError(ret['error'])
+        if ret['total'] < 1:
+            raise ValueError("Entries " + str(ret['total']))
+        return ret['entries'][0]
+
+    def get_networks():
+        networks = self.get_content('network-descriptions')
+        return networks
+
+    def get_chunks(self):
+        out = {}
+        req = requests.post(self.src + '/api/collections/get/chunks',
+                            params={'token': self.auth})
+        for entry in req.json()['entries']:
+            out[ entry['name'] ] = entry['content']
+        return out
+
+RemoteContent = RemoteContentCockpit
+
+
+class RemoteContentModX(object):
     def __init__(self, src, auth, cachefile, reload=False):
         self.src = src
         self.auth = auth
