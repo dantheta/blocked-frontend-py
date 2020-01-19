@@ -7,7 +7,7 @@ import collections
 
 from api import ApiClient
 from utils import *
-from .remotecontent import RemoteContent
+from .remotecontent import get_remote_content_loader
 import db
 
 from flask import Flask, render_template, request,  \
@@ -210,7 +210,8 @@ def load_remote_content():
     g.remote_chunks = collections.defaultdict(lambda: None)
 
     if app.config.get('REMOTE_SRC'):
-        g.remote = RemoteContent(
+        loaderclass = get_remote_content_loader(app.config.get('REMOTE_TYPE'))
+        g.remote = loaderclass(
             app.config['REMOTE_SRC'],
             app.config['REMOTE_AUTH'],
             app.config['CACHE_PATH'],

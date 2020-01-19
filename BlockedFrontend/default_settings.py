@@ -20,7 +20,7 @@ MODULE_ADMIN = True
 
 UPDATE_PASSWORD = None
 
-REMOTE_TYPE = "cockpit"
+REMOTE_TYPE = "modx"
 REMOTE_SRC = None
 REMOTE_AUTH = None
 REMOTE_PAGES = []

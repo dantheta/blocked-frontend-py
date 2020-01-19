@@ -32,9 +32,19 @@ class RemoteContentCockpit(object):
             raise ValueError("Entries " + str(ret['total']))
         return ret['entries'][0]
 
-    def get_networks():
-        networks = self.get_content('network-descriptions')
-        return networks
+    def get_networks(self):
+        out = {}
+        req = requests.post(self.src + '/api/collections/get/networkdescriptions',
+                            params={'token': self.auth})
+        for entry in req.json()['entries']:
+            out[ entry['name'] ] = entry['description']
+        return out
+
+    def get_network(self, name, default=''):
+        if not self._cache_networks:
+            self._cache_networks = self.get_networks()
+            
+        return self._cache_networks.get(name, default)
 
     def get_chunks(self):
         out = {}
@@ -44,7 +54,7 @@ class RemoteContentCockpit(object):
             out[ entry['name'] ] = entry['content']
         return out
 
-RemoteContent = RemoteContentCockpit
+
 
 
 class RemoteContentModX(object):
@@ -127,3 +137,12 @@ class RemoteContentModX(object):
             else:
                 page_fields[child.tag] = content
         return page_fields
+
+RemoteContent = RemoteContentModX
+
+def get_remote_content_loader(loader):
+    if loader == 'cockpit':
+        return RemoteContentCockpit
+
+    return RemoteContentModX
+

@@ -179,8 +179,8 @@ def create_mobile_inconsistency_lists():
     conn.commit()
 
 @app.cli.command()
-@click.argument('do_chunks', default=True)
-def migrate_content(do_chunks=True):
+#@click.argument('do_chunks', default=True)
+def migrate_content(do_chunks=False, do_pages=False, do_networks=True):
     import pprint
     from BlockedFrontend.remotecontent import RemoteContent,RemoteContentModX
     remote = RemoteContentModX(
@@ -204,24 +204,37 @@ def migrate_content(do_chunks=True):
             app.logger.info("Req: %s", req.request.body)
 
 
-    page_elements = ['TextAreaOne','TextAreaTwo','TextAreaThree','TextAreaFour','TextAreaFive','TextAreaSix','mainContent','page_menu','banner_text','title']
-    for page in app.config['REMOTE_PAGES'] + app.config.get('REMOTE_PAGES_MIGRATE',[]):
-        remote_content = remote.get_content(page)
-        pprint.pprint(remote_content)
+    if do_pages:
+        page_elements = ['TextAreaOne','TextAreaTwo','TextAreaThree','TextAreaFour','TextAreaFive','TextAreaSix','mainContent','page_menu','banner_text','title']
+        for page in app.config['REMOTE_PAGES'] + app.config.get('REMOTE_PAGES_MIGRATE',[]):
+            remote_content = remote.get_content(page)
+            pprint.pprint(remote_content)
 
-        if set(remote_content.keys()) - set(page_elements):
-            app.logger.error("Unknown keys: %s", set(remote_content.keys()) - set(page_elements))
-            return 2
+            if set(remote_content.keys()) - set(page_elements):
+                app.logger.error("Unknown keys: %s", set(remote_content.keys()) - set(page_elements))
+                return 2
 
-        data = {'name': page}
-        data.update({k: remote_content.get(k,'') for k in page_elements})
-        req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/save/pages',
-                params={'token': app.config['COCKPIT_AUTH']},
-                json={'data': data},
-                headers={'Content-type': 'application/json'}
-                )
-        app.logger.info("Created %s, ret: %s: %s", page, req.status_code, req.content)
-        app.logger.info("Req: %s", req.request.body)
+            data = {'name': page}
+            data.update({k: remote_content.get(k,'') for k in page_elements})
+            req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/save/pages',
+                    params={'token': app.config['COCKPIT_AUTH']},
+                    json={'data': data},
+                    headers={'Content-type': 'application/json'}
+                    )
+            app.logger.info("Created %s, ret: %s: %s", page, req.status_code, req.content)
+            app.logger.info("Req: %s", req.request.body)
+    if do_networks:
+        content = remote.get_networks()
+        pprint.pprint(content)
+        for k,v in content.iteritems():
+            data = {'name': k, 'description': v}
+            req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/save/networkdescriptions',
+                    params={'token': app.config['COCKPIT_AUTH']},
+                    json={'data': data},
+                    headers={'Content-type': 'application/json'}
+                    )
+            app.logger.info("Created: %s, status: %s", k, req.status_code)
+
 
 @app.cli.command()
 def create_cockpit_collections():
