@@ -238,12 +238,20 @@ def migrate_content(do_chunks=False, do_pages=False, do_networks=True):
 
 @app.cli.command()
 def create_cockpit_collections():
+    acl = {
+        "public": {
+            "entries_view": True,
+            "entries_edit": True,
+            "entries_create": True,
+            }
+        }
+
     req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection',
                         params={'token': app.config['COCKPIT_AUTH2']},
                         json={
-                            "name": "newpages",
+                            "name": "pages",
                             "data": {
-                                "label": "Newpages",
+                                "label": "Pages",
                                 "fields":[
                                     {"name":"name","type":"text","localize":False,"options":[],"width":"1-1"},
                                     {"name":"title","type":"text","localize":False,"options":[],"width":"1-1"},
@@ -257,13 +265,39 @@ def create_cockpit_collections():
                                     {"name":"TextAreaThree","type":"html","localize":False,"options":[],"width":"1-2"},
                                     {"name":"TextAreaSix","type":"html","localize":False,"options":[],"width":"1-2"}
                                     ],
-                                "acl": {
-                                    "public": {
-                                        "entries_view": True,
-                                        "entries_edit": True,
-                                        "entries_create": True,
-                                        }
-                                    }
+                                "acl": acl
+                                }
+                            },
+                        headers={'Content-type': 'application/json'})
+    app.logger.info("Ret: %s", req.status_code)
+
+    req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection',
+                        params={'token': app.config['COCKPIT_AUTH2']},
+                        json={
+                            "name": "networkdescriptions",
+                            "data": {
+                                "label": "Network Descriptions",
+                                "fields":[
+                                    {"name":"name","type":"text","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"description","type":"html","localize":False,"options":[],"width":"1-1"},
+                                    ],
+                                "acl": acl
+                                }
+                            },
+                        headers={'Content-type': 'application/json'})
+    app.logger.info("Ret: %s", req.status_code)
+
+    req = requests.post(app.config['COCKPIT_URL'] + '/api/collections/createCollection',
+                        params={'token': app.config['COCKPIT_AUTH2']},
+                        json={
+                            "name": "chunks",
+                            "data": {
+                                "label": "Content chunks",
+                                "fields":[
+                                    {"name":"name","type":"text","localize":False,"options":[],"width":"1-1"},
+                                    {"name":"content","type":"html","localize":False,"options":[],"width":"1-1"},
+                                    ],
+                                "acl": acl
                                 }
                             },
                         headers={'Content-type': 'application/json'})
