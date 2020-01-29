@@ -375,7 +375,7 @@ def ispreports_escalate_post(id):
     'url': urlobj['url'],
     'reporter': {
         'name': "Blocked admin",
-        'email': "blocked@localhost",
+        'email': "blocked@openrightsgroup.org",
         },
     'original_network': report['network_name'],
     'message': emailtext,
