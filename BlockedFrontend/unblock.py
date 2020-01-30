@@ -103,8 +103,8 @@ def nextsite(current_url, redir=True):
             'page': random.randrange(0, session['category'][1]), # select a random page; api pages are zero-based
             }
         req['signature'] = g.api.sign(req, ['id'])
-        if config['RANDOM_EXCLUDE_NETWORKS'] != '{}':
-            req['networks'] = config['RANDOM_EXCLUDE_NETWORKS'][1:-1] # strip curly braces
+        if current_app.config['RANDOM_EXCLUDE_NETWORKS'] != '{}':
+            req['networks'] = current_app.config['RANDOM_EXCLUDE_NETWORKS'][1:-1] # strip curly braces
             req['exclude'] = 1
         searchdata = g.api.GET('category/sites/'+str(session['category'][0]), req)
         nextsite = selectnext(searchdata, current_url)
