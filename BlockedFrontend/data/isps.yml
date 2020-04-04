@@ -40,3 +40,16 @@ eu:
   nl:
     - upc-nl
     - xs4all
+
+# used in ispreports admin list view
+reportable_isps:
+  - "BBFC"
+  - "Vodafone"
+  - "O2"
+  - "EE"
+  - "Three"
+  - "Sky"
+  - "VirginMedia"
+  - "TalkTalk"
+  - "BT"
+  - "BT-Strict"

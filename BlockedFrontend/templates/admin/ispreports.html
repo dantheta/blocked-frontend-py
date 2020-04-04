@@ -90,7 +90,7 @@ tr:hover * .action-button {
       <li role="presentation" class="">
           <a href="{{ url_for('.ispreports', **args(network=None) ) }}">(all)</a> 
       </li>
-    {% for isp in ['Vodafone','O2','EE','Three','Sky','VirginMedia','TalkTalk','BT','BT-Strict'] %}
+    {% for isp in reportable_isps %}
     <li role="presentation" class="{{ 'active' if request.args.network == isp else '' }}">
         <a href="{{ url_for('.ispreports', **args(network=isp) ) }}">{{ isp }}</a>
     </li>

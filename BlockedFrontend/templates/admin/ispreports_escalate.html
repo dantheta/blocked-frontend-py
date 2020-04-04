@@ -24,7 +24,7 @@
             {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()), rows=8) }}            
             
             <h3>Additional contact information</h3>
-            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.email) }}
+            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.email + ")" ) }}
             
             <h3>Site details</h3>
             {{ forms.static_field('URL','url', url.url) }}

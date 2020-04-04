@@ -311,6 +311,7 @@ def ispreports():
     return render_template('ispreports.html',
                            args=get_args_helper(['state','category','reportercategory','network','page','order']),
                            reports=reports,
+                           reportable_isps = load_data('isps')['reportable_isps'],
                            page=page,
                            all_categories=all_categories,
                            reporter_categories=reporter_categories,
@@ -375,7 +376,7 @@ def ispreports_escalate_post(id):
     'url': urlobj['url'],
     'reporter': {
         'name': "Blocked admin",
-        'email': "blocked@localhost",
+        'email': "blocked@openrightsgroup.org",
         },
     'original_network': report['network_name'],
     'message': emailtext,
