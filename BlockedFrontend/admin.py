@@ -1649,7 +1649,6 @@ def tests():
 @check_admin
 def tests_edit(id=None):
     test = Test(g.conn, id=id)
-    logging.debug("Repeat interval: %s", test['repeat_interval'])
     if not id:
         test['check_interval'] = datetime.timedelta(0)
         test['repeat_interval'] = datetime.timedelta(0)
