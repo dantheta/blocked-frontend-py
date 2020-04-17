@@ -202,7 +202,7 @@ def check_user():
 
 @app.before_request
 def load_remote_content():
-    if request.path.startswith('/static'):
+    if request.path.startswith('/static') or request.path.startswith('/assets'):
         return
     if app.config.get('SITE_THEME') == '451':
         return

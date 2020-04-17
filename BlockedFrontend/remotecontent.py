@@ -14,18 +14,29 @@ class RemoteContentCockpit(object):
         self.auth = auth
         self.cachefile = cachefile
         self.reload = reload
-        #self.session = self.get_session()
+        self.session = self.get_session()
         self._cache_networks = None
+
+    def get_session(self):
+        if self.reload:
+            session = requests.session()
+        else:
+            session = requests_cache.CachedSession(
+                self.cachefile,
+                allowable_methods=('GET','POST'),
+                old_data_on_error=True
+                )
+        session.headers = {'Authorization': 'Bearer ' + self.auth}
+        return session
 
     def get_content(self, page):
         if page == 'chunks':
             return self.get_chunks()
-        req = requests.post(self.src + '/api/collections/get/pages',
-                            params={'token': self.auth},
-                            json={'filter':{'name':page}})
-        print page
+        req = self.session.post(self.src + '/api/collections/get/pages',
+                                json={'filter':{'name':page}}
+                                )
+        logging.info("Fetching page: %s", page)
         ret = req.json()
-        print ret
         if 'error' in ret:
             raise ValueError(ret['error'])
         if ret['total'] < 1:
@@ -34,8 +45,7 @@ class RemoteContentCockpit(object):
 
     def get_networks(self):
         out = {}
-        req = requests.post(self.src + '/api/collections/get/networkdescriptions',
-                            params={'token': self.auth})
+        req = self.session.get(self.src + '/api/collections/get/networkdescriptions')
         for entry in req.json()['entries']:
             out[ entry['name'] ] = entry['description']
         return out
@@ -48,8 +58,7 @@ class RemoteContentCockpit(object):
 
     def get_chunks(self):
         out = {}
-        req = requests.post(self.src + '/api/collections/get/chunks',
-                            params={'token': self.auth})
+        req = self.session.get(self.src + '/api/collections/get/chunks')
         for entry in req.json()['entries']:
             out[ entry['name'] ] = entry['content']
         return out
