@@ -16,6 +16,8 @@ from resources import load_country_data
 cms_pages = Blueprint('cms', __name__,
     template_folder='templates/cms')
 
+REMOTE_CONTENT_TYPES = ['pages','layoutpages']
+
 REMOTE_TEXT_CONTENT = {
     'index': 'homepage-text',
     'legal-blocks': 'legal-blocks',
@@ -277,9 +279,18 @@ def wildcard(page='index'):
     if page in current_app.config['REMOTE_PAGES']:
         # page uses generic template from local filesystem, and pretty much requires
         # remote content
-        g.remote_content = g.remote.get_content(page)
+        for _type in REMOTE_CONTENT_TYPES:
+            try:
+                g.remote_content = g.remote.get_content(page, _type)
+                break
+            except Exception:
+                pass
 
         logging.info("page content: %s", g.remote_content.keys())
+
+        if _type == 'layoutpages':
+            return render_template('remote_layout.html', content=g.remote_content)
+
         if set(g.remote_content.keys()).intersection(
             ['TextAreaFour','TextAreaFive','TextAreaSix']
             ):

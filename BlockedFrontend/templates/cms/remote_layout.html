@@ -1,0 +1,20 @@
+{% extends "BasicPage.page.html" %}
+{% import "layout.part.html" as layout %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-7">
+        {{ content.content | tojson }}
+    {{ layout.cms_layout(content.content) }}
+
+    </div>
+</div>
+
+{%block bodyrow2 %}{%endblock%}
+
+
+<div class="row shaded-row">
+    {{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}

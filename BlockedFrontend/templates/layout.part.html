@@ -1,0 +1,37 @@
+{% macro cms_layout(node) %}
+
+{% if node is mapping %}
+    {{ cms_component(node) }}
+    {% if 'children' in node %}
+        {{ cms_layout(node.children) }}
+    {% endif %}
+{% elif node is iterable %}
+    {% for subnode in node %}
+    {{ cms_layout(subnode) }}
+    {% endfor %}
+{% endif %}
+
+{% endmacro %}
+
+{% macro cms_component(node) %}
+{% if node.component == 'heading' %}{{ cms_heading(node.settings) }}
+{% elif node.component == 'text' %}{{ cms_text(node.settings) }}
+{% elif node.component == 'image' %}{{ cms_image(node.settings) }}
+{% elif node.component == 'section' %}{{ cms_section(node.settings) }}
+{% endif %}
+{% endmacro %}
+
+{% macro cms_heading(node) %}
+<{{ node.tag }}>{{ node.text }}</{{ node.tag }}>
+{% endmacro %}
+
+{% macro cms_text(node) %}
+{{ node.text|safe }}
+{% endmacro %}
+
+{% macro cms_image(node) %}
+<img src="{{ node.image.path }}" />
+{% endmacro %}
+
+{% macro cms_section(node) %}
+{% endmacro %}

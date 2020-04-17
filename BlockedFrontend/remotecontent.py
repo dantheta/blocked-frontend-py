@@ -29,13 +29,13 @@ class RemoteContentCockpit(object):
         session.headers = {'Authorization': 'Bearer ' + self.auth}
         return session
 
-    def get_content(self, page):
+    def get_content(self, page, _type='pages'):
         if page == 'chunks':
             return self.get_chunks()
-        req = self.session.post(self.src + '/api/collections/get/pages',
+        req = self.session.post(self.src + '/api/collections/get/'+_type,
                                 json={'filter':{'name':page}}
                                 )
-        logging.info("Fetching page: %s", page)
+        logging.info("Fetching %s: %s",_type, page)
         ret = req.json()
         if 'error' in ret:
             raise ValueError(ret['error'])
