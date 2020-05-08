@@ -1,0 +1,30 @@
+{% extends "BasicPage.page.html" %}
+{%import "remotecontent.part.html" as rmt %}
+
+{% set pagetitle = "Personal Stories" %}
+
+{% block banner_text %}
+{% endblock %}
+
+{% block body %}
+
+{% for entry in entries %}
+<div class="row">
+    <div class="col-md-2">
+        {% if entry.image %}
+        <img class="img-responsive img-circle hidden-xs hidden-sm person" src="{{ entry.image.path|rmtasset }}" title="{{ entry.image.description|default('') }}" />
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <h2><a href="{{ url_for('.personal_stories', name=entry.slug) }}">{{ entry.title }}</a></h2>
+        <div>{{ entry.teaser|safe }}</div>
+        <div>{{ entry.blocked_date }}</div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}

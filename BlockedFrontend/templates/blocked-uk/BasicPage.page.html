@@ -101,6 +101,11 @@ banner_text_block(bool): show banner text block, default true
       {% block page_menu %}{% endblock %}
     </div>
     {% endif %}
+    {% if image_block|default(False) %}
+    <div class="col-md-4">
+        {% block page_image %}{% endblock %}
+    </div>
+    {% endif %}
     </div>
 
     {% if banner_text_block | default(True) %}

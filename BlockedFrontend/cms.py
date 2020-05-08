@@ -63,9 +63,25 @@ def index():
                            blockednetworks=blockednetworks)
 
 @cms_pages.route('/personal-stories')
-def personal_stories():
-    g.remote_content = g.remote.get_content('personal-stories')
-    return render_template('personal-stories.html',
+@cms_pages.route('/personal-stories/<name>')
+def personal_stories(name=None):
+    if current_app.config['REMOTE_TYPE'] == 'cockpit':
+        if not name:
+            entries = g.remote.get_collection('personal_stories')
+            return render_template('personal-stories-index.html',
+                                   entries=entries)
+        else:
+            try:
+                entry = g.remote.get_content(name, 'personal_stories', 'slug')
+            except ValueError as exc:
+                if exc.args[0].startswith('Entries'):
+                    abort(404)
+                raise
+            return render_template('personal-stories-story.html',
+                                   entry=entry)
+    else:
+        g.remote_content = g.remote.get_content('personal-stories')
+        return render_template('personal-stories.html',
                            featured=models.ISPReport.get_featured(g.conn))
 
 @cms_pages.route('/credits')
@@ -307,6 +323,19 @@ def wildcard(page='index'):
         return render_template(page + '.html')
     except jinja2.TemplateNotFound:
         abort(404)
+
+@cms_pages.route('/cms/assets/<path:path>')
+def cms_asset(path):
+    if current_app.config['REMOTE_TYPE'] != 'cockpit':
+        abort(500)
+
+    try:
+        req = g.remote.get_asset('/'+path)
+    except ValueError as exc:
+        abort(exc.args[0])
+    return Response(req.iter_content(1024), req.status_code, 
+            {'Content-type': req.headers['Content-type'],
+            'Content-length': req.headers['Content-length']})
 
 @cms_pages.route('/legal-blocks/errors')
 @cms_pages.route('/legal-blocks/errors/<int:page>')

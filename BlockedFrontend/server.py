@@ -187,6 +187,13 @@ def filter_strip_style(s):
 def lpad(s, width=20):
     return s.ljust(width)
 
+@app.template_filter('rmtasset')
+def rmtasset(path):
+    """Convert relative path to CMS asset URL"""
+    if path.startswith(('http:','https:')):
+        return path
+    return '/cms/assets' + path
+
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))

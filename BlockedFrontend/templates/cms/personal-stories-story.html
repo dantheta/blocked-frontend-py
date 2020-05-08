@@ -1,0 +1,43 @@
+{% extends "BasicPage.page.html" %}
+{%import "remotecontent.part.html" as rmt %}
+
+{% set pagetitle = entry.title %}
+{% set url = entry.site_url %}
+{% set image_block = true %}
+{% set menu_block = false %}
+{% block banner_text %}
+{% endblock %}
+
+{% block page_image %}
+    {% if entry.image %}
+    <div class="col-md-6">
+        <img class="img-responsive img-circle hidden-xs hidden-sm person" src="{{ entry.image.path|rmtasset }}" title="{{ entry.image.description|default('') }}" />
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+
+
+{{ entry.full_text|safe }}
+
+<p>
+{{ entry.site_url|noproto }} was blocked on 
+{% if entry.blocked_url %}
+<a href="{{ entry.blocked_url }}">{{ entry.blocked_networks|join_en }}</a>
+{% else %}
+{{ entry.blocked_networks|join_en }}
+{% endif %}
+{% if entry.blocked_date %} in {{ entry.blocked_date }}{% endif %}
+</p>
+
+    </div>
+</div>
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}

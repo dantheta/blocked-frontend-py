@@ -9,6 +9,8 @@ except ImportError:
     import xml.etree as et
 
 class RemoteContentCockpit(object):
+    UPLOAD_PATH = '/storage/uploads'
+
     def __init__(self, src, auth, cachefile, reload=False):
         self.src = src
         self.auth = auth
@@ -29,11 +31,11 @@ class RemoteContentCockpit(object):
         session.headers = {'Authorization': 'Bearer ' + self.auth}
         return session
 
-    def get_content(self, page, _type='pages'):
+    def get_content(self, page, _type='pages', filterfield='name'):
         if page == 'chunks':
             return self.get_chunks()
         req = self.session.post(self.src + '/api/collections/get/'+_type,
-                                json={'filter':{'name':page}}
+                                json={'filter':{filterfield: page}}
                                 )
         logging.info("Fetching %s: %s",_type, page)
         ret = req.json()
@@ -42,6 +44,14 @@ class RemoteContentCockpit(object):
         if ret['total'] < 1:
             raise ValueError("Entries " + str(ret['total']))
         return ret['entries'][0]
+
+    def get_collection(self, _type):
+        req = self.session.get(self.src + '/api/collections/get/'+_type)
+        logging.info("Fetching %s:",_type)
+        ret = req.json()
+        if 'error' in ret:
+            raise ValueError(ret['error'])
+        return ret['entries']
 
     def get_networks(self):
         out = {}
@@ -63,6 +73,14 @@ class RemoteContentCockpit(object):
             out[ entry['name'] ] = entry['content']
         return out
 
+    def get_asset(self, path):
+        req = self.session.get(self.src + self.UPLOAD_PATH + path, allow_redirects=False)
+        logging.info("Req: %s, %s", req.status_code, req.headers['Content-type'])
+        if req.status_code == 302 and req.headers['location'] == '/auth/login':
+            raise ValueError(404)
+        if req.status_code != 200:
+            raise ValueError(req.status)
+        return req
 
 
 
