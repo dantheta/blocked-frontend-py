@@ -54,7 +54,7 @@ def sites_search(search=None, page=1):
         if networks:
             networks = [networks]
 
-        current_app.logger.info("Networks: %s", networks)
+        current_app.logger.debug("Networks: %s", networks)
 
         exclude_adult = request.args.get('exclude_adult', 0)
         data = g.api.search_url(search, page-1, exclude_adult, networks, tld=request.args.get('tld'))

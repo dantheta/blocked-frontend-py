@@ -981,8 +981,8 @@ def search_filter_update():
     remove = terms - enabled
     add = enabled - terms
 
-    current_app.logger.info("Terms: %s, Enabled: %s", terms, enabled)
-    current_app.logger.info("Add: %s, Remove: %s", add, remove)
+    current_app.logger.debug("Terms: %s, Enabled: %s", terms, enabled)
+    current_app.logger.debug("Add: %s, Remove: %s", add, remove)
 
     for termid in remove:
         term = SearchIgnoreTerm(g.conn, id=int(termid))

@@ -30,7 +30,7 @@ class BaseApiClient(object):
         data['email'] = self.username
         try:
             req = requests.get(self.API + url, params=data, stream=_stream)
-            logger.info("Status: %s", req.status_code)
+            logger.debug("Status: %s", req.status_code)
             if _stream:
                 return req.iter_lines()
             elif decode:
@@ -49,7 +49,7 @@ class BaseApiClient(object):
         data['email'] = self.username
         try:
             req = requests.post(self.API + url, data=data)
-            logger.info("Status: %s", req.status_code)
+            logger.debug("Status: %s", req.status_code)
             logger.debug("Return: %s", req.content)
             return req.json()
         except Exception as exc:
@@ -59,7 +59,7 @@ class BaseApiClient(object):
         data['email'] = self.username
         try:
             req = requests.delete(self.API + url, params=data)
-            logger.info("Status: %s", req.status_code)
+            logger.debug("Status: %s", req.status_code)
             return req.json()
         except Exception as exc:
             raise APIError(*exc.args)
