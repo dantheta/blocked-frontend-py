@@ -57,7 +57,7 @@ class SavedList(DBObject):
                  status = status,
                  domain=domain,
                  limit=_limit)
-        print sql
+
         q = Query(self.conn, sql, args)
         for row in q:
             yield Item(self.conn, data=row)
@@ -744,7 +744,6 @@ class ISPReportEmail(DBObject):
         import email
         
         ret = email.message_from_string(self['message'])
-        print type(ret)
         return ret
         
     def get_report(self):

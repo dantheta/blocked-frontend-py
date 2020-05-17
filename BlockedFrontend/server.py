@@ -43,7 +43,6 @@ if app.config['MODULE_ADMIN']:
 
 if app.config.get('SITE_THEME') == '451':
     from err451 import err451_pages
-    print "Registering 451"
     app.register_blueprint(err451_pages)
 else:
     from cms import cms_pages, custom_routing

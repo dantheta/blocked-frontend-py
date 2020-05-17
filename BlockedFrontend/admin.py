@@ -589,7 +589,6 @@ def ispreports_update_report_category():
         row = q.fetchone()
         q.close()
         if row:
-            print "Found reporter category"
             return UrlReportCategoryAsgt(g.conn, data=row)
         return None
     
@@ -1090,7 +1089,6 @@ def courtorders_edit(id=None):
 def courtorders_update(id=None):
     try:
         f = request.form
-        print f
         obj = CourtJudgment(g.conn, id)
         obj.update({x: convertnull(f[x]) for x in CourtJudgment.FIELDS})
         obj.store()
@@ -1104,7 +1102,6 @@ def courtorders_update(id=None):
                 f.getlist('order_date'),
                 f.getlist('expiry_date'),
             ):
-            print order_id, network_name
             order = CourtOrder(g.conn, order_id or None)
             if order['id'] in to_delete:
                 order.delete()
@@ -1141,7 +1138,6 @@ def courtorders_site_add():
         obj.store()
         g.conn.commit()
     except ObjectExists:
-        print obj.data
         flash("This site has already been added to this court order")
         g.conn.rollback()
     return redirect(url_for('.courtorders_view', id=f['judgment_id']))
@@ -1466,7 +1462,6 @@ def admin_urls_check():
 @check_admin
 def urls_post():
     f = request.form
-    print f
     if 'update_status' in f:
         rsp = g.api.set_status_url(f['url'], f['status'],
                                          f.get('normalize', '0') == '1')
