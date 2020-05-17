@@ -26,7 +26,7 @@ if app.config.get('SITE_THEME'):
 #app.secret_key = app.config['SESSION_KEY']
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=getattr(logging, app.config.get('LOGLEVEL', 'INFO')),
     datefmt="[%Y-%m-%dT%H:%M:%S]",
     format="%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s"
 

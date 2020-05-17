@@ -5,6 +5,7 @@
 # Copy to a new file, edit, and set BLOCKEDFRONTEND_SETTINGS env var
 
 DEBUG = False
+LOGLEVEL = 'INFO'
 
 API_EMAIL = ''
 API_SECRET = ''
