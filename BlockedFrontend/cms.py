@@ -302,7 +302,7 @@ def wildcard(page='index'):
             except Exception:
                 pass
 
-        logging.info("page content: %s", g.remote_content.keys())
+        logging.debug("page content: %s", g.remote_content.keys())
 
         if _type == 'layoutpages':
             return render_template('remote_layout.html', content=g.remote_content)
