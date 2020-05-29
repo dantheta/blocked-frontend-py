@@ -75,11 +75,11 @@ class RemoteContentCockpit(object):
 
     def get_asset(self, path):
         req = self.session.get(self.src + self.UPLOAD_PATH + path, allow_redirects=False)
-        logging.info("Req: %s, %s", req.status_code, req.headers['Content-type'])
-        if req.status_code == 302 and req.headers['location'] == '/auth/login':
+        logging.info("Req: %s, %s %s", req.status_code, req.headers['Content-type'], req.headers.get('location'))
+        if req.status_code == 302 and req.headers['location'].startswith('/auth/login'):
             raise ValueError(404)
         if req.status_code != 200:
-            raise ValueError(req.status)
+            raise ValueError(req.status_code)
         return req
 
 
