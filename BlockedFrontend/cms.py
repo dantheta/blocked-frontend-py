@@ -529,3 +529,13 @@ def legal_order_sites(id, page=1):
                            blocks = judgment.get_report(current_app.config['DEFAULT_REGION']))
 
 
+@cms_pages.route('/faqs')
+def faqs():
+    import itertools
+
+    content = g.remote.get_content('faqs')
+    faqs = g.remote.get_collection(_type='faqs')
+    grouped_faqs = itertools.groupby(faqs, lambda x: x['heading'])
+
+
+    return render_template('faqs.html', faqs=grouped_faqs, content=content)

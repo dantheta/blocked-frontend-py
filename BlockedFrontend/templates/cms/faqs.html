@@ -1,0 +1,26 @@
+{% extends "remote_content1x3.html" %}
+
+{%block col1_row1 %}
+
+{% for heading, entries in faqs %}
+{% if heading %}
+<h2>{{ heading }}</h2>
+{% endif %}
+
+{% for entry in entries %}
+{% if entry.published %}
+<h3>{{ entry.title }}</h3>
+{{ entry.body|safe }}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% endblock %}
+
+
+{%block col1_row2 %}
+{% endblock %}
+
+
+{%block col1_row3 %}
+{% endblock %}
