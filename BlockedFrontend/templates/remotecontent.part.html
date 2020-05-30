@@ -12,3 +12,11 @@
 {{ caller() }}
 {% endif %}
 {% endmacro %}
+
+{% macro page_menu(links) %}
+{% for link in links %}
+{% if link.published %}
+<div><a href="{{ link.url }}">{{ link.title }}</a></div>
+{% endif %}
+{% endfor %}
+{% endmacro %}

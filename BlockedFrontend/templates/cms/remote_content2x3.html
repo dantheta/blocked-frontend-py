@@ -36,5 +36,5 @@
 
 
 {% block page_menu_alt %}
-{{ content.page_menu | safe }}
+{{ rmt.page_menu(content.page_menu_links) }}
 {% endblock %}
