@@ -216,6 +216,9 @@ Your feedback was successfully submitted.
   <td>{{item.status_timestamp|fmtime}}
   {% if g.admin and g.admin_level == 'admin' %}
   <div class="remote_ip">{{ item.remote_ip|null }}</div>
+  {% if item.result_uuid|default(None) %}
+  <div class="result-link"><a class="" href="{{ url_for('.site_result', result_uuid=item.result_uuid) }}">View result</a></div>
+  {% endif %}
   {% endif %}
   </td>
   {{ itemrow(item) }}

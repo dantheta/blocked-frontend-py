@@ -87,6 +87,7 @@ class ApiClient(BaseApiClient):
         'ispreport/flag': ['date','url'],
         'ispreport/unflag': ['date','url'],
         'list/users': ['date'],
+        'status/result/': ['date'],
         }
 
     def _request(self, endpoint, req):
@@ -230,4 +231,6 @@ class ApiClient(BaseApiClient):
         req = {'date': self.timestamp()}
         return self._request('list/users', req)
 
-
+    def result(self, uuid):
+        req = {'date': self.timestamp()}
+        return self._request('status/result/'+uuid, req)

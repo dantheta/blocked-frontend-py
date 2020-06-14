@@ -238,3 +238,11 @@ def stream_results():
             yield row + "\r\n"
 
     return Response(stream_with_context(stream()))
+
+@site_pages.route('/result/<result_uuid>')
+def site_result(result_uuid):
+    from flask import Response
+    result = g.api.result(result_uuid)
+
+    return Response(str(result))
+    pass
