@@ -43,11 +43,7 @@ class RemoteContentCockpit(object):
             raise ValueError(ret['error'])
         if ret['total'] < 1:
             raise ValueError("Entries " + str(ret['total']))
-        content = ret['entries'][0]
-        if _type == 'pages' and content.get('page_menu_links'):
-            links = {link['_id']: link for link in self.get_collection('page_menu_links')}
-            content['page_menu_links'] = [links[x['_id']] for x in content['page_menu_links']]
-        return content
+        return ret['entries'][0]
 
     def get_collection(self, _type):
         req = self.session.get(self.src + '/api/collections/get/'+_type)

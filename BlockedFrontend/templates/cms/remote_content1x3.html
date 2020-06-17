@@ -22,5 +22,5 @@
 {% endblock %}
 
 {% block page_menu_alt %}
-{{ rmt.page_menu(content.page_menu_links) }}
+{{ content.page_menu | safe }}
 {% endblock %}
