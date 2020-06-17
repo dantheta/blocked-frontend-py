@@ -1,0 +1,48 @@
+{% macro result_html(result) %}
+
+<style type="text/css">
+
+    .saved-result {
+        font-family: mono;
+        white-space: pre;
+        background-color: #444444;
+        padding: 0.5em;
+        max-height: 28em;
+        overflow-y: scroll;
+    }
+    .saved-result-request {
+        color: #cacaea;
+    }
+    .saved-result-response {
+        color: #caeaca;
+    }
+    .saved-result-hash {
+        color: #eeeeee;
+    }
+</style>
+<div class="saved-result">
+{%- for result in result.requests -%}
+    <div class="saved-result-request">
+{{- result.req.method }} {{ result.req.url }}
+{{ '-' * (result.req.method|length + result.req.url|length + 1) }}
+{% for header,value in result.req.headers -%}
+{{ header }}: {{ value }}
+{% endfor -%}
+    </div>
+    <div class="saved-result-response">
+{{ result.rsp.status }} {{ g.status_codes[result.rsp.status] }}
+{{ '-' * (result.rsp.status|string|length + g.status_codes[result.rsp.status]|length + 1) }}
+{% for header,value in result.rsp.headers -%}
+{{ header }}: {{ value }}
+{% endfor %}
+{% if result.rsp.content %}
+{{ result.rsp.content|trim }}
+{% endif %}
+    </div>
+    {% if result.rsp.hash %}
+    <div class="saved-result-hash">Content SHA1: {{ result.rsp.hash }}</div>
+    {% endif %}
+{% endfor %}
+</div>
+
+{% endmacro %}

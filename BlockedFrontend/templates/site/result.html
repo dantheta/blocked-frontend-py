@@ -1,0 +1,13 @@
+{% extends "BasicPage.page.html" %}
+{% import "result.part.html" as resultlib %}
+
+{% set pagerole = "Saved result" %}
+{% set pagetitle = result.url|noproto %}
+{% set url = result.url %}
+
+{% block banner_text %}
+{% endblock %}
+
+{% block body %}
+{{ resultlib.result_html(result) }}
+{% endblock %}

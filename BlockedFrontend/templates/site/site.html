@@ -139,6 +139,13 @@ Your feedback was successfully submitted.
 
     });
     {{ popover_js() }}
+    $('.result-link').click(function(){
+        $.get('/result/' + $(this).data('result'),'', function (data, status, xhr) {
+            $('#result-body').html(data);
+            $('#result-modal').modal();
+        });
+        return false;
+    });
   });
 {% endblock %}
 
@@ -217,7 +224,7 @@ Your feedback was successfully submitted.
   {% if g.admin and g.admin_level == 'admin' %}
   <div class="remote_ip">{{ item.remote_ip|null }}</div>
   {% if item.result_uuid|default(None) %}
-  <div class="result-link"><a class="" href="{{ url_for('.site_result', result_uuid=item.result_uuid) }}">View result</a></div>
+  <div class="result-link"><a class="result-link" data-result="{{ item.result_uuid }}" href="{{ url_for('.site_result', result_uuid=item.result_uuid) }}">View result</a></div>
   {% endif %}
   {% endif %}
   </td>
@@ -418,5 +425,21 @@ Your feedback was successfully submitted.
 {{chunks.contactChunk() }}
 </div>
 
+<div class="modal" tabindex="-1" id="result-modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Stored result</h4>
+            </div>
+            <div class="modal-body" id="result-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}
 

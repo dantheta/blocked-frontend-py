@@ -241,8 +241,12 @@ def stream_results():
 
 @site_pages.route('/result/<result_uuid>')
 def site_result(result_uuid):
-    from flask import Response
+    import werkzeug
     result = g.api.result(result_uuid)
 
-    return Response(str(result))
+    g.status_codes = werkzeug.HTTP_STATUS_CODES
+
+    if request.is_xhr:
+        return render_template("result_xhr.html", result=result['result'])
+    return render_template('result.html', result=result['result'])
     pass
