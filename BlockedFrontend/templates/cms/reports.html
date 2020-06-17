@@ -1,6 +1,5 @@
 {% extends "layout_1x3.page.html" %}
 {% import "paging.part.html" as paging %}
-{% import "remotecontent.part.html" as rmt %}
 {% from "network_description.part.html" import isp_info, popover_js %}
 
 {%set pagetitle = g.remote_content.title if 'title' in g.remote_content
@@ -19,7 +18,7 @@
 {%endblock%}
 
 {% block page_menu %}
-{{ rmt.page_menu(content.page_menu_links) }}
+<div><a href="{{ url_for('.reported_sites_category') }}">Reported sites, by category</a></div>
 {% endblock %}
 
 {% block page_style %}

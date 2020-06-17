@@ -7,7 +7,7 @@
     else "Website blocking through legal means" %}
 
 {%block page_menu%}
-{{ rmt.page_menu(content.page_menu_links) }}
+<div><a href="{{ url_for('.legal_errors') }}">Legal block errors</a></div>
 {% endblock %}
 
 {% block col1_row1 %}
