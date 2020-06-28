@@ -218,14 +218,14 @@ def blacklist_select():
         )
 
 
-@admin_pages.route('/control/blacklist', methods=['POST'])
+@admin_pages.route('/control/excludelist', methods=['POST'])
 @check_admin
 def blacklist_post():
     g.api.blacklist_insert(request.form['domain'])
     return redirect(url_for('.blacklist_select'))
 
 
-@admin_pages.route('/control/blacklist/delete', methods=['GET'])
+@admin_pages.route('/control/excludelist/delete', methods=['GET'])
 @check_admin
 def blacklist_delete():
     g.api.blacklist_delete(request.args['domain'])
