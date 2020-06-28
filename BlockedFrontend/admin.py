@@ -208,7 +208,7 @@ def savedlist_merge():
     flash("Selected lists have been merged into '{}'".format(first['name']))
     return redirect(url_for('.savedlists'))
                 
-@admin_pages.route('/control/blacklist', methods=['GET'])
+@admin_pages.route('/control/excludelist', methods=['GET'])
 @check_admin
 def blacklist_select():
     entries = g.api.blacklist_select()
