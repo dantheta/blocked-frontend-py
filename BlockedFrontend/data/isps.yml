@@ -53,3 +53,5 @@ reportable_isps:
   - "TalkTalk"
   - "BT"
   - "BT-Strict"
+  - "Cloudflare family"
+  - "OpenDNS"
