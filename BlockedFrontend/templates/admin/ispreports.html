@@ -8,9 +8,9 @@ td.center, th.center {
     text-align: center;
 }
 
-td {
-    height: 3em !important;
-    }
+.isp-report-row {
+    height: 3.4em;
+}
 
 .action-button {
     display: none;
@@ -166,7 +166,7 @@ tr:hover * .action-button {
   <th style="width: 8%"><span class="glyphicon glyphicon-cog" title="Actions menu"></span></th>
 </tr>
 {% for report in reports.reports %}
-<tr>
+<tr class="isp-report-row">
   <td>{{report.url|noproto}}</td>
   <td class="center">  
     <a href="{{ url_for('site.site', url=report.url) }}">
@@ -207,9 +207,9 @@ tr:hover * .action-button {
   </td>
   <td class="">
       <div class="btn-group action-button">
-          <a class="btn btn-default" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}">View report</a>
-          <button class="dropdown-toggle btn btn-link btn-sm" title="Actions for {{ report.url }}" data-toggle="dropdown">
-              <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
+          <a class="btn btn-default" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}" title="View report">View</a>
+          <button class="dropdown-toggle btn" title="Actions for {{ report.url }}" data-toggle="dropdown">
+              <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
     {% if report.status in ('new','pending') or (report.status == 'sent' and report.verified == 0) %}
