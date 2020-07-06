@@ -50,7 +50,9 @@ ISPS = [
     'Vodafone',
     'VirginMedia',
     'Three',
-    'Plusnet'
+    'Plusnet',
+    'Cloudflare family',
+    'OpenDNS'
     ]
 
 ALL_ISPS = ISPS + [
