@@ -5,7 +5,13 @@
 
 {% macro status_names(status) %}
 {% if status == 'dnserror'  %}
-<a role="popover" tabindex="0" data-trigger="focus" data-toggle="popover" title="Address lookup error" data-content="The network address for this website could not be retrieved.  This may mean that the site does not exist or the site is experiencing technical problems.">Address lookup failed <span style="padding-left: 0.5em" class="glyphicon glyphicon-info-sign"></span></a>
+<a role="popover" tabindex="0" data-trigger="focus" data-toggle="popover" title="Address lookup error"
+   data-content="The network address for this website could not be retrieved.  This may mean that the site does not exist or the site is experiencing technical problems."
+  >Address lookup failed <span style="padding-left: 0.5em" class="glyphicon glyphicon-info-sign"></span></a>
+{% elif status == 'timeout' %}
+<a role="popover" tabindex="0" data-trigger="focus" data-toggle="popover" title="Timeout error"
+   data-content="The website did not send a page response within 5 seconds.  This may mean that the website or a related network provider is experiencing technical problems."
+   >No response received <span style="padding-left: 0.5em" class="glyphicon glyphicon-info-sign"></span></a>
 {% else %}
 {{ config.STATUS_NAMES.get(status, status) }}
 {% endif %}
@@ -216,7 +222,7 @@ Your feedback was successfully submitted.
   
 </tr>
 {% for item in results %}
-<tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if item.status in ('error','dnserror','sslerror') else ''}}">
+<tr id="net_{{item.network_name|replace(' ','')}}" class="{{ 'error' if item.status in ('error','dnserror','sslerror','timeout') else ''}}">
   <td >
     {{ isp_info(item.network_name) }}
   </td>
