@@ -164,6 +164,10 @@
         {{ field('Court/authority','court_authority',judgment) }}
         {{ field('Application made by','injunction_obtained_by',judgment) }}
         {{ field('Applicants represented by','injunction_represented_by',judgment) }}
+        <div style="margin-bottom: 0.75em">
+            <strong>Rightsholder: </strong><br />
+            <span><a href="{{ url_for('admin_rightsholder.admin_rh_view', id=judgment.rightsholder_id) }}">{{ rh.name }} ({{ rh.country }})</a></span>
+        </div>
     </div>
 </div>
 <div class="row" style="margin-top: 1.25em">

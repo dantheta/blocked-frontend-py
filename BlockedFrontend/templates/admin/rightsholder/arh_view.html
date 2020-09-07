@@ -12,17 +12,22 @@
         <h2>{{ rh.name }}</h2>
 
         {% for f in rh.FIELDS %}
-        <div>{{ rh[f] }}</div>
+        <div><span>{{ f.title() }}: </span>{{ rh[f] }}</div>
         {% endfor %}
     </div>
+</div>
 
+<div class="row">
+    <div class="col-md-12">
+        <h3>Related Court Judgments</h3>
     <table class="table table-condensed">
         {% for jdg in judgments %}
         <tr>
-            <td>{{ jdg['name '] }}</td>
+            <a><a href="{{ url_for('admin.courtorders_view', id=jdg.id) }}">{{ jdg.name }}</a></td>
         </tr>
         {% endfor %}
     </table>
-
+    </div>
 </div>
+
 {% endblock %}

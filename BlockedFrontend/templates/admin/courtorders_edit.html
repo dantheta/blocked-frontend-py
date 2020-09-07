@@ -90,8 +90,15 @@ $(document).ready(function(){
     {{forms.text_field('Application made by','injunction_obtained_by', obj.injunction_obtained_by, css="col-md-6")}}
     {{forms.text_field('Contact address (URL)','injunction_obtained_by_url', obj.injunction_obtained_by_url, css="col-md-6")}}
 
+    {{ forms.select_field('Rightsholder', 'rightsholder_id', obj.rightsholder_id, rightsholders, True, css="col-md-6") }}
 
   {{forms.text_field('Applications represented by','injunction_represented_by', obj.injunction_represented_by, css="col-md-6")}}
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+
 
   <h3>Injunction applies to</h3>
   {% for order in orders %}
