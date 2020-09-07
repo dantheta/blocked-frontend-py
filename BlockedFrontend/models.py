@@ -250,6 +250,7 @@ class CourtJudgment(DBObject):
               'injunction_represented_by',
               'other_docs',
               'sites_description',
+              'rightsholder_id',
               ]
 
     def get_court_orders(self):
@@ -264,6 +265,10 @@ class CourtJudgment(DBObject):
 
     def get_urls(self):
         return CourtJudgmentURL.select(self.conn, judgment_id=self['id'], _orderby='url')
+
+    def get_rightsholder(self):
+        if self['rightsholder_id']:
+            return Rightsholder(self.conn, self['rightsholder_id'])
 
     def get_urls_with_status(self, region):
         q = Query(self.conn, """select u.url, count(distinct url_latest_status_id) as block_count
@@ -805,4 +810,4 @@ class Rightsholder(DBObject):
     ]
 
     def get_court_judgments(self):
-        return CourtJudgment.select(rightsholder_id=self['id'])
+        return CourtJudgment.select(self.conn, rightsholder_id=self['id'])

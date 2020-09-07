@@ -1,0 +1,28 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Rightsholder Admin" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+
+        <h1>{{ pagetitle }}</h1>
+        <h2>{{ rh.name }}</h2>
+
+        {% for f in rh.FIELDS %}
+        <div>{{ rh[f] }}</div>
+        {% endfor %}
+    </div>
+
+    <table class="table table-condensed">
+        {% for jdg in judgments %}
+        <tr>
+            <td>{{ jdg['name '] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}
