@@ -53,8 +53,9 @@ def admin_rh_update(id=None):
 def admin_rh_view(id=None):
     obj = Rightsholder(g.conn, id)
 
-    return render_template('arh_view.html',
-                           rightsholder=obj)
+    return render_template('rightsholder/arh_view.html',
+                           rh=obj,
+                           judgments=obj.get_court_judgments())
 
 @admin_rightsholder_pages.route('/control/rightsholder/delete/<int:id>')
 @check_moderator
