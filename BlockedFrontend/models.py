@@ -789,3 +789,20 @@ class SearchIgnoreTerm(DBObject):
         'term',
         'enabled'
         ]
+
+class Rightsholder(DBObject):
+    TABLE = 'rightsholders'
+    FIELDS = [
+        'name',
+        'address1',
+        'address2',
+        'city',
+        'county',
+        'postal_code',
+        'country',
+        'phone',
+        'email'
+    ]
+
+    def get_court_judgments(self):
+        return CourtJudgment.select(rightsholder_id=self['id'])

@@ -38,8 +38,10 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 if app.config['MODULE_ADMIN']:
     from admin import admin_pages
-
     app.register_blueprint(admin_pages)
+
+    from admin_rightsholder import admin_rightsholder_pages
+    app.register_blueprint(admin_rightsholder_pages)
 
 if app.config.get('SITE_THEME') == '451':
     from err451 import err451_pages

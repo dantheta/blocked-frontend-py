@@ -18,6 +18,7 @@ create table court_judgments(
     injunction_instructs varchar,
     other_docs text,
     sites_description text,
+    rightsholder_id int null,
     
 	created timestamptz,
 	last_updated timestamptz
@@ -153,3 +154,19 @@ create or replace view active_court_blocks as
 
       group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, cju.url,  cjuf.reason, cjuf.abusetype, region, cjuf.judgment_url_id
       order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, cju.url
+
+
+create table rightsholders (
+    id serial not null primary key,
+    name varchar not null unique,
+    address1 varchar,
+    address2 varchar,
+    city varchar,
+    county varchar,
+    postal_code varchar,
+    country varchar(2) not null,
+    phone varchar,
+    email varchar
+);
+
+alter table court_judgments add foreign key (rightsholder_id) references rightsholders(id);
