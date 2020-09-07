@@ -809,5 +809,10 @@ class Rightsholder(DBObject):
         'email'
     ]
 
+    @classmethod
+    def get_list(cls, conn):
+        for obj in cls.select(conn, _orderby='name'):
+            yield (obj['id'], "{0} ({1})".format(obj['name'], obj['country']))
+
     def get_court_judgments(self):
         return CourtJudgment.select(self.conn, rightsholder_id=self['id'])

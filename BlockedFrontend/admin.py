@@ -1013,8 +1013,10 @@ def courtorders():
 @check_admin
 def courtorders_view(id):
     obj = CourtJudgment(g.conn, id)
+    rh = obj.get_rightsholder()
     return render_template('courtorders_view.html',
                            judgment=obj,
+                           rh=rh,
                            orders=obj.get_court_orders(),
                            sites=obj.get_grouped_urls_with_expiry(),
                            groups=[(grp['id'],grp['name']) for grp in obj.get_url_groups()]
@@ -1079,7 +1081,8 @@ def courtorders_edit(id=None):
                                     CourtPowers.select(g.conn, _orderby='name')
                                     ],
                            orders = obj.get_court_orders(),
-                           order_networks = obj.get_court_order_networks()
+                           order_networks = obj.get_court_order_networks(),
+                           rightsholders=Rightsholder.get_list(g.conn)
                            )
 
 
