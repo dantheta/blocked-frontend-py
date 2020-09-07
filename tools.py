@@ -302,3 +302,17 @@ def create_cockpit_collections():
                             },
                         headers={'Content-type': 'application/json'})
     app.logger.info("Ret: %s", req.status_code)
+
+@app.cli.command()
+@click.argument('username')
+def reset_password(username):
+    from BlockedFrontend.models import User
+
+    conn = db_connect_single()
+    usr = User.select_one(conn, username=username)
+    newpw = usr.random_password()
+    usr.set_password(newpw)
+    usr.store()
+    conn.commit()
+    print("New password: " + newpw)
+
