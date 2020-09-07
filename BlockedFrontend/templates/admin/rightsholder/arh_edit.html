@@ -1,0 +1,27 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "Rightsholder Admin" %}
+
+{% block pagestyle %}
+{% endblock %}
+
+{% block body %}
+
+<form method="POST" action="{{ url_for('.admin_rh_update', id=rh['id']) }}">
+    {{ forms.text_field('Rightsholder name', 'name', rh['name'], css='rq') }}
+    {{ forms.text_field('Email', 'email', rh['email']) }}
+    {{ forms.text_field('Phone', 'phone', rh['phone']) }}
+    {{ forms.text_field('Address 1', 'address1', rh['address1']) }}
+    {{ forms.text_field('Address 2', 'address2', rh['address2']) }}
+    {{ forms.text_field('City', 'city', rh['city']) }}
+    {{ forms.text_field('County/state', 'county', rh['county']) }}
+    {{ forms.text_field('Postal code/ZIP', 'postal_code', rh['postal_code']) }}
+    {{ forms.text_field('Country', 'country', rh['country'], css='rq') }}
+
+    {{ forms.submit('Update') }}
+
+</form>
+
+{% endblock %}

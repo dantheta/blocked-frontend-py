@@ -28,51 +28,51 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{{ url_for('.admin') }}">Blocked.org.uk Admin</a>
+        <a class="navbar-brand" href="{{ url_for('admin.admin') }}">Blocked.org.uk Admin</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
           <li class=""><a href="/control">Home</a></li>
-          <li class=""><a href="{{ url_for('.users') }}">Users</a></li>
+          <li class=""><a href="{{ url_for('admin.users') }}">Users</a></li>
           <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">URLs <span class="caret"></span></a></a>
               <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('.urls') }}">URL admin</a></li>
-                  <li><a href="{{ url_for('.urls_upload') }}">URL upload</a></li>
-                  <li><a href="{{ url_for('.url_categories') }}">URL Categories</a></li>
+                  <li><a href="{{ url_for('admin.urls') }}">URL admin</a></li>
+                  <li><a href="{{ url_for('admin.urls_upload') }}">URL upload</a></li>
+                  <li><a href="{{ url_for('admin.url_categories') }}">URL Categories</a></li>
               </ul>
           </li>
-          <li class=""><a href="{{ url_for('.ispreports') }}">ISP Reports</a></li>
+          <li class=""><a href="{{ url_for('admin.ispreports') }}">ISP Reports</a></li>
 
           <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">ISP Stats<span class="caret"></span></a></a>
               <ul class="dropdown-menu">
-                  <li class=""><a href="{{ url_for('.ispreport_stats') }}">ISP Report Stats</a></li>
-                  <li class=""><a href="{{ url_for('.ispreport_reply_stats') }}">ISP Report Reply Stats</a></li>
-                  <li class=""><a href="{{ url_for('.ispreport_consistency') }}">ISP Blocking consistency stats</a></li>
-                  <li class=""><a href="{{ url_for('.ispreport_category_stats') }}">ISP Report URL Category stats</a></li>
+                  <li class=""><a href="{{ url_for('admin.ispreport_stats') }}">ISP Report Stats</a></li>
+                  <li class=""><a href="{{ url_for('admin.ispreport_reply_stats') }}">ISP Report Reply Stats</a></li>
+                  <li class=""><a href="{{ url_for('admin.ispreport_consistency') }}">ISP Blocking consistency stats</a></li>
+                  <li class=""><a href="{{ url_for('admin.ispreport_category_stats') }}">ISP Report URL Category stats</a></li>
               </ul>
           </li>
 
-          <li class=""><a href="{{ url_for('.tests') }}">Test Schedule</a></li>
+          <li class=""><a href="{{ url_for('admin.tests') }}">Test Schedule</a></li>
           <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Legal Requests <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('.courtorders') }}">Admin</a></li>
-                  <li><a href="{{ url_for('.courtorders_review') }}">Review Unmatched</a></li>
-                  <li><a href="{{ url_for('.courtorders_group_import') }}">Import URL Groups</a></li>
+                  <li><a href="{{ url_for('admin.courtorders') }}">Admin</a></li>
+                  <li><a href="{{ url_for('admin.courtorders_review') }}">Review Unmatched</a></li>
+                  <li><a href="{{ url_for('admin.courtorders_group_import') }}">Import URL Groups</a></li>
               </ul>
 
           </li>
-          <li class=""><a href="{{ url_for('.savedlists') }}">Saved Lists</a></li>
+          <li class=""><a href="{{ url_for('admin.savedlists') }}">Saved Lists</a></li>
           <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">System Settings <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                  <li class=""><a href="{{ url_for('.blacklist_select') }}">Domain Exclude-list</a></li>
-                  <li class=""><a href="{{ url_for('.search_filter') }}">Search Filter</a></li>
+                  <li class=""><a href="{{ url_for('admin.blacklist_select') }}">Domain Exclude-list</a></li>
+                  <li class=""><a href="{{ url_for('admin.search_filter') }}">Search Filter</a></li>
               </ul>
           </li>
-          <li class=""><a href="{{url_for('.logout')}}" class="">Log out</a></li>
+          <li class=""><a href="{{url_for('admin.logout')}}" class="">Log out</a></li>
           <!-- 
           <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
