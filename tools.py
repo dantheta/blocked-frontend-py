@@ -13,7 +13,7 @@ from BlockedFrontend.utils import parse_timestamp
 from BlockedFrontend.models import User,SavedList,Item
 from NORM.exceptions import ObjectNotFound
 
-conn = None
+# conn = None
 
 app = Flask("BlockedFrontend")
 
@@ -316,3 +316,27 @@ def reset_password(username):
     conn.commit()
     print("New password: " + newpw)
 
+@app.cli.command()
+def migrate_rightsholders():
+    from BlockedFrontend.models import Rightsholder
+    from NORM import Query
+
+    conn = db_connect_single()
+    q = Query(conn, """select distinct injunction_obtained_by. injunction_obtained_by_url 
+                       from court_judgments 
+                       where injunction_obtained_by is not null and rightsholder_id is null
+                       order by injunction_obtained_by, injunction_obtained_by_url desc
+                       """)
+    for row in q:
+        newrh = Rightsholder.find_or_create(conn,
+                                            {'name': row['injunction_obtained_by']},
+                                            {'name': row['injunction_obtained_by'], 'website': row['injunction_obtained_by_url'], 'country': 'UK'})
+        if not newrh['website'] and row['injunction_obtained_by_url']:
+            newrh['website'] = row['injunction_obtained_by_url']
+            newrh.store()
+
+        _ = Query(conn, "update court_judgments set rightsholder_id = %s where injunction_obtained_by = %s",
+                   [newrh['id'], row['injunction_obtained_by']]
+                   )
+    conn.commit()
+    print("OK")
