@@ -19,11 +19,6 @@ from NORM.exceptions import ObjectNotFound,ObjectExists
 
 admin_pages = Blueprint('admin', __name__, template_folder='templates/admin')
 
-def convertnull(value):
-    if not isinstance(value,(unicode,str)):
-        return value
-    return None if value == '' else value
-
 
 @admin_pages.route('/control', methods=['GET'])
 def admin():
@@ -37,6 +32,7 @@ def admin():
         cmsdate = None
 
     return render_template('admin.html', cmsdate=cmsdate)
+
 
 @admin_pages.route('/control/cacheclear', methods=['POST'])
 @check_admin
