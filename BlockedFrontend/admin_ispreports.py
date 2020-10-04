@@ -24,6 +24,7 @@ admin_ispreport_pages = Blueprint('admin_ispreport', __name__, template_folder='
 # ------------------
 #
 
+
 @admin_ispreport_pages.route('/control/ispreports')
 @check_reviewer
 def ispreports():
@@ -60,6 +61,7 @@ def ispreports_flag(url):
         flash("An error occurred flagging \"{0}\": \"{1}\"".format(url, req['error']))
     return redirect(url_for('.ispreports',page=request.args.get('page',1)))
 
+
 @admin_ispreport_pages.route('/control/ispreports/unflag/<path:url>')
 @check_admin
 def ispreports_unflag(url):
@@ -82,6 +84,7 @@ def ispreports_resend(url):
     else:
         return redirect(url_for('unblock.unblock', url=url))
 
+
 @admin_ispreport_pages.route('/control/ispreports/escalate/<int:id>')
 @check_admin
 def ispreports_escalate(id):
@@ -96,6 +99,7 @@ def ispreports_escalate(id):
                            emailreply=report.get_final_reply(),
                            url=urlobj,
                            )
+
 
 @admin_ispreport_pages.route('/control/ispreports/escalate/<int:id>', methods=['POST'])
 @check_admin
@@ -151,6 +155,7 @@ def ispreports_status_unblocked(id):
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
+
 @admin_ispreport_pages.route('/control/ispreports/rejected/<int:id>')
 @check_admin
 def ispreports_status_rejected(id):
@@ -162,6 +167,7 @@ def ispreports_status_rejected(id):
     g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
+
 
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<path:url>')
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')
@@ -305,6 +311,7 @@ def ispreports_update_category():
     url = report.get_url()
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='categories'))
 
+
 @admin_ispreport_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
 @check_admin
 def ispreports_update_report_category():
@@ -390,6 +397,7 @@ def ispreports_update_report_category():
     g.conn.commit()
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name'], tab='rptcategories'))
 
+
 @admin_ispreport_pages.route('/control/ispreports/review/update', methods=['POST'])
 @check_admin
 def ispreports_review_update():
@@ -440,6 +448,7 @@ def get_isp_report_stats_data():
                  group by cat1.name, cat2.name, network_name, extract('year' from isp_reports.created)
                  order by network_name, cat1.name, cat2.name, extract('year' from isp_reports.created)""", [])
     return q
+
 
 @admin_ispreport_pages.route('/control/ispreport/stats')
 @check_admin
@@ -533,6 +542,7 @@ def ispreport_stats():
                            totalrows=totalrows,
                            site_owner_totals=site_owner_totals
                            )
+
 
 @admin_ispreport_pages.route('/control/ispreport/csv-stats')
 @check_admin
@@ -646,6 +656,7 @@ def ispreport_consistency():
                            counts=counts,
                            networks=networks
                            )
+
 
 @admin_ispreport_pages.route('/control/ispreports/category-status')
 @check_admin
