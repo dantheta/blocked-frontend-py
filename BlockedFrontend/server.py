@@ -46,6 +46,9 @@ if app.config['MODULE_ADMIN']:
     from admin_savedlists import admin_savedlist_pages
     app.register_blueprint(admin_savedlist_pages)
 
+    from admin_ispreports import admin_ispreport_pages
+    app.register_blueprint(admin_ispreport_pages)
+
 if app.config.get('SITE_THEME') == '451':
     from err451 import err451_pages
     app.register_blueprint(err451_pages)
