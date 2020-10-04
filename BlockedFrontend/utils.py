@@ -5,7 +5,7 @@ import datetime
 import urlparse
 
 __all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount',
-           'fix_path','normalize_url','is_tag_valid','get_args_helper']
+           'fix_path','normalize_url','is_tag_valid','get_args_helper', 'convertnull']
 
 def get_domain(url):
     p = urlparse.urlsplit(url)
@@ -60,3 +60,9 @@ def get_pagecount(count, pagesize):
 
 def fix_path(url):
     return re.sub(':/(?!/)', '://', url)
+
+
+def convertnull(value):
+    if not isinstance(value,(unicode,str)):
+        return value
+    return None if value == '' else value
