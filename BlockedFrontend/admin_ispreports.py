@@ -144,7 +144,7 @@ def ispreports_escalate_post(id):
 
 
 @admin_ispreport_pages.route('/control/ispreports/unblocked/<int:id>')
-@check_admin
+@check_reviewer
 def ispreports_status_unblocked(id):
     email = ISPReportEmail.select_one(g.conn, id)
     report = email.get_report()
@@ -157,7 +157,7 @@ def ispreports_status_unblocked(id):
 
 
 @admin_ispreport_pages.route('/control/ispreports/rejected/<int:id>')
-@check_admin
+@check_reviewer
 def ispreports_status_rejected(id):
     email = ISPReportEmail.select_one(g.conn, id)
     report = email.get_report()
@@ -171,7 +171,7 @@ def ispreports_status_rejected(id):
 
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<path:url>')
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')
-@check_admin
+@check_reviewer
 def ispreports_view(url, network_name, msgid=None):
     url = fix_path(url)
     urlobj = Url.select_one(g.conn, url=url)
@@ -224,7 +224,7 @@ def ispreports_view(url, network_name, msgid=None):
 
 
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])
-@check_admin
+@check_reviewer
 def ispreports_update_category():
     f = request.form
 
@@ -313,7 +313,7 @@ def ispreports_update_category():
 
 
 @admin_ispreport_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
-@check_admin
+@check_reviewer
 def ispreports_update_report_category():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
@@ -399,7 +399,7 @@ def ispreports_update_report_category():
 
 
 @admin_ispreport_pages.route('/control/ispreports/review/update', methods=['POST'])
-@check_admin
+@check_reviewer
 def ispreports_review_update():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
@@ -451,7 +451,7 @@ def get_isp_report_stats_data():
 
 
 @admin_ispreport_pages.route('/control/ispreport/stats')
-@check_admin
+@check_reviewer
 def ispreport_stats():
     q1 = Query(g.conn,
                """select cat1.name reporter,  extract('year' from urls.last_reported) yr, count(*) ct
