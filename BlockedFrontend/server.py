@@ -6,6 +6,7 @@ import datetime
 import collections
 
 from api import ApiClient
+import auth
 from utils import *
 from .remotecontent import get_remote_content_loader
 import db
@@ -212,6 +213,7 @@ def on_error(error):
 def check_user():
     g.admin = session.get('admin', False)
     g.admin_level = session.get('admin_level', 'admin' if g.admin else 'user')
+    g.is_level = auth.is_level
     
 
 @app.before_request

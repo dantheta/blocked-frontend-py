@@ -2,9 +2,10 @@
 from flask import g, abort
 from functools import wraps
 
-__all__ = ['AdminPermissionException','check_admin','check_moderator', 'check_reviewer']
+__all__ = ['AdminPermissionException', 'check_admin', 'check_moderator', 'check_reviewer', 'level_compare', 'is_level']
 
-LEVELS = ['user','reviewer','moderator','admin']
+LEVELS = ['user', 'reviewer', 'moderator', 'admin']
+
 
 class AdminPermissionException(Exception):
     pass
@@ -41,6 +42,10 @@ def check_reviewer(s):
         check_level('reviewer')
         return s(*args, **kw)
     return wrapped
+
+
+def is_level(level='admin'):
+    return level_compare(g.admin_level, level)
 
 
 def check_level(required):

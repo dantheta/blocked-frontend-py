@@ -1,11 +1,14 @@
 {% extends "admin.page.html" %}
 {% import "forms.part.html" as forms %}
+{% import "auth.part.html" as auth %}
 
 {% set pagetitle = "Administrator Login" %}
 
 
 {% block body %}
 <div class="row">
+
+    {% if g.is_level() %}
 
 <div class="col-md-6">
 <div class="well">
@@ -34,6 +37,9 @@
 
 </div><!-- /.well -->
 </div><!-- /.col -->
+
+    {% endif %}
+
 </div>
 
 {% endblock %}

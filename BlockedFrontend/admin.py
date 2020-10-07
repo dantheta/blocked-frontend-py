@@ -60,8 +60,6 @@ def admin_post():
     session['username'] = user['username']
     session['admin_level'] = user['user_type']
     flash("Admin login successful")
-    if session['admin_level'] != 'admin':
-        return redirect(url_for('cms.index'))
     return redirect(url_for('.admin'))
 
 
