@@ -12,8 +12,12 @@
         <h2>{{ rh.name }}</h2>
 
         {% for f in rh.FIELDS %}
-        <div><span>{{ f.title() }}: </span>{{ rh[f] }}</div>
+        <div class="row">
+            <div class="col-md-2">{{ f.title() }}: </div>
+            <div class="col-md-10">{{ rh[f]|null }}</div>
+        </div>
         {% endfor %}
+
         <div>
             <a href="{{ url_for('.admin_rh_edit', id=rh.id) }}" class="btn btn-primary">Edit</a>
         </div>
