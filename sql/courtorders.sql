@@ -166,7 +166,9 @@ create table rightsholders (
     postal_code varchar,
     country varchar(2) not null,
     phone varchar,
-    email varchar
+    email varchar,
+    created timestamptz null,
+    last_updated timestamptz
 );
 
 alter table court_judgments add foreign key (rightsholder_id) references rightsholders(id);
