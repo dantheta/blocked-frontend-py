@@ -224,7 +224,7 @@ def ispreports_view(url, network_name, msgid=None):
 
 
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])
-@check_reviewer
+@check_admin
 def ispreports_update_category():
     f = request.form
 
@@ -313,7 +313,7 @@ def ispreports_update_category():
 
 
 @admin_ispreport_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
-@check_reviewer
+@check_admin
 def ispreports_update_report_category():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])

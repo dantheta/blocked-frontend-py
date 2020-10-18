@@ -133,8 +133,10 @@ Request sent to BBFC on {{ bbfc_report.created }}
 
 <ul class="nav nav-tabs">
   <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
+    {% if g.is_level('admin') %}
   <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories</a></li>
   <li class="{{ activetab('rptcategories') }}"><a href="#rptcategories" role="tab"  data-toggle="tab">Report Categories</a></li>
+    {% endif %}
   <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
   {% if report.matches_policy != None -%}
   <span class="text-success glyphicon glyphicon-ok"></span>
@@ -150,7 +152,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 <div class="col-md-12">
 
 <h4>{{messagelist|length}} messages received</h4>
-<table id="messagelist" class="table table-consdensed table-bordered">
+<table id="messagelist" class="table table-condensed table-bordered">
     <tr>
         <th>#</th>
     <th>From</th>
@@ -235,7 +237,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 </div>
 </div>
 </div> <!-- /#report -->
-
+{% if g.is_level('admin') %}
 <div id="categories" class="tab-pane {{ activetab('categories') }}">
     <h4>Categories</h4>
     <form method="POST" action="{{ url_for('.ispreports_update_category') }}">
@@ -396,7 +398,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 </form>
 
 </div> <!-- /#rptcategory -->
-
+{% endif %}
 <div id="block" class="tab-pane {{ activetab('block') }}">
     <div class="row">
         <div class="col-md-5">
