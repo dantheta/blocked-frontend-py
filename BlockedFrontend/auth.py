@@ -2,7 +2,8 @@
 from flask import g, abort
 from functools import wraps
 
-__all__ = ['AdminPermissionException', 'check_admin', 'check_moderator', 'check_reviewer', 'level_compare', 'is_level']
+__all__ = ['AdminPermissionException', 'check_admin', 'check_moderator', 'check_reviewer',
+           'level_compare', 'is_level', 'check_level']
 
 LEVELS = ['user', 'reviewer', 'moderator', 'admin']
 

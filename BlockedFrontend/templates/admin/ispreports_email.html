@@ -133,10 +133,8 @@ Request sent to BBFC on {{ bbfc_report.created }}
 
 <ul class="nav nav-tabs">
   <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
-    {% if g.is_level('admin') %}
   <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories</a></li>
   <li class="{{ activetab('rptcategories') }}"><a href="#rptcategories" role="tab"  data-toggle="tab">Report Categories</a></li>
-    {% endif %}
   <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
   {% if report.matches_policy != None -%}
   <span class="text-success glyphicon glyphicon-ok"></span>
@@ -237,7 +235,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 </div>
 </div>
 </div> <!-- /#report -->
-{% if g.is_level('admin') %}
+
 <div id="categories" class="tab-pane {{ activetab('categories') }}">
     <h4>Categories</h4>
     <form method="POST" action="{{ url_for('.ispreports_update_category') }}">
@@ -267,8 +265,6 @@ Request sent to BBFC on {{ bbfc_report.created }}
         </div>
         <div class="col-md-4">
         
-        
-            
             <div class="form-group">
                 <label class="control-label" for="category_id">Assign existing Category</label>
                 <select class="form-control" name="add_category_id">
@@ -282,9 +278,10 @@ Request sent to BBFC on {{ bbfc_report.created }}
                     {% endfor %}
                 </select>                
             </div>
+            {% if g.is_level('moderator') %}
             <p><em>Or</em></p>
             {{ forms.text_field('Add new category', 'add_category_name', '') }}
-
+            {% endif %}
             {{ forms.check_field('Primary category', 'primary_category', '1') }}
         </div>
         <div class="col-md-4">
@@ -328,7 +325,8 @@ Request sent to BBFC on {{ bbfc_report.created }}
 <h4>Who made the report?</h4>
 
 <div class="form-group">
-    <label class="control-label" for="tag">Add reporter category:</label>
+    <label class="control-label" for="existingtag">Add reporter category:</label>
+    {% if g.is_level('moderator') %}
     <div id="existingtag" class="input-group">
     <select class="form-control" name="reporter_category_id">
         <option value="">(None selected)</option>
@@ -338,6 +336,14 @@ Request sent to BBFC on {{ bbfc_report.created }}
     </select>
     <div class="input-group-addon"><a id="switchnewtag" title="Enter a new tag"><span class="glyphicon glyphicon-plus-sign"></span></a></div>
     </div>
+    {% else %}
+    <select class="form-control" name="reporter_category_id">
+        <option value="">(None selected)</option>
+        {% for opt in reporter_categories %}
+        <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
     <div id="newtag" class="input-group">
         
         <input class="form-control" name="new_reporter_category" placeholder="new-category" />
@@ -361,9 +367,10 @@ Request sent to BBFC on {{ bbfc_report.created }}
 <div class="col-md-6">
     
 {{ forms.select_field('Add existing category', 'damage_category_id', None, damage_categories, includenull=True ) }}
+{% if g.is_level('moderator') %}
 <p><em>Or</em></p>
 {{ forms.text_field('Add new category', 'add_category_name', '') }}
-    
+{% endif %}
 </div>
 </div>
 
@@ -398,7 +405,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 </form>
 
 </div> <!-- /#rptcategory -->
-{% endif %}
+
 <div id="block" class="tab-pane {{ activetab('block') }}">
     <div class="row">
         <div class="col-md-5">

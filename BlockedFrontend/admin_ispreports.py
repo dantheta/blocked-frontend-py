@@ -224,7 +224,7 @@ def ispreports_view(url, network_name, msgid=None):
 
 
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])
-@check_admin
+@check_reviewer
 def ispreports_update_category():
     f = request.form
 
@@ -282,6 +282,7 @@ def ispreports_update_category():
             urlcat.store()
 
     if f['add_category_name']:
+        check_level('moderator')  # requires moderator or above
         cat = Category.find_or_create(g.conn,
                                       ['name','namespace'],
                                       {
@@ -313,7 +314,7 @@ def ispreports_update_category():
 
 
 @admin_ispreport_pages.route('/control/ispreports/reportcategory/update', methods=['POST'])
-@check_admin
+@check_reviewer
 def ispreports_update_report_category():
     f = request.form
     report = ISPReport(g.conn, f['report_id'])
@@ -333,6 +334,8 @@ def ispreports_update_report_category():
 
 
     if f['new_reporter_category']:
+        check_level('moderator')  # requires moderator or above
+
         reportercat = UrlReportCategory(g.conn)
         reportercat.update({
             'name': f['new_reporter_category'],
@@ -357,6 +360,8 @@ def ispreports_update_report_category():
 
     damagecat = None
     if f['add_category_name'].strip():
+        check_level('moderator')  # requires moderator or above
+
         damagecat = UrlReportCategory(g.conn)
         damagecat.update({
             'name': f['add_category_name'],
