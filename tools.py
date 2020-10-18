@@ -322,11 +322,11 @@ def migrate_rightsholders():
     from NORM import Query
 
     conn = db_connect_single()
-    q = Query(conn, """select distinct injunction_obtained_by. injunction_obtained_by_url 
+    q = Query(conn, """select distinct injunction_obtained_by, injunction_obtained_by_url 
                        from court_judgments 
                        where injunction_obtained_by is not null and rightsholder_id is null
                        order by injunction_obtained_by, injunction_obtained_by_url desc
-                       """)
+                       """, [])
     for row in q:
         newrh = Rightsholder.find_or_create(conn,
                                             {'name': row['injunction_obtained_by']},
