@@ -1,0 +1,38 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+{% import "emails.part.html" as emails %}
+
+{% set pagetitle = "ISP Report Admin: sites blocked after unblock request" %}
+
+{% block body %}
+
+<p>Table shows URLs that are still blocked even after an ISP unblock request has been accepted.</p>
+<p>This includes:</p>
+<ul>
+    <li>URLs that are re-blocked after a successful unblock, and</li>
+    <li>URLs that have not been unblocked even when the ISP says they will be.</li>
+</ul>
+
+<table class="table">
+    <tr>
+        <th>URL</th>
+        <th>Network Name</th>
+        <th>Report status</th>
+        <th>Unblock timestamp</th>
+        <th>URL status</th>
+        <th>Last check</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row.url }}</td>
+        <td>{{ row.network_name }}</td>
+        <td>{{ row.status }}</td>
+        <td>{{ row.last_updated }}</td>
+        <td>{{ row.url_status }}</td>
+        <td>{{ row.status_timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

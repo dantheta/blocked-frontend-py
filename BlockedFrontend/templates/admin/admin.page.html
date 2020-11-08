@@ -55,6 +55,7 @@
                   <li class=""><a href="{{ url_for('admin_ispreport.ispreport_reply_stats') }}">ISP Report Reply Stats</a></li>
                   <li class=""><a href="{{ url_for('admin_ispreport.ispreport_consistency') }}">ISP Blocking consistency stats</a></li>
                   <li class=""><a href="{{ url_for('admin_ispreport.ispreport_category_stats') }}">ISP Report URL Category stats</a></li>
+                  <li class=""><a href="{{ url_for('admin_ispreport.ispreport_reported_blocked') }}">URLs blocked after unblock request</a></li>
               </ul>
           </li>
           {% if g.is_level() %}
