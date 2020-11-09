@@ -697,9 +697,9 @@ def ispreport_reported_blocked():
     select isp_reports.id, urlid, url, network_name, isp_reports.status, isp_report_emails.id as email_id, isp_reports.unblocked, uls.status as url_status,
     isp_reports.created, isp_report_emails.created as unblock_email_timestamp, isp_reports.last_updated, uls.created as status_timestamp 
     from public.isp_reports
-    inner join public.url_latest_status uls using (network_name, urlid)
+    inner join url_latest_status uls using (network_name, urlid)
     inner join urls using (urlid)
-    left join isp_report_emails on resolved_email_id = isp_report_emails.id
+    left join public.isp_report_emails on resolved_email_id = isp_report_emails.id
     where (isp_reports.status = 'unblocked' and uls.status = 'blocked')
     order by id desc;
     """, [])
