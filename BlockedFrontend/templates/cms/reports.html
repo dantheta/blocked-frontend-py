@@ -96,14 +96,18 @@
         <th>Reported at</th>
         <th>Status</th>
     </tr>
-    {% for row in reports %}
+    {% for grp in reports|groupby('url') %}
+    {%   set lst = grp.list|list %}
+    {%     for row in lst %}
     <tr>
-        <td style="width: 40%"><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a>
+        {% if loop.first %}
+        <td style="width: 40%; background-color: white; padding-right: 8px" rowspan="{{ lst|length }}"><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a>
         {% if row.message %}
             <p class="report-message"><span>&ldquo;</span>{{ row.message | strip('"')|strip_email_phone }}<span>&rdquo;</span></p>
         {% endif %}
         </td>
-        <td>
+        {% endif %}
+        <td style="width: 15%">
           {{ isp_info(row.description) }}
         </td>
         <td><a href="{{ url_for('site.site', url=row.url) }}">View site report</a></td>
@@ -116,6 +120,7 @@
             {% endif %}
         </td>
     </tr>
+    {%   endfor %}
     {% endfor %}
 </table>
 
