@@ -350,7 +350,7 @@ Your feedback was successfully submitted.
         <h4>This site has been submitted for unblocking</h4>
         <p>Reported on {{reports[0].created|fmtime}}</p>
         {% if reports[0].message %}
-        <p class="report-message"><span>&ldquo;</span>{{ reports[0].message }}<span>&rdquo;</span></p>
+        <p class="report-message"><span>&ldquo;</span>{{ reports[0].message|strip_email_phone }}<span>&rdquo;</span></p>
         {% endif %}
         {% if (reports|selectattr('reply_count')|list) and reports[0].message and g.admin %}
           <a class="btn btn-default" rel="nofollow" href="{{ url_for('unblock.view_replies', url=url) }}">View ISP replies</a>

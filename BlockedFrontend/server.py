@@ -202,6 +202,15 @@ def rmtasset(path):
         return path
     return '/cms/assets' + path
 
+
+@app.template_filter('strip_email_phone')
+def strip_email_phone(value):
+    import re
+    newvalue = re.sub(r'\+?\d{4,6}\s*[ \-\d]{5,7}', '<phone removed>', value)
+    newvalue = re.sub(r'\S+@([\S\.])+\.\S+', '<email removed>', newvalue)
+    return newvalue
+
+
 @app.errorhandler(Exception)
 def on_error(error):
     logging.warn("Exception: %s", repr(error))

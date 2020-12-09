@@ -100,7 +100,7 @@
     <tr>
         <td style="width: 40%"><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a>
         {% if row.message %}
-            <p class="report-message"><span>&ldquo;</span>{{ row.message | strip('"') }}<span>&rdquo;</span></p>
+            <p class="report-message"><span>&ldquo;</span>{{ row.message | strip('"')|strip_email_phone }}<span>&rdquo;</span></p>
         {% endif %}
         </td>
         <td>
