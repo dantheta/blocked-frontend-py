@@ -98,7 +98,7 @@
     </tr>
     {% for grp in reports|groupby('url') %}
     {%   set lst = grp.list|list %}
-    {%     for row in lst %}
+    {%   for row in lst %}
     <tr>
         {% if loop.first %}
         <td style="width: 40%; background-color: white; padding-right: 8px" rowspan="{{ lst|length }}"><a href="{{row.url}}" rel="nofollow" target="_blank">{{ row.url }}</a>
