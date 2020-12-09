@@ -654,8 +654,6 @@ class ISPReport(DBObject):
         
     def set_status(self, newstatus, email):
         self['last_updated'] = max([self['last_updated'] or self['created'], email['created']])
-        if newstatus == 'unblocked':
-            self['unblocked'] = 1
         self['status'] = newstatus
         self['resolved_email_id'] = email['id']
         
