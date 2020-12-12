@@ -19,6 +19,7 @@
 
 {% block page_menu %}
 <div><a href="{{ url_for('.reported_sites_category') }}">Reported sites, by category</a></div>
+<div><a href="{{ url_for('.reported_sites_bbfc') }}">Sites reported for BBFC adjudication</a></div>
 {% endblock %}
 
 {% block page_style %}
@@ -33,6 +34,7 @@
 
 <div class="row">
 <div class="col-lg-8">
+{% if enable_filter_form|default(True) %}
   {% if not filters %}
   <h2>Incorrectly blocked sites reported to ISPs</h2>
   {% else %}
@@ -67,9 +69,10 @@
       </ul>
   </div>
   {% endif %}
+{% endif %}
 </div>
 <div class="col-lg-4">
-
+{% if enable_filter_form|default(true) %}
 <form class="form form-inline" method="POST" action="{{url_for('.reported_sites', method='POST')}}">
     <div class="form-group">
         <label for="isp">Filter by ISP: </label>
@@ -83,6 +86,7 @@
         <input class="btn btn-default" type="submit" value="Update" />
     </div>
 </form>
+{% endif %}
 
 </div>
 </div> <!-- /.row -->

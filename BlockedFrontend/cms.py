@@ -138,6 +138,25 @@ def reported_sites(isp=None, page=1):
             page=page, count=count, pagecount=pagecount, 
             reports=reports)
 
+
+@cms_pages.route('/bbfc-reports')
+@cms_pages.route('/bbfc-reports/<int:page>')
+def reported_sites_bbfc(page=1):
+    g.remote_content = g.remote.get_content('bbfc-reports')
+    data = g.api.reports(page-1, isp='BBFC')
+    count = data['count']
+    pagecount = get_pagecount(count, 25)
+    if page > pagecount or page < 1:
+        abort(404)
+    return render_template('reports.html',
+                           enable_filter_form=False,
+                           current_isp='BBFC',
+                           page=page,
+                           count=count,
+                           pagecount=pagecount,
+                           reports=data['reports'])
+
+
 @cms_pages.route('/reported-sites', methods=["POST"])
 def reported_sites_post():
     f = request.form
