@@ -179,7 +179,8 @@ def bbfc_report_view(url):
         messages = report.get_emails_parsed()
 
         return render_template('bbfc_report_view.html',
-                               url=urlobj,
+                               url=url,
+                               urlobj=urlobj,
                                report=report,
                                messages=messages)
     except ObjectNotFound:
