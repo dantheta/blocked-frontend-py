@@ -139,6 +139,16 @@ def reported_sites(isp=None, page=1):
             reports=reports)
 
 
+@cms_pages.route('/reported-sites', methods=["POST"])
+def reported_sites_post():
+    f = request.form
+    isp = f['isp']
+    if isp:
+        return redirect( url_for('.reported_sites', isp=isp, category=f.get('category')) )
+    else:
+        return redirect( url_for('.reported_sites', category=f.get('category')) )
+
+
 @cms_pages.route('/bbfc-reports')
 @cms_pages.route('/bbfc-reports/<int:page>')
 def reported_sites_bbfc(page=1):
@@ -157,14 +167,24 @@ def reported_sites_bbfc(page=1):
                            reports=data['reports'])
 
 
-@cms_pages.route('/reported-sites', methods=["POST"])
-def reported_sites_post():
-    f = request.form
-    isp = f['isp']
-    if isp:
-        return redirect( url_for('.reported_sites', isp=isp, category=f.get('category')) )
-    else:
-        return redirect( url_for('.reported_sites', category=f.get('category')) )
+@cms_pages.route('/bbfc-reports/view/<path:url>')
+def bbfc_report_view(url):
+    g.remote_content = g.remote.get_content('bbfc-report-view')
+
+    url = fix_path(url)
+
+    try:
+        urlobj = models.Url.select_one(g.conn, url=url)
+        report = models.ISPReport.select_one(g.conn, urlid=urlobj['urlid'], network_name='BBFC')
+        messages = report.get_emails_parsed()
+
+        return render_template('bbfc_report_view.html',
+                               url=urlobj,
+                               report=report,
+                               messages=messages)
+    except ObjectNotFound:
+        abort(404)
+
 
 @cms_pages.route('/legal-blocks/export')
 @cms_pages.route('/legal-blocks/export/<region>')

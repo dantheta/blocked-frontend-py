@@ -1,0 +1,24 @@
+{% extends "layout_1x3.page.html" %}
+{% import "paging.part.html" as paging %}
+{% from "network_description.part.html" import isp_info, popover_js %}
+
+{%set pagetitle = "View BBFC Report:" + url.url|noproto %}
+
+{% block col1_row1 %}
+{{ g.remote_content.TextAreaOne|safe }}
+{%endblock%}
+
+{% block col1_row2 %}
+{{ g.remote_content.TextAreaTwo|safe }}
+{%endblock%}
+
+{% block col1_row3 %}
+{{ g.remote_content.TextAreaThree|safe }}
+{%endblock%}
+
+{% block page_menu %}
+<div><a href="{{ url_for('.reported_sites_bbfc') }}">Sites reported for BBFC adjudication</a></div>
+{% endblock %}
+
+{% block bodyrow2 %}
+{% endblock %}
