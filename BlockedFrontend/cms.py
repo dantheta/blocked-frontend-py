@@ -173,6 +173,10 @@ def bbfc_report_view(url):
 
     url = fix_path(url)
 
+    data = g.api.status_url(url, current_app.config['DEFAULT_REGION'])
+    results = [x for x in data['results'] if x['isp_active']]
+
+
     try:
         urlobj = models.Url.select_one(g.conn, url=url)
         report = models.ISPReport.select_one(g.conn, urlid=urlobj['urlid'], network_name='BBFC')
@@ -182,6 +186,7 @@ def bbfc_report_view(url):
                                url=url,
                                urlobj=urlobj,
                                report=report,
+                               results_all=results,
                                messages=messages)
     except ObjectNotFound:
         abort(404)

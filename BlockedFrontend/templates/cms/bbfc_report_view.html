@@ -2,6 +2,8 @@
 {% import "paging.part.html" as paging %}
 {% from "network_description.part.html" import isp_info, popover_js %}
 {% import "emails.part.html" as emails %}
+{% import "results.part.html" as results %}
+
 
 
 {%set pagetitle = "View BBFC Report" %}
@@ -39,6 +41,9 @@
 
 <h3>Current status</h3>
 
+{{ results.results_table('allresults', results_all|selectattr('isp_type', 'equalto', 'mobile')|sort(attribute='status_timestamp')|reverse, results.headings_status, results.itemrow_status) }}
+
+<div style="margin-bottom: 1em"><a href="{{ url_for('site.site', url=url) }}">View full results</a></div>
 
 {% endblock %}
 

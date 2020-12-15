@@ -36,7 +36,7 @@
 <div class="col-lg-8">
 {% if enable_filter_form|default(True) %}
   {% if not filters %}
-  <h2>Incorrectly blocked sites reported to ISPs</h2>
+  <h2>Incorrectly blocked sites reported to {{ current_isp or 'ISPs' }}</h2>
   {% else %}
   <h2>Blocked sites reported to ISPs</h2>
   <div class="filters"><h4>Filters:</h4>
@@ -95,7 +95,9 @@
 <table class="table table-striped">
     <tr>
         <th>URL</th>
+        {% if not current_isp  %}
         <th>Network</th>
+        {% endif %}
         <th>Reported at</th>
         <th>Status</th>
     </tr>
@@ -104,7 +106,7 @@
     {%   for row in lst %}
     <tr>
         {% if loop.first %}
-        <td style="width: 40%; background-color: white; padding-right: 8px" rowspan="{{ lst|length }}">
+        <td style="width: 50%; background-color: white; padding-right: 8px" rowspan="{{ lst|length }}">
             <a href="{{row.url}}" rel="nofollow" target="_blank" title="Open {{ row.url|noproto }} in new tab">{{ row.url }}</a>
         {% if row.message %}
             <p class="report-message"><span>&ldquo;</span>{{ row.message | strip('"')|strip_email_phone }}<span>&rdquo;</span></p>
@@ -112,13 +114,18 @@
             <div style="margin-top: 0.5em"><a href="{{ url_for('site.site', url=row.url) }}" title="View current status of {{ row.url|noproto }}">View site blocking report</a></div>
         </td>
         {% endif %}
+        {% if not current_isp %}
         <td>
           {{ isp_info(row.description) }}
         </td>
+        {% endif %}
         <td>{{ row.submitted | fmtime if row.submitted else "On hold" }}</td>
         <td>
             {% if current_isp == 'BBFC' %}
-            <div><a href="{{ url_for('.bbfc_report_view', url=row.url) }}">View BBFC Replies</a></div>
+                {% if row.status == 'unblocked' %}
+                <div><span class="label label-success">Unblocked</span></div>
+                {% endif %}
+                <div><a href="{{ url_for('.bbfc_report_view', url=row.url) }}">View BBFC Replies</a></div>
             {% else %}
             <div>
                 {% if row.unblocked %}
