@@ -658,9 +658,9 @@ class ISPReport(DBObject):
         self['resolved_email_id'] = email['id']
         
         q = Query(self.conn, """update public.isp_reports set 
-            status = %s, unblocked = %s, last_updated = %s, resolved_email_id = %s
+            status = %s, last_updated = %s, resolved_email_id = %s
             where id = %s""",
-            [self['status'], self['unblocked'], self['last_updated'], self['resolved_email_id'], self['id']]
+            [self['status'], self['last_updated'], self['resolved_email_id'], self['id']]
             )
         
     def update_flag(self, name, value):
