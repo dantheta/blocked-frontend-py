@@ -154,10 +154,6 @@ def reported_sites_post():
 def reported_sites_bbfc(page=1):
     g.remote_content = g.remote.get_content('bbfc-reports')
     data = g.api.reports(page-1, isp='BBFC')
-
-    current_app.logger.info('Results: %s', data)
-
-
     count = data['count']
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
