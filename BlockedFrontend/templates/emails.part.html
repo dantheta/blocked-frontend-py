@@ -20,6 +20,7 @@
 {%-       if line.startswith('NOTICE AND DISCLAIMER') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('BT is a founding') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('On ') %}{% set display=False %}{% endif -%}
+{%-       if line.startswith('wrote:') %}{% set display=False %}{% endif -%}
 {%-     endif -%}
 {%-     if display -%}
 {{        line|striptags }}

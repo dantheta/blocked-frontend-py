@@ -154,6 +154,10 @@ def reported_sites_post():
 def reported_sites_bbfc(page=1):
     g.remote_content = g.remote.get_content('bbfc-reports')
     data = g.api.reports(page-1, isp='BBFC')
+
+    current_app.logger.info('Results: %s', data)
+
+
     count = data['count']
     pagecount = get_pagecount(count, 25)
     if page > pagecount or page < 1:
@@ -175,7 +179,6 @@ def bbfc_report_view(url):
 
     data = g.api.status_url(url, current_app.config['DEFAULT_REGION'])
     results = [x for x in data['results'] if x['isp_active']]
-
 
     try:
         urlobj = models.Url.select_one(g.conn, url=url)
