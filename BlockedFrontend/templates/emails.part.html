@@ -11,9 +11,10 @@
 {%-   else %}
 {%-     set msg=message.get_payload() %}
 {%-   endif %}
-{%-   set display=True -%}
+{%-   set _state = {'display': True} -%}
 {%-   for line in (msg|stripstyletag).splitlines() %}
 {%-     if truncate %}
+{%-       set display = _state.display -%}
 {%-       if '____________________' in line %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('Website blocking enquiry') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('-----Original Message') %}{% set display=False %}{% endif -%}
@@ -21,8 +22,9 @@
 {%-       if line.startswith('BT is a founding') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('On ') %}{% set display=False %}{% endif -%}
 {%-       if line.startswith('wrote:') %}{% set display=False %}{% endif -%}
+{%-       set _ = _state.update({'display': display}) -%}
 {%-     endif -%}
-{%-     if display -%}
+{%-     if _state.display -%}
 {{        line|striptags }}
 {%      endif %}
 {%-   endfor %}
