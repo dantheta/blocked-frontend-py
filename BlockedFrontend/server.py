@@ -24,7 +24,7 @@ if app.config.get('SITE_THEME'):
     searchpath = app.jinja_loader.searchpath
     app.jinja_loader.searchpath.insert(0, searchpath[0] + '/' + app.config['SITE_THEME'])
 
-#app.secret_key = app.config['SESSION_KEY']
+# app.secret_key = app.config['SESSION_KEY']
 
 logging.basicConfig(
     level=getattr(logging, app.config.get('LOGLEVEL', 'INFO')),
@@ -35,7 +35,7 @@ logging.basicConfig(
 logging.info("API_EMAIL: %s", app.config['API_EMAIL'])
 logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
-#blueprints
+# blueprints
 
 www_domain = app.config['SUBDOMAIN_MAIN']
 
@@ -81,9 +81,11 @@ else:
     from injunctions import injunct_pages
     app.register_blueprint(injunct_pages, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
 
+
 @app.before_first_request
 def setup_db():
     db.setup()
+
 
 @app.before_request
 def open_db():
@@ -91,10 +93,12 @@ def open_db():
         return
     g.conn = db.db_connect_pool()
 
+
 @app.teardown_appcontext
 def close_db(error):
     if hasattr(g, 'conn'):
         db.db_disconnect(g.conn)
+
 
 @app.before_request
 def hook_api():
@@ -105,12 +109,14 @@ def hook_api():
     if 'API' in app.config:
         g.api.API = app.config['API']
 
+
 @app.before_request
 def hook_miscdata():
     if request.path.startswith('/static'):
         return
     from resources import load_data
     g.miscvars = load_data('misc')
+
 
 @app.template_filter('fmtime')
 def fmtime(s):
@@ -121,6 +127,7 @@ def fmtime(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') \
         .strftime('%d %B, %Y at %H:%M')
 
+
 @app.template_filter('fmdate')
 def fmdate(s):
     if not s:
@@ -130,17 +137,20 @@ def fmdate(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d') \
         .strftime('%d %B, %Y')
 
+
 @app.template_filter('null')
 def null(s, default=''):
     if s is None:
         return default
-    if isinstance(s, (str,unicode)) and not s.strip():
+    if isinstance(s, (str, unicode)) and not s.strip():
         return default
     return s
+
 
 @app.template_filter('strip')
 def strip(s, chars):
     return s.strip(chars)
+
 
 @app.template_filter('join_en')
 def join_en(ls, markup=False):
@@ -155,6 +165,7 @@ def join_en(ls, markup=False):
         return ", ".join([tag(x) for x in ls[:-1]]) + " and " + tag(ls[-1])
     return ''
 
+
 @app.template_filter('domain')
 def domain(url):
     """Shorten a URL to just the domain"""
@@ -165,6 +176,7 @@ def domain(url):
     except Exception as exc:
         logging.warn("filter.domain exception: %s", repr(exc))
         return url
+
 
 @app.template_filter('customgrouper')
 def customgrouper(values, keys):
@@ -180,27 +192,31 @@ def customgrouper(values, keys):
         lambda values: [values[x] for x in keys],
     )
 
+
 @app.template_filter('noproto')
 def filter_noproto(url):
     import re
     if url is None:
         return None
-    return re.sub(r'^https?://','', url)
+    return re.sub(r'^https?://', '', url)
+
 
 @app.template_filter('stripstyletag')
 def filter_strip_style(s):
     import re
     
-    return re.sub(r'<style[^>]+>.*</style>','', s)
+    return re.sub(r'<style[^>]+>.*</style>', '', s)
+
 
 @app.template_filter('lpad')
 def lpad(s, width=20):
     return s.ljust(width)
 
+
 @app.template_filter('rmtasset')
 def rmtasset(path):
     """Convert relative path to CMS asset URL"""
-    if path.startswith(('http:','https:')):
+    if path.startswith(('http:', 'https:')):
         return path
     return '/cms/assets' + path
 
@@ -209,7 +225,7 @@ def rmtasset(path):
 def strip_email_phone(value):
     import re
     newvalue = re.sub(r'\+?\d{4,6}\s*[ \-\d]{5,7}', '<phone removed>', value)
-    newvalue = re.sub(r'\S+@([\S\.])+\.\S+', '<email removed>', newvalue)
+    newvalue = re.sub(r'\S+@([\S.])+\.\S+', '<email removed>', newvalue)
     return newvalue
 
 
@@ -219,6 +235,7 @@ def on_error(error):
     if app.config['DEBUG']:
         raise
     return render_template('error.html'), 500
+
 
 @app.before_request
 def check_user():
@@ -242,7 +259,7 @@ def load_remote_content():
             app.config['REMOTE_SRC'],
             app.config['REMOTE_AUTH'],
             app.config['CACHE_PATH'],
-            app.config['REMOTE_RELOAD'] and g.admin, # remote reload only available to admin users
+            app.config['REMOTE_RELOAD'] and g.admin,  # remote reload only available to admin users
             )
         logging.debug("Loading chunks")
         g.remote_chunks = g.remote.get_content('chunks')
