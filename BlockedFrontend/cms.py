@@ -360,16 +360,14 @@ def wildcard(page='index'):
         if _type == 'layoutpages':
             return render_template('remote_layout.html', content=g.remote_content)
 
-        if set(g.remote_content.keys()).intersection(
-            ['TextAreaFour', 'TextAreaFive', 'TextAreaSix']
-            ):
+        if set(g.remote_content.keys()).intersection(['TextAreaFour', 'TextAreaFive', 'TextAreaSix']):
             return render_template('remote_content2x3.html',
-                content=g.remote_content
-                )
+                                   content=g.remote_content
+                                   )
 
         return render_template('remote_content1x3.html',    
-            content=g.remote_content
-            )
+                               content=g.remote_content
+                               )
 
     try:
         # template exists in local filesystem, but can accept remote content
@@ -388,8 +386,8 @@ def cms_asset(path):
     except ValueError as exc:
         abort(exc.args[0])
     return Response(req.iter_content(1024), req.status_code, 
-            {'Content-type': req.headers['Content-type'],
-            'Content-length': req.headers['Content-length']})
+                    {'Content-type': req.headers['Content-type'],
+                    'Content-length': req.headers['Content-length']})
 
 
 @cms_pages.route('/legal-blocks/errors')
@@ -405,13 +403,15 @@ def legal_errors(page=1):
     
     q = Query(g.conn,
               """
-              select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
+              select count(distinct urls.urlid) total,
+              count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
     
               from url_latest_status uls
               inner join urls on uls.urlid = urls.urlid
               inner join isps on isps.name = uls.network_name
               left join frontend.court_judgment_urls cju on urls.url = cju.url
-              left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id and cjuf.reason != 'block_appears_correct'
+              left join frontend.court_judgment_url_flags cjuf on
+                cjuf.judgment_url_id = cju.id and cjuf.reason != 'block_appears_correct'
               where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
                 and isps.regions && %s::varchar[]
                 and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
@@ -445,7 +445,8 @@ def legal_errors(page=1):
     # main error listing
     q_stats3_count = Query(g.conn,
                            """
-                           select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url 
+                           select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation,
+                                   cj.case_number, cj.url 
                                from url_latest_status uls
                                inner join urls on uls.urlid = urls.urlid
                                inner join isps on isps.name = uls.network_name
@@ -546,7 +547,7 @@ def legal_blocks(page=1, region=None):
         style = 'urlrow'
     if not region:
         region = current_app.config['DEFAULT_REGION']
-    data = g.api.recent_blocks(page-1, region, style, request.args.get('sort','url'))
+    data = g.api.recent_blocks(page-1, region, style, request.args.get('sort', 'url'))
     blocks = data['results']
     count = data['count']
     urlcount = data['urlcount']
