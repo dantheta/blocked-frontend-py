@@ -10,6 +10,11 @@ LOGLEVEL = 'INFO'
 API_EMAIL = ''
 API_SECRET = ''
 
+SERVER_NAME='blocked.org.uk'
+SUBDOMAIN_MAIN='www'
+SUBDOMAIN_INJUNCTIONS='injuctions'
+SUBDOMAIN_NOMINET='nominet'
+
 SITE_URL="http://localhost:5000"
 SITE_THEME='blocked-uk'
 

@@ -14,7 +14,7 @@ import db
 from flask import Flask, render_template, request,  \
     abort, g, session
 
-app = Flask("BlockedFrontend")
+app = Flask("BlockedFrontend", match_subdomains=True)
 
 app.config.from_object('BlockedFrontend.default_settings')
 if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
@@ -37,18 +37,20 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 
 #blueprints
 
+www_domain = app.config['SUBDOMAIN_MAIN']
+
 if app.config['MODULE_ADMIN']:
     from admin import admin_pages
-    app.register_blueprint(admin_pages)
+    app.register_blueprint(admin_pages, subdomain=www_domain)
 
     from admin_rightsholder import admin_rightsholder_pages
-    app.register_blueprint(admin_rightsholder_pages)
+    app.register_blueprint(admin_rightsholder_pages, subdomain=www_domain)
 
     from admin_savedlists import admin_savedlist_pages
-    app.register_blueprint(admin_savedlist_pages)
+    app.register_blueprint(admin_savedlist_pages, subdomain=www_domain)
 
     from admin_ispreports import admin_ispreport_pages
-    app.register_blueprint(admin_ispreport_pages)
+    app.register_blueprint(admin_ispreport_pages, subdomain=www_domain)
 
 if app.config.get('SITE_THEME') == '451':
     from err451 import err451_pages
@@ -56,28 +58,25 @@ if app.config.get('SITE_THEME') == '451':
 else:
     from cms import cms_pages, custom_routing
     custom_routing(app.config['SITE_THEME'])
-    app.register_blueprint(cms_pages)
+    app.register_blueprint(cms_pages, subdomain=www_domain)
 
     from site_results import site_pages
-    app.register_blueprint(site_pages)
+    app.register_blueprint(site_pages, subdomain=www_domain)
 
     if app.config['MODULE_CATEGORY']:
         from category import category_pages
-        app.register_blueprint(category_pages)
+        app.register_blueprint(category_pages, subdomain=www_domain)
 
     if app.config['MODULE_UNBLOCK']:
         from unblock import unblock_pages
-        app.register_blueprint(unblock_pages)
+        app.register_blueprint(unblock_pages, subdomain=www_domain)
 
     if app.config['MODULE_SAVEDLIST']:
         from savedlists import list_pages
-        app.register_blueprint(list_pages)
-
-    from reload import reload_blueprint
-    app.register_blueprint(reload_blueprint)
+        app.register_blueprint(list_pages, subdomain=www_domain)
 
     from stats import stats_pages
-    app.register_blueprint(stats_pages)
+    app.register_blueprint(stats_pages, subdomain=www_domain)
 
 @app.before_first_request
 def setup_db():
