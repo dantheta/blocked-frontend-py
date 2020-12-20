@@ -6,17 +6,18 @@ from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
 from utils import *
-from models import Item, ISPReport, Category
+from models import Item, ISPReport
 import models
 from NORM import Query
 from NORM.exceptions import ObjectNotFound
 
 from resources import load_country_data
 
-cms_pages = Blueprint('cms', __name__,
-    template_folder='templates/cms')
+cms_pages = Blueprint('cms',
+                      __name__,
+                      template_folder='templates/cms')
 
-REMOTE_CONTENT_TYPES = ['pages','layoutpages']
+REMOTE_CONTENT_TYPES = ['pages', 'layoutpages']
 
 REMOTE_TEXT_CONTENT = {
     'index': 'homepage-text',
@@ -24,7 +25,8 @@ REMOTE_TEXT_CONTENT = {
     'seized-domains': 'seized-domains'
     }
 
-PAGE_ITEMS=25
+PAGE_ITEMS = 25
+
 
 def custom_routing(site):
     if site == 'blocked-eu':
@@ -32,17 +34,20 @@ def custom_routing(site):
     else:
         cms_pages.add_url_rule('/', 'index', index)
 
+
 def frontpage_lists():
     
     for item in Item.get_frontpage_random(g.conn, current_app.config['RANDOM_EXCLUDE_NETWORKS']):
         site = g.api.status_url(item['url'])
         savedlist = item.get_list()
         return site, savedlist
-        
+
+
 def frontpage_random():
-    randomsite = g.api.GET('ispreport/candidates',{'count':1})
+    randomsite = g.api.GET('ispreport/candidates', {'count': 1})
     site = g.api.status_url(randomsite['results'][0])
     return site
+
 
 def index():
     g.remote_content = g.remote.get_content('homepage-text')
@@ -54,13 +59,17 @@ def index():
         savedlist = None
     elif current_app.config['RANDOMSITE'] == 'frontpagelists':
         site, savedlist = frontpage_lists()
+    else:
+        current_app.logger.warn("Unknown RANDOMSITE provider")
+        abort(500)
 
-    blockednetworks = [ x['network_id'] for x in site['results']
-        if x['status'] == 'blocked' ]
+    blockednetworks = [x['network_id'] for x in site['results']
+                       if x['status'] == 'blocked']
     g.conn.commit()
     return render_template('index.html', site=site, savedlist=savedlist,
                            stats=stats['stats'],
                            blockednetworks=blockednetworks)
+
 
 @cms_pages.route('/personal-stories')
 @cms_pages.route('/personal-stories/<name>')
@@ -82,12 +91,14 @@ def personal_stories(name=None):
     else:
         g.remote_content = g.remote.get_content('personal-stories')
         return render_template('personal-stories.html',
-                           featured=models.ISPReport.get_featured(g.conn))
+                               featured=models.ISPReport.get_featured(g.conn))
+
 
 @cms_pages.route('/credits')
 def credits():
     g.remote_content = g.remote.get_content('credits')
     return render_template('credits.html')
+
 
 @cms_pages.route('/reported-sites/by-category')
 def reported_sites_category():
@@ -95,6 +106,7 @@ def reported_sites_category():
 
     return render_template('reported_sites_category.html',
                            categories=q)
+
 
 @cms_pages.route('/reported-sites')
 @cms_pages.route('/reported-sites/<int:page>')
@@ -107,15 +119,16 @@ def reported_sites(isp=None, page=1):
             # search for case insensitive match and redirect
             for _isp in current_app.config['ISPS']:
                 if _isp.lower() == isp.lower():
-                    return redirect( url_for('.reported_sites',
-                                             isp=_isp,
-                                             state=a.get('state'),
-                                             policy=a.get('policy'),
-                                             cat=a.get('category'),
-                                             list=a.get('list')) )
+                    return redirect(url_for('.reported_sites',
+                                            isp=_isp,
+                                            state=a.get('state'),
+                                            policy=a.get('policy'),
+                                            cat=a.get('category'),
+                                            list=a.get('list')
+                                            ))
             # otherwise, return a 404
             abort(404)
-    filter_args = set(['state','category','list','policy','year'])
+    filter_args = {'state', 'category', 'list', 'policy', 'year'}
 
     g.remote_content = g.remote.get_content('reported-sites')
     data = g.api.reports(page-1, 
@@ -133,10 +146,10 @@ def reported_sites(isp=None, page=1):
     if page > pagecount or page < 1:
         abort(404)
     return render_template('reports.html',
-            current_isp=isp,
-            filters=filter_args & set(a.keys()),
-            page=page, count=count, pagecount=pagecount, 
-            reports=reports)
+                           current_isp=isp,
+                           filters=filter_args & set(a.keys()),
+                           page=page, count=count, pagecount=pagecount,
+                           reports=reports)
 
 
 @cms_pages.route('/reported-sites', methods=["POST"])
@@ -144,9 +157,9 @@ def reported_sites_post():
     f = request.form
     isp = f['isp']
     if isp:
-        return redirect( url_for('.reported_sites', isp=isp, category=f.get('category')) )
+        return redirect(url_for('.reported_sites', isp=isp, category=f.get('category')))
     else:
-        return redirect( url_for('.reported_sites', category=f.get('category')) )
+        return redirect(url_for('.reported_sites', category=f.get('category')))
 
 
 @cms_pages.route('/bbfc-reports')
@@ -201,18 +214,17 @@ def export_blocks(region=None):
     else:
         return export_blocks_by_url(region)
 
+
 def export_blocks_by_url(region):
     import csv
     import tempfile
     import itertools
 
-
-
     tmpfile = tempfile.SpooledTemporaryFile('w+')
     writer = csv.writer(tmpfile)
     writer.writerow(['#', "Title: Legal blocks"])
     writer.writerow(['#', "List saved from blocked.org.uk"])
-    writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks') ])
+    writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks')])
     writer.writerow([])
     writer.writerow(['URL', 'Report URL', 'Networks'])
 
@@ -230,7 +242,7 @@ def export_blocks_by_url(region):
     for url, networkiter in itertools.groupby(get_legal_blocks(), lambda row: row[0]):
         networklist = [x[1] for x in networkiter]
         networklist.sort()
-        writer.writerow([url, current_app.config['SITE_URL']+ url_for('site.site', url=url) ] + networklist)
+        writer.writerow([url, current_app.config['SITE_URL'] + url_for('site.site', url=url)] + networklist)
 
     tmpfile.flush()
     length = tmpfile.tell()
@@ -280,11 +292,9 @@ def export_blocks_by_injunction(region):
     writer.writerow(['#', "List saved from blocked.org.uk"])
     writer.writerow(['#', "URL: " + current_app.config['SITE_URL'] + url_for('.legal_blocks')])
     writer.writerow([])
-    #writer.writerow(['URL', 'Report URL', 'Networks'])
-    writer.writerow([x.replace('_',' ').title() for x in COLS] 
-                    + ['Networks:'] + networks )
-
-
+    # writer.writerow(['URL', 'Report URL', 'Networks'])
+    writer.writerow([x.replace('_', ' ').title() for x in COLS]
+                    + ['Networks:'] + networks)
 
     def get_legal_blocks():
         page = 0
@@ -328,7 +338,6 @@ def wildcard(page='index'):
     if page == 'favicon.ico':
         return "", 404
 
-
     g.remote_content = {}
     if page in REMOTE_TEXT_CONTENT:
         try:
@@ -352,7 +361,7 @@ def wildcard(page='index'):
             return render_template('remote_layout.html', content=g.remote_content)
 
         if set(g.remote_content.keys()).intersection(
-            ['TextAreaFour','TextAreaFive','TextAreaSix']
+            ['TextAreaFour', 'TextAreaFive', 'TextAreaSix']
             ):
             return render_template('remote_content2x3.html',
                 content=g.remote_content
@@ -368,6 +377,7 @@ def wildcard(page='index'):
     except jinja2.TemplateNotFound:
         abort(404)
 
+
 @cms_pages.route('/cms/assets/<path:path>')
 def cms_asset(path):
     if current_app.config['REMOTE_TYPE'] != 'cockpit':
@@ -381,115 +391,121 @@ def cms_asset(path):
             {'Content-type': req.headers['Content-type'],
             'Content-length': req.headers['Content-length']})
 
+
 @cms_pages.route('/legal-blocks/errors')
 @cms_pages.route('/legal-blocks/errors/<int:page>')
 def legal_errors(page=1):
-    sort = request.args.get('sort','url')
+    sort = request.args.get('sort', 'url')
     o = request.args.get('o', 'a')
     
-    if not sort in ('url','reason','created'):
+    if sort not in ('url', 'reason', 'created'):
         abort(400)
     
     # error totals - large stats panel
     
-    q = Query(g.conn, """
-        select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
-
-        from url_latest_status uls
-        inner join urls on uls.urlid = urls.urlid
-        inner join isps on isps.name = uls.network_name
-        left join frontend.court_judgment_urls cju on urls.url = cju.url
-        left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id and cjuf.reason != 'block_appears_correct'
-        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
-            and isps.regions && %s::varchar[]
-            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-            and urls.url ~* '^https?://[^/]+$'
-            -- 
-        """, 
-        [[current_app.config['DEFAULT_REGION']]]
-        )
+    q = Query(g.conn,
+              """
+              select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
+    
+              from url_latest_status uls
+              inner join urls on uls.urlid = urls.urlid
+              inner join isps on isps.name = uls.network_name
+              left join frontend.court_judgment_urls cju on urls.url = cju.url
+              left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id and cjuf.reason != 'block_appears_correct'
+              where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+                and isps.regions && %s::varchar[]
+                and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+                and urls.url ~* '^https?://[^/]+$'
+                -- 
+              """,
+              [[current_app.config['DEFAULT_REGION']]]
+              )
     stats1 = q.fetchone()
     q.close()
     
     # summary of block errors by reason
-    stats2 = Query(g.conn, """
-        select reason, count(distinct urls.urlid) error_count
-        from url_latest_status uls
-        inner join urls on uls.urlid = urls.urlid
-        inner join isps on isps.name = uls.network_name
-        inner join frontend.court_judgment_urls cju on urls.url = cju.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
-        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
-            and isps.regions && %s::varchar[]
-            and urls.url ~* '^https?://[^/]+$'
-            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-            -- and cjuf.reason != 'block_appears_correct'
-
-        group by reason""", 
-        [[current_app.config['DEFAULT_REGION']]]
-        )
+    stats2 = Query(g.conn,
+                   """
+                   select reason, count(distinct urls.urlid) error_count
+                   from url_latest_status uls
+                   inner join urls on uls.urlid = urls.urlid
+                   inner join isps on isps.name = uls.network_name
+                   inner join frontend.court_judgment_urls cju on urls.url = cju.url
+                   inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
+                   where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+                       and isps.regions && %s::varchar[]
+                       and urls.url ~* '^https?://[^/]+$'
+                       and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+                       -- and cjuf.reason != 'block_appears_correct'
+            
+                   group by reason""",
+                   [[current_app.config['DEFAULT_REGION']]]
+                   )
     
     # main error listing
-    q_stats3_count = Query(g.conn, """
-    select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url 
-        from url_latest_status uls
-        inner join urls on uls.urlid = urls.urlid
-        inner join isps on isps.name = uls.network_name
-        inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
-        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
-        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
-            and isps.regions && %s::varchar[]
-            and urls.url ~* '^https?://[^/]+$'        
-            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-            and cjuf.reason != 'block_appears_correct'
-            ) x
-        """,
-        [[current_app.config['DEFAULT_REGION']]])
-            
+    q_stats3_count = Query(g.conn,
+                           """
+                           select count(*) ct from (select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url 
+                               from url_latest_status uls
+                               inner join urls on uls.urlid = urls.urlid
+                               inner join isps on isps.name = uls.network_name
+                               inner join frontend.court_judgment_urls cju on cju.url = urls.url
+                               inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
+                               inner join frontend.court_judgments cj on cj.id = cju.judgment_id
+                               where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+                                   and isps.regions && %s::varchar[]
+                                   and urls.url ~* '^https?://[^/]+$'        
+                                   and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+                                   and cjuf.reason != 'block_appears_correct'
+                                   ) x
+                           """,
+                           [[current_app.config['DEFAULT_REGION']]])
+
     stats3_count = q_stats3_count.fetchone()['ct']
     pagecount = get_pagecount(stats3_count, PAGE_ITEMS)
     
-    stats3 = Query(g.conn, """
-        select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
-        from url_latest_status uls
-        inner join urls on uls.urlid = urls.urlid
-        inner join isps on isps.name = uls.network_name
-        inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
-        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
-        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
-            and isps.regions && %s::varchar[]
-            and urls.url ~* '^https?://[^/]+$'        
-            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
-            and cjuf.reason != 'block_appears_correct'
-
-        order by {0} {1}
-        limit {3} offset {2}""".format(sort, 'asc' if o == 'a' else 'desc', (page-1)*PAGE_ITEMS, PAGE_ITEMS), 
-        [[current_app.config['DEFAULT_REGION']]]
-        )
+    stats3 = Query(g.conn,
+                   """
+                   select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
+                   from url_latest_status uls
+                   inner join urls on uls.urlid = urls.urlid
+                   inner join isps on isps.name = uls.network_name
+                   inner join frontend.court_judgment_urls cju on cju.url = urls.url
+                   inner join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
+                   inner join frontend.court_judgments cj on cj.id = cju.judgment_id
+                   where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+                       and isps.regions && %s::varchar[]
+                       and urls.url ~* '^https?://[^/]+$'        
+                       and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')
+                       and cjuf.reason != 'block_appears_correct'
+           
+                   order by {0} {1}
+                   limit {3} offset {2}""".format(sort, 'asc' if o == 'a' else 'desc', (page-1)*PAGE_ITEMS, PAGE_ITEMS),
+                   [[current_app.config['DEFAULT_REGION']]]
+                   )
         
     # stats listing by ISP
-    stats4 = Query(g.conn, """
-        select distinct isps.name, isps.description, count(distinct urls.urlid) total, 
-            count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
-        from url_latest_status uls
-        inner join urls on uls.urlid = urls.urlid
-        inner join isps on isps.name = uls.network_name
-        inner join frontend.court_judgment_urls cju on cju.url = urls.url
-        left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
-        inner join frontend.court_judgments cj on cj.id = cju.judgment_id
-        where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
-            and isps.regions && %s::varchar[]
-            and urls.url ~* '^https?://[^/]+$'  
-            and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')      
-            and cjuf.reason != 'block_appears_correct'
-
-        group by isps.name, isps.description
-        order by count(distinct urls.urlid) desc
-        """.format(sort), 
-        [[current_app.config['DEFAULT_REGION']]]
-        )        
+    stats4 = Query(g.conn,
+                   """
+                   select distinct isps.name, isps.description, count(distinct urls.urlid) total, 
+                       count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
+                   from url_latest_status uls
+                   inner join urls on uls.urlid = urls.urlid
+                   inner join isps on isps.name = uls.network_name
+                   inner join frontend.court_judgment_urls cju on cju.url = urls.url
+                   left join frontend.court_judgment_url_flags cjuf on cjuf.judgment_url_id = cju.id
+                   inner join frontend.court_judgments cj on cj.id = cju.judgment_id
+                   where blocktype='COPYRIGHT' and uls.status = 'blocked' and urls.status = 'ok' 
+                       and isps.regions && %s::varchar[]
+                       and urls.url ~* '^https?://[^/]+$'  
+                       and (isps.isp_type = 'mobile' or isps.filter_level = 'No Adult')      
+                       and cjuf.reason != 'block_appears_correct'
+           
+                   group by isps.name, isps.description
+                   order by count(distinct urls.urlid) desc
+                   """.format(sort),
+                   [[current_app.config['DEFAULT_REGION']]]
+                   )
     
     g.conn.commit()
     return render_template('legal-block-errors.html',
@@ -508,6 +524,7 @@ def legal_errors(page=1):
 def legal_orders_old():
     return redirect(url_for('.legal_orders'), 301)
 
+
 @cms_pages.route('/legal-blocks/<int:page>')
 @cms_pages.route('/legal-blocks/<region>')
 @cms_pages.route('/legal-blocks/<region>/<int:page>')
@@ -515,6 +532,7 @@ def legal_blocks_old(page=1, region=None):
     if region:
         return redirect(url_for('.legal_blocks', region=region, page=page), 301)
     return redirect(url_for('.legal_blocks', page=page), 301)
+
 
 @cms_pages.route('/legal-blocks/sites')
 @cms_pages.route('/legal-blocks/sites/<int:page>')
@@ -533,11 +551,12 @@ def legal_blocks(page=1, region=None):
     count = data['count']
     urlcount = data['urlcount']
     return render_template('legal-blocks.html',
-            countries = load_country_data(),
-            region=region,
-            page=page, count=count, blocks=blocks, urlcount=urlcount, sortorder=request.args.get('sort','url'),
-            pagecount = get_pagecount(urlcount, 25)
-            )
+                           countries=load_country_data(),
+                           region=region,
+                           page=page, count=count, blocks=blocks, urlcount=urlcount,
+                           sortorder=request.args.get('sort', 'url'),
+                           pagecount=get_pagecount(urlcount, 25)
+                           )
 
 
 @cms_pages.route('/legal-blocks')
@@ -545,23 +564,24 @@ def legal_orders():
     
     g.remote_content = g.remote.get_content('legal-blocks-orders')
     region = current_app.config['DEFAULT_REGION']
-    q = Query(g.conn, """select 
-            judgment_id as id, judgment_name as name, judgment_date as date, citation, 
-
-            count(distinct flag_url_id) errors_detected,
-            count(distinct url_group_name) services_targeted,
-            sum(block_count) as block_count
-
-            from active_court_blocks 
-            where (region = %s or region is null)
-            group by judgment_id , judgment_name , judgment_date , citation
-            """,
-            [ region ])
-
+    q = Query(g.conn,
+              """
+              select judgment_id as id, judgment_name as name, judgment_date as date, citation, 
     
+                count(distinct flag_url_id) errors_detected,
+                count(distinct url_group_name) services_targeted,
+                sum(block_count) as block_count
+    
+                from active_court_blocks 
+                where (region = %s or region is null)
+                group by judgment_id , judgment_name , judgment_date , citation
+              """,
+              [region])
+
     return render_template('legal-block-orders.html',
                            judgments=q,
                            region=region) 
+
 
 @cms_pages.route('/legal-blocks/order/<int:id>')
 @cms_pages.route('/legal-blocks/order/<int:id>/<int:page>')
@@ -570,7 +590,7 @@ def legal_order_sites(id, page=1):
 
     return render_template('legal-block-report.html',
                            judgment=judgment,
-                           blocks = judgment.get_report(current_app.config['DEFAULT_REGION']))
+                           blocks=judgment.get_report(current_app.config['DEFAULT_REGION']))
 
 
 @cms_pages.route('/faqs')
@@ -578,8 +598,7 @@ def faqs():
     import itertools
 
     content = g.remote.get_content('faqs')
-    faqs = g.remote.get_collection(_type='faqs')
-    grouped_faqs = itertools.groupby(faqs, lambda x: x['heading'])
-
+    articles = g.remote.get_collection(_type='faqs')
+    grouped_faqs = itertools.groupby(articles, lambda x: x['heading'])
 
     return render_template('faqs.html', faqs=grouped_faqs, content=content)
