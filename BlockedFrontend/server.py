@@ -78,6 +78,9 @@ else:
     from stats import stats_pages
     app.register_blueprint(stats_pages, subdomain=www_domain)
 
+    from injunctions import injunct_pages
+    app.register_blueprint(injunct_pages, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
+
 @app.before_first_request
 def setup_db():
     db.setup()
