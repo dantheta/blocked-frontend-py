@@ -9,6 +9,8 @@ import models
 from NORM import Query
 from NORM.exceptions import ObjectNotFound
 
+from resources import load_country_data
+
 injunct_pages = Blueprint('injunct',
                           __name__,
                           template_folder='templates/injunctions',
