@@ -266,7 +266,7 @@ Your feedback was successfully submitted.
     
     <p style="margin-top: 1.5em">This page has been flagged as <b>incorrectly blocked</b> under an injunction.</p>  
     <p>It is flagged as <strong>{{ cjuf.reason.replace('_',' ').capitalize() }}</strong>.  </p>
-    <div><a href="{{url_for('cms.legal_errors')}}">View all legal block errors</a></div>
+    <div><a href="{{url_for('injunct.legal_errors')}}">View all legal block errors</a></div>
     {% else %}
     <h4>Tell us about this site</h4>
     <p>For example: is the link dead, or is the domain being squatted?

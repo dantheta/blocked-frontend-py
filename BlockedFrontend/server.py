@@ -14,7 +14,7 @@ import db
 from flask import Flask, render_template, request,  \
     abort, g, session
 
-app = Flask("BlockedFrontend", match_subdomains=True)
+app = Flask("BlockedFrontend", subdomain_matching=True)
 
 app.config.from_object('BlockedFrontend.default_settings')
 if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
@@ -38,6 +38,7 @@ logging.info("REMOTE_SRC: %s", app.config['REMOTE_SRC'])
 # blueprints
 
 www_domain = app.config['SUBDOMAIN_MAIN']
+app.url_map.default_subdomain = www_domain
 
 if app.config['MODULE_ADMIN']:
     from admin import admin_pages

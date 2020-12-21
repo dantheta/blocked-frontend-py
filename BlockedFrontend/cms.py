@@ -15,6 +15,7 @@ from resources import load_country_data
 
 cms_pages = Blueprint('cms',
                       __name__,
+                      static_folder='static',
                       template_folder='templates/cms')
 
 REMOTE_CONTENT_TYPES = ['pages', 'layoutpages']
