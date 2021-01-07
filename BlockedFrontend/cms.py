@@ -232,7 +232,7 @@ def export_blocks_by_url(region):
         page = 0
         while True:
             data = g.api.recent_blocks(page, region)
-            
+
             for item in data['results']:
                 yield item['url'], item['network_name']
             page += 1
@@ -300,10 +300,10 @@ def export_blocks_by_injunction(region):
         page = 0
         while True:
             data = g.api.recent_blocks(page, region, 'injunction')
-            for item in data['results']:                
+            for item in data['results']:
                 yield [
-                        item[x].encode('utf8') if isinstance(item[x], unicode) else item[x] 
-                        for x in COLS 
+                        item[x].encode('utf8') if isinstance(item[x], unicode) else item[x]
+                        for x in COLS
                     ] + [""] + [
                         "Y" if x in item['networks'] else ""
                         for x in networks
@@ -360,16 +360,14 @@ def wildcard(page='index'):
         if _type == 'layoutpages':
             return render_template('remote_layout.html', content=g.remote_content)
 
-        if set(g.remote_content.keys()).intersection(
-            ['TextAreaFour', 'TextAreaFive', 'TextAreaSix']
-            ):
+        if set(g.remote_content.keys()).intersection(['TextAreaFour', 'TextAreaFive', 'TextAreaSix']):
             return render_template('remote_content2x3.html',
-                content=g.remote_content
-                )
+                                   content=g.remote_content
+                                   )
 
         return render_template('remote_content1x3.html',    
-            content=g.remote_content
-            )
+                               content=g.remote_content
+                               )
 
     try:
         # template exists in local filesystem, but can accept remote content
@@ -378,18 +376,7 @@ def wildcard(page='index'):
         abort(404)
 
 
-@cms_pages.route('/cms/assets/<path:path>')
-def cms_asset(path):
-    if current_app.config['REMOTE_TYPE'] != 'cockpit':
-        abort(500)
 
-    try:
-        req = g.remote.get_asset('/'+path)
-    except ValueError as exc:
-        abort(exc.args[0])
-    return Response(req.iter_content(1024), req.status_code, 
-            {'Content-type': req.headers['Content-type'],
-            'Content-length': req.headers['Content-length']})
 
 
 @cms_pages.route('/legal-blocks/errors')
@@ -397,12 +384,12 @@ def cms_asset(path):
 def legal_errors(page=1):
     sort = request.args.get('sort', 'url')
     o = request.args.get('o', 'a')
-    
+
     if sort not in ('url', 'reason', 'created'):
         abort(400)
-    
+
     # error totals - large stats panel
-    
+
     q = Query(g.conn,
               """
               select count(distinct urls.urlid) total, count(distinct case when cjuf.id is not null then cjuf.id else null end) error_count
@@ -422,7 +409,7 @@ def legal_errors(page=1):
               )
     stats1 = q.fetchone()
     q.close()
-    
+
     # summary of block errors by reason
     stats2 = Query(g.conn,
                    """
@@ -441,7 +428,7 @@ def legal_errors(page=1):
                    group by reason""",
                    [[current_app.config['DEFAULT_REGION']]]
                    )
-    
+
     # main error listing
     q_stats3_count = Query(g.conn,
                            """
@@ -463,7 +450,7 @@ def legal_errors(page=1):
 
     stats3_count = q_stats3_count.fetchone()['ct']
     pagecount = get_pagecount(stats3_count, PAGE_ITEMS)
-    
+
     stats3 = Query(g.conn,
                    """
                    select distinct cju.url, reason, cjuf.created, cj.citation, cj.case_number, cj.url as judgment_url
@@ -483,7 +470,7 @@ def legal_errors(page=1):
                    limit {3} offset {2}""".format(sort, 'asc' if o == 'a' else 'desc', (page-1)*PAGE_ITEMS, PAGE_ITEMS),
                    [[current_app.config['DEFAULT_REGION']]]
                    )
-        
+
     # stats listing by ISP
     stats4 = Query(g.conn,
                    """
@@ -506,14 +493,14 @@ def legal_errors(page=1):
                    """.format(sort),
                    [[current_app.config['DEFAULT_REGION']]]
                    )
-    
+
     g.conn.commit()
     return render_template('legal-block-errors.html',
                            stats1=stats1,
                            stats2=stats2,
-                           stats3=stats3, 
-                           stats4=stats4, 
-                           
+                           stats3=stats3,
+                           stats4=stats4,
+
                            page=page,
                            pagecount=pagecount,
                            count=stats3_count,
@@ -561,7 +548,7 @@ def legal_blocks(page=1, region=None):
 
 @cms_pages.route('/legal-blocks')
 def legal_orders():
-    
+
     g.remote_content = g.remote.get_content('legal-blocks-orders')
     region = current_app.config['DEFAULT_REGION']
     q = Query(g.conn,
@@ -580,7 +567,7 @@ def legal_orders():
 
     return render_template('legal-block-orders.html',
                            judgments=q,
-                           region=region) 
+                           region=region)
 
 
 @cms_pages.route('/legal-blocks/order/<int:id>')
