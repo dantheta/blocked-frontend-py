@@ -82,6 +82,9 @@ else:
     from injunctions import injunct_pages
     app.register_blueprint(injunct_pages, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
 
+    from cmsassets import cms_assets
+    app.register_blueprint(cms_assets, subdomain=www_domain)
+    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
 
 @app.before_first_request
 def setup_db():

@@ -251,18 +251,7 @@ def wildcard(page='index'):
         abort(404)
 
 
-@cms_pages.route('/cms/assets/<path:path>')
-def cms_asset(path):
-    if current_app.config['REMOTE_TYPE'] != 'cockpit':
-        abort(500)
 
-    try:
-        req = g.remote.get_asset('/'+path)
-    except ValueError as exc:
-        abort(exc.args[0])
-    return Response(req.iter_content(1024), req.status_code, 
-                    {'Content-type': req.headers['Content-type'],
-                    'Content-length': req.headers['Content-length']})
 
 
 @cms_pages.route('/legal-blocks')
