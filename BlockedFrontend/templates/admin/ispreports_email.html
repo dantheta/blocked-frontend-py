@@ -136,7 +136,7 @@ Request sent to BBFC on {{ bbfc_report.created }}
 <ul class="nav nav-tabs">
   <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
   <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories
-  {% if categories %}
+  {% if categories|selectattr('namespace', 'eq', 'ORG')|list %}
       <span class="text-success glyphicon glyphicon-ok"></span>
   {% endif %}
   </a></li>
