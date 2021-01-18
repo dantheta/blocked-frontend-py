@@ -166,7 +166,9 @@
         {{ field('Applicants represented by','injunction_represented_by',judgment) }}
         <div style="margin-bottom: 0.75em">
             <strong>Rightsholder: </strong><br />
+	    {% if judgment.rightsholder_id %}
             <span><a href="{{ url_for('admin_rightsholder.admin_rh_view', id=judgment.rightsholder_id) }}">{{ rh.name }} ({{ rh.country }})</a></span>
+	    {% endif %}
         </div>
     </div>
 </div>
