@@ -281,7 +281,7 @@ def ispreports_update_category():
             urlcat['userid'] = session['userid']
             urlcat.store()
 
-    if f['add_category_name']:
+    if f.get('add_category_name'):
         check_level('moderator')  # requires moderator or above
         cat = Category.find_or_create(g.conn,
                                       ['name','namespace'],
@@ -333,7 +333,7 @@ def ispreports_update_report_category():
         return None
 
 
-    if f['new_reporter_category']:
+    if f.get('new_reporter_category'):
         check_level('moderator')  # requires moderator or above
 
         reportercat = UrlReportCategory(g.conn)
