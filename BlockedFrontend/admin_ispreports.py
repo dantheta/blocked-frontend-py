@@ -359,7 +359,7 @@ def ispreports_update_report_category():
         asgt.store()
 
     damagecat = None
-    if f.get('add_category_name').strip():
+    if f.get('add_category_name', '').strip():
         check_level('moderator')  # requires moderator or above
 
         damagecat = UrlReportCategory(g.conn)
