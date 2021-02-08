@@ -484,7 +484,8 @@ class Url(DBObject):
     def get_report_categories(self, category_type):
         q = Query(self.conn,
                   """select url_report_categories.*
-                     from public.url_report_categories inner join public.url_report_category_asgt on (category_id = url_report_categories.id)
+                     from public.url_report_categories 
+                        inner join public.url_report_category_asgt on (category_id = url_report_categories.id)
                      where urlid = %s and category_type = %s
                      order by name""",
                   [ self['urlid'], category_type ])
@@ -729,9 +730,13 @@ class ISPReport(DBObject):
         
     def get_report_for(self, network_name):
         try:
-            return ISPReport.select_one(self.conn, urlid=self['urlid'], network_name=network_name)
+            for rpt in ISPReport.select(self.conn, urlid=self['urlid'], network_name=network_name, _orderby='-id'):
+                if rpt['status'] != 'cancelled':
+                    return rpt
         except ObjectNotFound:
-            return None
+            pass
+
+        return None
 
     def get_final_reply(self):
         return ISPReportEmail(self.conn, self['resolved_email_id'])
