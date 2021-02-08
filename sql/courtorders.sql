@@ -129,7 +129,7 @@ select urls.urlid, urls.url, uls.id as url_latest_status_id, regions, network_na
     inner join url_latest_status uls on urls.urlid = uls.urlid
         and uls.status = 'blocked' and uls.blocktype = 'COPYRIGHT'
     inner join isps on isps.name = uls.network_name
-    where urls.url ~* '^https?://[^/]+$' and urls.status = 'ok'
+    where urls.url ~* '^https?://[^/]+$' and urls.status = 'ok';
 
 create or replace view active_court_blocks as 
       -- copyright blocks with or without judgments
@@ -153,7 +153,7 @@ create or replace view active_court_blocks as
             and cjuf.reason <> 'block_appears_correct' 
 
       group by cj.id, cj.date, cj.sites_description, cj.name, cj.url, cj.judgment_url, cj.case_number, cjug.id, cjug.name, cju.url,  cjuf.reason, cjuf.abusetype, region, cjuf.judgment_url_id
-      order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, cju.url
+      order by judgment_date desc nulls last, judgment_name nulls last, url_group_name nulls last, cju.url;
 
 
 create table rightsholders (
