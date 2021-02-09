@@ -147,7 +147,7 @@ tr:hover * .action-button {
           </span>
 
         </div><!-- /input-group -->
-            {% for arg_k, arg_v in args().items() %}
+            {% for arg_k, arg_v in args().items()|rejectattr('0', 'equalto', 'url') %}
             <input type="hidden" name="{{ arg_k }}" value="{{ arg_v }}" />
             {% endfor %}
         </form>
