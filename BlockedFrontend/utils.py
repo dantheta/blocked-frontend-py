@@ -30,7 +30,9 @@ def get_args_helper(arglist, initial={}):
     args = initial.copy()
     args.update({x: request.args.get(x) 
             for x in arglist
-            if x in request.args and request.args[x] is not None and x not in initial})
+            if x in request.args and request.args[x] is not None
+                 and not (x == 'url' and request.args[x] == '')
+                 and x not in initial})
 
     def helper_func(**kw):
         newargs = args.copy()
