@@ -34,7 +34,8 @@ def ispreports():
                             isp=request.args.get('network', None),
                             category=request.args.get('category'),
                             reportercategory=request.args.get('reportercategory'),
-                            order=request.args.get('order','desc'),
+                            order=request.args.get('order', 'desc'),
+                            url=request.args.get('url', None),
                             admin=True)
 
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
@@ -42,7 +43,7 @@ def ispreports():
     damage_categories = UrlReportCategory.select(g.conn, category_type='damage', _orderby='name')
 
     return render_template('ispreports.html',
-                           args=get_args_helper(['state','category','reportercategory','network','page','order']),
+                           args=get_args_helper(['state', 'category', 'reportercategory', 'network', 'page', 'order', 'url']),
                            reports=reports,
                            reportable_isps = load_data('isps')['reportable_isps'],
                            page=page,

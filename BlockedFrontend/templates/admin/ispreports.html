@@ -137,7 +137,21 @@ tr:hover * .action-button {
     {% endfor %}
     </ul>
     </li>
-    
+
+    <li role="presentation" class="{{ 'active' if request.args.url else '' }}">
+        <form method="GET" action="{{ request.path }}">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Filter by url" name="url" value="{{ request.args.url|default('') }}">
+          <span class="input-group-btn">
+            <input type="submit" value="Go!" class="btn btn-default" />
+          </span>
+
+        </div><!-- /input-group -->
+            {% for arg_k, arg_v in args().items() %}
+            <input type="hidden" name="{{ arg_k }}" value="{{ arg_v }}" />
+            {% endfor %}
+        </form>
+    </li>
   </ul>
 </div> 
 
