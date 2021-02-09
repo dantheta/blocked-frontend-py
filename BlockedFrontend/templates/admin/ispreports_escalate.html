@@ -16,19 +16,23 @@
     <div class="col-md-12">
 
         <form method="POST" action="{{ url_for('.ispreports_escalate_post', id=report.id) }}">
-            {{ forms.static_field('Mobile network operator', 'network_name', report.network_name) }}
-            {{ forms.static_field('Mobile network contacted', 'created', report.created|fmtime) }}
-            <h3>Mobile network response</h3>
-            {{ forms.static_field('Date', 'reply_created', emailreply.created|fmtime) }}
-            
-            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()), rows=8) }}            
-            
-            <h3>Additional contact information</h3>
-            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.email + ")" ) }}
-            
             <h3>Site details</h3>
             {{ forms.static_field('URL','url', url.url) }}
-            
+            {{ forms.static_field('Mobile network operator', 'network_name', report.network_name) }}
+            {{ forms.static_field('Mobile network contacted', 'created', report.created|fmtime) }}
+
+            <h3>Original complaint</h3>
+            <textarea rows="8" style="width: 100%; font-family: mono" name="original_complaint">{{ report.message }}</textarea>
+
+            <h3>Additional contact information</h3>
+            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.email + ")" ) }}
+
+            <h3>Mobile network response</h3>
+            {{ forms.static_field('Date', 'reply_created', emailreply.created|fmtime) }}
+
+            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()), rows=8) }}
+
+
             <h3>Nature of complaint</h3>
             
             <textarea rows="8" style="width: 100%; font-family: mono" name="emailtext">{{ email_text }}</textarea>

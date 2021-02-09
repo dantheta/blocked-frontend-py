@@ -104,9 +104,26 @@ def ispreports_escalate(id):
 @admin_ispreport_pages.route('/control/ispreports/escalate/<int:id>', methods=['POST'])
 @check_admin
 def ispreports_escalate_post(id):
-    emailtext = request.form['emailtext']
+    f = request.form
     report = ISPReport(g.conn, id)
     urlobj = report.get_url()
+
+    submission_text = """
+Original Complaint:
+
+{}
+
+
+ISP Response:
+
+{}
+
+
+Review comments:
+
+{}
+
+""".format(f['original_complaint'].strip(), f['previous'].strip(), f['emailtext'].strip() )
 
     req = {
         'url': urlobj['url'],
@@ -115,8 +132,7 @@ def ispreports_escalate_post(id):
             'email': "blocked@openrightsgroup.org",
         },
         'original_network': report['network_name'],
-        'message': emailtext,
-        'previous': request.form['previous'],
+        'message': submission_text,
         'additional_contact': request.form['additional_contact'],
         'report_type': "unblock",
         'date': get_timestamp(),
@@ -129,6 +145,8 @@ def ispreports_escalate_post(id):
             'signature': '',
         }
     }
+
+    logging.debug("Sent: %s", req)
 
     req['auth']['signature'] = g.api.sign(req,  ['url','date'])
     if current_app.config['DUMMY']:
