@@ -45,13 +45,14 @@ def ispreports():
 
     return render_template('ispreports.html',
                            args=get_args_helper(['state', 'category', 'reportercategory', 'network', 'page',
-                                                 'order', 'url', 'policy']),
+                                                 'order', 'url', 'policy', 'user']),
                            reports=reports,
                            reportable_isps = load_data('isps')['reportable_isps'],
                            page=page,
                            all_categories=all_categories,
                            reporter_categories=reporter_categories,
                            damage_categories=damage_categories,
+                           users=ISPReport.get_reviewers(g.conn),
                            pagecount = get_pagecount(reports['count'], 25))
 
 

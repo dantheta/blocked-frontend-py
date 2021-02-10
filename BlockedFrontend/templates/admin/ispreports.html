@@ -163,6 +163,26 @@ tr:hover * .action-button {
         </ul>
     </li>
 
+    {% if g.is_level('admin') %}
+    <li role="presentation" class="dropdown {{'active' if request.args.user else ''}}">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            By User
+            {%- if request.args.user %} ({{ request.args.user }}){% endif -%}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(user=None) ) }}">(all)</a>
+            </li>
+            {% for u in users %}
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(user=u.id) ) }}">{{ u.username }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endif %}
+
     <li role="presentation" class="{{ 'active' if request.args.url else '' }}">
         <form method="GET" action="{{ request.path }}">
         <div class="input-group">

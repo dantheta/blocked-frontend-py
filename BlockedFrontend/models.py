@@ -740,7 +740,19 @@ class ISPReport(DBObject):
 
     def get_final_reply(self):
         return ISPReportEmail(self.conn, self['resolved_email_id'])
-        
+
+
+    @classmethod
+    def get_reviewers(cls, conn):
+        q = Query(conn, """
+            select distinct users.* from frontend.users 
+            inner join public.isp_report_users iru on iru.userid = users.id
+            inner join public.isp_reports on (isp_reports.id = iru.report_id or isp_reports.urlid = iru.urlid)
+            """, [])
+        for row in q:
+            yield User(conn, data=row)
+        q.close()
+
 class ISPReportEmail(DBObject):
     TABLE = 'public.isp_report_emails'
     FIELDS = [
