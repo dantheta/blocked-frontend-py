@@ -120,6 +120,9 @@ tr:hover * .action-button {
     </ul>
     </li>
     
+
+
+
     <li role="presentation" class="dropdown {{'active' if request.args.category else ''}}">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
       By Site Category 
@@ -139,6 +142,25 @@ tr:hover * .action-button {
     </li>
     {% endfor %}
     </ul>
+    </li>
+
+    <li role="presentation" class="dropdown {{'active' if request.args.policy else ''}}">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            By Policy Match
+            {%- if request.args.policy %} ({% if request.args.policy == '1' %}Yes{% else %}No{% endif %}){% endif -%}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(policy=None) ) }}">(all)</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(policy='0') ) }}">Not matching policy</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(policy='1') ) }}">Matching policy</a>
+            </li>
+        </ul>
     </li>
 
     <li role="presentation" class="{{ 'active' if request.args.url else '' }}">
