@@ -84,6 +84,9 @@ tr:hover * .action-button {
       <li role="presentation" class="">
           <a href="{{ url_for('.ispreports', **args(network=None) ) }}">(all)</a> 
       </li>
+      <li role="presentation" class="">
+          <a href="{{ url_for('.ispreports', **args(network='@mobile') ) }}">(all mobile)</a>
+      </li>
     {% for isp in reportable_isps %}
     <li role="presentation" class="{{ 'active' if request.args.network == isp else '' }}">
         <a href="{{ url_for('.ispreports', **args(network=isp) ) }}">{{ isp }}</a>
