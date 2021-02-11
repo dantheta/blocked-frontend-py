@@ -37,6 +37,7 @@ def ispreports():
                             order=request.args.get('order', 'desc'),
                             url=request.args.get('url', None),
                             policy=request.args.get('policy'),
+                            user=request.args.get('user') if g.is_level('admin') else None,
                             admin=True)
 
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
@@ -353,7 +354,6 @@ def ispreports_update_report_category():
         if row:
             return UrlReportCategoryAsgt(g.conn, data=row)
         return None
-
 
     if f.get('new_reporter_category'):
         check_level('moderator')  # requires moderator or above
