@@ -173,7 +173,7 @@ def ispreports_status_unblocked(id):
     report = email.get_report()
     url = report.get_url()
 
-    report.set_status('unblocked', email)
+    report.set_status('unblocked', email, session['userid'])
     g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
@@ -186,7 +186,7 @@ def ispreports_status_rejected(id):
     report = email.get_report()
     url = report.get_url()
 
-    report.set_status('rejected', email)
+    report.set_status('rejected', email, session['userid'])
     g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
