@@ -796,7 +796,7 @@ class UrlReportCategoryAsgt(DBObject):
 class UrlReportCategoryComment(DBObject):
     TABLE = 'public.url_report_category_comments'
     FIELDS = [
-        'url',
+        'urlid',
         'damage_category_id',
         'reporter_category_id',
         'review_notes',
