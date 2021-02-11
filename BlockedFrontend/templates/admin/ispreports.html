@@ -167,7 +167,7 @@ tr:hover * .action-button {
     <li role="presentation" class="dropdown {{'active' if request.args.user else ''}}">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             By User
-            {%- if request.args.user %} ({{ request.args.user }}){% endif -%}
+            {%- if request.args.user %} ({{ fltuser.username }}){% endif -%}
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">

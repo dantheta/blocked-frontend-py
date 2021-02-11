@@ -44,6 +44,11 @@ def ispreports():
     reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')
     damage_categories = UrlReportCategory.select(g.conn, category_type='damage', _orderby='name')
 
+    if 'user' in request.args:
+        fltuser = User(g.conn, request.args['user'])
+    else:
+        fltuser = None
+
     return render_template('ispreports.html',
                            args=get_args_helper(['state', 'category', 'reportercategory', 'network', 'page',
                                                  'order', 'url', 'policy', 'user']),
@@ -54,6 +59,7 @@ def ispreports():
                            reporter_categories=reporter_categories,
                            damage_categories=damage_categories,
                            users=ISPReport.get_reviewers(g.conn),
+                           fltuser=fltuser,
                            pagecount = get_pagecount(reports['count'], 25))
 
 
