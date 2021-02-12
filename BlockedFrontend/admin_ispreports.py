@@ -198,6 +198,18 @@ def ispreports_status_rejected(id):
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
 
+@admin_ispreport_pages.route('/control/ispreports/no-response/<int:id>')
+@check_reviewer
+def ispreports_status_noresponse(id):
+    report = ISPReport(g.conn, id)
+    url = report.get_url()
+
+    report.set_status('no-response', None, session['userid'])
+    g.conn.commit()
+
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
+
+
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<path:url>')
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')
 @check_reviewer

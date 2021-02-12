@@ -654,18 +654,21 @@ class ISPReport(DBObject):
         return ( (email, email.decode()) for email in self.get_emails() )
         
     def set_status(self, newstatus, email, userid):
-        assert newstatus in ('unblocked', 'rejected')
+        assert newstatus in ('unblocked', 'rejected', 'no-response')
         self['last_updated'] = max([self['last_updated'] or self['created'], email['created']])
         self['status'] = newstatus
-        self['resolved_email_id'] = email['id']
         self['resolved_userid'] = userid
-        
+        if email:
+            self['resolved_email_id'] = email['id']
+        else:
+            self['resolved_email_id'] = None
+
         q = Query(self.conn, """update public.isp_reports set 
             status = %s, last_updated = %s, resolved_email_id = %s, resolved_userid = %s
             where id = %s""",
-            [self['status'], self['last_updated'], self['resolved_email_id'], self['resolved_userid'],
-             self['id']]
-            )
+                  [self['status'], self['last_updated'], self['resolved_email_id'], self['resolved_userid'],
+                   self['id']]
+                  )
         
     def update_flag(self, name, value):
         assert name in ('matches_policy','egregious_block','featured_block','maybe_harmless'), \
