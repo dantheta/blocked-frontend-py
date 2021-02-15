@@ -197,6 +197,18 @@ def ispreports_status_rejected(id):
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
+@admin_ispreport_pages.route('/control/ispreports/reset/<int:id>')
+@check_admin
+def ispreports_status_reset(id):
+    report = ISPReport(g.conn, id)
+    url = report.get_url()
+    report.reset_status('sent')
+    g.conn.commit()
+
+    flash("Status reset for ISP Report {}".format(report['id']))
+
+    return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
+
 
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<path:url>')
 @admin_ispreport_pages.route('/control/ispreports/<network_name>/<int:msgid>/<path:url>')

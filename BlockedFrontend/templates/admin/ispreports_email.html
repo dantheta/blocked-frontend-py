@@ -96,6 +96,9 @@ $(document).ready(function(){
 </div>
 
 <div class="col-md-2" style="text-align: right">
+
+    <div class="row">
+        <div class="col-md-12">
 <h2>
 {% if report.status == 'unblocked' %}
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Accepted</div>
@@ -103,8 +106,18 @@ $(document).ready(function(){
 <div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove success"></span> Rejected</div>
 {% endif %}
 </h2>
+        </div>
+    </div>
+{% if g.is_level('admin') and report.status in ('unblocked','rejected') %}
+    <div class="row" style="margin-top: 1em">
+        <div class="col-md-12">
+        <a href="{{ url_for('.ispreports_status_reset', id=report.id) }}" class="btn btn-warning" onclick="confirm('Are you sure you want to reset to status: sent?')">Reset status</a>
+        </div>
+    </div>
+{% endif %}
 
-<div>
+    <div class="row" style="margin-top: 1em">
+        <div class="col-md-12">
 {% if report_prev %}
 <a href="{{ url_for('.ispreports_view', network_name=report_prev.network_name, url=report_prev.url) }}" class="btn btn-primary" title="View previous report"><span class="glyphicon glyphicon-backward"></span> Prev</a>
 {%- endif -%}
@@ -112,21 +125,25 @@ $(document).ready(function(){
 {%- if report_next -%}
 <a href="{{ url_for('.ispreports_view', network_name=report_next.network_name, url=report_next.url) }}" class="btn btn-primary" title="View next report">Next <span class="glyphicon glyphicon-forward"></span></a>
 {% endif %}
-</div>
+        </div>
+    </div>
 
+    <div class="row" style="margin-top: 1em">
+        <div class="col-md-12">
 {% if report.status == 'rejected' %}
 {%   if bbfc_report == None %}
 {%     if isp.isp_type == 'mobile' %}
-<div style="margin-top: 2em">
+<div>
     <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
-</div>
 {%     endif %}
 {%   else %}
-<div style=margin-top: 2em">
+<div>
 Request sent to BBFC on {{ bbfc_report.created|fmtime }}
 </div>
 {%   endif %}
 {% endif %}
+        </div>
+    </div>
 
 </div>
 </div> <!-- /.row -->

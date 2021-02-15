@@ -580,6 +580,7 @@ class ISPReport(DBObject):
         'allow_contact',
         'mailname',
         'resolved_email_id',
+        'resolved_userid',
         
         'category_notes',
         'review_notes',
@@ -666,7 +667,18 @@ class ISPReport(DBObject):
             [self['status'], self['last_updated'], self['resolved_email_id'], self['resolved_userid'],
              self['id']]
             )
-        
+
+    def reset_status(self, status):
+        self['status'] = status
+        self['resolved_email_id'] = None
+        self['resolved_userid'] = None
+
+        q = Query(self.conn, """update public.isp_reports set 
+            status = %s,  resolved_email_id = %s, resolved_userid = %s
+            where id = %s""",
+                  [self['status'], None, None, self['id']]
+                  )
+
     def update_flag(self, name, value):
         assert name in ('matches_policy','egregious_block','featured_block','maybe_harmless'), \
                 "{0} is not an accepted flag".format(name)
