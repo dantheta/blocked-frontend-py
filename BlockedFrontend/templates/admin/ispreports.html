@@ -247,7 +247,7 @@ tr:hover * .action-button {
     {% elif report.status == 'rejected' %}
     <span class="label label-danger">{{ report.status|title }}</span>    
     {% elif report.status == 'unblocked' %}
-    <span class="label label-success">{{ report.status|title }}</span>    
+    <span class="label label-success">Accepted</span>
     {% else %}
     <span class="label label-default">{{ report.status|title }}</span>    
     {% endif %}
