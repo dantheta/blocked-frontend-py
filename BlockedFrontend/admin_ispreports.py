@@ -119,7 +119,7 @@ def ispreports_escalate_post(id):
     report = ISPReport(g.conn, id)
     urlobj = report.get_url()
 
-    submission_text = """
+    submission_text = u"""
 Original Complaint:
 
 {}
@@ -144,7 +144,7 @@ Review comments:
         },
         'original_network': report['network_name'],
         'message': submission_text,
-        'additional_contact': request.form['additional_contact'],
+        'additional_contact': f['additional_contact'],
         'report_type': "unblock",
         'date': get_timestamp(),
         'send_updates': 0,
