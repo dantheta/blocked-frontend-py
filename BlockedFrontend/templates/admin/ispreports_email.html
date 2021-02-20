@@ -101,8 +101,8 @@ $(document).ready(function(){
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Unblocked</div>
 {% elif report.status == 'rejected' %}
 <div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove success"></span> Rejected</div>
-{% elif report.status == 'no-response' %}
-<div class="label label-default label-lg"><span class="glyphicon glyphicon-remove success"></span> No response</div>
+{% elif report.status == 'no-decision' %}
+<div class="label label-default label-lg"><span class="glyphicon glyphicon-remove success"></span> No decision</div>
 {% endif %}
 </h2>
 
@@ -116,7 +116,7 @@ $(document).ready(function(){
 {% endif %}
 </div>
 
-{% if report.status == 'rejected' %}
+{% if report.status in ('no-decision','rejected') %}
 {%   if bbfc_report == None %}
 {%     if isp.isp_type == 'mobile' %}
 <div style="margin-top: 2em">
@@ -164,7 +164,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
 <div style="margin-top: 1.0em; margin-bottom: 1.5em">
     {% if report.status == 'sent' %}
 <div class="pull-right">
-    <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_noresponse', id=report.id) }}">
+    <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}">
         <span class="glyphicon glyphicon-minus"></span> Close report: No response</a>
 </div>
     {% endif %}
@@ -219,7 +219,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
                     <ul class="dropdown-menu">
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Unblocked</a></li>
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
-                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_noresponse', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No response</a></li>
+                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No response</a></li>
                     </ul>
                 {% endif %}
                 {#
