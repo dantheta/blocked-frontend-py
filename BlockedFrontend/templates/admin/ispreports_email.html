@@ -110,7 +110,7 @@ $(document).ready(function(){
 </h2>
         </div>
     </div>
-{% if g.is_level('admin') and report.status in ('unblocked','rejected') %}
+{% if g.is_level('admin') and report.status in ('unblocked','rejected','no-decision') %}
     <div class="row" style="margin-top: 1em">
         <div class="col-md-12">
         <a href="{{ url_for('.ispreports_status_reset', id=report.id) }}" class="btn btn-warning" onclick="confirm('Are you sure you want to reset to status: sent?')">Reset status</a>
