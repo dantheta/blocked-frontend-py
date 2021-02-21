@@ -137,6 +137,7 @@ $(document).ready(function(){
 {%     if isp.isp_type == 'mobile' %}
 <div>
     <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
+</div>
 {%     endif %}
 {%   else %}
 <div>
