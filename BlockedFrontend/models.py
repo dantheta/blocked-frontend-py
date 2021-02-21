@@ -656,7 +656,7 @@ class ISPReport(DBObject):
         
     def set_status(self, newstatus, email, userid):
         assert newstatus in ('unblocked', 'rejected', 'no-decision')
-        self['last_updated'] = max([self['last_updated'] or self['created'], email['created']])
+        self['last_updated'] = max([self['last_updated'] or self['created'], email['created'] if email else None])
         self['status'] = newstatus
         self['resolved_userid'] = userid
         if email:

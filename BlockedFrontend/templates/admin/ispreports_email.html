@@ -183,7 +183,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
     {% if report.status == 'sent' %}
 <div class="pull-right">
     <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}">
-        <span class="glyphicon glyphicon-minus"></span> Close report: No response</a>
+        <span class="glyphicon glyphicon-minus"></span> Close report: No decision</a>
 </div>
     {% endif %}
 <h4>{{messagelist|length}} messages received</h4>
@@ -237,7 +237,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
                     <ul class="dropdown-menu">
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Accepted</a></li>
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
-                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No response</a></li>
+                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No decision</a></li>
                     </ul>
                 {% endif %}
                 {#
