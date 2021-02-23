@@ -205,7 +205,7 @@ tr:hover * .action-button {
   <th class="col-md-2">URL</th>
   <th class="col-md-1 center">URL<br/>Status</th>
   <th class="col-md-2">Email</th>
-  <th class="col-md-2">Network</th>
+  <th class="col-md-1">Network</th>
   <th class="col-md-2">Created
   {% if request.args.order == 'asc' %}
   <a href="{{ url_for('.ispreports', **args(order='desc')) }}" title="Sort by date descending"><span class="glyphicon glyphicon-chevron-up"></span></a>
@@ -216,7 +216,7 @@ tr:hover * .action-button {
   <th class="center col-md-1">Report<br/>Status</th>
   <th class="col-md-1">Replies</th>
   <!--<th class="center">Reviewed</th>-->
-  <th class="col-md-2 center"><span class="glyphicon glyphicon-cog" title="Actions menu"></span></th>
+  <th class="col-md-1 center"><span class="glyphicon glyphicon-cog" title="Actions menu"></span></th>
 </tr>
 {% for report in reports.reports %}
 <tr class="isp-report-row">
@@ -258,7 +258,7 @@ tr:hover * .action-button {
   {% endif %}
   </td>
   <!--<td class="center"></td>-->
-  <td class="" style="">
+  <td class="" style="text-align: right;">
       <div class="btn-group action-button invisible">
           <a class="btn btn-default" href="{{url_for('.ispreports_view', url=report.url, network_name=report.network_name)}}" title="View report">View</a>
           <button class="dropdown-toggle btn btn-default" title="Actions for {{ report.url }}" data-toggle="dropdown">
