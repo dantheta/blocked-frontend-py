@@ -757,6 +757,8 @@ class ISPReport(DBObject):
         return None
 
     def get_final_reply(self):
+        if self['resolved_email_id'] is None:
+            return None
         return ISPReportEmail(self.conn, self['resolved_email_id'])
 
 
