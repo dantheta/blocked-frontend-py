@@ -38,6 +38,7 @@ def ispreports():
                             url=request.args.get('url', None),
                             policy=request.args.get('policy'),
                             user=request.args.get('user') if g.is_level('admin') else None,
+                            url_status=request.args.get('url_status'),
                             admin=True)
 
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
@@ -51,7 +52,7 @@ def ispreports():
 
     return render_template('ispreports.html',
                            args=get_args_helper(['state', 'category', 'reportercategory', 'network', 'page',
-                                                 'order', 'url', 'policy', 'user']),
+                                                 'order', 'url', 'policy', 'user', 'url_status']),
                            reports=reports,
                            reportable_isps = load_data('isps')['reportable_isps'],
                            page=page,

@@ -55,11 +55,11 @@ tr:hover * .action-button {
              "Reviewed",
              reports.review_count)
       }}
-      {{ tab(request.args.state == 'featured',
+      {# tab(request.args.state == 'featured',
              url_for('.ispreports', **args(state='featured') ),
              "Featured",
              reports.feature_count)
-      }}
+      #}
       {{ tab(request.args.state == 'harmless',
              url_for('.ispreports', **args(state='harmless') ),
              "Harmless",
@@ -69,6 +69,21 @@ tr:hover * .action-button {
              url_for('.ispreports', **args(state='resubmit') ),
              "To resubmit",
              reports.resubmit_count)
+      }}
+      {{ tab(request.args.state == 'accepted',
+             url_for('.ispreports', **args(state='accepted') ),
+             "Accepted",
+             reports.accepted_count)
+      }}
+      {{ tab(request.args.state == 'rejected',
+             url_for('.ispreports', **args(state='rejected') ),
+             "Rejected",
+             reports.rejected_count)
+      }}
+      {{ tab(request.args.state == 'not_accepted',
+             url_for('.ispreports', **args(state='not_accepted') ),
+             "Not accepted",
+             reports.not_accepted_count)
       }}
     </ul>
     <ul class="nav nav-pills">
@@ -162,6 +177,24 @@ tr:hover * .action-button {
             </li>
         </ul>
     </li>
+    <li role="presentation" class="dropdown {{'active' if request.args.url_status else ''}}">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            By URL Status
+            {%- if request.args.url_status %} ({% if request.args.url_status == '1' %}Unblocked{% else %}Blocked{% endif %}){% endif -%}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(url_status=None) ) }}">(all)</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(url_status='1') ) }}">Unblocked</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="{{ url_for('.ispreports', **args(url_status='0') ) }}">Blocked</a>
+            </li>
+        </ul>
+    </li>
 
     {% if g.is_level('admin') %}
     <li role="presentation" class="dropdown {{'active' if request.args.user else ''}}">
@@ -182,6 +215,9 @@ tr:hover * .action-button {
         </ul>
     </li>
     {% endif %}
+  </ul>
+  <ul class="nav nav-pills">
+    <li role="presentation" class="dropdown disabled"> <a> Search:</a></li>
 
     <li role="presentation" class="{{ 'active' if request.args.url else '' }}">
         <form method="GET" action="{{ request.path }}">
