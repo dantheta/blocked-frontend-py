@@ -60,11 +60,11 @@ tr:hover * .action-button {
              "Featured",
              reports.feature_count)
       #}
-      {{ tab(request.args.state == 'harmless',
+      {# tab(request.args.state == 'harmless',
              url_for('.ispreports', **args(state='harmless') ),
              "Harmless",
              reports.harmless_count)
-      }}
+      #}
       {{ tab(request.args.state == 'resubmit',
              url_for('.ispreports', **args(state='resubmit') ),
              "To resubmit",
