@@ -104,7 +104,7 @@ def ispreports_escalate(id):
     urlobj = report.get_url()
 
     g.conn.commit()
-    if report['status'] != 'rejected':
+    if report['status'] not in  ('no-decision', 'rejected'):
         return "Cannot escalate report unless report has been rejected by ISP", 400
     return render_template('ispreports_escalate.html',
                            report=report,
