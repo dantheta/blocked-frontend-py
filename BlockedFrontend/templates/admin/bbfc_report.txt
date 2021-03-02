@@ -1,0 +1,16 @@
+Original Complaint:
+-------------------
+
+{{original}}
+
+submitted on {{ submitted_date|fmtime }}
+
+ISP Response:
+-------------
+
+{{response}}
+
+Review comments:
+----------------
+
+{{comments}}

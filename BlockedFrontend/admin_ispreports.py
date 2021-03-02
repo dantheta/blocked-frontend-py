@@ -104,8 +104,8 @@ def ispreports_escalate(id):
     urlobj = report.get_url()
 
     g.conn.commit()
-    if report['status'] not in  ('no-decision', 'rejected'):
-        return "Cannot escalate report unless report has been rejected by ISP", 400
+    #if report['status'] not in  ('no-decision', 'rejected'):
+    #    return "Cannot escalate report unless report has been rejected by ISP", 400
     return render_template('ispreports_escalate.html',
                            report=report,
                            emailreply=report.get_final_reply(),
@@ -120,22 +120,12 @@ def ispreports_escalate_post(id):
     report = ISPReport(g.conn, id)
     urlobj = report.get_url()
 
-    submission_text = u"""
-Original Complaint:
-
-{}
-
-
-ISP Response:
-
-{}
-
-
-Review comments:
-
-{}
-
-""".format(f['original_complaint'].strip(), f['previous'].strip(), f['emailtext'].strip() )
+    submission_text = render_template('bbfc_report.txt',
+                                      original=f['original_complaint'].strip(),
+                                      response=f['previous'].strip(),
+                                      submitted_date=report['submitted'],
+                                      comments=f['emailtext'].strip()
+                                      )
 
     req = {
         'url': urlobj['url'],
@@ -273,7 +263,9 @@ def ispreports_view(url, network_name, msgid=None):
                            report_damage_categories=list(urlobj.get_report_categories('damage')),
                            reporter_category=urlobj.get_reporter_category(),
                            verified= contact and contact['verified'],
-                           bbfc_report=ispreport.get_report_for("BBFC")
+                           bbfc_report=ispreport.get_report_for("BBFC"),
+                           bbfc_unblock_cutoff=(datetime.date.today() -
+                                                datetime.timedelta(current_app.config['BBFC_REPORT_ACCEPTED_CUTOFF']))
                            )
 
 

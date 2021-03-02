@@ -132,7 +132,9 @@ $(document).ready(function(){
 
     <div class="row" style="margin-top: 1em">
         <div class="col-md-12">
-{% if report.status in ('no-decision','rejected') %}
+{% if report.status in ('no-decision','rejected') or (report.status == 'unblocked'
+            and report.created.date() < bbfc_unblock_cutoff
+            and latest_status[report.network_name].status == 'blocked') %}
 {%   if bbfc_report == None %}
 {%     if isp.isp_type == 'mobile' %}
 <div>

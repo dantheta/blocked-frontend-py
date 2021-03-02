@@ -81,6 +81,8 @@ SITE_CATEGORIES = {
     'tobacco': "Tobacco"
 }
 
+BBFC_REPORT_ACCEPTED_CUTOFF = 3
+
 RANDOMSITE = 'frontpagelists'
 
 DEFAULT_REGION = 'gb'
