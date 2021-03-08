@@ -185,7 +185,7 @@ def submit_unblock():
         'reporter': {
             'name': random_name() if (g.admin and form.get('use_random')) else form['name'],
             'email': form['email'],
-            },
+        },
         'message': form['message'],
         'category': form.get('site_category',''),
         'usertype': usertype,
@@ -197,16 +197,22 @@ def submit_unblock():
         'auth': {
             'email': g.api.username,
             'signature': '',
-            }
         }
-    
-    if 'networks' in form:
+    }
+
+    if 'mobile' in form:
+        req['networks'] = [isp['name'] for isp in ISP.select(g.conn, isp_type='mobile')
+                           if isp['admin_email']
+                           ]
+    elif 'networks' in form:
         req['networks'] = make_list(form['networks'])
+
     req['auth']['signature'] = g.api.sign(req,  ['url','date'])
 
     if current_app.config['DUMMY']:
         # demo mode - don't really submit
         logging.warn("Dummy mode: not really submitting")
+        logging.info("Data sent: %s", req)
         data = {'verification_required':  False, 'success': True}
     else:
         data = g.api.POST_JSON('ispreport/submit', req)
@@ -215,10 +221,10 @@ def submit_unblock():
 
     if data['success'] == False:
         return render_template('message.html',
-            title="This site is blacklisted.",
-            message="Blocked is not able to report blacklisted sites for unblocking."
-            )
-            
+                               title="This site is blacklisted.",
+                               message="Blocked is not able to report blacklisted sites for unblocking."
+                               )
+
     if 'reporter' in session:
         session['reporter'].pop('user', None)
         session['reporter'].pop('owner', None)
@@ -240,7 +246,7 @@ def submit_unblock():
                 session['thanks'] = True # save under a rock for the /site page
                 session['thanksmsg'] = 'unblock'
                 return ret
-                
+
             # default response
             return redirect('/thanks?u=1&v=0')
 
