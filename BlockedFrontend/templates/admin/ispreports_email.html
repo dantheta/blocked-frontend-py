@@ -168,7 +168,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
   {% endif %}
   </a></li>
   <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
-  {% if report.matches_policy != None -%}
+  {% if report.policy_match != None -%}
   <span class="text-success glyphicon glyphicon-ok"></span>
   {%- endif %}
   </a></li>
@@ -459,8 +459,8 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
         <div class="col-md-5">
             <form action="{{ url_for('.ispreports_review_update') }}" method="POST">
                 <input type="hidden" name="report_id" value="{{ report.id }}" />
-                {{ forms.radio_field("Block matched the ISP's policy", 'matches_policy', 'true', True if report.matches_policy else False) }}
-                {{ forms.radio_field("Block did not match the ISP's policy", 'matches_policy', 'False', True if report.matches_policy == False else False) }}
+                {{ forms.radio_field("Block matched the ISP's policy", 'policy_match', 'consistent', True if report.policy_match == 'consistent' else False) }}
+                {{ forms.radio_field("Block did not match the ISP's policy", 'policy_match', 'inconsistent', True if report.policy_match == 'inconsistent' else False) }}
                 
                 
                 {{ forms.check_field("This is an egregious block", 'egregious_block', 't', report.egregious_block) }}
@@ -487,7 +487,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
     <tr>
     <td>{{ comment.username }}</td>
     <td>{{ comment.created|fmtime }}</td>
-    <td>{{ comment.matches_policy|null }}</td>
+    <td>{{ comment.policy_match|null }}</td>
     <td>{{ comment.egregious_block|null }}</td>
     <td>{{ comment.featured_block|null }}</td>
     <td>{{ comment.maybe_harmless|null }}</td>

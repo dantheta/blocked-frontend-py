@@ -562,6 +562,7 @@ class ISP(DBObject):
 
 class ISPReport(DBObject):
     TABLE = 'public.isp_reports'
+
     FIELDS = [
         'name',
         'email',
@@ -584,16 +585,15 @@ class ISPReport(DBObject):
 
         'category_notes',
         'review_notes',
-        'matches_policy',
         'reporter_category_id',
+        'policy_match',
     ]
-
     @classmethod
     def get_by_url_network(klass, conn, url, network_name):
         q = Query(conn, """select isp_reports.* 
             from public.isp_reports isp_reports
             inner join urls on urls.urlid = isp_reports.urlid
-            where url = %s and network_name = %s""", 
+            where url = %s and network_name = %s""",
             [url, network_name])
         row = q.fetchone()
         return klass(conn, data=row)
@@ -633,8 +633,8 @@ class ISPReport(DBObject):
                     sum(case when status = 'sent' and unblocked = 0 then 1 else 0 end) count_open,
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null then 1 else 0 end) count_unresolved,
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and isp_reports.matches_policy is false then 1 else 0 end) count_unresolved_badblock,
-                    sum(case when unblocked = 0 and status = 'rejected' and matches_policy is false then 1 else 0 end) count_resolved_badblock,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.matches_policy is null) then 1 else 0 end) count_unresolved_policyblock
+                    sum(case when unblocked = 0 and status = 'rejected' and policy_match = 'inconsistent' then 1 else 0 end) count_resolved_badblock,
+                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.policy_match is null) then 1 else 0 end) count_unresolved_policyblock
                     from public.isp_reports_sent isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
                     where network_name not in ('ORG', 'BBFC')
@@ -683,7 +683,7 @@ class ISPReport(DBObject):
                   )
 
     def update_flag(self, name, value):
-        assert name in ('matches_policy','egregious_block','featured_block','maybe_harmless'), \
+        assert name in ('policy_match','egregious_block','featured_block','maybe_harmless'), \
                 "{0} is not an accepted flag".format(name)
         q = Query(self.conn, """update public.isp_reports 
                                 set {0} = %s
@@ -793,7 +793,7 @@ class ISPReportComment(DBObject):
     TABLE = 'public.isp_report_comments'
     FIELDS = [
         'report_id',
-        'matches_policy',
+        'policy_match',
         'review_notes',
         'userid'
         ]

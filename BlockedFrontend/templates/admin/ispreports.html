@@ -289,7 +289,7 @@ tr:hover * .action-button {
     {% endif %}
   </td>
   <td class="center">{{ report.reply_count }}
-  {% if report.matches_policy != None %}
+  {% if report.policy_match != None %}
       <span class="text-success glyphicon glyphicon-ok-sign" title="Block has been reviewed"></span>
   {% endif %}
   </td>

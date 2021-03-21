@@ -455,8 +455,8 @@ def ispreports_review_update():
     report = ISPReport(g.conn, f['report_id'])
     url = report.get_url()
 
-    if 'matches_policy' in f:
-        report.update_flag('matches_policy', (True if f['matches_policy'] == 'true' else False))
+    if 'policy_match' in f:
+        report.update_flag('policy_match', f['policy_match'])
 
     report.update_flag('egregious_block', 'egregious_block' in f)
     report.update_flag('featured_block', 'featured_block' in f)
@@ -467,7 +467,7 @@ def ispreports_review_update():
         'userid': session['userid'],
         'report_id': report['id'],
         'review_notes': f['review_notes'],
-        'matches_policy': f.get('matches_policy', None),
+        'policy_match': f.get('policy_match'),
         'egregious_block': 'egregious_block' in f,
         'featured_block': 'featured_block' in f,
         'maybe_harmless': 'maybe_harmless' in f,
@@ -640,7 +640,7 @@ def ispreport_reply_stats():
                 sum(case when status = 'unblocked' or unblocked =1 then 1 else 0 end) count_unblocked,
                 sum(case when status = 'rejected' then 1 else 0 end) count_rejected,
                 sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) then 1 else 0 end) count_unresolved,
-                sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) and matches_policy is false then 1 else 0 end) count_unresolved_badblock
+                sum(case when unblocked=0 and not exists(select 1 from public.isp_report_emails where report_id = isp_reports.id) and policy_match = 'inconsistent' then 1 else 0 end) count_unresolved_badblock
                 from public.isp_reports_sent isp_reports
                 where network_name <> 'ORG' and network_name <> 'BT-Strict'
                 group by extract('year' from isp_reports.created)::int 
