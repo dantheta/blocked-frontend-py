@@ -215,6 +215,7 @@ def submit_unblock():
         logging.info("Data sent: %s", req)
         data = {'verification_required':  False, 'success': True}
     else:
+        logging.info("Data sent: %s", req)
         data = g.api.POST_JSON('ispreport/submit', req)
 
     logging.info("Submission: %s", data)
