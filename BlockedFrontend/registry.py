@@ -29,8 +29,8 @@ def registry_seizures(page=1):
     newdate = newdate.date()
     pagecount = get_pagecount(count, pagesize)
 
-    sql = ("select url, max(uls.created) created, max(uls.last_blocked) last_blocked, string_agg(isps.description, ';') isp_description "
-           "from url_latest_status uls "
+    sql = ("select url, max(uls.created)::date created, max(uls.last_blocked) last_blocked, string_agg(isps.description, ';') isp_description "
+           "from public.url_latest_status uls "
            "inner join urls using (urlid) "
            "inner join isps on network_name = isps.name "
            "where blocktype = 'SUSPENSION' "
