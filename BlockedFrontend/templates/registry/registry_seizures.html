@@ -11,7 +11,6 @@ Domains that have been seized by CTIRU/PIPCU
 {% endblock %}
 
 {% block main_menu %}
-{{ chunks.registry_menu() }}
 {% endblock %}
 
 {% block body %}
@@ -27,13 +26,19 @@ Domains that have been seized by CTIRU/PIPCU
     {% for row in seizures %}
     <tr>
         <td>{{ row.url|noproto }} </td>
-        <td>{{ row.isp_description }}</td>
+        <td>
+            <ul>
+            {% for isp in row.isp_description.split(';') %}
+                <li>{{ isp }}</li>
+            {% endfor %}
+            </ul>
+        </td>
         <td>{{ row.created|fmdate }} {% if row.created.date() == newdate %}<span class="label label-info">New</span>{% endif %}</td>
         <td>{{ row.last_blocked|fmdate }}</td>
     </tr>
     {% endfor %}
 
 </table>
-{{ paging.page_list('.registry_suspensions',  page, pagecount, pagesize) }}
+{{ paging.page_list('.registry_seizures',  page, pagecount, pagesize) }}
 
 {% endblock %}
