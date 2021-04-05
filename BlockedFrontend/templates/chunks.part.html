@@ -67,8 +67,8 @@
 {% endif %}
 {%endmacro%}
 
-{% macro menu_link(title, url) %}
-<a class="{{ 'active' if request.path.startswith(url) else ''}}" href="{{url}}">{{title}}</a>
+{% macro menu_link(title, url, matchroot=False) %}
+<a class="{{ 'active' if request.path.startswith(url) or (matchroot and request.path == '/') else ''}}" href="{{url}}">{{title}}</a>
 {% endmacro %}
 {% macro menu_link_eq(title, url) %}
 <a class="{{ 'active' if request.path == url else ''}}" href="{{url}}">{{title}}</a>
@@ -95,8 +95,7 @@
 {% endmacro %}
 
 {% macro registry_menu() %}
-<a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
-{{ menu_link('Registry Suspensions', '/suspensions') }}
+{{ menu_link('Registry Suspensions', '/suspensions', True) }}
 {{ menu_link('Domain Seizures', '/seizures') }}
 {% endmacro %}
 
@@ -125,7 +124,6 @@
 {% macro footer_menu() %}
 {% set default_vhost = [request.scheme, "://", config.SUBDOMAIN_MAIN, ".", config.SERVER_NAME]|join('') %}
             <a class="" href="https://action.openrightsgroup.org/sign-up-for-org-email-updates">Stay in touch</a>
-            <!-- <a class="" href="/support">Support</a> -->
             <a class="" href="{{ default_vhost }}/credits">Credits</a>
             <a class="" href="{{ default_vhost }}/stats/probes">Probe Status</a>
             <a class="" href="{{ default_vhost }}/legal-blocks">Court Ordered Blocks</a>
