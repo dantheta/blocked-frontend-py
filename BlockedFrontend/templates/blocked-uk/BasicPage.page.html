@@ -78,7 +78,9 @@ banner_text_block(bool): show banner text block, default true
 
     <div class="row">
         <div class="col-md-12 menu">
+          {% block main_menu %}
           {{ chunks.main_menu() }}
+          {% endblock %}
         </div>
     </div>
     

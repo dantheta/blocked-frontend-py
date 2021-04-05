@@ -79,9 +79,13 @@ else:
     from stats import stats_pages
     app.register_blueprint(stats_pages, subdomain=www_domain)
 
+    from registry import registry_pages
+    app.register_blueprint(registry_pages, subdomain=app.config['SUBDOMAIN_NOMINET'])
+
     from cmsassets import cms_assets
     app.register_blueprint(cms_assets, subdomain=www_domain)
     app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
+    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_NOMINET'])
 
 @app.before_first_request
 def setup_db():
