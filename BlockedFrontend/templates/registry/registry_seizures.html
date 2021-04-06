@@ -19,19 +19,14 @@ Domains that have been seized by CTIRU/PIPCU
 <table class="table">
     <tr>
         <th>Domain</th>
-        <th>Detected on Network</th>
+        <th></th>
         <th>Detected</th>
         <th>Last Seen</th>
     </tr>
     {% for row in seizures %}
     <tr>
-        <td>{{ row.url|noproto }} </td>
+        <td><a href="{{ row.url }}" rel="nofollow">{{ row.url|noproto }}</a> </td>
         <td>
-            <ul>
-            {% for isp in row.isp_description.split(';') %}
-                <li>{{ isp }}</li>
-            {% endfor %}
-            </ul>
         </td>
         <td>{{ row.created|fmdate }} {% if row.created == newdate %}<span class="label label-info">New</span>{% endif %}</td>
         <td>{{ row.last_blocked|fmdate }}</td>
