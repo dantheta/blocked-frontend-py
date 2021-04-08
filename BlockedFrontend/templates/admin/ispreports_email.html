@@ -108,6 +108,12 @@ $(document).ready(function(){
 <div class="label label-info label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
 {% elif report.status == 'no-decision' %}
 <div class="label label-default label-lg"><span class="glyphicon glyphicon-remove"></span> No decision</div>
+{% elif report.status == 'sent' %}
+    {% if verified %}
+<div class="label label-info label-lg"><span class="glyphicon glyphicon-sent"></span> Sent</div>
+    {% else %}
+<div class="label label-default label-lg"><span class=""></span> User pending</div>
+    {% endif %}
 {% else %}
 <div class="label label-default label-lg"><span class=""></span> {{ report.status|title }}</div>
 {% endif %}
