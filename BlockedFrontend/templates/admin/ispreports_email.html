@@ -102,10 +102,14 @@ $(document).ready(function(){
 <h2>
 {% if report.status == 'unblocked' %}
 <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Accepted</div>
-{% elif report.status == 'rejected' %}
-<div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove success"></span> Rejected</div>
+{% elif report.status in ('rejected', 'abuse') %}
+<div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
+{% elif report.status in ('resent', 'escalated') %}
+<div class="label label-info label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
 {% elif report.status == 'no-decision' %}
-<div class="label label-default label-lg"><span class="glyphicon glyphicon-remove success"></span> No decision</div>
+<div class="label label-default label-lg"><span class="glyphicon glyphicon-remove"></span> No decision</div>
+{% else %}
+<div class="label label-default label-lg"><span class=""></span> {{ report.status|title }}</div>
 {% endif %}
 </h2>
         </div>
