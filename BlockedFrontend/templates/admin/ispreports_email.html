@@ -58,7 +58,7 @@ $(document).ready(function(){
 {{ forms.labelled_text("User", 'user', "%s (%s) <span class=\"label label-%s\">%s</span>"|format(
                                                                 report.name, report.email, 
                                                                 'success' if verified else 'default', 
-                                                                'verified' if verified else 'pending'
+                                                                'verified' if verified else 'unverified'
                                                                 )|safe) }}
 {% else %}
 {{ forms.labelled_text("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
