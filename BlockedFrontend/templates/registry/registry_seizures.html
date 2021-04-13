@@ -26,7 +26,7 @@ Domains that have been seized by CTIRU/PIPCU
     {% for row in seizures %}
     <tr>
         <td><a href="{{ row.url }}" rel="nofollow">{{ row.url|noproto }}</a> </td>
-        <td>{{ row.category }}</td>
+        <td>{{ row.category or ''}}</td>
         <td>{{ row.created|fmdate }} {% if row.created == newdate %}<span class="label label-info">New</span>{% endif %}</td>
         <td>{{ row.last_blocked|fmdate }}</td>
     </tr>
