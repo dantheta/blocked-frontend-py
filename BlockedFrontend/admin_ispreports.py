@@ -65,7 +65,7 @@ def ispreports():
 
 
 @admin_ispreport_pages.route('/control/ispreports/flag/<path:url>')
-@check_admin
+@check_reviewer
 def ispreports_flag(url):
     url = fix_path(url)
     req = g.api.reports_flag(url, request.args.get('status','abuse'))
@@ -75,7 +75,7 @@ def ispreports_flag(url):
 
 
 @admin_ispreport_pages.route('/control/ispreports/unflag/<path:url>')
-@check_admin
+@check_reviewer
 def ispreports_unflag(url):
     url = fix_path(url)
     req = g.api.reports_unflag(url)
