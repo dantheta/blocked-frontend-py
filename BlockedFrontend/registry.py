@@ -33,7 +33,7 @@ def registry_seizures(page=1):
            "from public.url_latest_status uls "
            "inner join urls using (urlid) "
            "inner join isps on network_name = isps.name "
-           "left join url_hierarchy h using (urlid) "
+           "left join public.url_hierarchy h using (urlid) "
            "where blocktype = 'SUSPENSION' and (parent_urlid = h.urlid or h.urlid is null) "
            "group by url "
            "order by created desc, url "
