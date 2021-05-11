@@ -21,7 +21,7 @@ def registry_seizures(page=1):
     offset = (page-1)*pagesize
 
     res = NORM.Query(g.conn,
-                     "select count(distinct urlid), max(created) from public.url_latest_status "
+                     "select count(distinct urlid), max(url_latest_status.created) from public.url_latest_status "
                      "left join public.url_hierarchy h using (urlid) "
                      "where blocktype = 'SUSPENSION' and (parent_urlid = h.urlid or h.urlid is null) ",
                      [])
