@@ -31,7 +31,7 @@ class SavedList(DBObject):
         return Item.select(self.conn, list_id=self['id'], _orderby='url', **kw)
 
     def get_items_on_network(self, network, status=None, domain=None, _limit=None, exclude=None):
-        args = [network, self['id']]
+        args = [self['id'], network]
         if status == 'unblocked':
             args.append(False)
         elif status == 'blocked':
@@ -41,8 +41,9 @@ class SavedList(DBObject):
                  """select distinct items.*
                     from items
                     inner join public.urls using (url)
-                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.network_name {{ network_op|safe }} %s and uls.status = 'blocked'
-                    where list_id = %s 
+                    inner join public.url_latest_status uls on uls.urlid = urls.urlid and uls.status = 'blocked'
+                    inner join public.isps on isps.id = isp_id
+                    where list_id = %s and isps.name {{ network_op|safe }} %s 
                     {% if status %}
                         and items.blocked = %s
                     {% endif %}
