@@ -632,9 +632,10 @@ class ISPReport(DBObject):
                     avg(case when (status='unblocked' or status='rejected' or unblocked=1) and isp_report_emails.id = isp_reports.resolved_email_id then isp_reports.last_updated - isp_reports.submitted else null end) avg_response_time,
                     sum(case when status = 'sent' and unblocked = 0 then 1 else 0 end) count_open,
                     sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null then 1 else 0 end) count_unresolved,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and isp_reports.matches_policy is false then 1 else 0 end) count_unresolved_badblock,
+                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and isp_reports.policy_match = 'inconsistent' then 1 else 0 end) count_unresolved_badblock,
                     sum(case when unblocked = 0 and status = 'rejected' and policy_match = 'inconsistent' then 1 else 0 end) count_resolved_badblock,
-                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and (isp_reports.matches_policy is true or isp_reports.policy_match is null) then 1 else 0 end) count_unresolved_policyblock
+                    sum(case when unblocked = 0 and status = 'sent' and isp_report_emails.report_id is null and 
+                        (isp_reports.policy_match = 'consistent') then 1 else 0 end) count_unresolved_policyblock
                     from public.isp_reports_sent isp_reports
                     left join public.isp_report_emails on report_id = isp_reports.id
                     where network_name not in ('ORG', 'BBFC')
