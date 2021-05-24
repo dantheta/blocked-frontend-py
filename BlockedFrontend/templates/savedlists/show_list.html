@@ -49,11 +49,11 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" id="filter-dropdown">
-            <li><a href="{{ url_for('.show_list', **args(network=None) ) }}">( all )</a></li>
+            <li><a href="{{ url_for('.show_list', **args(network=None) ) }}" rel="nofollow">( all )</a></li>
             {% for isp in config.ISPS|sort %}
-            <li><a href="{{ url_for('.show_list', **args(network=isp) ) }}">{{ isp }}</a></li>
+            <li><a href="{{ url_for('.show_list', **args(network=isp) ) }}" rel="nofollow">{{ isp }}</a></li>
             {% if isp == 'BT-Strict' %}
-            <li><a href="{{ url_for('.show_list', **args(network=isp, exclude=1) ) }}">Exclude {{ isp }}</a></li>
+            <li><a href="{{ url_for('.show_list', **args(network=isp, exclude=1) ) }}" rel="nofollow">Exclude {{ isp }}</a></li>
             {% endif %}
             {% endfor %}
         </ul>
@@ -67,16 +67,16 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" id="tld-dropdown">
-            <li><a href="{{ url_for('.show_list', **args(tld=None) ) }}">( all )</a></li>
+            <li><a href="{{ url_for('.show_list', **args(tld=None) ) }}" rel="nofollow">( all )</a></li>
             {% for domain in ['uk','com','net','org'] %}
             
-            <li><a href="{{ url_for('.show_list', **args(tld=domain) ) }}">.{{domain}}</a></li>
+            <li><a href="{{ url_for('.show_list', **args(tld=domain) ) }}" rel="nofollow">.{{domain}}</a></li>
             {% endfor %}
             
         </ul>
         </div>
 
-        <a href="{{ url_for('.export_list', name=savedlist.name) }}" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Export</a>
+        <a href="{{ url_for('.export_list', name=savedlist.name) }}" class="btn btn-default" rel="nofollow"><span class="glyphicon glyphicon-save"></span> Export</a>
         {% if g.admin %}
         <a href="{{ url_for('.recheck_list', name=savedlist.name) }}" class="btn btn-default" id="refresh"><span class="glyphicon glyphicon-refresh"></span> Recheck</a>
         {% endif %}
