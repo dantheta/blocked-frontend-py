@@ -25,7 +25,7 @@
             <textarea rows="8" style="width: 100%; font-family: mono" name="original_complaint">{{ report.message }}</textarea>
 
             <h3>Additional contact information</h3>
-            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + report.mailname + '@' +config.MAIL_DOMAIN + ")" ) }}
+            {{ forms.textarea_field('Submitted by', 'additional_contact', "Request originally submitted by " + report.name + " (" + (report.mailname or 'admin') + '@' +config.MAIL_DOMAIN + ")" ) }}
 
             <h3>Mobile network response</h3>
             {% if emailreply %}
