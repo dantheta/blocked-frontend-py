@@ -30,11 +30,16 @@
             <h3>Mobile network response</h3>
             {% if emailreply %}
             {{ forms.static_field('Date', 'reply_created', emailreply.created|fmtime) }}
+
+            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()), rows=8) }}
+
             {% else %}
             <div><em>No reply or no decision received</em></div>
+
+            {{ forms.textarea_field('Reply','previous', '', rows=8) }}
             {% endif %}
 
-            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()) if emailreply else '', rows=8) }}
+
 
 
             <h3>Nature of complaint</h3>
