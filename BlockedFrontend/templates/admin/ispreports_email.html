@@ -472,6 +472,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
                 {{ forms.radio_field("Block matched the ISP's policy", 'policy_match', 'consistent', True if report.policy_match == 'consistent' else False) }}
                 {{ forms.radio_field("Block did not match the ISP's policy", 'policy_match', 'inconsistent', True if report.policy_match == 'inconsistent' else False) }}
                 {{ forms.radio_field("Block policy unknown", 'policy_match', 'unknown', True if report.policy_match == 'unknown' else False) }}
+                {{ forms.radio_field("Block no longer matches policy", 'policy_match', 'no_longer_match', True if report.policy_match == 'no_longer_match' else False, policy_match_help) }}
 
                 
                 {{ forms.check_field("This is an egregious block", 'egregious_block', 't', report.egregious_block) }}
@@ -510,3 +511,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
 
 </div> <!-- /.tab-content -->
 {% endblock body %}
+
+{% macro policy_match_help(value) %}
+<span class="glyphicon glyphicon-info-sign" title="Site is under new use or is unused"></span>
+{% endif %}
