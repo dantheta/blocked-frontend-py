@@ -64,12 +64,13 @@
 {% endif %}
 {% endmacro %}
 
-{% macro radio_field(label, name, value, checked=False) %}
+{% macro radio_field(label, name, value, checked=False, inner=None) %}
 <div class="form-group">
 <div class="checkbox">
   <label class="control-label">
     <input type="radio" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
     {{ label }}
+    {% if inner %}{{ inner(value) }}{% endif %}}
   </label>
 </div>
 </div>
