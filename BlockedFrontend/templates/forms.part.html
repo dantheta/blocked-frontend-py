@@ -55,7 +55,7 @@
   <label class="control-label">
 {% endif %}
     <input type="checkbox" value="{{value}}" name="{{name}}" {{ 'checked' if checked else '' }} />
-{% if inner %}{{ inner(value) }}{% endif %}}
+{% if inner %}{{ inner(value) }}{% endif %}
 {% if label %}
     {{ label }}
   </label>
