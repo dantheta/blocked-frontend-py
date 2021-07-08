@@ -785,8 +785,12 @@ class ISPReportEmail(DBObject):
             
     def decode(self):
         import email
-        
-        ret = email.message_from_string(self['message'])
+
+        if type(self['message']) == unicode:
+            # ensure input is string/bytes utf8
+            ret = email.message_from_string(self['message'].encode('utf8'))
+        else:
+            ret = email.message_from_string(self['message'])
         return ret
         
     def get_report(self):
