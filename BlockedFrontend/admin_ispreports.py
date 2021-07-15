@@ -164,6 +164,13 @@ def ispreports_escalate_post(id):
     return redirect(url_for('.ispreports'))
 
 
+def check_report_age(report):
+    if report.get_age() < current_app.config['REPORT_AGE_CUTOFF']:
+        flash("Unable to set report status, report is too new")
+        return False
+    return True
+
+
 @admin_ispreport_pages.route('/control/ispreports/unblocked/<int:id>')
 @check_reviewer
 def ispreports_status_unblocked(id):
@@ -171,8 +178,9 @@ def ispreports_status_unblocked(id):
     report = email.get_report()
     url = report.get_url()
 
-    report.set_status('unblocked', email, session['userid'])
-    g.conn.commit()
+    if check_report_age(report):
+        report.set_status('unblocked', email, session['userid'])
+        g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
@@ -184,8 +192,9 @@ def ispreports_status_rejected(id):
     report = email.get_report()
     url = report.get_url()
 
-    report.set_status('rejected', email, session['userid'])
-    g.conn.commit()
+    if check_report_age(report):
+        report.set_status('rejected', email, session['userid'])
+        g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
@@ -208,8 +217,9 @@ def ispreports_status_nodecision(id):
     report = ISPReport(g.conn, id)
     url = report.get_url()
 
-    report.set_status('no-decision', None, session['userid'])
-    g.conn.commit()
+    if check_report_age(report):
+        report.set_status('no-decision', None, session['userid'])
+        g.conn.commit()
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 

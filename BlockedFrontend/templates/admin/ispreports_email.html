@@ -192,7 +192,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
 <div class="col-md-12">
 
 <div style="margin-top: 1.0em; margin-bottom: 1.5em">
-    {% if report.status == 'sent' %}
+    {% if report.status == 'sent' and (g.is_level('moderator') or report.get_age() > config.REPORT_AGE_CUTOFF) %}
 <div class="pull-right">
     <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}">
         <span class="glyphicon glyphicon-minus"></span> Close report: No decision</a>
@@ -244,7 +244,7 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
             </div>
             
             <div class="col-md-3" style="text-align: left">
-                {% if report.status == 'sent' %}
+                {% if report.status == 'sent' and (g.is_level('moderator') or report.get_age() > config.REPORT_AGE_CUTOFF) %}
                     <a class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Close Report <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                     <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Accepted</a></li>

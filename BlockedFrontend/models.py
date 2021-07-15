@@ -1,4 +1,5 @@
 
+import datetime
 import itertools
 import psycopg2.extensions
 from psycopg2.extras import DictCursor
@@ -590,6 +591,7 @@ class ISPReport(DBObject):
         'reporter_category_id',
         'policy_match',
     ]
+
     @classmethod
     def get_by_url_network(klass, conn, url, network_name):
         q = Query(conn, """select isp_reports.* 
@@ -644,6 +646,9 @@ class ISPReport(DBObject):
                     group by network_name, extract('year' from isp_reports.created)::int""",
               [])
         return reply_stats
+
+    def get_age(self):
+        return (datetime.datetime.utcnow() - self['created']).days
 
     def get_url(self):
         return Url(self.conn, self['urlid'])

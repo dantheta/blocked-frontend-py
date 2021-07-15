@@ -93,3 +93,5 @@ RANDOMSITE = 'frontpagelists'
 DEFAULT_REGION = 'gb'
 
 MAIL_DOMAIN = 'example.com'
+
+REPORT_AGE_CUTOFF = 30
