@@ -39,7 +39,8 @@ def ispreports():
                             policy=request.args.get('policy'),
                             user=request.args.get('user') if g.is_level('admin') else None,
                             url_status=request.args.get('url_status'),
-                            admin=True)
+                            admin=True,
+                            age=None if is_level('moderator') else 30)
 
     all_categories = ( cat['name'] for cat in Category.select_active(g.conn) )
     reporter_categories = UrlReportCategory.select(g.conn, category_type='reporter', _orderby='name')

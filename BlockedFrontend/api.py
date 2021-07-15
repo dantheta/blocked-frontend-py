@@ -151,7 +151,7 @@ class ApiClient(BaseApiClient):
         return self._request('status/country-stats', req)
 
     def reports(self, page, state=None, isp=None, category=None, reportercategory=None, list=None, year=None,
-                policy=None, admin=False, order=None, url=None, user=None, url_status=None):
+                policy=None, admin=False, order=None, url=None, user=None, url_status=None, age=None):
         req = {'date': self.timestamp(), 'page': str(page)}
         if isp:
             req['isp'] = isp
@@ -185,6 +185,8 @@ class ApiClient(BaseApiClient):
             req['policy'] = int(policy)
         if year:
             req['year'] = int(year)
+        if age is not None:
+            req['age'] = age
         return self._request('status/ispreports', req)
 
     def isp_stats(self):
