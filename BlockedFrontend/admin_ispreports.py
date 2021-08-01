@@ -165,8 +165,7 @@ def ispreports_escalate_post(id):
 
 
 def check_report_age(report):
-    if report.get_age() < current_app.config['REPORT_AGE_CUTOFF']:
-        flash("Unable to set report status, report is too new")
+    if (not g.is_level('moderator')) and report.get_age() < current_app.config['REPORT_AGE_CUTOFF']:
         return False
     return True
 
@@ -181,6 +180,8 @@ def ispreports_status_unblocked(id):
     if check_report_age(report):
         report.set_status('unblocked', email, session['userid'])
         g.conn.commit()
+    else:
+        flash("Unable to set report status, report is too new")
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
@@ -195,6 +196,8 @@ def ispreports_status_rejected(id):
     if check_report_age(report):
         report.set_status('rejected', email, session['userid'])
         g.conn.commit()
+    else:
+        flash("Unable to set report status, report is too new")
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
@@ -220,6 +223,8 @@ def ispreports_status_nodecision(id):
     if check_report_age(report):
         report.set_status('no-decision', None, session['userid'])
         g.conn.commit()
+    else:
+        flash("Unable to set report status, report is too new")
 
     return redirect(url_for('.ispreports_view', url=url['url'], network_name=report['network_name']))
 
@@ -274,6 +279,7 @@ def ispreports_view(url, network_name, msgid=None):
                            report_damage_categories=list(urlobj.get_report_categories('damage')),
                            reporter_category=urlobj.get_reporter_category(),
                            verified= contact and contact['verified'],
+                           can_close=check_report_age(ispreport),
                            bbfc_report=ispreport.get_report_for("BBFC"),
                            bbfc_unblock_cutoff=(datetime.date.today() -
                                                 datetime.timedelta(current_app.config['BBFC_REPORT_ACCEPTED_CUTOFF']))
