@@ -648,7 +648,9 @@ class ISPReport(DBObject):
         return reply_stats
 
     def get_age(self):
-        return (datetime.datetime.utcnow() - self['created']).days
+        """Return age of report in days"""
+        # replace timezone for date comparison ("can't subtract offset-naive and offset-aware datetimes")
+        return (datetime.datetime.utcnow() - self['created'].replace(tzinfo=None)).days
 
     def get_url(self):
         return Url(self.conn, self['urlid'])
