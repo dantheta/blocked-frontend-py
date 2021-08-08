@@ -9,7 +9,7 @@ import flask
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
-from NORM import DBObject,Query
+from NORM import DBObject, Query
 from NORM.exceptions import ObjectNotFound
 
 
@@ -495,6 +495,17 @@ class Url(DBObject):
         for row in q:
             yield UrlReportCategory(self.conn, data=row)
         q.close()
+
+    def get_screenshot_url(self):
+        return "https://www.blocked.org.uk/screenshots/{0}.png".format(self['hash'])
+
+    def get_screenshot_date(self):
+        try:
+            import requests
+            req = requests.head(self.get_screenshot_url())
+            return req.headers['Last-Modified']
+        except:
+            return None
 
       
 class Category(DBObject):

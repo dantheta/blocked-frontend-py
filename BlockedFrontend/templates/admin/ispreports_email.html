@@ -93,6 +93,10 @@ $(document).ready(function(){
 <a target="_blank" href="{{ url }}" class="btn btn-link" title="View reported website; opens in a new window">View {{ url|domain }} <span class="glyphicon glyphicon-share"></span></a>
 </div>
 
+<div>
+    <img src="{{ urlobj.get_screenshot_url() }}" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/>
+</div>
+
 </div>
 
 <div class="col-md-2" style="text-align: right">
