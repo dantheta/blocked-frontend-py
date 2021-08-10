@@ -18,7 +18,6 @@
 .screenshot-modal {
     width: 296px;
 }
-
 {% endblock %}
 
 {% block page_script %}
@@ -57,427 +56,463 @@ $(document).ready(function(){
 <h1>{{pagetitle}}</h1>
 
 <div class="row">
+{{ report_details() }}
+{{ site_details() }}
+{{ status_details() }}
+
+</div> <!-- /.row -->
+
+<hr />
+
+{{ nav_tabs() }}
+
+<div class="tab-content">
+{{ report_pane() }}
+
+{{ category_pane() }}
+
+{{ rptcategory_pane() }}
+
+{{ block_pane() }}
+
+</div> <!-- /.tab-content -->
+
+{{ screenshot_modal() }}
+{% endblock body %}
+
+{% macro policy_match_help(value) %}
+<span class="glyphicon glyphicon-info-sign" title="Site is under new use or is unused"></span>
+{% endmacro %}
+
+{% macro report_details() %}
 <div class="col-md-5">
-<h3>Report details</h3>    
+    <h3>Report details</h3>
 
-{{ forms.labelled_text("Reported", 'reported', report.created|fmtime) }}
-{{ forms.labelled_text("Updated", 'reported', report.last_updated|fmtime) }}
-{% if verified != None %}
-{{ forms.labelled_text("User", 'user', "%s (%s) <span class=\"label label-%s\">%s</span>"|format(
-                                                                report.name, report.email, 
-                                                                'success' if verified else 'default', 
-                                                                'verified' if verified else 'unverified'
-                                                                )|safe) }}
-{% else %}
-{{ forms.labelled_text("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
-{% endif %}
+    {{ forms.labelled_text("Reported", 'reported', report.created|fmtime) }}
+    {{ forms.labelled_text("Updated", 'reported', report.last_updated|fmtime) }}
+    {% if verified != None %}
+    {{ forms.labelled_text("User", 'user', "%s (%s) <span class=\"label label-%s\">%s</span>"|format(
+    report.name, report.email,
+    'success' if verified else 'default',
+    'verified' if verified else 'unverified'
+    )|safe) }}
+    {% else %}
+    {{ forms.labelled_text("User", 'user', "%s (%s)"|format(report.name, report.email)) }}
+    {% endif %}
 
 
-<p style="margin-top: 1em; font-size: larger; font-style: italic" class="well">&ldquo;{{report.message}}&rdquo;</p>
+    <p style="margin-top: 1em; font-size: larger; font-style: italic" class="well">&ldquo;{{report.message}}&rdquo;</p>
 
 </div>
+{% endmacro %}
 
+{% macro site_details() %}
 <div class="col-md-5">
-<h3>Site details</h3>
+    <h3>Site details</h3>
 
-{{ forms.labelled_text("Site title", 'site_title', urlobj.title) }}
+    {{ forms.labelled_text("Site title", 'site_title', urlobj.title) }}
 
-{% if latest_status[report.network_name] is defined %}
-{% set status = latest_status[report.network_name] %}
+    {% if latest_status[report.network_name] is defined %}
+    {% set status = latest_status[report.network_name] %}
 
-{{ forms.labelled_text("Current Status", 'current_status', "<strong>%s</strong>"|format(status.status|title)|safe) }}
-{{ forms.labelled_text("Last Checked", 'last_check', status.created|fmtime) }}
-{{ forms.labelled_text("First Blocked", 'first_block', status.first_blocked|fmtime) }}
-{{ forms.labelled_text("Last Blocked", 'first_block', status.last_blocked|fmtime) }}
+    {{ forms.labelled_text("Current Status", 'current_status', "<strong>%s</strong>"|format(status.status|title)|safe) }}
+    {{ forms.labelled_text("Last Checked", 'last_check', status.created|fmtime) }}
+    {{ forms.labelled_text("First Blocked", 'first_block', status.first_blocked|fmtime) }}
+    {{ forms.labelled_text("Last Blocked", 'first_block', status.last_blocked|fmtime) }}
 
-{% else %}
-<p>No current status information</p>
-{% endif %}
+    {% else %}
+    <p>No current status information</p>
+    {% endif %}
 
-<div class="row" style="margin-top: 0.5em">
-    <div class="col-md-6">
-        <a target="_blank" href="{{ url_for('site.site', url=url) }}" class="btn btn-link" title="View status page on the public site; opens in a new window">View site status on Blocked <span class="glyphicon glyphicon-share"></span></a>
+    <div class="row" style="margin-top: 0.5em">
+        <div class="col-md-6">
+            <a target="_blank" href="{{ url_for('site.site', url=url) }}" class="btn btn-link" title="View status page on the public site; opens in a new window">View site status on Blocked <span class="glyphicon glyphicon-share"></span></a>
+        </div>
+        <div class="col-md-6">
+            <a target="_blank" href="{{ url }}" class="btn btn-link" title="View reported website; opens in a new window">View {{ url|domain }} <span class="glyphicon glyphicon-share"></span></a>
+        </div>
     </div>
-    <div class="col-md-6">
-        <a target="_blank" href="{{ url }}" class="btn btn-link" title="View reported website; opens in a new window">View {{ url|domain }} <span class="glyphicon glyphicon-share"></span></a>
+
+    <div style="margin-top: 0.5em" class="mt-2">
+        <a href="" class="screenshot-modal center-block"><img src="{{ urlobj.get_screenshot_thumb_url() }}" style="max-height: 16em" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/></a>
     </div>
-</div>
-
-<div style="margin-top: 0.5em" class="mt-2">
-    <a href="" class="screenshot-modal center-block"><img src="{{ urlobj.get_screenshot_thumb_url() }}" style="max-height: 16em" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/></a>
-</div>
 
 </div>
+{% endmacro %}
 
+{% macro status_details() %}
 <div class="col-md-2" style="text-align: right">
 
     <div class="row">
         <div class="col-md-12">
-<h2>
-{% if report.status == 'unblocked' %}
-<div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Accepted</div>
-{% elif report.status in ('rejected', 'abuse') %}
-<div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
-{% elif report.status in ('resent', 'escalated') %}
-<div class="label label-info label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
-{% elif report.status == 'no-decision' %}
-<div class="label label-default label-lg"><span class="glyphicon glyphicon-remove"></span> No decision</div>
-{% elif report.status == 'sent' %}
-    {% if verified %}
-<div class="label label-info label-lg"><span class="glyphicon glyphicon-sent"></span> Sent</div>
-    {% else %}
-<div class="label label-default label-lg"><span class=""></span> User pending</div>
+            <h2>
+                {% if report.status == 'unblocked' %}
+                <div class="label label-success label-lg"><span class="glyphicon glyphicon-ok success"></span> Accepted</div>
+                {% elif report.status in ('rejected', 'abuse') %}
+                <div class="label label-danger label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
+                {% elif report.status in ('resent', 'escalated') %}
+                <div class="label label-info label-lg"><span class="glyphicon glyphicon-remove "></span> {{ report.status|title }}</div>
+                {% elif report.status == 'no-decision' %}
+                <div class="label label-default label-lg"><span class="glyphicon glyphicon-remove"></span> No decision</div>
+                {% elif report.status == 'sent' %}
+                {% if verified %}
+                <div class="label label-info label-lg"><span class="glyphicon glyphicon-sent"></span> Sent</div>
+                {% else %}
+                <div class="label label-default label-lg"><span class=""></span> User pending</div>
+                {% endif %}
+                {% else %}
+                <div class="label label-default label-lg"><span class=""></span> {{ report.status|title }}</div>
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+    {% if g.is_level('admin') and report.status in ('unblocked','rejected','no-decision') %}
+    <div class="row" style="margin-top: 1em">
+        <div class="col-md-12">
+            <a href="{{ url_for('.ispreports_status_reset', id=report.id) }}" class="btn btn-warning" onclick="confirm('Are you sure you want to reset to status: sent?')">Reset status</a>
+        </div>
+    </div>
     {% endif %}
-{% else %}
-<div class="label label-default label-lg"><span class=""></span> {{ report.status|title }}</div>
-{% endif %}
-</h2>
-        </div>
-    </div>
-{% if g.is_level('admin') and report.status in ('unblocked','rejected','no-decision') %}
-    <div class="row" style="margin-top: 1em">
-        <div class="col-md-12">
-        <a href="{{ url_for('.ispreports_status_reset', id=report.id) }}" class="btn btn-warning" onclick="confirm('Are you sure you want to reset to status: sent?')">Reset status</a>
-        </div>
-    </div>
-{% endif %}
 
     <div class="row" style="margin-top: 1em">
         <div class="col-md-12">
-{% if report_prev %}
-<a href="{{ url_for('.ispreports_view', network_name=report_prev.network_name, url=report_prev.url) }}" class="btn btn-primary" title="View previous report"><span class="glyphicon glyphicon-backward"></span> Prev</a>
-{%- endif -%}
-&nbsp;
-{%- if report_next -%}
-<a href="{{ url_for('.ispreports_view', network_name=report_next.network_name, url=report_next.url) }}" class="btn btn-primary" title="View next report">Next <span class="glyphicon glyphicon-forward"></span></a>
-{% endif %}
+            {% if report_prev %}
+            <a href="{{ url_for('.ispreports_view', network_name=report_prev.network_name, url=report_prev.url) }}" class="btn btn-primary" title="View previous report"><span class="glyphicon glyphicon-backward"></span> Prev</a>
+            {%- endif -%}
+            &nbsp;
+            {%- if report_next -%}
+            <a href="{{ url_for('.ispreports_view', network_name=report_next.network_name, url=report_next.url) }}" class="btn btn-primary" title="View next report">Next <span class="glyphicon glyphicon-forward"></span></a>
+            {% endif %}
         </div>
     </div>
 
     <div class="row" style="margin-top: 1em">
         <div class="col-md-12">
-{% if report.status in ('no-decision','rejected') or (report.status == 'unblocked'
+            {% if report.status in ('no-decision','rejected') or (report.status == 'unblocked'
             and report.created.date() < bbfc_unblock_cutoff
             and latest_status[report.network_name].status == 'blocked') %}
-{%   if bbfc_report == None %}
-{%     if isp.isp_type == 'mobile' %}
-<div>
-    <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
-</div>
-{%     endif %}
-{%   else %}
-<div>
-Request sent to BBFC on {{ bbfc_report.created|fmtime }}
-</div>
-{%   endif %}
-{% endif %}
+            {%   if bbfc_report == None %}
+            {%     if isp.isp_type == 'mobile' %}
+            <div>
+                <a class="btn btn-default btn-lg" href="{{ url_for('.ispreports_escalate', id=report.id) }}">Escalate to BBFC</a>
+            </div>
+            {%     endif %}
+            {%   else %}
+            <div>
+                Request sent to BBFC on {{ bbfc_report.created|fmtime }}
+            </div>
+            {%   endif %}
+            {% endif %}
         </div>
     </div>
 
 </div>
-</div> <!-- /.row -->
+{% endmacro %}
 
-<hr />
-
+{% macro nav_tabs() %}
 <ul class="nav nav-tabs">
-  <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
-  <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories
-  {% if categories|selectattr('namespace', 'equalto', 'ORG')|list %}
-      <span class="text-success glyphicon glyphicon-ok"></span>
-  {% endif %}
-  </a></li>
-  <li class="{{ activetab('rptcategories') }}"><a href="#rptcategories" role="tab"  data-toggle="tab">Report Categories
-  {% if report_damage_categories or reporter_category %}
-      <span class="text-success glyphicon glyphicon-ok"></span>
-  {% endif %}
-  </a></li>
-  <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
-  {% if report.policy_match != None -%}
-  <span class="text-success glyphicon glyphicon-ok"></span>
-  {%- endif %}
-  </a></li>
+    <li class="{{ activetab('messages','messages') }}"><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
+    <li class="{{ activetab('categories') }}"><a href="#categories" role="tab"  data-toggle="tab">Review Categories
+        {% if categories|selectattr('namespace', 'equalto', 'ORG')|list %}
+        <span class="text-success glyphicon glyphicon-ok"></span>
+        {% endif %}
+    </a></li>
+    <li class="{{ activetab('rptcategories') }}"><a href="#rptcategories" role="tab"  data-toggle="tab">Report Categories
+        {% if report_damage_categories or reporter_category %}
+        <span class="text-success glyphicon glyphicon-ok"></span>
+        {% endif %}
+    </a></li>
+    <li class="{{ activetab('block') }}"><a href="#block" role="tab" data-toggle="tab">Review Block
+        {% if report.policy_match != None -%}
+        <span class="text-success glyphicon glyphicon-ok"></span>
+        {%- endif %}
+    </a></li>
 </ul>
+{% endmacro %}
 
-<div class="tab-content">
+{% macro report_pane() %}
 <div id="messages" class="tab-pane {{ activetab('messages','messages') }}">
 
 
-<div class="row">
-<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
 
-<div style="margin-top: 1.0em; margin-bottom: 1.5em">
-    {% if report.status == 'sent' and can_close %}
-<div class="pull-right">
-    <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}">
-        <span class="glyphicon glyphicon-minus"></span> Close report: No decision</a>
-</div>
-    {% endif %}
-<h4>{{messagelist|length}} messages received</h4>
-</div>
-    <table id="messagelist" class="table table-condensed table-bordered">
-    <tr>
-        <th>#</th>
-    <th>From</th>
-    <th>Subject</th>
-    <th>Date</th>
-    </tr>
-{% for (email, message) in messagelist %}
-<tr data-id="{{ email.id }}" data-href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
-    <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}">{{loop.index}}</a></td>
-    <td>{{message.from}}</td>
-    <td>{{message.subject}}
-    {% if email.id == report.resolved_email_id %}
-    <span style="float: right" class="label label-{{ 'danger' if report.status == 'rejected' else 'success'}}">
+            <div style="margin-top: 1.0em; margin-bottom: 1.5em">
+                {% if report.status == 'sent' and can_close %}
+                <div class="pull-right">
+                    <a class="btn btn-default" data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}">
+                        <span class="glyphicon glyphicon-minus"></span> Close report: No decision</a>
+                </div>
+                {% endif %}
+                <h4>{{messagelist|length}} messages received</h4>
+            </div>
+            <table id="messagelist" class="table table-condensed table-bordered">
+                <tr>
+                    <th>#</th>
+                    <th>From</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                </tr>
+                {% for (email, message) in messagelist %}
+                <tr data-id="{{ email.id }}" data-href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="emailrow {{ 'bg-info' if email.id == selected_email.id else '' }}">
+                    <td><a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}">{{loop.index}}</a></td>
+                    <td>{{message.from}}</td>
+                    <td>{{message.subject}}
+                        {% if email.id == report.resolved_email_id %}
+                        <span style="float: right" class="label label-{{ 'danger' if report.status == 'rejected' else 'success'}}">
       <span title="This email contains a status update" class="glyphicon glyphicon-{{ 'remove' if report.status == 'rejected' else 'ok' }}"></span>
     </span>
-    {% endif %}
-    </td>
-    <td class="num">{{message.date.split(' +')|first}}</td>
-</tr>
+                        {% endif %}
+                    </td>
+                    <td class="num">{{message.date.split(' +')|first}}</td>
+                </tr>
 
-{% endfor %}
-</table>
-
-</div>
-</div> <!-- /.row -->
-
-
-
-<div class="row">
-<div class="col-md-12">
-
-{% if selected_email %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="row">
-
-            <div class="col-md-9">
-                <h4>{{ selected_msg.subject }}</h4>
-                <div>From: {{ selected_msg.from }}</div>
-                <div>Date: {{ selected_msg.date }}</div>
-            </div>
-            
-            <div class="col-md-3" style="text-align: left">
-                {% if report.status == 'sent' and can_close %}
-                    <a class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Close Report <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Accepted</a></li>
-                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
-                    <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No decision</a></li>
-                    </ul>
-                {% endif %}
-                {#
-                <div style="float: right">
-                {% for (email, message) in messagelist %}
-                {% if email.id == selected_email.id %}
-                  {% if loop.first %}
-                  <a href="#" class="disabled btn btn-link">
-                  {% else %}
-                  <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=previtem.id) }}" class="btn btn-link" title="Previous message">
-                  {% endif %}
-                  <span class="glyphicon glyphicon-chevron-left"></span></a>
-                {% endif %}
-
-                {% if previtem is defined and (previtem.id == selected_email.id) %}
-                  <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="btn btn-link" title="Next message">
-                  <span class="glyphicon glyphicon-chevron-right"></span></a>
-                {% elif loop.last %}
-                  <a href="#" class="disabled btn btn-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                {% endif %}
-                {% set previtem = email %}
                 {% endfor %}
+            </table>
+
+        </div>
+    </div> <!-- /.row -->
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if selected_email %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+
+                        <div class="col-md-9">
+                            <h4>{{ selected_msg.subject }}</h4>
+                            <div>From: {{ selected_msg.from }}</div>
+                            <div>Date: {{ selected_msg.date }}</div>
+                        </div>
+
+                        <div class="col-md-3" style="text-align: left">
+                            {% if report.status == 'sent' and can_close %}
+                            <a class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Close Report <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_unblocked', id=selected_email.id) }}"><span class="glyphicon glyphicon-ok"></span> Accepted</a></li>
+                                <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_rejected', id=selected_email.id) }}"><span class="glyphicon glyphicon-remove"></span> Rejected</a></li>
+                                <li><a data-id="{{selected_email.id}}" href="{{ url_for('.ispreports_status_nodecision', id=report.id) }}"><span class="glyphicon glyphicon-minus"></span> No decision</a></li>
+                            </ul>
+                            {% endif %}
+                            {#
+                            <div style="float: right">
+                                {% for (email, message) in messagelist %}
+                                {% if email.id == selected_email.id %}
+                                {% if loop.first %}
+                                <a href="#" class="disabled btn btn-link">
+                                    {% else %}
+                                    <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=previtem.id) }}" class="btn btn-link" title="Previous message">
+                                        {% endif %}
+                                        <span class="glyphicon glyphicon-chevron-left"></span></a>
+                                    {% endif %}
+
+                                    {% if previtem is defined and (previtem.id == selected_email.id) %}
+                                    <a href="{{ url_for('.ispreports_view', network_name=network_name, url=url, msgid=email.id) }}" class="btn btn-link" title="Next message">
+                                        <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    {% elif loop.last %}
+                                    <a href="#" class="disabled btn btn-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    {% endif %}
+                                    {% set previtem = email %}
+                                    {% endfor %}
+                            </div>
+                            #}
+                        </div>
+                    </div>
                 </div>
-                #}
+                <div class="panel-body">
+                    <p class="message" style="">{{ emails.show_message(selected_msg) }}</p>
+                </div>
             </div>
+            {% endif %}
+
         </div>
     </div>
-    <div class="panel-body">
-        <p class="message" style="">{{ emails.show_message(selected_msg) }}</p>
-    </div>
-</div>
-{% endif %}
-
-</div>
-</div>
 </div> <!-- /#report -->
+{% endmacro %}
 
+{% macro category_pane() %}
 <div id="categories" class="tab-pane {{ activetab('categories') }}">
     <h4>Categories</h4>
     <form method="POST" action="{{ url_for('.ispreports_update_category') }}">
         <input type="hidden" name="report_id" value="{{ report.id }}" />
-    <div class="row">
-        <div class="col-md-4">
-        <ul>
-            {% for cat in categories %}
-            <li>
-                <input type="checkbox" name="url_category_id" value="{{ cat.url_category_id }}" />
-            {% if cat.enabled %}
-                {{ cat.display_name }} ({{ cat.namespace }})        
-            {% else %}
-            <strike>{{ cat.display_name }} ({{cat.namespace}})</strike>
-            {% endif %}
-            {% if cat.url_category_userid %}
-            <span class="glyphicon glyphicon-user admin-comments" title="Category added/removed by administrator" data-id="{{ cat.url_category_id }}"></span>
-            {% endif %}
-            {% if cat.primary_category %}
-            <span class="glyphicon glyphicon-star" title="Primary assigned category"></span>
-            {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-        <p class="hint">Check categories to toggle enabled/disabled.</p>
-    
-        </div>
-        <div class="col-md-4">
-        
-            <div class="form-group">
-                <label class="control-label" for="category_id">Assign existing Category</label>
-                <select class="form-control" name="add_category_id">
-                    <option value="" selected>(None)</option>
-                    {% for group in all_categories|groupby('1') %}
-                    <optgroup label="{{ group.grouper }}">
-                    {% for cat in group.list %}                    
-                    <option value="{{cat.0}}" >{{ cat.2 }}</option>
+        <div class="row">
+            <div class="col-md-4">
+                <ul>
+                    {% for cat in categories %}
+                    <li>
+                        <input type="checkbox" name="url_category_id" value="{{ cat.url_category_id }}" />
+                        {% if cat.enabled %}
+                        {{ cat.display_name }} ({{ cat.namespace }})
+                        {% else %}
+                        <strike>{{ cat.display_name }} ({{cat.namespace}})</strike>
+                        {% endif %}
+                        {% if cat.url_category_userid %}
+                        <span class="glyphicon glyphicon-user admin-comments" title="Category added/removed by administrator" data-id="{{ cat.url_category_id }}"></span>
+                        {% endif %}
+                        {% if cat.primary_category %}
+                        <span class="glyphicon glyphicon-star" title="Primary assigned category"></span>
+                        {% endif %}
+                    </li>
                     {% endfor %}
-                    </optgroup>
-                    {% endfor %}
-                </select>                
+                </ul>
+                <p class="hint">Check categories to toggle enabled/disabled.</p>
+
             </div>
-            {% if g.is_level('moderator') %}
-            <p><em>Or</em></p>
-            {{ forms.text_field('Add new category', 'add_category_name', '') }}
-            {% endif %}
-            {{ forms.check_field('Primary category', 'primary_category', '1') }}
+            <div class="col-md-4">
+
+                <div class="form-group">
+                    <label class="control-label" for="category_id">Assign existing Category</label>
+                    <select class="form-control" name="add_category_id">
+                        <option value="" selected>(None)</option>
+                        {% for group in all_categories|groupby('1') %}
+                        <optgroup label="{{ group.grouper }}">
+                            {% for cat in group.list %}
+                            <option value="{{cat.0}}" >{{ cat.2 }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if g.is_level('moderator') %}
+                <p><em>Or</em></p>
+                {{ forms.text_field('Add new category', 'add_category_name', '') }}
+                {% endif %}
+                {{ forms.check_field('Primary category', 'primary_category', '1') }}
+            </div>
+            <div class="col-md-4">
+
+                {{  forms.textarea_field('Category notes', 'category_notes', '', rows=6 ) }}
+
+            </div>
         </div>
-        <div class="col-md-4">
-            
-            {{  forms.textarea_field('Category notes', 'category_notes', '', rows=6 ) }}
-        
+        <div style="text-align: right">
+            <input type="submit" value="Update" class="btn btn-primary btn-lg" />
         </div>
-    </div>
-    <div style="text-align: right">
-    <input type="submit" value="Update" class="btn btn-primary btn-lg" />
-    </div>
     </form>
     <hr />
     <h4>Category comments</h4>
     <table class="table table-striped table-condensed">
-    <tr>
-    <th>User</th>
-    <th>Date</th>
-    <th>Comment</th>
-    </tr>
-    {% for comment in comments %}
-    <tr>
-    <td>{{ comment.username }}</td>
-    <td>{{ comment.created|fmtime }}</td>
-    <td>{{ comment.description }}</td>
-    </tr>
-    {% endfor %}
+        <tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Comment</th>
+        </tr>
+        {% for comment in comments %}
+        <tr>
+            <td>{{ comment.username }}</td>
+            <td>{{ comment.created|fmtime }}</td>
+            <td>{{ comment.description }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </div> <!-- /#categories -->
+{% endmacro %}
 
+{% macro rptcategory_pane() %}
 <div id="rptcategories" class="tab-pane {{ activetab('rptcategories') }}">
 
-<form method="POST" action="{{ url_for('.ispreports_update_report_category') }}">
-<input type="hidden" name="report_id" value="{{ report.id }}" />
+    <form method="POST" action="{{ url_for('.ispreports_update_report_category') }}">
+        <input type="hidden" name="report_id" value="{{ report.id }}" />
 
-<div class="row">
-<div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6">
 
+                <h4>Who made the report?</h4>
+                <div class="form-group">
+                    <label class="control-label" for="existingtag">Add reporter category:</label>
+                    {% if g.is_level('moderator') %}
+                    <div id="existingtag" class="input-group">
+                        <select class="form-control" name="reporter_category_id">
+                            <option value="">(None selected)</option>
+                            {% for opt in reporter_categories %}
+                            <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-addon"><a id="switchnewtag" title="Enter a new tag"><span class="glyphicon glyphicon-plus-sign"></span></a></div>
+                    </div>
+                    {% else %}
+                    <select class="form-control" name="reporter_category_id">
+                        <option value="">(None selected)</option>
+                        {% for opt in reporter_categories %}
+                        <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                    <div id="newtag" class="input-group">
 
-    
-<h4>Who made the report?</h4>
-
-<div class="form-group">
-    <label class="control-label" for="existingtag">Add reporter category:</label>
-    {% if g.is_level('moderator') %}
-    <div id="existingtag" class="input-group">
-    <select class="form-control" name="reporter_category_id">
-        <option value="">(None selected)</option>
-        {% for opt in reporter_categories %}
-        <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
-        {% endfor %}
-    </select>
-    <div class="input-group-addon"><a id="switchnewtag" title="Enter a new tag"><span class="glyphicon glyphicon-plus-sign"></span></a></div>
-    </div>
-    {% else %}
-    <select class="form-control" name="reporter_category_id">
-        <option value="">(None selected)</option>
-        {% for opt in reporter_categories %}
-        <option value="{{opt[0]}}" {{ 'selected' if (reporter_category and opt[0] == reporter_category.id) else '' }}>{{opt[1]}}</option>
-        {% endfor %}
-    </select>
-    {% endif %}
-    <div id="newtag" class="input-group">
-        
-        <input class="form-control" name="new_reporter_category" placeholder="new-category" />
-        <div class="input-group-addon"><a id="switchexistingtag" title="Select from list of existing categories"><span class="glyphicon glyphicon-remove-sign"></span></a></div>
-    </div>
-</div>
+                        <input class="form-control" name="new_reporter_category" placeholder="new-category" />
+                        <div class="input-group-addon"><a id="switchexistingtag" title="Select from list of existing categories"><span class="glyphicon glyphicon-remove-sign"></span></a></div>
+                    </div>
+                </div>
 
 
 
-<h4>What if any, damage was reported?</h4>    
-<div class="row">
-<div class="col-md-6">
-    
-    <ul>
-    {% for cat in report_damage_categories %}
-    <li>{{ cat.name }}</li>
-    {% endfor %}
-    </ul>
-    
-</div>
-<div class="col-md-6">
-    
-{{ forms.select_field('Add existing category', 'damage_category_id', None, damage_categories, includenull=True ) }}
-{% if g.is_level('moderator') %}
-<p><em>Or</em></p>
-{{ forms.text_field('Add new category', 'add_category_name', '') }}
-{% endif %}
-</div>
-</div>
+                <h4>What if any, damage was reported?</h4>
+                <div class="row">
+                    <div class="col-md-6">
 
-</div>
-<div class="col-md-6">
-{{ forms.textarea_field('Review Notes', 'review_notes', '', rows=6) }}
-</div>
-</div>   
+                        <ul>
+                            {% for cat in report_damage_categories %}
+                            <li>{{ cat.name }}</li>
+                            {% endfor %}
+                        </ul>
 
-<div>
-<input class="btn btn-primary btn-lg" type="submit" value="Update" />
-</div> 
+                    </div>
+                    <div class="col-md-6">
 
-<hr />
-<h4>Report Comments</h4>
+                        {{ forms.select_field('Add existing category', 'damage_category_id', None, damage_categories, includenull=True ) }}
+                        {% if g.is_level('moderator') %}
+                        <p><em>Or</em></p>
+                        {{ forms.text_field('Add new category', 'add_category_name', '') }}
+                        {% endif %}
+                    </div>
+                </div>
 
-    <table class="table table-striped table-condensed">
-    <tr>
-    <th>User</th>
-    <th>Date</th>
-    <th>Comment</th>
-    </tr>
-    {% for comment in report_comments %}
-    <tr>
-    <td>{{ comment.username }}</td>
-    <td>{{ comment.created|fmtime }}</td>
-    <td>{{ comment.review_notes }}</td>
-    </tr>
-    {% endfor %}
-    </table>
+            </div>
+            <div class="col-md-6">
+                {{ forms.textarea_field('Review Notes', 'review_notes', '', rows=6) }}
+            </div>
+        </div>
 
-</form>
+        <div>
+            <input class="btn btn-primary btn-lg" type="submit" value="Update" />
+        </div>
+
+        <hr />
+        <h4>Report Comments</h4>
+
+        <table class="table table-striped table-condensed">
+            <tr>
+                <th>User</th>
+                <th>Date</th>
+                <th>Comment</th>
+            </tr>
+            {% for comment in report_comments %}
+            <tr>
+                <td>{{ comment.username }}</td>
+                <td>{{ comment.created|fmtime }}</td>
+                <td>{{ comment.review_notes }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </form>
 
 </div> <!-- /#rptcategory -->
+{% endmacro %}
 
+{% macro block_pane() %}
 <div id="block" class="tab-pane {{ activetab('block') }}">
     <div class="row">
         <div class="col-md-5">
             <p></p>
             <div class="well">
                 <h3>Policy Summary</h3>
-            {{ g.remote.get_network(isp.description,'')|safe }}
+                {{ g.remote.get_network(isp.description,'')|safe }}
             </div>
         </div>
         <div class="col-md-5">
@@ -488,43 +523,43 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
                 {{ forms.radio_field("Block policy unknown", 'policy_match', 'unknown', True if report.policy_match == 'unknown' else False) }}
                 {{ forms.radio_field("Block no longer matches policy", 'policy_match', 'no_longer_match', True if report.policy_match == 'no_longer_match' else False, policy_match_help) }}
 
-                
+
                 {{ forms.check_field("This is an egregious block", 'egregious_block', 't', report.egregious_block) }}
                 {{ forms.check_field("Add to frontend site \"featured blocks\".", 'featured_block', 't', report.featured_block) }}
                 {{ forms.check_field("May be harmless", 'maybe_harmless', 't', report.maybe_harmless) }}
-                
-                {{ forms.textarea_field("Notes", "review_notes", '', rows=6) }} 
+
+                {{ forms.textarea_field("Notes", "review_notes", '', rows=6) }}
                 <input type="submit" value="Update" class="btn btn-primary" />
             </form>
         </div>
     </div>
     <h4>Review notes</h4>
-        <table class="table table-striped table-condensed">
-    <tr>
-    <th>User</th>
-    <th>Date</th>
-    <th>Matches Policy</th>
-    <th>Egregious</th>
-    <th>Featured</th>
-    <th>Harmless</th>
-    <th>Comment</th>
-    </tr>
-    {% for comment in review_comments %}
-    <tr>
-    <td>{{ comment.username }}</td>
-    <td>{{ comment.created|fmtime }}</td>
-    <td>{{ comment.policy_match|null }}</td>
-    <td>{{ comment.egregious_block|null }}</td>
-    <td>{{ comment.featured_block|null }}</td>
-    <td>{{ comment.maybe_harmless|null }}</td>
-    <td>{{ comment.review_notes }}</td>
-    </tr>
-    {% endfor %}
+    <table class="table table-striped table-condensed">
+        <tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Matches Policy</th>
+            <th>Egregious</th>
+            <th>Featured</th>
+            <th>Harmless</th>
+            <th>Comment</th>
+        </tr>
+        {% for comment in review_comments %}
+        <tr>
+            <td>{{ comment.username }}</td>
+            <td>{{ comment.created|fmtime }}</td>
+            <td>{{ comment.policy_match|null }}</td>
+            <td>{{ comment.egregious_block|null }}</td>
+            <td>{{ comment.featured_block|null }}</td>
+            <td>{{ comment.maybe_harmless|null }}</td>
+            <td>{{ comment.review_notes }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </div> <!-- /#block -->
+{% endmacro %}
 
-</div> <!-- /.tab-content -->
-
+{% macro screenshot_modal() %}
 <div class="modal" id="screenshot-modal" style="" >
     <div class="modal-dialog modal-lg" role="document" style="">
         <div class="modal-content" >
@@ -538,8 +573,4 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-{% endblock body %}
-
-{% macro policy_match_help(value) %}
-<span class="glyphicon glyphicon-info-sign" title="Site is under new use or is unused"></span>
 {% endmacro %}
