@@ -94,7 +94,7 @@ $(document).ready(function(){
 <p>No current status information</p>
 {% endif %}
 
-<div class="row">
+<div class="row" style="margin-top: 0.5em">
     <div class="col-md-6">
         <a target="_blank" href="{{ url_for('site.site', url=url) }}" class="btn btn-link" title="View status page on the public site; opens in a new window">View site status on Blocked <span class="glyphicon glyphicon-share"></span></a>
     </div>
@@ -103,7 +103,7 @@ $(document).ready(function(){
     </div>
 </div>
 
-<div style="padding-top: 0.5em" class="mt-2">
+<div style="margin-top: 0.5em" class="mt-2">
     <a href="" class="screenshot-modal center-block"><img src="{{ urlobj.get_screenshot_thumb_url() }}" style="max-height: 16em" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/></a>
 </div>
 
