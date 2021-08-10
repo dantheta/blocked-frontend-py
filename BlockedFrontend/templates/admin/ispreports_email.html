@@ -37,6 +37,10 @@ $(document).ready(function(){
       return false;
     });
 
+    $('a.screenshot-modal').click(function(){
+        $('#screenshot-modal').modal('toggle')
+        return false;
+    });
     
 });
 {% endblock %}
@@ -94,7 +98,7 @@ $(document).ready(function(){
 </div>
 
 <div style="">
-    <img src="{{ urlobj.get_screenshot_url() }}" style="max-height: 16em" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/>
+    <a href="" class="screenshot-modal"><img src="{{ urlobj.get_screenshot_thumb_url() }}" style="max-height: 16em" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/></a>
 </div>
 
 </div>
@@ -514,6 +518,20 @@ Request sent to BBFC on {{ bbfc_report.created|fmtime }}
 </div> <!-- /#block -->
 
 </div> <!-- /.tab-content -->
+
+<div class="modal" id="screenshot-modal" style="" >
+    <div class="modal-dialog modal-lg" role="document" style="">
+        <div class="modal-content" >
+
+            <div class="modal-body" style="">
+                <img src="{{ urlobj.get_screenshot_url() }}" style="" class="img-responsive" title="{{ url }} screenshot {{ urlobj.get_screenshot_date() }}"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 {% endblock body %}
 
 {% macro policy_match_help(value) %}

@@ -499,6 +499,9 @@ class Url(DBObject):
     def get_screenshot_url(self):
         return "https://www.blocked.org.uk/screenshots/{0}.png".format(self['hash'])
 
+    def get_screenshot_thumb_url(self):
+        return "https://www.blocked.org.uk/screenshots/{0}_thumb.png".format(self['hash'])
+
     def get_screenshot_date(self):
         try:
             import requests
