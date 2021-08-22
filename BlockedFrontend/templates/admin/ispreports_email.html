@@ -188,6 +188,7 @@ $(document).ready(function(){
 
     <div class="row" style="margin-top: 1em">
         <div class="col-md-12">
+            {% if report.network_name != 'BBFC' %}
             {% if report.status in ('no-decision','rejected') or (report.status == 'unblocked'
             and report.created.date() < bbfc_unblock_cutoff
             and latest_status[report.network_name].status == 'blocked') %}
@@ -202,6 +203,7 @@ $(document).ready(function(){
                 Request sent to BBFC on {{ bbfc_report.created|fmtime }}
             </div>
             {%   endif %}
+            {% endif %}
             {% endif %}
         </div>
     </div>
