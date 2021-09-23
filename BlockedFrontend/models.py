@@ -486,7 +486,7 @@ class Url(DBObject):
 
     def get_report_categories(self, category_type):
         q = Query(self.conn,
-                  """select url_report_categories.*
+                  """select url_report_categories.*, url_report_category_asgt.id as asgt_id
                      from public.url_report_categories 
                         inner join public.url_report_category_asgt on (category_id = url_report_categories.id)
                      where urlid = %s and category_type = %s
