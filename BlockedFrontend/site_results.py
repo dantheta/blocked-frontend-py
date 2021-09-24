@@ -237,7 +237,9 @@ def stream_results():
         for row in g.api.GET('stream/results', req, _stream=True):
             yield row + "\r\n"
 
-    return Response(stream_with_context(stream()))
+    return Response(stream_with_context(stream()),
+                    mimetype='application/json'
+                    )
 
 @site_pages.route('/result/<result_uuid>')
 def site_result(result_uuid):
