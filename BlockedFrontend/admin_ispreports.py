@@ -297,7 +297,8 @@ def ispreports_remove_category():
     flash("Report category deleted")
     g.conn.commit()
 
-    return redirect(url_for('.ispreport', network=rpt['network_name'], url=url['url'] )
+    return redirect(url_for('.ispreport', network=rpt['network_name'], url=url['url']))
+
 
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])
 @check_reviewer
