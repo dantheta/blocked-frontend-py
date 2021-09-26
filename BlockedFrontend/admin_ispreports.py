@@ -293,11 +293,23 @@ def ispreports_remove_category():
     rpt = ISPReport(g.conn, id=request.args['report'])
     url = rpt.get_url()
     obj = UrlReportCategoryAsgt(g.conn, id)
+    cat = obj.get_category()
     obj.delete()
-    flash("Report category deleted")
+
+    comment = UrlReportCategoryComment(g.conn)
+    comment.update({
+        'urlid': url['urlid'],
+        'userid': session['userid'],
+        'damage_category_id': cat['id'],
+        'reporter_category_id': None,
+        'review_notes': "Removed category \"{0}\"".format(cat['name'])
+    })
+    comment.store()
+
+    flash("Report category \"{0}\" removed".format(cat['name']))
     g.conn.commit()
 
-    return redirect(url_for('.ispreport', network=rpt['network_name'], url=url['url']))
+    return redirect(url_for('.ispreports_view', network_name=rpt['network_name'], url=url['url'], tab='rptcategories'))
 
 
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])

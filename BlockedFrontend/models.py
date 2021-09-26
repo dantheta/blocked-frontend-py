@@ -840,6 +840,9 @@ class UrlReportCategoryAsgt(DBObject):
         'category_id',
         'userid'
         ]
+
+    def get_category(self):
+        return UrlReportCategory(self.conn, self['category_id'])
         
 class UrlReportCategoryComment(DBObject):
     TABLE = 'public.url_report_category_comments'
