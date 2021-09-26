@@ -286,6 +286,32 @@ def ispreports_view(url, network_name, msgid=None):
                            )
 
 
+@admin_ispreport_pages.route('/control/ispreports/category/remove')
+@check_reviewer
+def ispreports_remove_category():
+    id = request.args['id']
+    rpt = ISPReport(g.conn, id=request.args['report'])
+    url = rpt.get_url()
+    obj = UrlReportCategoryAsgt(g.conn, id)
+    cat = obj.get_category()
+    obj.delete()
+
+    comment = UrlReportCategoryComment(g.conn)
+    comment.update({
+        'urlid': url['urlid'],
+        'userid': session['userid'],
+        'damage_category_id': cat['id'],
+        'reporter_category_id': None,
+        'review_notes': "Removed category \"{0}\"".format(cat['name'])
+    })
+    comment.store()
+
+    flash("Report category \"{0}\" removed".format(cat['name']))
+    g.conn.commit()
+
+    return redirect(url_for('.ispreports_view', network_name=rpt['network_name'], url=url['url'], tab='rptcategories'))
+
+
 @admin_ispreport_pages.route('/control/ispreports/category/update', methods=['POST'])
 @check_reviewer
 def ispreports_update_category():

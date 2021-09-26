@@ -44,7 +44,11 @@ $(document).ready(function(){
         $('#screenshot-modal').modal('toggle')
         return false;
     });
-    
+
+    $('a.confirm-category').click(function(){
+        return confirm('Are you sure you want to remove category "' + $(this).data('category-name') + '"?')
+    });
+
 });
 {% endblock %}
 
@@ -459,7 +463,13 @@ $(document).ready(function(){
 
                         <ul>
                             {% for cat in report_damage_categories %}
-                            <li>{{ cat.name }}</li>
+                            <li>{{ cat.name }}
+                            <a class="confirm-category"
+                               data-category-name="{{ cat.name }}"
+                               href="{{ url_for('.ispreports_remove_category', id=cat.asgt_id, report=report.id) }}">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                            </li>
                             {% endfor %}
                         </ul>
 
