@@ -270,7 +270,7 @@ $(document).ready(function(){
     </span>
                         {% endif %}
                     </td>
-                    <td class="num">{{(message.date|default('')).split(' +')|first}}</td>
+                    <td class="num">{{(message.date or '').split(' +')|first}}</td>
                 </tr>
 
                 {% endfor %}
