@@ -26,8 +26,6 @@ MODULE_ADMIN = True
 
 UPDATE_PASSWORD = None
 
-THEME = 'uk'
-
 REMOTE_TYPE = "modx"
 REMOTE_SRC = None
 REMOTE_AUTH = None
