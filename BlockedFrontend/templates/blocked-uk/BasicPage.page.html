@@ -1,5 +1,6 @@
 {%import "chunks.part.html" as chunks %}
 {%import "remotecontent.part.html" as rmt %}
+{%import "theme/" ~ config.THEME ~ ".theme.html" as theme %}
 {#
 
 Behaviour variables:
@@ -72,7 +73,9 @@ banner_text_block(bool): show banner text block, default true
 
     <div class="row menurow">
         <div class="col-md-5">
-            <a href="/" title="Return to homepage"><img width="100%" src="/static/img/blocked-logo.svg" alt="Blocked logo" /></a>
+            <a href="/" title="Return to homepage">
+              {{ theme.site_logo() }}
+            </a>
         </div>
     </div>
 
@@ -131,6 +134,7 @@ banner_text_block(bool): show banner text block, default true
         {{ chunks.footer_menu() }}
     </footer>
         </div>
+    </div> <!-- /.row -->
     </div> <!-- /.container -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
