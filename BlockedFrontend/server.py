@@ -11,18 +11,13 @@ from utils import *
 from .remotecontent import get_remote_content_loader
 import db
 
-from flask import Flask, render_template, request,  \
-    abort, g, session
+from flask import Flask, render_template, request, abort, g, session
 
 app = Flask("BlockedFrontend", subdomain_matching=True)
 
 app.config.from_object('BlockedFrontend.default_settings')
 if 'BLOCKEDFRONTEND_SETTINGS' in os.environ:
     app.config.from_envvar('BLOCKEDFRONTEND_SETTINGS')
-
-if app.config.get('SITE_THEME'):
-    searchpath = app.jinja_loader.searchpath
-    app.jinja_loader.searchpath.insert(0, searchpath[0] + '/' + app.config['SITE_THEME'])
 
 # app.secret_key = app.config['SESSION_KEY']
 
@@ -86,6 +81,7 @@ else:
     app.register_blueprint(cms_assets, subdomain=www_domain)
     app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
     app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_NOMINET'])
+
 
 @app.before_first_request
 def setup_db():
