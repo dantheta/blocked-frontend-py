@@ -45,6 +45,11 @@ tr:hover * .action-button {
              "Open",
              reports.open_count)
       }}
+      {{ tab(request.args.state == 'hold',
+             url_for('.ispreports', **args(state='hold') ),
+             "Hold",
+             reports.hold_count)
+      }}
       {{ tab(request.args.state == 'cancelled',
              url_for('.ispreports', **args(state='cancelled') ),
              "Cancelled",
@@ -314,6 +319,10 @@ tr:hover * .action-button {
     {% elif report.status == 'abuse' %}
         <li><a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="text-warning">Unflag report</a></li>
     {% endif %}
+    {% if report.status == 'hold' %}
+        <li><a href="{{url_for('.ispreports_flag', url=report.url, status='pending', page=page)}}" class="text-info">Release</a></li>
+    {% endif %}
+
           </ul>
       </div>
   </td>
