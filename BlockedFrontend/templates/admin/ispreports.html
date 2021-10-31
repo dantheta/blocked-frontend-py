@@ -319,7 +319,7 @@ tr:hover * .action-button {
     {% elif report.status == 'abuse' %}
         <li><a href="{{url_for('.ispreports_unflag', url=report.url, page=page)}}" class="text-warning">Unflag report</a></li>
     {% endif %}
-    {% if report.status == 'hold' %}
+    {% if report.status == 'hold' and g.is_level('admin') %}
         <li><a href="{{url_for('.ispreports_flag', url=report.url, status='pending', page=page)}}" class="text-info">Release</a></li>
     {% endif %}
 

@@ -68,6 +68,8 @@ def ispreports():
 @admin_ispreport_pages.route('/control/ispreports/flag/<path:url>')
 @check_reviewer
 def ispreports_flag(url):
+    if (request.args.get('status') == 'release' and not g.is_level('admin')):
+        raise abort(403)
     url = fix_path(url)
     req = g.api.reports_flag(url, request.args.get('status','abuse'))
     if req['success'] != True:
