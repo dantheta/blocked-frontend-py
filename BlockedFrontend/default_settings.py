@@ -15,6 +15,8 @@ SUBDOMAIN_MAIN='www'
 SUBDOMAIN_INJUNCTIONS='injunctions'
 SUBDOMAIN_NOMINET='nominet'
 
+DEFAULT_SUBMIT_QUEUE = None
+
 SITE_URL="http://localhost:5000"
 SITE_THEME='blocked-uk'
 

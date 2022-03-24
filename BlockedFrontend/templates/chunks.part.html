@@ -78,6 +78,11 @@
 {% macro main_menu() %}
 {# TODO: move to CMS #}
 <a class="{{ 'active' if request.path == '/' else ''}}" href="/">Home</a>
+
+{% if config.SITE_THEME == 'blocked-eu' %}
+{{ menu_link("Check site", "/check-site" }}
+{% endif %}
+
 {% if config.MODULE_CATEGORY %}
 <a class="{{ 'active' if request.path.startswith( ('/blocked-sites','/site','/check','/unblock','/thanks')) else ''}}" href="/sites">Blocked Sites</a>
 {% endif %}

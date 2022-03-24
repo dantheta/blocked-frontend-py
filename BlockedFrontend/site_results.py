@@ -33,7 +33,7 @@ def check_post():
     if request.form['submit'] == 'false':
         return redirect(url_for('.site', url=url))
 
-    data = g.api.submit_url(url)
+    data = g.api.submit_url(url, queue=current_app.config['DEFAULT_SUBMIT_QUEUE'])
 
     if data['queued'] == True:
         return render_template('site.html',
