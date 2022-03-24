@@ -234,7 +234,7 @@ def stream_results():
         }
         req['date'] = g.api.timestamp()
         req['signature'] = g.api.sign(req, ['url', 'date'])
-        apiurl = 'stream/results/{}'.format(current_app.CONFIG['DEFAULT_REGION'])
+        apiurl = 'stream/results/{}'.format(current_app.config['DEFAULT_REGION'])
         for row in g.api.GET(apiurl, req, _stream=True):
             yield row + "\r\n"
 
