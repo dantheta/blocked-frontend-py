@@ -12,6 +12,11 @@
 
 <div class="col-md-6">
 <div class="well">
+    <h2>CMS</h2>
+    <a href="{{ config.REMOTE_SRC }}" class="btn btn-default btn-lg">Open Cockpit CMS</a>
+</div>
+
+<div class="well">
 <h2>Cached CMS content</h2>
 
 <p>Last update: {% if cmsdate == None %}(no cache){% else %}{{cmsdate|fmtime}}{%endif%}</p>
