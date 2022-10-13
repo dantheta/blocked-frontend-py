@@ -1,5 +1,5 @@
 {% extends "BasicPage.page.html" %}
-{% import "results.part.html" as results %}
+{% import "category_results.part.html" as results %}
 {%import "remotecontent.part.html" as rmt %}
 {%import "paging.part.html" as paging %}
 
@@ -139,11 +139,7 @@ mobile ISPs
 
 {{ results.results_table(data) }}
 
-{# results.paging('.sites_search', page=page, pagesize=20, count=data.count, search=search, exclude_adult=request.args.exclude_adult|default('0')) #}
 {{ paging.page_list('.sites_search', page=page, pagecount=pagecount, pagesize=pagesize, search=search, exclude_adult=request.args.exclude_adult|default('0'), network=request.args.network|default('') ) }}
-
-
-
 
 </div>
 </div> <!-- /.sitelistrow -->

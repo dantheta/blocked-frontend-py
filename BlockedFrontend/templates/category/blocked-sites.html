@@ -1,5 +1,5 @@
 {% extends "BasicPage.page.html" %}
-{%import "results.part.html" as results %}
+{%import "category_results.part.html" as results %}
 {%import "remotecontent.part.html" as rmt %}
 {%import "paging.part.html" as paging %}
 
@@ -50,7 +50,6 @@ A great many websites are being blocked mistakenly as a result of government imp
 
 {{ results.results_table(data) }}
 
-{# results.paging('.blocked_sites', page=page, pagesize=20, count=data.total_blocked_url_count, category=category) #}
 {{ paging.page_list('.blocked_sites', page=page, pagecount=pagecount, pagesize=pagesize, category=category ) }}
 
 
