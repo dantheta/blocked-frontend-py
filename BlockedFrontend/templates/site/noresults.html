@@ -1,7 +1,7 @@
 {% extends "BasicPage.page.html" %}
 {% import "siteforms.html" as siteforms %}
 
-{%set pagetitle = "Check if a site is being blocked" %}
+{%set pagetitle = "No results found" %}
 
 {% block body %}
 
@@ -9,16 +9,19 @@
 <div class="row">
 <div class="col-md-7">
 
-{{ siteforms.check_form(live) }}
+<h3>Submit {{ url|noproto }} for testing</h3>
+
+{{ siteforms.check_form(True, url) }}
 
 </div>
 </div> <!-- /.row -->
 <div class="row">
 <div class="col-md-12">
-    {{ g.remote_content.TextAreaOne|replace('<table','<table class="table"') | safe }}
+    {# g.remote_content.TextAreaOne | safe #}
 </div>
 </div>
 <div class="row shaded-row">
 {{ chunks.contactChunk() }}
 </div>
 {% endblock %}
+

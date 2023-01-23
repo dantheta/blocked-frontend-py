@@ -7,6 +7,7 @@ from utils import *
 from resources import *
 from models import SavedList, Item, CourtJudgmentURL
 from db import *
+from api import APIError
 
 from NORM.exceptions import ObjectNotFound
 
@@ -70,7 +71,13 @@ def site(url=None):
     # workaround for apache folding // into /
     url = fix_path(url)
 
-    data = g.api.status_url(url, current_app.config['DEFAULT_REGION'])
+    try:
+        data = g.api.status_url(url, current_app.config['DEFAULT_REGION'])
+    except APIError as exc:
+        if 'UrlLookupError' in exc.args[0]:
+            return unknown_site_form(url)
+        raise
+
     activecount = 0
     pastcount = 0
     can_unblock = None
@@ -167,6 +174,9 @@ def site(url=None):
                            categories = data.get('categories_full', [])
                            )
 
+
+def unknown_site_form(url):
+    return render_template('noresults.html', url=url), 404
 
 @site_pages.route('/stream-results-dummy')
 def stream_results_dummy():
