@@ -106,7 +106,7 @@ def ispreports_unpublish(url):
     url = fix_path(url)
     urlobj = Url.select_one(g.conn, url=url)
 
-    q = Query("update isp_reports set allow_publish = 0 where urlid = %s",
+    q = Query(g.conn, "update isp_reports set allow_publish = 0 where urlid = %s",
               [urlobj.id])
     g.conn.commit()
     return redirect(url_for('.ispreports_view', url=urlobj['url'], network_name=report['network_name']))
