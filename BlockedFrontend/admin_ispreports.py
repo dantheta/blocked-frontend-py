@@ -109,7 +109,7 @@ def ispreports_unpublish(url):
     q = Query(g.conn, "update public.isp_reports set allow_publish = 0 where urlid = %s",
               [urlobj.id])
     g.conn.commit()
-    return redirect(url_for('.ispreports_view', url=urlobj['url'], network_name=report['network_name']))
+    return redirect(url_for('.ispreports', url=urlobj['url']))
 
 
 @admin_ispreport_pages.route('/control/ispreports/escalate/<int:id>')
