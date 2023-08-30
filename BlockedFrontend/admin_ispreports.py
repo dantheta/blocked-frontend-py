@@ -100,6 +100,18 @@ def ispreports_resend(url):
         return redirect(url_for('unblock.unblock', url=url))
 
 
+@admin_ispreport_pages.route('/control/ispreports/unpublish/<path:url>')
+@check_reviewer
+def ispreports_unpublish(url):
+    url = fix_path(url)
+    urlobj = Url.select_one(g.conn, url=url)
+    for report in ISPReport.select(g.conn, urlid=urlobj.id):
+        report['allow_publish'] = 0
+        report.store()
+    g.conn.commit()
+    return redirect(url_for('.ispreports_view', url=urlobj['url'], network_name=report['network_name']))
+
+
 @admin_ispreport_pages.route('/control/ispreports/escalate/<int:id>')
 @check_admin
 def ispreports_escalate(id):
