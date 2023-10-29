@@ -7,7 +7,8 @@
 {% endblock %}
 
 {% block body %}
-
+<div class="row">
+    <div class="col-md-8">
 {% for entry in entries %}
 <div class="row">
     <div class="col-md-2">
@@ -15,13 +16,23 @@
         <img class="img-responsive img-circle hidden-xs hidden-sm person" src="{{ entry.image.path|rmtasset }}" title="{{ entry.image.description|default('') }}" />
         {% endif %}
     </div>
-    <div class="col-md-8">
-        <h2><a href="{{ url_for('.personal_stories', name=entry.slug) }}">{{ entry.title }}</a></h2>
+    <div class="col-md-10">
+        <h3><a href="{{ url_for('.personal_stories', name=entry.slug) }}">{{ entry.title }}</a></h3>
         <div>{{ entry.teaser|safe }}</div>
         <div>{{ entry.blocked_date }}</div>
     </div>
 </div>
 {% endfor %}
+    </div>
+    <div class="col-md-4">
+        {% if g.remote_chunks.personal_stories_contact|default(None) %}
+        <div class="well">
+            {{ g.remote_chunks.personal_stories_contact|safe }}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 
 
 <div class="row shaded-row">
@@ -31,11 +42,5 @@
 {% endblock %}
 
 {% block page_menu %}
-
-{% if chunks['personal-stories-contact']|default(None) %}
-<div class="well">
-    {{ chunks['personal-stories-contact'] }}
-</div>
-{% endif %}
 
 {% endblock %}
