@@ -23,20 +23,19 @@
 </div>
 {% endfor %}
 
-{% if chunks['personal-stories-contact']|default(None) %}
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="well">
-            {{ chunks['personal-stories-contact'] }}
-        </div>
-    </div>
-</div>
-
-{% endif %}
 
 <div class="row shaded-row">
 {{ chunks.contactChunk() }}
 </div>
+
+{% endblock %}
+
+{% block page_menu %}
+
+{% if chunks['personal-stories-contact']|default(None) %}
+<div class="well">
+    {{ chunks['personal-stories-contact'] }}
+</div>
+{% endif %}
 
 {% endblock %}
