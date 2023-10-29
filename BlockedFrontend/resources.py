@@ -6,7 +6,7 @@ __all__ = ['load_country_data','load_isp_data','load_data','load_csv']
 
 def load_data(filename):
     with current_app.open_resource('data/'+filename+'.yml') as fp:
-        return yaml.load(fp)
+        return yaml.safe_load(fp)
 
 def load_csv(filename):
     with current_app.open_resource('data/'+filename+'.csv') as fp:

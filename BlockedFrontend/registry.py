@@ -2,8 +2,8 @@
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, flash, jsonify, Response
 
-from models import *
-from utils import *
+from .models import *
+from .utils import *
 
 import NORM
 from NORM.exceptions import ObjectNotFound,ObjectExists

@@ -3,7 +3,7 @@ import json
 import logging
 import datetime
 
-from signing import RequestSigner
+from .signing import RequestSigner
 
 import requests
 

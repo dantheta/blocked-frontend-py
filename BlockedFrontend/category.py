@@ -5,9 +5,9 @@ import logging
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session, current_app
 
-from utils import *
-from models import SavedList
-from db import *
+from .utils import *
+from .models import SavedList
+from .db import *
 from NORM import Query
 
 category_pages = Blueprint('category', __name__,

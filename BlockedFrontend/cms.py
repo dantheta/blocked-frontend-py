@@ -5,13 +5,13 @@ import jinja2
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
-from utils import *
-from models import Item, ISPReport
-import models
+from .utils import *
+from .models import Item, ISPReport
+from . import models
 from NORM import Query
 from NORM.exceptions import ObjectNotFound
 
-from resources import load_country_data
+from .resources import load_country_data
 
 cms_pages = Blueprint('cms',
                       __name__,

@@ -105,7 +105,7 @@ class RemoteContentModX(object):
 
             return page_fields
 
-        except requests.RequestException, exc:
+        except requests.RequestException as exc:
             logging.warn("Fetch error: %s", repr(exc))
             raise
 

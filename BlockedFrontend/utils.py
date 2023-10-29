@@ -2,7 +2,11 @@ import re
 import math
 import time
 import datetime
-import urlparse
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 __all__ = ['get_domain','make_list','get_timestamp', 'parse_timestamp', 'get_pagecount',
            'fix_path','normalize_url','is_tag_valid','get_args_helper', 'convertnull']

@@ -3,10 +3,10 @@ import datetime
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session
 
-from models import ISPReport, Category
+from .models import ISPReport, Category
 from NORM.exceptions import ObjectNotFound
-from utils import *
-from resources import *
+from .utils import *
+from .resources import *
 
 stats_pages = Blueprint('stats', __name__,
     template_folder='templates/stats')
