@@ -69,6 +69,6 @@ def fix_path(url):
 
 
 def convertnull(value):
-    if not isinstance(value,(unicode,str)):
+    if not isinstance(value,(bytes,str)):
         return value
     return None if value == '' else value

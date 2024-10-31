@@ -302,7 +302,7 @@ def export_blocks_by_injunction(region):
             data = g.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:
                 yield [
-                        item[x].encode('utf8') if isinstance(item[x], unicode) else item[x]
+                        item[x].decode('utf8') if isinstance(item[x], bytes) else item[x]
                         for x in COLS
                     ] + [""] + [
                         "Y" if x in item['networks'] else ""

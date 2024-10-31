@@ -202,8 +202,8 @@ class User(DBObject):
     
     @staticmethod
     def _encode(s):
-        if isinstance(s, unicode):
-            return s.encode('utf8')
+        if isinstance(s, bytes):
+            return s.decode('utf8')
         else:
             return s
     

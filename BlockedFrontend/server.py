@@ -147,7 +147,7 @@ def fmdate(s):
 def null(s, default=''):
     if s is None:
         return default
-    if isinstance(s, (str, unicode)) and not s.strip():
+    if isinstance(s, (str, bytes)) and not s.strip():
         return default
     return s
 
