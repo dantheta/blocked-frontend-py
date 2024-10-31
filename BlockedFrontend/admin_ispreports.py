@@ -578,7 +578,7 @@ def ispreport_stats():
     site_owner_totals = {}
     for grp, yeardata in group_by_year(q1_3):
         if grp[0].startswith('Site Owner '):
-            for k,v in yeardata.iteritems():
+            for k,v in yeardata.items():
                 site_owner_totals.setdefault(k, 0)
                 site_owner_totals[k] += v
 
@@ -753,7 +753,7 @@ def ispreport_consistency():
         else:
             num = int(row['name'].rsplit(' ', 2)[1])
             counts[num] = row['ct']
-    counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.iteritems()) ]
+    counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.items()) ]
 
     networks = list(Query(g.conn,
                           """select * from stats.mobile_blocks order by network_name""", []))

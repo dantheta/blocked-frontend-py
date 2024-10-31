@@ -34,7 +34,7 @@
     Domain may be abusive: 
   </label>
   <select name="abusetype">
-  {% for name, description in flagreasons.abusetypes.iteritems() %}
+  {% for name, description in flagreasons.abusetypes.items() %}
   <option value="{{name}}" {{'selected' if flag.get('abusetype') == name else '' }}>{{description}}</option>
   {% endfor %}
   </select>

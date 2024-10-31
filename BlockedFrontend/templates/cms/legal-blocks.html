@@ -46,7 +46,7 @@
         {% if region %}
           <li><a href="{{ url_for('.legal_blocks', page=page, sort=sortorder, region=None) }}">(all)</a></li>
         {% endif %}
-        {% for code,country in countries.iteritems() %}
+        {% for code,country in countries.items() %}
           <li><a href="{{ url_for('.legal_blocks', page=page, sort=sortorder, region=code) }}">{{ country }}</a></li>
         {% endfor %}
       </ul>
