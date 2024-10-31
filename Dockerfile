@@ -9,8 +9,8 @@ RUN mkdir /usr/local/blocked
 VOLUME /usr/local/blocked
 COPY server.py /usr/local/blocked/server.py
 ADD BlockedFrontend /usr/local/blocked/BlockedFrontend
-ADD .git /usr/local/blocked/.git
-ADD .ssh /root/.ssh
+#ADD .git /usr/local/blocked/.git
+#ADD .ssh /root/.ssh
 
 COPY config.py /usr/local/blocked/config.py
 COPY blocked.wsgi /usr/local/blocked/blocked.wsgi
