@@ -237,6 +237,19 @@ def strip_email_phone(value):
     newvalue = re.sub(r'\S+@([\S\.])+\.\S+', '<email removed>', newvalue)
     return newvalue
 
+class NoneProxy(object):
+    def __init__(self, source):
+        self._source = source
+
+    def __getitem__(self, item):
+        return '' if self._source[item] is None else self._source[item]
+
+
+@app.template_filter('groupby_none')
+def groupby_none(values, key):
+    import itertools
+    return itertools.groupby(values, key=lambda x: (x[key] is None, x[key]))
+
 
 @app.errorhandler(Exception)
 def on_error(error):

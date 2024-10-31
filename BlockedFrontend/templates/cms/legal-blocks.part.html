@@ -46,7 +46,7 @@ td.urlcol {
         </td>
     </tr>
     {% endif %}
-    {% for groupname, rows in corows|groupby('url_group_name') %}
+    {% for groupname, rows in corows|groupby_none('url_group_name') %}
     {% if groupname %}
     <tr><td colspan="4" class="groupheader"><h5>{{ groupname }}</h5></td></tr>
     {% endif %}
