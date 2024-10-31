@@ -248,7 +248,7 @@ class NoneProxy(object):
 @app.template_filter('groupby_none')
 def groupby_none(values, key):
     import itertools
-    return itertools.groupby(values, key=lambda x: (x[key] is None, x[key]))
+    return itertools.groupby(values, key=lambda x: (x[key] is not None, x[key]))
 
 
 @app.errorhandler(Exception)
