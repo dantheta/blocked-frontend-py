@@ -42,7 +42,7 @@ def stats_gb():
     result = g.api.isp_stats()
     g.remote_content = g.remote.get_content('stats')
     ispstats = result['isp-stats']
-    isps = ispstats.keys()
+    isps = list(ispstats.keys())
     isps.sort()
 
 
