@@ -96,24 +96,20 @@ th.num {
             {% set header = row %}
             <tr>
                 <th class="col-md-4">{{ header[0] }}</th>
-                {% for col in header[1:] %}
-                {% if not col.startswith('_') %}
+                {% for col in header[1:-1] %}
                 <th class="num">{{ col }}</th>
-                {% endif %}
                 {% endfor %}
                 <th></th>
             </tr>
              {% else %}
             <tr class="{{ 'hidden' if hide and loop.index > hide else ''}} ">
                 <td>{{ row[0] }}</td>
-                {% for col in row[1:] %}
-                {% if not header[loop.index].startswith('_') %}
+                {% for col in row[1:-1] %}
                 <td class="num">
                     {% call viewlink(loop.index, row) %}
                     {{ col }}
                     {% endcall %}
                 </td>
-                {% endif %}
                 {% endfor %}
                 <td>
                 </td>
