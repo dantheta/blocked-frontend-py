@@ -91,7 +91,9 @@ th.num {
 
 {% macro data_table(source, id=None, hide=None, viewlink=reportslink_none) %}
          <table id="{{ id }}" class="table table-striped table-condensed stats-table">
-            {% set header = next(source) %}
+            {% for row in source %}
+            {% if loop.first %}
+            {% set header = row %}
             <tr>
                 <th class="col-md-4">{{ header[0] }}</th>
                 {% for col in header[1:] %}
@@ -101,7 +103,7 @@ th.num {
                 {% endfor %}
                 <th></th>
             </tr>
-            {% for row in source %}
+             {% else %}
             <tr class="{{ 'hidden' if hide and loop.index > hide else ''}} ">
                 <td>{{ row[0] }}</td>
                 {% for col in row[1:] %}
@@ -116,6 +118,7 @@ th.num {
                 <td>
                 </td>
             </tr>
+             {% endif %}
             {% endfor %}
         </table>
 {% endmacro %}
