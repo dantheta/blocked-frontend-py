@@ -560,6 +560,11 @@ def get_isp_report_stats_data():
 @admin_ispreport_pages.route('/control/ispreport/stats')
 @check_reviewer
 def ispreport_stats():
+    def ispreport_grouper(values):
+        def _key(item):
+            return (item[0][3] is not null, item[0][3])
+        return ((x[1], y) for (x, y) in itertools.groupby(values, key=_key))
+
     q1 = Query(g.conn,
                """select cat1.name reporter,  extract('year' from urls.last_reported) yr, count(*) ct
                   from public.urls
@@ -647,7 +652,8 @@ def ispreport_stats():
                            damage_full=group_by_year(q_damage),
                            isp_stats=group_by_year(q_isps2),
                            totalrows=totalrows,
-                           site_owner_totals=site_owner_totals
+                           site_owner_totals=site_owner_totals,
+                           ispreport_grouper=ispreport_grouper
                            )
 
 
