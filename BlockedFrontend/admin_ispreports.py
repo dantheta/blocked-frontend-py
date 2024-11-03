@@ -562,7 +562,7 @@ def get_isp_report_stats_data():
 def ispreport_stats():
     def ispreport_grouper(values):
         def _key(item):
-            return (item[0][3] is not null, item[0][3])
+            return (item[0][3] is not None, item[0][3])
         return ((x[1], y) for (x, y) in itertools.groupby(values, key=_key))
 
     q1 = Query(g.conn,
