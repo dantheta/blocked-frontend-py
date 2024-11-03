@@ -807,11 +807,11 @@ class ISPReportEmail(DBObject):
     def decode(self):
         import email
 
-        if type(self['message']) == unicode:
-            # ensure input is string/bytes utf8
-            ret = email.message_from_string(self['message'].encode('utf8'))
-        else:
-            ret = email.message_from_string(self['message'])
+        def cvt_str(s):
+            return s.decode('utf8') if isinstance(s, bytes) else s
+
+        # ensure input is string/bytes utf8
+        ret = email.message_from_string(cvt_str(self['message']))
         return ret
         
     def get_report(self):
