@@ -1,16 +1,5 @@
 {% macro show_message(message, truncate=False) %}
-{%- if message.is_multipart() -%}
-{{    show_message(message.get_payload()[0], truncate) }}
-{%- else %}
-{%-   set enc = (message.get_params()|selectattr('0', 'equalto', 'charset')|first|last) -%}
-{%-   if not enc %}{% set enc = 'utf8' %}{% endif -%}
-{%-   if message['content-transfer-encoding'] == 'base64' %}
-{%-     set msg=message.get_payload().decode('base64').decode(enc,'replace') %}
-{%-   elif message['content-transfer-encoding'] == 'quoted-printable' %}  
-{%-     set msg=message.get_payload().decode('quoted-printable').decode(enc,'replace') %}
-{%-   else %}
-{%-     set msg=message.get_payload() %}
-{%-   endif %}
+{%    set msg = message.get_text_body() %}
 {%-   set _state = {'display': True} -%}
 {%-   for line in (msg|stripstyletag).splitlines() %}
 {%-     if truncate %}
@@ -29,6 +18,5 @@
 {%      endif %}
 {%-   endfor %}
 
-{%- endif %}
 {%- endmacro %}
 
