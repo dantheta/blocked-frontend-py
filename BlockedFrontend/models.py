@@ -818,9 +818,15 @@ class ISPReportEmail(DBObject):
             pl = msg.get_body(preferencelist=['plain', 'html'])
         else:
             pl = msg
-        txt = pl.get_payload(decode=True)
 
-        return txt
+        txt = pl.get_payload(decode=True)
+        charset = dict(pl.get_params() or []).get('charset', 'utf-8')
+        try:
+            ret = txt.decode(charset)
+        except UnicodeDecodeError:
+            ret = txt.decode(charset, 'replace')
+
+        return ret
 
         
     def get_report(self):
