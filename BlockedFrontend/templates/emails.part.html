@@ -1,7 +1,6 @@
-{% macro show_message(message, truncate=False) %}
-{%    set msg = message.get_text_body() %}
+{% macro show_message(msgbody, truncate=False) %}
 {%-   set _state = {'display': True} -%}
-{%-   for line in (msg|stripstyletag).splitlines() %}
+{%-   for line in (msgbody|stripstyletag).splitlines() %}
 {%-     if truncate %}
 {%-       set display = _state.display -%}
 {%-       if '____________________' in line %}{% set display=False %}{% endif -%}

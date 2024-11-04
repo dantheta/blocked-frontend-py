@@ -256,11 +256,13 @@ def ispreports_view(url, network_name, msgid=None):
     if msgid:
         email = ISPReportEmail.select_one(g.conn, id=msgid)
         msg = email.decode()
+        body = email.get_text_body(msg)
     else:
         if len(messagelist):
             email, msg = messagelist[0]
+            body = email.get_text_body(msg)
         else:
-            email, msg = None, None
+            email, msg, body = None, None, None
 
     all_categories = ( (cat['id'], cat['namespace'], cat['name'])
                        for cat in Category.select_active(g.conn) )
@@ -284,6 +286,7 @@ def ispreports_view(url, network_name, msgid=None):
                            categories = list(urlobj.get_categories()),
                            all_categories=all_categories,
                            messagelist=messagelist,
+                           selected_body=body,
                            selected_msg=msg,
                            selected_email=email,
                            report_next=ispreport.get_next(),
