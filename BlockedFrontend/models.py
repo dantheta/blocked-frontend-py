@@ -676,7 +676,7 @@ class ISPReport(DBObject):
         return ISPReportEmail.select(self.conn, report_id=self['id'])
         
     def get_emails_parsed(self):
-        return ( (email, email.decode(), email.get_text_body()) for email in self.get_emails() )
+        return ( (email, email.decode()) for email in self.get_emails() )
         
     def set_status(self, newstatus, email, userid):
         assert newstatus in ('unblocked', 'rejected', 'no-decision')
