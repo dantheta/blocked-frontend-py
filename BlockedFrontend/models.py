@@ -806,13 +806,22 @@ class ISPReportEmail(DBObject):
             
     def decode(self):
         import email
+        import email.policy
 
-        def cvt_str(s):
-            return s.decode('utf8') if isinstance(s, bytes) else s
-
-        # ensure input is string/bytes utf8
-        ret = email.message_from_string(cvt_str(self['message']))
+        ret = email.message_from_string(self['message'],
+                                        policy=email.policy.default)
         return ret
+
+    def get_text_body(self):
+        msg = self.decode()
+        if msg.is_multipart():
+            pl = msg.get_body(preferencelist=['plain', 'html'])
+        else:
+            pl = msg
+        txt = pl.get_payload(decode=True)
+
+        return txt
+
         
     def get_report(self):
         return ISPReport.select_one(self.conn, self['report_id'])
