@@ -137,7 +137,7 @@ Use the <strong>request unblock</strong> tool to start reporting the mistakes li
               <li><a class="deletebtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}">Delete</a></li>
               <li><a class="deleteallbtn" data-id="{{item.id}}" href="{{ url_for('.item_delete', id=item.id) }}">Delete from all lists</a></li>
               <li role="separator" class="dropdown-header">Flag:</li>
-            {% for reasoncode, reason in reasons.report_types.iteritems() %}
+            {% for reasoncode, reason in reasons.report_types.items() %}
               <li><a class="flagbtn" data-id="{{ item.id }}" data-reason="{{ reasoncode }}" href="{{ url_for('.item_delete_and_flag', id=item.id, reason=reason) }}">{{ reason }}</a></li>
             {% endfor %}
             </ul>

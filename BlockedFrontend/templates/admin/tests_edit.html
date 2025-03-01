@@ -41,7 +41,7 @@
                     <th></th>
                     <th>Country / Network</th>
                     </tr>
-                {% for country, networks in isps.eu.iteritems() | sort %}
+                {% for country, networks in isps.eu.items() | sort %}
                 <tr>
                     <td colspan="2"><h4>{{ countries[country] }}</h4></td>
                 </tr>

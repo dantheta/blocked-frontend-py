@@ -4,15 +4,15 @@ import logging
 from flask import Blueprint, render_template, redirect, request, \
     jsonify, g, url_for, session, current_app, Response, abort, flash
 
-from utils import *
+from .utils import *
 
-import models
+from . import models
 import NORM.exceptions
 from NORM import Query
 
-from auth import *
-from db import *
-from resources import load_data
+from .auth import *
+from .db import *
+from .resources import load_data
 
 list_pages = Blueprint('list', __name__,
                        template_folder='templates/savedlists')

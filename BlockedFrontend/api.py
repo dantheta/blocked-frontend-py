@@ -3,7 +3,7 @@ import json
 import logging
 import datetime
 
-from signing import RequestSigner
+from .signing import RequestSigner
 
 import requests
 
@@ -94,7 +94,7 @@ class ApiClient(BaseApiClient):
         try:
             req['signature'] = self.sign(req, self.SIGNATURES[endpoint])
         except KeyError:
-            for k,v in self.SIGNATURES.iteritems():
+            for k,v in self.SIGNATURES.items():
                 if endpoint.startswith(k):
                     req['signature'] = self.sign(req, v)
                     break

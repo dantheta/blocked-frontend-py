@@ -33,7 +33,7 @@
     Site is appropriately blocked, and belongs in this category:
   </label>
   <select style="margin-left: 1.75em; margin-top: 0.5em" class="form-control" name="site_category">
-    {% for cat, desc in config.SITE_CATEGORIES.iteritems()|sort %}
+    {% for cat, desc in config.SITE_CATEGORIES.items()|sort %}
     <option value="{{ cat }}">{{desc}}</option>
     {% endfor %}
     <option value="other">Other</option>

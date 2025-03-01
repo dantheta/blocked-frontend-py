@@ -334,7 +334,7 @@ $(document).ready(function(){
                     </div>
                 </div>
                 <div class="panel-body">
-                    <p class="message" style="">{{ emails.show_message(selected_msg) }}</p>
+                    <p class="message" style="">{{ emails.show_message(selected_body) }}</p>
                 </div>
             </div>
             {% endif %}
@@ -378,7 +378,7 @@ $(document).ready(function(){
                     <label class="control-label" for="category_id">Assign existing Category</label>
                     <select class="form-control" name="add_category_id">
                         <option value="" selected>(None)</option>
-                        {% for group in all_categories|groupby('1') %}
+                        {% for group in all_categories|groupby_none(1) %}
                         <optgroup label="{{ group.grouper }}">
                             {% for cat in group.list %}
                             <option value="{{cat.0}}" >{{ cat.2 }}</option>

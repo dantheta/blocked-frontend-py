@@ -5,13 +5,13 @@ import jinja2
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
-from utils import *
-from models import Item, ISPReport
-import models
+from .utils import *
+from .models import Item, ISPReport
+from . import models
 from NORM import Query
 from NORM.exceptions import ObjectNotFound
 
-from resources import load_country_data
+from .resources import load_country_data
 
 cms_pages = Blueprint('cms',
                       __name__,
@@ -302,7 +302,7 @@ def export_blocks_by_injunction(region):
             data = g.api.recent_blocks(page, region, 'injunction')
             for item in data['results']:
                 yield [
-                        item[x].encode('utf8') if isinstance(item[x], unicode) else item[x]
+                        item[x].decode('utf8') if isinstance(item[x], bytes) else item[x]
                         for x in COLS
                     ] + [""] + [
                         "Y" if x in item['networks'] else ""

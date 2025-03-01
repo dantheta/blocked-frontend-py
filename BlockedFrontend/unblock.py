@@ -4,10 +4,10 @@ import logging
 import datetime
 
 from flask import Blueprint, render_template, redirect, request, current_app, session, url_for, abort, g
-from utils import *
-from models import *
-from db import *
-from resources import load_data
+from .utils import *
+from .models import *
+from .db import *
+from .resources import load_data
 
 
 unblock_pages = Blueprint('unblock', __name__,

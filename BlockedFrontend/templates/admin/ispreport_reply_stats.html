@@ -84,7 +84,7 @@
         <th class="num">Resolved &amp; blocked against policy</th>
         <th class="num">Open report count</th>
     </tr>
-    {% for group, list in reply_stats|groupby('network_name') %}
+    {% for group, list in reply_stats|groupby_none('network_name') %}
     <tr><td colspan="10" class="headerrow">{{ group }}</td></tr>
     {% for row in list %}
     <tr>

@@ -85,12 +85,13 @@ div.expand {
 
 {% for msg in messagelist[k] %}
 {% set decoded = msg.decode() %}
+{% set body = msg.get_text_body(decoded) %}
 <div class="msg-wrap"><!-- {{ msg.id }} -->
   <div class="header">
     <div><span>From: </span>{{ decoded.from }}</div>
     <div><span>Date: </span>{{ decoded.date }}</div>
   </div>
-  <div class="msg msg-hidden">{{ emails.show_message(decoded, True) }}</div>
+  <div class="msg msg-hidden">{{ emails.show_message(body, True) }}</div>
   <div class="expandx"><a href="#" class="expandx">Read more ...</a></div>
 </div>
 {% endfor %}

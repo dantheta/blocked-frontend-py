@@ -3,11 +3,11 @@ import logging
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session, current_app
 
-from utils import *
-from resources import *
-from models import SavedList, Item, CourtJudgmentURL
-from db import *
-from api import APIError
+from .utils import *
+from .resources import *
+from .models import SavedList, Item, CourtJudgmentURL
+from .db import *
+from .api import APIError
 
 from NORM.exceptions import ObjectNotFound
 

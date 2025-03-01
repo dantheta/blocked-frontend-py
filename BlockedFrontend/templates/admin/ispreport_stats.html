@@ -101,7 +101,7 @@
 {% endfor %}
 <th class="num">Total</th>
 </tr>
-{% for header,iter in isp_stats|groupby('0.3') %}
+{% for header,iter in ispreport_grouper(isp_stats) %}
 {% for grp, yeardata in iter %}
 <tr>
 <td>{{ grp[2] }}</td>

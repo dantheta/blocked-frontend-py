@@ -5,9 +5,9 @@ import urlparse
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, session, abort
 
-from utils import *
-from models import *
-from db import *
+from .utils import *
+from .models import *
+from .db import *
 
 err451_pages = Blueprint('err451', __name__,
                            template_folder='templates/451')

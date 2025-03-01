@@ -5,11 +5,11 @@ import logging
 import datetime
 import collections
 
-from api import ApiClient
-import auth
-from utils import *
+from .api import ApiClient
+from . import auth
+from .utils import *
 from .remotecontent import get_remote_content_loader
-import db
+from . import db
 
 from flask import Flask, render_template, request,  \
     abort, g, session
@@ -41,55 +41,55 @@ www_domain = app.config['SUBDOMAIN_MAIN']
 app.url_map.default_subdomain = www_domain
 
 if app.config['MODULE_ADMIN']:
-    from admin import admin_pages
+    from .admin import admin_pages
     app.register_blueprint(admin_pages, subdomain=www_domain)
 
-    from admin_rightsholder import admin_rightsholder_pages
+    from .admin_rightsholder import admin_rightsholder_pages
     app.register_blueprint(admin_rightsholder_pages, subdomain=www_domain)
 
-    from admin_savedlists import admin_savedlist_pages
+    from .admin_savedlists import admin_savedlist_pages
     app.register_blueprint(admin_savedlist_pages, subdomain=www_domain)
 
-    from admin_ispreports import admin_ispreport_pages
+    from .admin_ispreports import admin_ispreport_pages
     app.register_blueprint(admin_ispreport_pages, subdomain=www_domain)
 
 if app.config.get('SITE_THEME') == '451':
-    from err451 import err451_pages
+    from .err451 import err451_pages
     app.register_blueprint(err451_pages)
 else:
-    from cms import cms_pages, custom_routing
+    from .cms import cms_pages, custom_routing
     custom_routing(app.config['SITE_THEME'])
     app.register_blueprint(cms_pages, subdomain=www_domain)
 
-    from site_results import site_pages
+    from .site_results import site_pages
     app.register_blueprint(site_pages, subdomain=www_domain)
 
     if app.config['MODULE_CATEGORY']:
-        from category import category_pages
+        from .category import category_pages
         app.register_blueprint(category_pages, subdomain=www_domain)
 
     if app.config['MODULE_UNBLOCK']:
-        from unblock import unblock_pages
+        from .unblock import unblock_pages
         app.register_blueprint(unblock_pages, subdomain=www_domain)
 
     if app.config['MODULE_SAVEDLIST']:
-        from savedlists import list_pages
+        from .savedlists import list_pages
         app.register_blueprint(list_pages, subdomain=www_domain)
 
-    from stats import stats_pages
+    from .stats import stats_pages
     app.register_blueprint(stats_pages, subdomain=www_domain)
 
-    from registry import registry_pages
+    from .registry import registry_pages
     app.register_blueprint(registry_pages, subdomain=app.config['SUBDOMAIN_NOMINET'])
 
-    from cmsassets import cms_assets
+    from .cmsassets import cms_assets
     app.register_blueprint(cms_assets, subdomain=www_domain)
-    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'])
-    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_NOMINET'])
+    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_INJUNCTIONS'], name='cms_assets_sub')
+    app.register_blueprint(cms_assets, subdomain=app.config['SUBDOMAIN_NOMINET'], name='cms_assets_nom')
 
-@app.before_first_request
-def setup_db():
-    db.setup()
+    # on startup
+    with app.app_context():
+        db.setup()
 
 
 @app.before_request
@@ -119,7 +119,7 @@ def hook_api():
 def hook_miscdata():
     if request.path.startswith('/static'):
         return
-    from resources import load_data
+    from .resources import load_data
     g.miscvars = load_data('misc')
 
 
@@ -147,7 +147,7 @@ def fmdate(s):
 def null(s, default=''):
     if s is None:
         return default
-    if isinstance(s, (str, unicode)) and not s.strip():
+    if isinstance(s, (str, bytes)) and not s.strip():
         return default
     return s
 
@@ -174,7 +174,11 @@ def join_en(ls, markup=False):
 @app.template_filter('domain')
 def domain(url):
     """Shorten a URL to just the domain"""
-    import urlparse
+    try:
+        import urlparse
+    except ImportError:
+        import urllib.parse as urlparse
+
     try:
         parts = urlparse.urlparse(url)
         return parts.netloc
@@ -232,6 +236,13 @@ def strip_email_phone(value):
     newvalue = re.sub(r'\+?\d{4,6}\s*[ \-\d]{5,7}', '<phone removed>', value)
     newvalue = re.sub(r'\S+@([\S\.])+\.\S+', '<email removed>', newvalue)
     return newvalue
+
+@app.template_filter('groupby_none')
+def groupby_none(values, key):
+    import itertools
+    return ((title, it) for ((_, title), it) in
+            itertools.groupby(values, key=lambda x: (x[key] is not None, x[key]))
+            )
 
 
 @app.errorhandler(Exception)

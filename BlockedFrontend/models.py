@@ -202,7 +202,7 @@ class User(DBObject):
     
     @staticmethod
     def _encode(s):
-        if isinstance(s, unicode):
+        if isinstance(s, str):
             return s.encode('utf8')
         else:
             return s
@@ -806,13 +806,28 @@ class ISPReportEmail(DBObject):
             
     def decode(self):
         import email
+        import email.policy
 
-        if type(self['message']) == unicode:
-            # ensure input is string/bytes utf8
-            ret = email.message_from_string(self['message'].encode('utf8'))
-        else:
-            ret = email.message_from_string(self['message'])
+        ret = email.message_from_string(self['message'],
+                                        policy=email.policy.default)
         return ret
+
+    @staticmethod
+    def get_text_body(msg):
+        if msg.is_multipart():
+            pl = msg.get_body(preferencelist=['plain', 'html'])
+        else:
+            pl = msg
+
+        txt = pl.get_payload(decode=True)
+        charset = dict(pl.get_params() or []).get('charset', 'utf-8')
+        try:
+            ret = txt.decode(charset)
+        except UnicodeDecodeError:
+            ret = txt.decode(charset, 'replace')
+
+        return ret
+
         
     def get_report(self):
         return ISPReport.select_one(self.conn, self['report_id'])

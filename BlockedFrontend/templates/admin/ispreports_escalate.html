@@ -31,7 +31,7 @@
             {% if emailreply %}
             {{ forms.static_field('Date', 'reply_created', emailreply.created|fmtime) }}
 
-            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.decode()), rows=8) }}
+            {{ forms.textarea_field('Reply','previous', email.show_message(emailreply.get_text_body(emailreply.decode())), rows=8) }}
 
             {% else %}
             <div><em>No reply or no decision received</em></div>

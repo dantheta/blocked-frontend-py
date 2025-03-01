@@ -8,11 +8,11 @@ import itertools
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, flash, jsonify, Response
 
-from models import *
-from auth import *
-from utils import *
-from resources import *
-from db import *
+from .models import *
+from .auth import *
+from .utils import *
+from .resources import *
+from .db import *
 
 from NORM.exceptions import ObjectNotFound,ObjectExists
 
@@ -256,11 +256,13 @@ def ispreports_view(url, network_name, msgid=None):
     if msgid:
         email = ISPReportEmail.select_one(g.conn, id=msgid)
         msg = email.decode()
+        body = email.get_text_body(msg)
     else:
         if len(messagelist):
             email, msg = messagelist[0]
+            body = email.get_text_body(msg)
         else:
-            email, msg = None, None
+            email, msg, body = None, None, None
 
     all_categories = ( (cat['id'], cat['namespace'], cat['name'])
                        for cat in Category.select_active(g.conn) )
@@ -284,6 +286,7 @@ def ispreports_view(url, network_name, msgid=None):
                            categories = list(urlobj.get_categories()),
                            all_categories=all_categories,
                            messagelist=messagelist,
+                           selected_body=body,
                            selected_msg=msg,
                            selected_email=email,
                            report_next=ispreport.get_next(),
@@ -560,6 +563,11 @@ def get_isp_report_stats_data():
 @admin_ispreport_pages.route('/control/ispreport/stats')
 @check_reviewer
 def ispreport_stats():
+    def ispreport_grouper(values):
+        def _key(item):
+            return (item[0][3] is not None, item[0][3])
+        return ((x[1], y) for (x, y) in itertools.groupby(values, key=_key))
+
     q1 = Query(g.conn,
                """select cat1.name reporter,  extract('year' from urls.last_reported) yr, count(*) ct
                   from public.urls
@@ -578,7 +586,7 @@ def ispreport_stats():
     site_owner_totals = {}
     for grp, yeardata in group_by_year(q1_3):
         if grp[0].startswith('Site Owner '):
-            for k,v in yeardata.iteritems():
+            for k,v in yeardata.items():
                 site_owner_totals.setdefault(k, 0)
                 site_owner_totals[k] += v
 
@@ -647,7 +655,8 @@ def ispreport_stats():
                            damage_full=group_by_year(q_damage),
                            isp_stats=group_by_year(q_isps2),
                            totalrows=totalrows,
-                           site_owner_totals=site_owner_totals
+                           site_owner_totals=site_owner_totals,
+                           ispreport_grouper=ispreport_grouper
                            )
 
 
@@ -753,7 +762,7 @@ def ispreport_consistency():
         else:
             num = int(row['name'].rsplit(' ', 2)[1])
             counts[num] = row['ct']
-    counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.iteritems()) ]
+    counts = [ {'network_count': k, 'urls': v} for (k,v) in sorted(counts.items()) ]
 
     networks = list(Query(g.conn,
                           """select * from stats.mobile_blocks order by network_name""", []))
