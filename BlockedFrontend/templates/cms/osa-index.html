@@ -1,0 +1,67 @@
+{% extends "BasicPage.page.html" %}
+{%import "remotecontent.part.html" as rmt %}
+
+{% set pagetitle = "Online Safety Act - shutdowns and site blocks" %}
+
+{% set block_description = {
+'shutdown_osa': 'Shut down by the operator due to the Online Safety Act',
+}
+%}
+
+{% block page_style %}
+.row-border {
+    border-top: 1px solid rgb(221, 221, 221);
+    border-bottom: 1px solid rgb(221, 221, 221);
+    }
+{% endblock %}
+
+{% block banner_text %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+
+{% for case in cases %}
+<div class="row row-border">
+    <div class="col-md-12">
+        <h3 style="vertical-align: top">
+            <a href="{{ case.url }}" rel="nofollow">{{ case.title }}</a>
+        {% if case.block_type == 'shutdown_osa' %}
+            <span class="glyphicon glyphicon-remove-sign" />
+        {% elif case.block_type == 'geoblock' or case.block_type == 'geoblock_osa' %}
+            <span class="glyphicon glyphicon-ban-circle" />
+        {% endif %}
+        </h3>
+        <div>Reported: {{ case.created|fmtime}}</div>
+        {% if case.shutdown_date %}
+        <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
+        {% endif %}
+        <div style="margin-top: 0.75rem">{{ block_description[case.block_type]|safe }}</div>
+        <div>
+            {{ case.description|null }}
+        </div>
+        <div style="margin-top: 0.75rem"><span class="label label-default" style="margin-right: 1rem">
+                {{ case.status|title }}
+            </span>
+            {% if case.archive_url %}
+            <a href="{{ case.archive_url }}">Archived page <span class="glyphicon glyphicon-new-window" /></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+    </div>
+</div>
+
+
+<div class="row shaded-row">
+{{ chunks.contactChunk() }}
+</div>
+
+{% endblock %}
+
+{% block page_menu %}
+
+{% endblock %}

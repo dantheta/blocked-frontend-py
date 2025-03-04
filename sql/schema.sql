@@ -44,3 +44,38 @@ CREATE TABLE users(
     created timestamptz not null,
     last_updated timestamptz not null
     );
+
+
+CREATE TYPE enum_osacase_source AS ENUM (
+    'user',
+    'detected',
+    'operator'
+);
+CREATE TYPE enum_osacase_block_type AS ENUM(
+    'geoblock_osa',
+    'geoblock_misc',
+    'shutdown_osa'
+);
+
+CREATE TYPE enum_osacase_status AS ENUM(
+    'submitted',
+    'confirmed'
+);
+
+
+CREATE TABLE osa_cases(
+    id serial primary key,
+    urlid int NOT NULL,
+    contact_id int NOT NULL,
+    source enum_osacase_source NOT NULL,
+    block_type enum_osacase_block_type,
+    description text null,
+    archive_url text,
+    status enum_osacase_status DEFAULT 'submitted' NOT NULL,
+    shutdown_date date null,
+    created timestamptz not null,
+    last_updated timestamptz null
+);
+
+
+

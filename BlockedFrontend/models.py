@@ -897,3 +897,30 @@ class Rightsholder(DBObject):
 
     def get_court_judgments(self):
         return CourtJudgment.select(self.conn, rightsholder_id=self['id'])
+
+
+# OSA blocks
+
+class OSACase(DBObject):
+    TABLE = 'osa_cases'
+    FIELDS = [
+        'urlid',
+        'contact_id',
+        'block_type',
+        'status',
+        'source',
+        'archive_url',
+        'description',
+    ]
+
+    @classmethod
+    def select_with_urls(cls, conn, _page=0, _pagesize=25):
+        q = Query(conn,
+                  """SELECT osa_cases.*, urls.url, urls.title
+                     FROM osa_cases
+                         INNER JOIN public.urls using (urlid)
+                     ORDER BY osa_cases.created desc, urls.url""", [])
+        for row in q:
+            yield OSACase(conn, data=row)
+
+

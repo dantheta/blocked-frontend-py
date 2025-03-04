@@ -589,3 +589,12 @@ def faqs():
     grouped_faqs = itertools.groupby(articles, lambda x: x['heading'])
 
     return render_template('faqs.html', faqs=grouped_faqs, content=content)
+
+@cms_pages.route('/osa-blocks')
+@cms_pages.route('/osa-blocks/<int:page>')
+def osa_blocks(page=1):
+    
+    osa_cases = models.OSACase.select_with_urls(g.conn, _page=page-1)
+    return render_template('osa-index.html', cases=osa_cases, page=page)
+
+
