@@ -11,8 +11,14 @@
 {% block page_style %}
 .row-border {
     border-top: 1px solid rgb(221, 221, 221);
+}
+.row-border:last-child {
     border-bottom: 1px solid rgb(221, 221, 221);
     }
+
+.mr-1rem {
+   margin-right: 1rem;
+}
 {% endblock %}
 
 {% block banner_text %}
@@ -25,7 +31,7 @@
 {% for case in cases %}
 <div class="row row-border">
     <div class="col-md-12">
-        <h3 style="vertical-align: top">
+        <h3 style="">
             <a href="{{ case.url }}" rel="nofollow">{{ case.title }}</a>
         {% if case.block_type == 'shutdown_osa' %}
             <span class="glyphicon glyphicon-remove-sign" />
@@ -41,7 +47,8 @@
         <div>
             {{ case.description|null }}
         </div>
-        <div style="margin-top: 0.75rem"><span class="label label-default" style="margin-right: 1rem">
+        <div style="margin-top: 0.75rem">
+            <span class="label label-default mr-1rem">
                 {{ case.status|title }}
             </span>
             {% if case.archive_url %}
