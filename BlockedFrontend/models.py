@@ -914,12 +914,13 @@ class OSACase(DBObject):
     ]
 
     @classmethod
-    def select_with_urls(cls, conn, _page=0, _pagesize=25):
+    def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None):
+        orderby = _orderby or 'osa_cases.created desc, urls.url'
         q = Query(conn,
                   """SELECT osa_cases.*, urls.url, urls.title
                      FROM osa_cases
                          INNER JOIN public.urls using (urlid)
-                     ORDER BY osa_cases.created desc, urls.url""", [])
+                     ORDER BY """ + orderby, [])
         for row in q:
             yield OSACase(conn, data=row)
 
