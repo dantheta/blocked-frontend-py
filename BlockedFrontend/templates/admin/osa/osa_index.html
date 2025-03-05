@@ -1,0 +1,48 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "OSA Case Admin" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-6">
+
+        <h1>{{pagetitle}}</h1>
+        <h2>Online safety act shutdowns/blocks</h2>
+        <div>
+            <a href="{{url_for('.admin_osa_edit')}}" class="btn btn-primary">Add</a>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <table class="table">
+            <tr>
+                <th>Site</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            {% for case in cases %}
+            <tr>
+                <td>
+                    <a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.title}}</a>
+                    <p style="max-width: 90%"><em><small>{{ case.description|null|safe }}</small></em></p>
+                </td>
+                <td  style="vertical-align: middle"><span class="label label-default">{{ case.status }}</span></td>
+                <td style="width: 16%; vertical-align: middle">
+                    <a href="{{ url_for('.admin_osa_edit', id=case.id)}}" class="btn btn-primary btn-sm">
+                        <span class="glyphicon glyphicon-edit"></span> Edit</a>
+                    <a href="{{ url_for('.admin_osa_delete', id=case.id)}}" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span> Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+

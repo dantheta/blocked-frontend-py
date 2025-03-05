@@ -216,7 +216,7 @@ class User(DBObject):
     def set_password(self, password):
         import bcrypt
         salt = bcrypt.gensalt()
-        self['password'] = bcrypt.hashpw(self._encode(password), salt)
+        self['password'] = bcrypt.hashpw(self._encode(password), salt).decode('ascii')
         
     def reset_password(self, length=PASSWORD_LENGTH):
         newpass = self.random_password(length)
@@ -233,7 +233,7 @@ class User(DBObject):
     def random_password(length=PASSWORD_LENGTH):
         import random, string
         
-        return "".join(random.sample(string.letters+string.digits, length))
+        return "".join(random.sample(string.ascii_letters+string.digits, length))
 
 class CourtJudgment(DBObject):
     TABLE = 'court_judgments'
