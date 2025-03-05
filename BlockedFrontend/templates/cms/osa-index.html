@@ -1,5 +1,6 @@
 {% extends "BasicPage.page.html" %}
 {%import "remotecontent.part.html" as rmt %}
+{% import "forms.part.html" as forms %}
 
 {% set pagetitle = "Online Safety Act - shutdowns and site blocks" %}
 
@@ -22,6 +23,16 @@
 {% endblock %}
 
 {% block banner_text %}
+{% endblock %}
+
+{% block page_menu %}
+
+<div class="well">
+<h3>Submit a new site</h3>
+<p>Tell us about a site that is shutting down or restricting access to UK users as a result of the Online Safety Act</p>
+<div style="text-align: right"><a class="btn btn-primary">Continue <i class="glyphicon glyphicon-arrow-right"></i></a></div>
+</div>
+
 {% endblock %}
 
 {% block body %}
@@ -69,6 +80,4 @@
 
 {% endblock %}
 
-{% block page_menu %}
 
-{% endblock %}
