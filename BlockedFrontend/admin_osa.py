@@ -29,6 +29,9 @@ def admin_osa_index():
 @check_moderator
 def admin_osa_edit(id=None):
     case = OSACase(g.conn, id)
+    if id is None:
+        case['source'] = 'operator'
+
     return render_template('osa/osa_edit.html', 
                            mode='edit' if id else 'add',
                            url=case.get_url(),
