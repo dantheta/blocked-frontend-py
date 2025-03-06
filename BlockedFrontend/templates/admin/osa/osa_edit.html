@@ -1,0 +1,37 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "OSA Admin" %}
+
+{% block pagestyle %}
+{% endblock %}
+
+{% set source_options = ['user','operator','detected'] %}
+{% set block_type_options = ['geoblock_osa','geoblock_misc','shutdown_osa'] %}
+{% set status_options = ['submitted','confirmed'] %}
+
+{% block body %}
+
+<h2>{{ mode|title }} OSA block/shutdown</h2>
+
+<form method="POST" action="{{ url_for('.admin_osa_update', id=case.id) }}">
+    {% if mode == 'add' %}
+    {{ forms.text_field('URL', 'url', url.url, css='col-md-12') }}
+    {% else %}
+    {{ forms.static_field('URL', 'url', url.url, css='col-md-12') }}
+    {% endif %}
+    
+    {{ forms.text_field('Archive URL', 'archive_url', case.archive_url, css='col-md-12') }}
+    {{ forms.text_field('Shutdown date', 'shutdown_date', case.shutdown_date, css='col-md-12') }}
+    {{ forms.textarea_field('Description', 'description', case.description, css='col-md-12') }}
+    
+    {{ forms.select_field('Status', 'status', case.status, options=status_options, css='col-md-4') }}
+    {{ forms.select_field('Block type', 'block_type', case.block_type, options=block_type_options, css='col-md-4') }}
+    {{ forms.select_field('Source', 'source', case.source, options=source_options, css='col-md-4') }}
+    
+    {{ forms.submit('Update') }}
+
+</form>
+
+{% endblock %}

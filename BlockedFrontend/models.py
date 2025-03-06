@@ -417,7 +417,7 @@ class Tags(DBObject):
     
 
 class Url(DBObject):
-    TABLE = 'urls'
+    TABLE = 'public.urls'
     UPDATABLE = False
     FIELDS = ['urlid','urlid','tags','source','status','inserted','lastpolled',
             'hash','whois_expiry','whois_expiry_last_checked','url_type',
@@ -909,9 +909,15 @@ class OSACase(DBObject):
         'block_type',
         'status',
         'source',
+        'shutdown_date',
         'archive_url',
         'description',
     ]
+
+    def get_url(self):
+        if self.get('urlid') is None:
+            return None
+        return Url.select_one(self.conn, urlid=self['urlid'])
 
     @classmethod
     def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None):

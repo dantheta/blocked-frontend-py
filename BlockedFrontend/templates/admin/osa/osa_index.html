@@ -28,14 +28,15 @@
             {% for case in cases %}
             <tr>
                 <td>
-                    <a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.title}}</a>
+                    <a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.title or case.url}}</a>
                     <p style="max-width: 90%"><em><small>{{ case.description|null|safe }}</small></em></p>
                 </td>
-                <td  style="vertical-align: middle"><span class="label label-default">{{ case.status }}</span></td>
-                <td style="width: 16%; vertical-align: middle">
+                <td  style=""><span class="label label-default">{{ case.status }}</span></td>
+                <td style="width: 16%;">
                     <a href="{{ url_for('.admin_osa_edit', id=case.id)}}" class="btn btn-primary btn-sm">
                         <span class="glyphicon glyphicon-edit"></span> Edit</a>
-                    <a href="{{ url_for('.admin_osa_delete', id=case.id)}}" class="btn btn-danger btn-sm">
+                    <a href="{{ url_for('.admin_osa_delete', id=case.id)}}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Delete case?')">
                         <span class="glyphicon glyphicon-trash"></span> Delete</a>
                 </td>
             </tr>

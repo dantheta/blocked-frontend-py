@@ -16,15 +16,15 @@
 </div>
 {% endmacro %}
 
-{% macro static_field(label, id, value='', placeholder='') %}
-<div class="form-group">
+{% macro static_field(label, id, value='', placeholder='', css='') %}
+<div class="form-group {{ css }}">
     <label class="control-label" >{{label}}:</label>
     <p class="form-control-static" id="{{id}}">{{ value or '' }}</p>
 </div>
 {% endmacro %}
 
-{% macro textarea_field(label, name, value='', rows=None) %}
-<div class="form-group">
+{% macro textarea_field(label, name, value='', rows=None, css='') %}
+<div class="form-group {{ css }}">
     <label class="control-label" for="{{name}}">{{label}}</label>
     <textarea class="form-control" name="{{name}}" {% if rows %}rows="{{rows}}"{%endif%}>{{value or ''}}</textarea>
 </div>

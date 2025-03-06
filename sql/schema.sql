@@ -66,7 +66,7 @@ CREATE TYPE enum_osacase_status AS ENUM(
 CREATE TABLE osa_cases(
     id serial primary key,
     urlid int NOT NULL,
-    contact_id int NOT NULL,
+    contact_id int NULL,
     source enum_osacase_source NOT NULL,
     block_type enum_osacase_block_type,
     description text null,
