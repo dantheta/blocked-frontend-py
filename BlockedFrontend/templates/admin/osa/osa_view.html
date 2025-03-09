@@ -1,0 +1,62 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+{% import "osa/osa_common.part.html" as osa_common %}
+
+{% set pagetitle = "OSA Block Admin" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+
+        <h1>{{ pagetitle }}</h1>
+        <div class="pull-right">
+            <a href="{{ url_for('.admin_osa_edit', id=case.id) }}" class="btn btn-primary">Edit</a>
+        </div>
+        <h3>{{ url.title or url.url }}
+        {% if url.title %}
+        <small><a href="{{ url.url }}" rel="nofollow">{{ url.url }}</a></small>
+        {% endif %} 
+        </h3>        
+        <p>{{ case.description }}</p>
+
+        {% for f in ['block_type','status','shutdown_date'] %}
+        <div class="row">
+            <div class="col-md-2">{{ forms.field_title(f) }}: </div>
+            <div class="col-md-10">{{ case[f]|null }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="well" style="margin-top: 3em">
+<div class="row">
+  <div class="col-md-6">
+<h2>Verification</h2>
+    
+{% if case.status == 'submitted' %}
+<form action="" method="POST">
+<input type="hidden" name="id" value="{{ case.id }}" />
+{{ forms.text_field('Shutdown announcement URL', 'archive_url', '', css='col-md-12') }}
+{{ forms.submit('Record verification') }}
+</form>
+{% endif %}
+
+  </div>
+  <div class="col-md-6">
+    <h4>Adding verification information</h4>
+    <ul>
+        <li>Select a page from the target site which announces its impending shutdown.</li>
+        <li>Go to <a target="_blank" href="">Wayback machine</a> and submit the shutdown announcement URL for snapshotting.</li>
+        <li>Once the snapshot has been taken, paste the snapshot's URL into the archive URL field.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+</div>
+
+
+</div> <!-- .well -->
+
+{% endblock %}

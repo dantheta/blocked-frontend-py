@@ -45,8 +45,9 @@ def admin_osa_update(id=None):
     case = OSACase(g.conn, id)
 
     if id is None:
-        url = Url.select_one(g.conn, url=request.form['url'])
-        case['urlid'] = url.id
+        #url = Url.select_one(g.conn, url=request.form['url'])
+        #case['urlid'] = url.id
+        case.submit_url(g.api, request.form['url'])
 
     for f in case.FIELDS:
         if f in ('urlid','contact_id'):
@@ -66,8 +67,24 @@ def admin_osa_update(id=None):
 
 @admin_osa_pages.route('/control/osa/view/<int:id>')
 @check_moderator
-def admin_osa_view(id=None):
-    pass
+def admin_osa_view(id):
+    case = OSACase(g.conn, id)
+    return render_template('osa/osa_view.html', case=case, url=case.get_url())
+
+
+@admin_osa_pages.route('/control/osa/verify', methods=['POST'])
+@check_moderator
+def admin_osa_verify():
+    case = OSACase(g.conn, request.form['id'])
+    case.update({
+        'archive_url': request.form['archive_id'],
+        'status': 'verified',
+    })
+    case.store()
+    g.conn.commit()
+    flash("Verification recorded")
+    return redirect('.admin_osa_view', id=case.id)
+
 
 @admin_osa_pages.route('/control/osa/delete/<int:id>')
 @check_moderator

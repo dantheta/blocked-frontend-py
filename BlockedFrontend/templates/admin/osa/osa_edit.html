@@ -1,19 +1,13 @@
 {% extends "admin.page.html" %}
 {% import "paging.part.html" as paging %}
 {% import "forms.part.html" as forms %}
+{% import "osa/osa_common.part.html" as osa_common %}
 
 {% set pagetitle = "OSA Admin" %}
 
 {% block pagestyle %}
 {% endblock %}
 
-{% set source_options = ['user','operator','detected'] %}
-{% set block_type_options = [
-    ('geoblock_osa', 'Geoblocking due to OSA'),
-    ('geoblock_misc', 'Geoblocking (other reason)'),
-    ('shutdown_osa', 'Shutting down due to OSA')
-    ] %}
-{% set status_options = ['submitted','confirmed'] %}
 
 {% block body %}
 
@@ -36,12 +30,12 @@
     </div>
     
     <div class="row">
-    {# forms.select_field('Status', 'status', case.status, options=status_options, css='col-md-4') #}
+    {# forms.select_field('Status', 'status', case.status, options=osa_common.status_options, css='col-md-4') #}
     {{ forms.text_field('Shutdown date', 'shutdown_date', case.shutdown_date, css='col-md-4') }}
 
-    {{ forms.select_field('Block type', 'block_type', case.block_type, options=block_type_options, includenull=true,
+    {{ forms.select_field('Block type', 'block_type', case.block_type, options=osa_common.block_type_options, includenull=true,
         css='col-md-4') }}
-    {{ forms.select_field('Source', 'source', case.source, options=source_options, css='col-md-4') }}
+    {{ forms.select_field('Source', 'source', case.source, options=osa_common.source_options, css='col-md-4') }}
     </div>
     
     <div class="row">

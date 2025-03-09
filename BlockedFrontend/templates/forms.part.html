@@ -116,3 +116,7 @@
 <span>{{ value }}</span>
 </div>
 {% endmacro %}
+
+{% macro field_title(name) -%}
+{{ name.replace('_', ' ').title() }}
+{%- endmacro %}

@@ -914,10 +914,20 @@ class OSACase(DBObject):
         'description',
     ]
 
+
+    def submit_url(self, apiclient, url, **kwargs):
+        # this behavior gets shared between the admin and public interface
+        # keeping it here temporarily until a proper place is found
+        
+        req = apiclient.submit_url(url, **kwargs)
+        self['urlid'] = req['urlid']
+
+
     def get_url(self):
         if self.get('urlid') is None:
             return None
         return Url.select_one(self.conn, urlid=self['urlid'])
+        
 
     @classmethod
     def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None):
