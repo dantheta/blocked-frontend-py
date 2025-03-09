@@ -39,7 +39,7 @@
         {% endif %}
         {% for opt in options %}
         {% if opt is string %}
-        <option value="{{opt}}" {{'selected' if opt == value else ''}}>{{opt}}</option>
+        <option value="{{opt}}" {{'selected' if opt == value else ''}}>{{ options[opt] if options is mapping else opt }}</option>
         {% else %}
         <option value="{{opt[0]}}" {{'selected' if opt[0] == value else ''}}>{{opt[1]}}</option>
         {% endif %}

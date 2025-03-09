@@ -75,17 +75,25 @@ def admin_osa_update(id=None):
 @check_moderator
 def admin_osa_view(id):
     case = OSACase(g.conn, id)
-    return render_template('osa/osa_view.html', case=case, url=case.get_url())
+    reviewer = User(g.conn, case['reviewed_userid'])
+    return render_template('osa/osa_view.html', 
+                           case=case, 
+                           reviewer=reviewer,
+                           url=case.get_url(),
+                           )
 
 
 @admin_osa_pages.route('/control/osa/verify', methods=['POST'])
 @check_moderator
 def admin_osa_verify():
     case = OSACase(g.conn, request.form['id'])
-    case.update_reviewed(session['userid'], request.form['archive_url'])
+    if request.form.get('action') == 'remove':
+        case.reset_reviewed()
+    else:
+        case.update_reviewed(session['userid'], request.form['archive_url'])
     g.conn.commit()
     flash("Verification recorded")
-    return redirect('.admin_osa_view', id=case.id)
+    return redirect(url_for('.admin_osa_view', id=case.id))
 
 
 @admin_osa_pages.route('/control/osa/delete/<int:id>')

@@ -933,16 +933,23 @@ class OSACase(DBObject):
 
     def update_reviewed(self, userid, archive_url):
         self.update({
-            'status': 'verified',
+            'status': 'confirmed',
             'reviewed_userid': userid,
             'archive_url': archive_url,
         })
         self.store()
-        q = NORM.Query(self.conn, "update {} set reviewed_timestamp=now() where id = ? returning reviewed_timestamp".format(self.TABLE),
-                      [self.id])
+        sql = "update {} set reviewed_timestamp=now() where id = %s returning reviewed_timestamp".format(self.TABLE)
+        q = Query(self.conn, sql, [self.id])
         row = q.fetchone()
         self['reviewed_timestamp'] = row[0]
         
+    def reset_reviewed(self):
+        self.update({
+            'status': 'submitted',
+            'reviewed_userid': None,
+            'reviewed_timestamp': None,
+        })
+        self.store()
 
     @classmethod
     def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None, **kwargs):
