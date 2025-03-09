@@ -6,16 +6,28 @@
 
 {% block body %}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12" style="margin-bottom: 3em">
 
         <h1>{{pagetitle}}</h1>
-        <h2>Online safety act shutdowns/blocks</h2>
-        <div>
+        <div class="pull-right">
             <a href="{{url_for('.admin_osa_edit')}}" class="btn btn-primary">Add</a>
         </div>
+        <h2>Online safety act shutdowns/blocks</h2>
+        
     </div>
 
 </div>
+
+<div class="row">
+  <div class="col-md-12" style="margin-bottom: 1em">
+    <h4>Filter by status:</h4>
+    <ul class="nav nav-pills">
+    <li role="presentation" class="{{ 'active' if not filter else '' }}"><a href="{{ url_for('.admin_osa_index') }}">All</a></li>
+    <li role="presentation" class="{{ 'active' if filter=='submitted' else ''}}"><a href="{{ url_for('.admin_osa_index', filter='submitted') }}">Submitted</a></li>
+    </ul>
+  </div>
+</div>
+
 <div class="row">
     <div class="col-md-12">
 

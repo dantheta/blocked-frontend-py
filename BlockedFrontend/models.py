@@ -912,6 +912,8 @@ class OSACase(DBObject):
         'shutdown_date',
         'archive_url',
         'description',
+        'reviewed_userid',
+        'reviewed_timestamp',
     ]
 
 
@@ -929,14 +931,38 @@ class OSACase(DBObject):
         return Url.select_one(self.conn, urlid=self['urlid'])
         
 
+    def update_reviewed(self, userid, archive_url):
+        self.update({
+            'status': 'verified',
+            'reviewed_userid': userid,
+            'archive_url': archive_url,
+        })
+        self.store()
+        q = NORM.Query(self.conn, "update {} set reviewed_timestamp=now() where id = ? returning reviewed_timestamp".format(self.TABLE),
+                      [self.id])
+        row = q.fetchone()
+        self['reviewed_timestamp'] = row[0]
+        
+
     @classmethod
-    def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None):
+    def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None, **kwargs):
+        from NORM.utils import encode_where
+        if kwargs:
+            # prefix column keys with tablename
+            # messy, fix later
+            sqlwhere, sqlargs = encode_where({OSACase.TABLE+'.'+k: v for (k,v) in kwargs.items()})
+        else:
+            sqlwhere = '1=1'
+            sqlargs = []
+        
         orderby = _orderby or 'osa_cases.created desc, urls.url'
         q = Query(conn,
                   """SELECT osa_cases.*, urls.url, urls.title
                      FROM osa_cases
                          INNER JOIN public.urls using (urlid)
-                     ORDER BY """ + orderby, [])
+                    WHERE
+                        {}
+                     ORDER BY {}""".format(sqlwhere, orderby), sqlargs)
         for row in q:
             yield OSACase(conn, data=row)
 

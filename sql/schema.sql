@@ -73,6 +73,8 @@ CREATE TABLE osa_cases(
     archive_url text,
     status enum_osacase_status DEFAULT 'submitted' NOT NULL,
     shutdown_date date null,
+    reviewed_userid int null,
+    reviewed_timestamp timestamptz null,
     created timestamptz not null,
     last_updated timestamptz null
 );

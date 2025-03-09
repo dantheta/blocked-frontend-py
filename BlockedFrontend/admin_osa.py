@@ -20,8 +20,14 @@ admin_osa_pages = Blueprint('admin_osa', __name__)
 @admin_osa_pages.route('/control/osa')
 @check_moderator
 def admin_osa_index():
-	objlist = OSACase.select_with_urls(g.conn, _orderby='id desc')
-	return render_template('osa/osa_index.html',
+    flt = request.args.get('filter')
+    fltargs = {}
+    if flt == 'submitted':
+        fltargs['status'] = 'submitted'
+    
+    objlist = OSACase.select_with_urls(g.conn, _orderby='id desc', **fltargs)
+    return render_template('osa/osa_index.html',
+                            filter=flt,
                             cases=objlist)
 
 @admin_osa_pages.route('/control/osa/add')
@@ -76,11 +82,7 @@ def admin_osa_view(id):
 @check_moderator
 def admin_osa_verify():
     case = OSACase(g.conn, request.form['id'])
-    case.update({
-        'archive_url': request.form['archive_id'],
-        'status': 'verified',
-    })
-    case.store()
+    case.update_reviewed(session['userid'], request.form['archive_url'])
     g.conn.commit()
     flash("Verification recorded")
     return redirect('.admin_osa_view', id=case.id)
