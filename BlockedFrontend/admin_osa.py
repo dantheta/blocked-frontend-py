@@ -55,13 +55,13 @@ def admin_osa_update(id=None):
         #case['urlid'] = url.id
         case.submit_url(g.api, request.form['url'])
 
-    for f in case.FIELDS:
-        if f in ('urlid','contact_id','archive_url'):
-            continue
-        elif f in ('shutdown_date'):
-            case[f] = request.form[f] or None
-        else:
-            case[f] = request.form[f]
+    case.update({
+        'shutdown_date': request.form['shutdown_date'] or None,
+        'description': request.form['description'],
+        'block_type': request.form['block_type'],
+        'source': request.form['source'],
+    })
+        
     case.store()
     g.conn.commit()
     if id is None:
