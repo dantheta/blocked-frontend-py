@@ -56,7 +56,7 @@ def admin_osa_update(id=None):
         case.submit_url(g.api, request.form['url'])
 
     for f in case.FIELDS:
-        if f in ('urlid','contact_id'):
+        if f in ('urlid','contact_id','archive_url'):
             continue
         elif f in ('shutdown_date'):
             case[f] = request.form[f] or None
