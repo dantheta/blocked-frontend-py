@@ -24,6 +24,8 @@ def admin_osa_index():
     fltargs = {}
     if flt == 'submitted':
         fltargs['status'] = 'submitted'
+    if flt == 'rejected':
+        fltargs['status'] = 'rejected'
     
     objlist = OSACase.select_with_urls(g.conn, _orderby='id desc', **fltargs)
     return render_template('osa/osa_index.html',
@@ -51,9 +53,9 @@ def admin_osa_update(id=None):
     case = OSACase(g.conn, id)
 
     if id is None:
-        #url = Url.select_one(g.conn, url=request.form['url'])
-        #case['urlid'] = url.id
-        case.submit_url(g.api, request.form['url'])
+        url = Url.select_one(g.conn, url=request.form['url'])
+        case['urlid'] = url.id
+        #case.submit_url(g.api, request.form['url'])
 
     case.update({
         'shutdown_date': request.form['shutdown_date'] or None,
@@ -94,6 +96,17 @@ def admin_osa_verify():
     g.conn.commit()
     flash("Verification recorded")
     return redirect(url_for('.admin_osa_view', id=case.id))
+
+@admin_osa_pages.route('/control/osa/reject/<int:id>')
+def admin_osa_reject(id):
+    case = OSACase(g.conn, id)
+    if request.args.get('action') == 'remove':
+        case.reset_reviewed()
+    else:
+        case.reject(session['userid'])
+    flash("Rejection recorded")
+    g.conn.commit()
+    return redirect(url_for('.admin_osa_index'))
 
 
 @admin_osa_pages.route('/control/osa/delete/<int:id>')

@@ -951,6 +951,20 @@ class OSACase(DBObject):
         })
         self.store()
 
+    def reject(self, userid):
+        if self['status'] != 'submitted':
+            raise ValueError("case with status {} cannot be rejected".format(case['status']))
+        self.update({
+            'status': 'rejected',
+            'reviewed_userid': userid,
+        })
+        self.store()
+        sql = "update {} set reviewed_timestamp=now() where id = %s returning reviewed_timestamp".format(self.TABLE)
+        q = Query(self.conn, sql, [self.id])
+        row = q.fetchone()
+        self['reviewed_timestamp'] = row[0]
+
+
     @classmethod
     def select_with_urls(cls, conn, _page=0, _pagesize=25, _orderby=None, **kwargs):
         from NORM.utils import encode_where
@@ -959,7 +973,7 @@ class OSACase(DBObject):
             # messy, fix later
             sqlwhere, sqlargs = encode_where({OSACase.TABLE+'.'+k: v for (k,v) in kwargs.items()})
         else:
-            sqlwhere = '1=1'
+            sqlwhere = "osa_cases.status > 'rejected'"
             sqlargs = []
         
         orderby = _orderby or 'osa_cases.created desc, urls.url'

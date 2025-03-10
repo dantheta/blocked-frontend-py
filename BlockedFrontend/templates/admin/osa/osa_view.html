@@ -12,6 +12,9 @@
         <h1>{{ pagetitle }}</h1>
         <div class="pull-right">
             <a href="{{ url_for('.admin_osa_edit', id=case.id) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ url_for('.admin_osa_delete', id=case.id)}}" class="btn btn-danger"
+                        onclick="return confirm('Delete case?')">
+                        <span class="glyphicon glyphicon-trash"></span> Delete</a>
         </div>
         <h3>{{ url.title or url.url }}
         {% if url.title %}
