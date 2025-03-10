@@ -26,6 +26,8 @@
             <div class="col-md-10">
             {% if f == 'block_type' %}
             {{ osa_common.block_type_options[case[f]] }}
+            {% elif f == 'shutdown_date' %}
+            {{ case[f]|fmdate }}
             {% else %}
             {{ case[f]|null }}
             {% endif %}

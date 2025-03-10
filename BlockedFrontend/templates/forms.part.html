@@ -16,6 +16,14 @@
 </div>
 {% endmacro %}
 
+{% macro date_field(label, name, value='', placeholder='', hint=None, css='') %}
+<div class="form-group  {{ css }}">
+    <label class="control-label" for="{{name}}">{{label}}</label>
+    <input class="form-control" name="{{name}}" type="date" value="{{value or ''}}" placeholder="{{placeholder}}"/>
+    {{ hint_para(hint) }}
+</div>
+{% endmacro %}
+
 {% macro static_field(label, id, value='', placeholder='', css='') %}
 <div class="form-group {{ css }}">
     <label class="control-label" >{{label}}:</label>

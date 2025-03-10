@@ -28,7 +28,7 @@
     
     <div class="row">
     {# forms.select_field('Status', 'status', case.status, options=osa_common.status_options, css='col-md-4') #}
-    {{ forms.text_field('Shutdown date', 'shutdown_date', case.shutdown_date, css='col-md-4') }}
+    {{ forms.date_field('Shutdown date', 'shutdown_date', case.shutdown_date, css='col-md-4') }}
 
     {{ forms.select_field('Block type', 'block_type', case.block_type, options=osa_common.block_type_options, includenull=true,
         css='col-md-4') }}
