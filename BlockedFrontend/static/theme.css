@@ -273,7 +273,7 @@ a.btn-primary, button.btn-primary, input.btn-primary, a.btn-default{
 
 }
 
-input.form-control, textarea.form-control, input[type=checkbox] {
+input.form-control, select.form-control, textarea.form-control, input[type=checkbox] {
   border-color: black;
   border-radius: 0px;
 }

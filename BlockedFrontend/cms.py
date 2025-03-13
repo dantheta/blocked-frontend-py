@@ -597,4 +597,26 @@ def osa_blocks(page=1):
     osa_cases = models.OSACase.select_with_urls(g.conn, _page=page-1)
     return render_template('osa-index.html', cases=osa_cases, page=page)
 
+@cms_pages.route('/osa-blocks/report')
+def osa_blocks_report():
+    return render_template('osa-report.html')
+
+@cms_pages.route('/osa-blocks/report', methods=['POST'])
+def osa_blocks_report_submit():
+    
+    case = OSACase(g.conn)
+    case.update(helpers.OSACase.submit_url(request.form['url']))
+    
+    case.update({
+        'shutdown_date': request.form['shutdown_date'] or None,
+        'description': request.form['description'],
+        'block_type': request.form['block_type'],
+        'status': 'submitted',
+        'source': 'user',
+    })
+    
+    case.store()
+    g.conn.commit()
+    
+    return redirect(url_for('.osa_blocks_report'))
 

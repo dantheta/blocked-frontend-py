@@ -74,6 +74,11 @@ CREATE TABLE osa_cases(
     archive_url text,
     status enum_osacase_status DEFAULT 'submitted' NOT NULL,
     shutdown_date date null,
+    
+    reasons varchar[] default '{}',
+    modifications varchar[] default '{}',
+    comments text null,
+    
     reviewed_userid int null,
     reviewed_timestamp timestamptz null,
     created timestamptz not null,

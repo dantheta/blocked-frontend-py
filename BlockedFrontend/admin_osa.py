@@ -55,8 +55,6 @@ def admin_osa_update(id=None):
     case = OSACase(g.conn, id)
 
     if id is None:
-        # url = Url.select_one(g.conn, url=request.form['url'])
-        # case['urlid'] = url.id
         ## case.submit_url(g.api, request.form['url'])
         self.update(helpers.OSACase.submit_url(request.form['url']))
 

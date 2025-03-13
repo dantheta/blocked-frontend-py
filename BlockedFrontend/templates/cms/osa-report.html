@@ -1,0 +1,47 @@
+{% extends "BasicPage.page.html" %}
+{%import "remotecontent.part.html" as rmt %}
+{% import "forms.part.html" as forms %}
+{% import "osa/osa_common.part.html" as osa_common %}
+
+{% set pagetitle = "Online Safety Act" %}
+{% block subtitle %}
+<h2>Report site closure, geoblocking or site changes in response to the Online Safety Act</h2>
+{% endblock %}
+
+
+{% block body %}
+<div class="row">
+    <div class="col-md-7">
+
+    <!--<p>Use this form to send a report of sites closing down or blocking UK visitors.</p>-->
+    <form action="{{ url_for('.osa_blocks_report_submit') }}" method="POST" class="form">
+    {{ forms.text_field("URL", 'url') }}
+    {{ forms.textarea_field('Site description', 'description', '', rows=3) }}
+    {{ forms.select_field('Block type', 'block_type', None, osa_common.block_type_options) }}
+    
+    {{ forms.text_field('URL of shutdown/geo-block announcement page', 'shutdown_url') }}
+    {{ forms.date_field('Shutdown/geo-block date', 'shutdown_date') }}
+    
+    <h3>Category information</h3>
+    <p>To help categorise this site block/closure, please select any reasons that the site owners
+    have given for the shutdown</p>    
+    {{ forms.check_field('Disproportionate compliance costs', 'reasons', 'compliance_costs') }}
+    {{ forms.check_field('Requirement for age assurance', 'reasons', 'age_assurance') }}
+    {{ forms.check_field('Requirement for age verification', 'reasons', 'age_verification') }}
+    
+    <h3>Site changes</h3>
+    <p>If the site has modified its content or functionality in response to the Online Safety Act, 
+    please select any options are apply</p>
+    {{ forms.check_field('Audio/visual content removed', 'modifications', 'av_content_removed') }}
+    {{ forms.check_field('Comments closed', 'modifications', 'comments_closed') }}
+    
+    <h3>Additional comments</h3>
+    <p>Any additional information relating to the shutdown/site blocking.  This text will not be published,
+    but may be of use to our researchers</p>
+    {{ forms.textarea_field('Comments', 'comments', '', rows=4) }}
+    
+    {{ forms.submit('Submit report') }}
+    </form>
+    </div>
+</div>
+{% endblock %}
