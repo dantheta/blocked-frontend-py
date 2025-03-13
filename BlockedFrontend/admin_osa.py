@@ -7,7 +7,7 @@ from .utils import *
 from .resources import *
 from .db import *
 
-import .helpers
+from . import helpers
 
 from NORM.exceptions import ObjectNotFound,ObjectExists
 
