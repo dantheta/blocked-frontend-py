@@ -622,5 +622,5 @@ def osa_blocks_report_submit():
     case.store()
     g.conn.commit()
     
-    return redirect(url_for('.osa_blocks_report'))
+    return redirect(url_for('.osa_blocks_index'))
 
