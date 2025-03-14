@@ -6,10 +6,10 @@ from .models import Url
 
 class OSACase:
     @staticmethod
-    def submit_url(self, url, **kwargs):
+    def submit_url(url, **kwargs):
         # this behavior gets shared between the admin and public interface
         
-        if config.DEBUG:
+        if current_app.config['DEBUG']:
             url = Url.select_one(g.conn, url=request.form['url'])
             return {
                 'urlid': url.id

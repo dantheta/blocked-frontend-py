@@ -37,6 +37,36 @@
             </div>
         </div>
         {% endfor %}
+        {% if case.reasons|length %}
+        <div class="row">
+            <div class="col-md-2">Shutdown reasons: </div>
+            <div class="col-md-10">
+            <ul>
+            {% for m in case.reasons %}
+              <li>{{ osa_common.reasons[m] }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% if case.modifications|length %}
+        <div class="row">
+            <div class="col-md-2">Site modifications: </div>
+            <div class="col-md-10">
+            <ul>
+            {% for m in case.modifications %}
+              <li>{{ osa_common.modifications[m] }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% if case.comments %}
+        <h4>Reporter comments</h4>
+        <div class="well col-md-6">
+        <i>{{ case.comments }}</i>
+        </div>
+        {% endif %}
     </div>
 </div>
 

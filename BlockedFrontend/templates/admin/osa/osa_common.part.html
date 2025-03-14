@@ -5,3 +5,14 @@
     'shutdown_osa': 'Shutting down due to OSA',
     } %}
 {% set status_options = ['submitted','confirmed'] %}
+
+{% set reasons = {
+  'compliance_costs': 'Disproportionate compliance costs', 
+  'age_assurance': 'Requirement for age assurance',    
+  'age_verification': 'Requirement for age verification', 
+  } %}
+  
+{% set modifications = {
+'av_content_removed': 'Audio/visual content removed',  
+'comments_closed': 'Comments closed', 
+} %}

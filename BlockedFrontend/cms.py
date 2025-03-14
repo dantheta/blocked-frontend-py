@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, redirect, request, \
 from .utils import *
 from .models import Item, ISPReport
 from . import models
+from . import helpers
 from NORM import Query
 from NORM.exceptions import ObjectNotFound
 
@@ -604,7 +605,7 @@ def osa_blocks_report():
 @cms_pages.route('/osa-blocks/report', methods=['POST'])
 def osa_blocks_report_submit():
     
-    case = OSACase(g.conn)
+    case = models.OSACase(g.conn)
     case.update(helpers.OSACase.submit_url(request.form['url']))
     
     case.update({
@@ -613,6 +614,9 @@ def osa_blocks_report_submit():
         'block_type': request.form['block_type'],
         'status': 'submitted',
         'source': 'user',
+        'comments': request.form['comments'],
+        'reasons': request.form.getlist('reasons'),
+        'modifications': request.form.getlist('modifications')
     })
     
     case.store()
