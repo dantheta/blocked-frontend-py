@@ -15,11 +15,7 @@
 
 <form method="POST" action="{{ url_for('.admin_osa_update', id=case.id) }}">
     <div class="row">
-    {% if mode == 'add' %}
     {{ forms.text_field('URL', 'url', url.url, css='col-md-12') }}
-    {% else %}
-    {{ forms.static_field('URL', 'url', url.url, css='col-md-12') }}
-    {% endif %}
     </div>
 
     <div class="row">

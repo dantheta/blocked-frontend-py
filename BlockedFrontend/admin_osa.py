@@ -53,10 +53,11 @@ def admin_osa_edit(id=None):
 @check_moderator
 def admin_osa_update(id=None):
     case = OSACase(g.conn, id)
+    url = case.get_url()
 
-    if id is None:
+    if id is None or (url is not None and url['url'] != request.form['url']):
         ## case.submit_url(g.api, request.form['url'])
-        self.update(helpers.OSACase.submit_url(request.form['url']))
+        case.update(helpers.OSACase.submit_url(request.form['url']))
 
     case.update({
         'shutdown_date': request.form['shutdown_date'] or None,
