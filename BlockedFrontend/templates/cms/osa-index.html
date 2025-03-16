@@ -1,13 +1,9 @@
 {% extends "BasicPage.page.html" %}
 {%import "remotecontent.part.html" as rmt %}
 {% import "forms.part.html" as forms %}
+{% import "osa/osa_common.part.html" as osa_common %}
 
 {% set pagetitle = "Online Safety Act - shutdowns and site blocks" %}
-
-{% set block_description = {
-'shutdown_osa': 'Shut down by the operator due to the Online Safety Act',
-}
-%}
 
 {% block page_style %}
 .row-border {
@@ -43,7 +39,7 @@
 <div class="row row-border">
     <div class="col-md-12">
         <h3 style="">
-            <a href="{{ case.url }}" rel="nofollow">{{ case.title }}</a>
+            <a href="{{ case.url }}" rel="nofollow">{{ case.title or (case.url|domain) }}</a>
         {% if case.block_type == 'shutdown_osa' %}
             <span class="glyphicon glyphicon-remove-sign" />
         {% elif case.block_type == 'geoblock' or case.block_type == 'geoblock_osa' %}
@@ -54,7 +50,7 @@
         {% if case.shutdown_date %}
         <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
         {% endif %}
-        <div style="margin-top: 0.75rem">{{ block_description[case.block_type]|safe }}</div>
+        <div style="margin-top: 0.75rem">{{ osa_common.block_type_options[case.block_type]|safe }}</div>
         <div>
             {{ case.description|null }}
         </div>
