@@ -82,7 +82,7 @@
 {% if case.status == 'submitted' %}
 <form action="{{ url_for('.admin_osa_verify') }}" method="POST">
 <input type="hidden" name="id" value="{{ case.id }}" />
-{{ forms.text_field('Shutdown announcement URL', 'archive_url', case.archive_url, css='col-md-12') }}
+{{ forms.text_field('Shutdown announcement archive URL', 'archive_url', case.archive_url, css='col-md-12') }}
 {{ forms.submit('Record confirmation') }}
 </form>
 {% else %}

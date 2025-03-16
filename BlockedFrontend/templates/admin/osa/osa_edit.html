@@ -33,10 +33,33 @@
     {{ forms.select_field('Block type', 'block_type', case.block_type, options=osa_common.block_type_options, includenull=true,
         css='col-md-4') }}
     {{ forms.select_field('Source', 'source', case.source, options=osa_common.source_options, css='col-md-4') }}
+    
+    </div>
+    <div class="row">
+    <div class="col-md-6">
+    <h4>Shutdown reasons</h4>
+    {% for k,v in osa_common.reasons.items() %}
+    {{ forms.check_field(v, 'reasons', k, k in case.reasons) }}
+    {% endfor %}
+    </div>
+    <div class="col-md-6">
+    <h4>Functional modifications</h4>
+    {% for k,v in osa_common.modifications.items() %}
+    {{ forms.check_field(v, 'modifications', k, k in case.modifications) }}
+    {% endfor %}
     </div>
     
+    </div>
     <div class="row">
     {{ forms.submit('Update' if mode == 'edit' else 'Add') }}
+    </div>
+    <div class="row">
+    <div class="col-md-12">
+    <h3>Reporter comments (not published)</h3>
+    <div class="well">
+    <p><em>{{ case.comments }}</em></p>
+    </div>
+    </div>
     </div>
     
 </form>

@@ -63,6 +63,9 @@ def admin_osa_update(id=None):
         'description': request.form['description'],
         'block_type': request.form['block_type'],
         'source': request.form['source'],
+        
+        'modifications': request.form.getlist('modifications'),
+        'reasons': request.form.getlist('reasons'),
     })
         
     case.store()
