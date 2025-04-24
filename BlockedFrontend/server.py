@@ -46,6 +46,9 @@ if app.config['MODULE_ADMIN']:
 
     from .admin_osa import admin_osa_pages
     app.register_blueprint(admin_osa_pages, subdomain=www_domain)
+    from .admin_geo import admin_geo_pages
+    app.register_blueprint(admin_geo_pages, subdomain=www_domain)
+
 
     from .admin_rightsholder import admin_rightsholder_pages
     app.register_blueprint(admin_rightsholder_pages, subdomain=www_domain)
