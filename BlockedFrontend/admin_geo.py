@@ -53,5 +53,15 @@ def admin_geo_anomaly_view(id):
     return render_template('geo/geo_anomaly_view.html',
                            anomaly=rec,
                            responses=responses,
+                           review_user=rec.get_review_user(),
                            url=url
                            )
+
+@admin_geo_pages.route('/control/geo/anomalies/review/<int:id>', methods=['POST'])
+@check_moderator
+def admin_geo_anomaly_review(id):
+    rec = AnomalyCheckResult(g.conn, id)
+    rec.update_reviewed(session['userid'], request.form['reviewed'] == '1')        
+    g.conn.commit()
+    
+    return redirect(url_for('.admin_geo_anomaly_view', id=id))

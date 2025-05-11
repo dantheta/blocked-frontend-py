@@ -1001,6 +1001,24 @@ class AnomalyCheckResult(DBObject):
 
     def get_responses(self):
         return list(AnomalyCheckResponse.select(self.conn, result_id=self['id']))
+    
+    def get_review_user(self):
+        if self['reviewed_by']:
+            return User.select_one(self.conn, id=self['reviewed_by'])
+        
+    def update_reviewed(self, userid, review_status):
+        sql = """update {} set review_timestamp=now(), review=%s, reviewed_by=%s 
+                where id = %s 
+                returning review_timestamp""".format(self.TABLE)
+        q = Query(self.conn, 
+                  sql,
+                  [review_status, userid, self.id])
+        row = q.fetchone()
+        self.update({
+            'reviewed': review_status,
+            'reviewed_by': userid,
+            'review_timestamp': row[0]
+        })
 
 class AnomalyCheckResponse(DBObject):
     TABLE = 'public.anomaly_check_responses'

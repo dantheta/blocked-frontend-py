@@ -42,14 +42,15 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12" style="margin-bottom: 1em">
+  <div class="col-md-6" style="margin-bottom: 1em">
         <h3>Geo-block test result</h3>
-        <h4>{{ url.url }}</h4>
+        
   </div>
 </div>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
+        <h4>{{ url.url }}</h4>
         <div>
         {% set result = anomaly.result_json %}
         
@@ -57,6 +58,31 @@
         <div><span>{{k|replace('_',' ')|title }}: </span>{{ v }}</div>
         {% endfor %}
         </div>
+    </div>
+    <div class="col-md-6">
+        <div class="well">
+        <h4>Review status</h4>
+        
+        <div><span>Geo-blocked: </span>{{ 'Not reviewed' if anomaly.review is none else 'Blocked' if anomaly.review is true else 'Not blocked' }}</div>
+        {% if anomaly.review is not none %}
+        <div><span>Reviewed by:</span> {{ review_user.username }}</div>
+        <div><span>Reviewed at:</span> {{ anomaly.review_timestamp|fmtime }}</div>
+        {% else %}
+        <!-- review form -->
+        <form action="{{ url_for('.admin_geo_anomaly_review', id=anomaly.id, method='POST') }}" method="POST">
+        
+        {{ forms.radio_field('Geo-blocked', 'reviewed', '1') }}
+        {{ forms.radio_field('Not blocked', 'reviewed', '0') }}
+        {{ forms.submit("Submit review") }}
+        </form>
+        {% endif %}
+        </div>
+    </div>
+    
+</div>
+
+<div class="row">
+    <div class="col-md-12">
         
         <h3>Responses</h3>
         <div class="row">
