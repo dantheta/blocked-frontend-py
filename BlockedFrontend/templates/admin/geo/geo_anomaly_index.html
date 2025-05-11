@@ -1,0 +1,52 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+{% import "admin/geo/geo.part.html" as geo %}
+
+
+{% set pagetitle = "US Geo-block Testing" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12" style="margin-bottom: 3em">
+
+        <h1>{{pagetitle}}</h1>
+
+        {{ geo.tab_bar() }}
+        
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>URL</th>
+                <th>Created</th>
+                <th>Review Status</th>
+            </tr>
+            {% for row in anomalies %}
+            <tr>
+                <td><a href="{{ url_for('.admin_geo_anomaly_view', id=row.id) }}">{{ row.id }}</a></td>
+                <td>{{ row.url }}</td>
+                <td>{{ row.created|fmtime }}</td>
+                <td>{{ 'Confirmed' if row.review else 'Unconfirmed' if row.review is none else 'Rejected' }}</td>                
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12" style="margin-bottom: 1em">
+
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+
+    </div>
+</div>
+
+{% endblock %}
+

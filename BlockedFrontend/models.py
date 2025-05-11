@@ -983,3 +983,25 @@ class OSACase(DBObject):
             yield OSACase(conn, data=row)
 
 
+# Geo blocks
+
+class AnomalyCheckResult(DBObject):
+    TABLE = 'public.anomaly_check_results'
+    FIELDS = ['urlid', 'result_json', 'review', 'reviewed_by', 'review_timestamp']
+    
+    @classmethod
+    def select_with_urls(cls, conn):
+        q = Query(conn, """select a.*, u.url from public.anomaly_check_results a
+            inner join public.urls u using (urlid)
+            order by a.created desc""", [])
+        return q
+    
+    def get_url(self):
+        return Url.select_one(self.conn, urlid=self['urlid'])
+
+    def get_responses(self):
+        return list(AnomalyCheckResponse.select(self.conn, result_id=self['id']))
+
+class AnomalyCheckResponse(DBObject):
+    TABLE = 'public.anomaly_check_responses'
+    FIELDS = ['result_id', 'region', 'response_json']

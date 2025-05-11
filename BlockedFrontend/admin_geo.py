@@ -34,3 +34,24 @@ def admin_geo_test():
     return render_template('geo/geo_test.html',
                            url=url,
                            result=result)
+
+
+@admin_geo_pages.route('/control/geo/anomalies')
+@check_moderator
+def admin_geo_anomaly_index():
+    return render_template('geo/geo_anomaly_index.html',
+                           anomalies=AnomalyCheckResult.select_with_urls(g.conn),
+                           )
+
+@admin_geo_pages.route('/control/geo/anomalies/view/<int:id>')
+@check_moderator
+def admin_geo_anomaly_view(id):
+    rec = AnomalyCheckResult(g.conn, id)
+    responses = rec.get_responses()
+    url = rec.get_url()
+    
+    return render_template('geo/geo_anomaly_view.html',
+                           anomaly=rec,
+                           responses=responses,
+                           url=url
+                           )

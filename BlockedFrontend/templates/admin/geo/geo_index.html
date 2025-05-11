@@ -1,6 +1,7 @@
 {% extends "admin.page.html" %}
 {% import "paging.part.html" as paging %}
 {% import "forms.part.html" as forms %}
+{% import "admin/geo/geo.part.html" as geo %}
 
 {% set pagetitle = "US Geo-block Testing" %}
 
@@ -10,11 +11,15 @@
 
         <h1>{{pagetitle}}</h1>
 
-        <form action="{{ url_for('.admin_geo_test', method='POST') }}" method="POST">
+        {{ geo.tab_bar() }}
+
+        <h3>Submit URL for ad-hoc geo-block testing</h3>
+         <form action="{{ url_for('.admin_geo_test', method='POST') }}" method="POST">
             {{ forms.text_field('URL', 'url', placeholder='http://') }}
             {{ forms.submit('Test') }}
         </form>
 
+        
     </div>
 
 </div>

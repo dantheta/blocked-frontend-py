@@ -1,0 +1,79 @@
+{% extends "admin.page.html" %}
+{% import "paging.part.html" as paging %}
+{% import "forms.part.html" as forms %}
+
+{% set pagetitle = "US Geo-block Results" %}
+
+{% macro format_response_value(s) %}
+{% set trunclen = 40 %}
+{% if s is string and ' ' in s %}
+  <pre>{{ s }}</pre>
+{% elif s is string %}
+  <code>{{ s }}</code>
+{% elif s is mapping %}
+  {% for k,v in s.items() %}
+  {% if k != 'content' %}
+    <div><span>{{k|replace('_',' ')|title }}: </span>{{ format_response_value(v) }}</div>
+  {% endif %}
+  {% endfor %}
+{% elif (s is iterable and s|length == 2) %}
+  <code>{{ s[0] }}: {{ s[1][:trunclen] }}{{ '...' if s[1]|length > trunclen else '' }}</code>
+{% elif s is iterable %}
+    <ul>
+    {% for s_ in s %}
+    <li>{{ format_response_value(s_) }}</li>
+    {% endfor %}
+    </ul>    
+{% else %}
+  <code>{{ s }}</code>
+{% endif %}    
+
+{% endmacro %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12" style="margin-bottom: 3em">
+
+        <h1>{{pagetitle}}</h1>
+
+
+    </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12" style="margin-bottom: 1em">
+        <h3>Geo-block test result</h3>
+        <h4>{{ url.url }}</h4>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div>
+        {% set result = anomaly.result_json %}
+        
+        {% for k,v in result.items() %}
+        <div><span>{{k|replace('_',' ')|title }}: </span>{{ v }}</div>
+        {% endfor %}
+        </div>
+        
+        <h3>Responses</h3>
+        <div class="row">
+            {% for rsp in responses %}
+            <div class="col-md-6">
+                <h4>{{ rsp.region|upper }}</h4>
+                {% set response_json = rsp.response_json.rsp %}
+                
+                {{ format_response_value(response_json) }}
+                
+            
+            </div>
+            {% endfor %}
+        </div>
+    
+    </div>
+</div>
+
+{% endblock %}
+

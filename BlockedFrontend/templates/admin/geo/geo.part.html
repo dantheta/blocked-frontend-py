@@ -1,0 +1,13 @@
+{% macro tab_bar() %}
+
+<ul class="nav nav-tabs">
+  {{ tab('Submit new', 'admin_geo.admin_geo_index') }}
+  {{ tab('Anomalies', 'admin_geo.admin_geo_anomaly_index') }}
+</ul>
+{% endmacro %}
+
+{% macro tab(title, funcname) %}
+  <li role="presentation" class="{{ 'active' if request.path == url_for(funcname) else '' }}">
+    <a href="{{ url_for(funcname) }}"> {{ title }}</a>
+  </li>
+{% endmacro %}
