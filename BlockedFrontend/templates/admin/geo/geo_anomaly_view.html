@@ -36,7 +36,6 @@
 
         <h1>{{pagetitle}}</h1>
 
-
     </div>
 
 </div>
@@ -62,8 +61,8 @@
     <div class="col-md-6">
         <div class="well">
         <h4>Review status</h4>
-        
-        <div><span>Geo-blocked: </span>{{ 'Not reviewed' if anomaly.review is none else 'Blocked' if anomaly.review is true else 'Not blocked' }}</div>
+        <div style="margin-bottom: 1em"><span>Score: </span>{{ anomaly.score }}</div>
+        <div><span>Geo-blocked: </span>{{ anomaly.review_status_desc }}</div>
         {% if anomaly.review is not none %}
         <div><span>Reviewed by:</span> {{ review_user.username }}</div>
         <div><span>Reviewed at:</span> {{ anomaly.review_timestamp|fmtime }}</div>

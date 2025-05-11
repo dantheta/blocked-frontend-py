@@ -18,6 +18,7 @@
             <tr>
                 <th>ID</th>
                 <th>URL</th>
+                <th>Score</th>
                 <th>Created</th>
                 <th>Review Status</th>
             </tr>
@@ -25,8 +26,9 @@
             <tr>
                 <td><a href="{{ url_for('.admin_geo_anomaly_view', id=row.id) }}">{{ row.id }}</a></td>
                 <td>{{ row.url }}</td>
+                <td>{{ row.score }}</td>
                 <td>{{ row.created|fmtime }}</td>
-                <td>{{ 'Confirmed' if row.review else 'Unconfirmed' if row.review is none else 'Rejected' }}</td>                
+                <td>{{ row.review_status_desc }}</td>                
             </tr>
             {% endfor %}
         </table>

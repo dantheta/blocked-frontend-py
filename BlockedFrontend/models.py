@@ -989,12 +989,34 @@ class AnomalyCheckResult(DBObject):
     TABLE = 'public.anomaly_check_results'
     FIELDS = ['urlid', 'result_json', 'review', 'reviewed_by', 'review_timestamp']
     
+    SCORE_MULTIPLIER = {
+        "status_forbidden": 25, 
+        "content_body_length_ratio": 0
+        # "status_mismatch": 1, 
+        # "header_count_mismatch": 5, 
+        # "header_value_mismatch": 4, 
+        # "headers_removed": 1, 
+        # "headers_added": 6, 
+        # "content_hash_mismatch": 1, 
+        }
+    
     @classmethod
     def select_with_urls(cls, conn):
         q = Query(conn, """select a.*, u.url from public.anomaly_check_results a
             inner join public.urls u using (urlid)
             order by a.created desc""", [])
-        return q
+        for row in q:
+            yield cls(conn, data=row)
+        
+    
+    @property
+    def score(self):
+        r = sum([v * self.SCORE_MULTIPLIER.get(k,1) for (k,v) in self['result_json'].items() ])
+        return r
+    
+    @property
+    def review_status_desc(self):
+         return 'Not reviewed' if self['review'] is None else 'Blocked' if self['review'] else 'Not blocked'
     
     def get_url(self):
         return Url.select_one(self.conn, urlid=self['urlid'])
