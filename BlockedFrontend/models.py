@@ -1001,13 +1001,14 @@ class AnomalyCheckResult(DBObject):
         }
     
     @classmethod
-    def select_with_urls(cls, conn):
-        q = Query(conn, """select a.*, u.url from public.anomaly_check_results a
+    def select_with_urls(cls, conn, page=0, pagesize=10):
+        sql = """select a.*, u.url from public.anomaly_check_results a
             inner join public.urls u using (urlid)
-            order by a.created desc""", [])
+            order by a.created desc limit {} offset {}
+            """.format(pagesize, page*pagesize)
+        q = Query(conn, sql, [])
         for row in q:
             yield cls(conn, data=row)
-        
     
     @property
     def score(self):

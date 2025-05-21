@@ -7,10 +7,9 @@ from .utils import *
 from .resources import *
 from .db import *
 
-from . import anomaly
-from . import helpers
-
 from NORM.exceptions import ObjectNotFound,ObjectExists
+
+PAGESIZE = 25
 
 ###########################
 #  GeoBlocking test pages
@@ -24,23 +23,24 @@ def admin_geo_index():
     return render_template('geo/geo_index.html')
     pass
 
-@admin_geo_pages.route('/control/geo/test', methods=['POST'])
-@check_moderator
-def admin_geo_test():
-    url = request.form['url']
-    proxy = current_app.config['GEO_PROXY']
-
-    result = anomaly.test_url(url, proxy)
-    return render_template('geo/geo_test.html',
-                           url=url,
-                           result=result)
-
 
 @admin_geo_pages.route('/control/geo/anomalies')
+@admin_geo_pages.route('/control/geo/anomalies/<int:page>')
 @check_moderator
-def admin_geo_anomaly_index():
+def admin_geo_anomaly_index(page=1):
+    abort(501)
+
+@admin_geo_pages.route('/control/geo/anomalies/all')
+@admin_geo_pages.route('/control/geo/anomalies/all/<int:page>')
+@check_moderator
+def admin_geo_anomaly_all(page=1):
+    count=AnomalyCheckResult.count(g.conn)
     return render_template('geo/geo_anomaly_index.html',
-                           anomalies=AnomalyCheckResult.select_with_urls(g.conn),
+                           anomalies=AnomalyCheckResult.select_with_urls(g.conn, page-1, PAGESIZE),
+                           count=count,
+                           page=page,
+                           pagesize=PAGESIZE,
+                           pagecount=get_pagecount(count, PAGESIZE),
                            )
 
 @admin_geo_pages.route('/control/geo/anomalies/view/<int:id>')

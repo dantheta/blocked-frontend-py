@@ -19,11 +19,13 @@
       </a>
       {% endif %}
     </li>
+    
     {% set pagestart = 1 if page - 3 < 1 else page - 3 %}
     {% set pageend = pagecount+1 if pagestart +7 > pagecount else pagestart+7 %}
     {% for i in range(pagestart, pageend) %}
     <li class="{{ 'active' if i == page  else '' }}"><a href="{{url_for(base, page=i, **kwargs)}}">{{i}}</a></li>
     {% endfor %}
+    
     <li class="{{ 'disabled' if page == pagecount else '' }}">
       {% if page == pagecount %}
         <span aria-hidden="true">&rsaquo;</span>

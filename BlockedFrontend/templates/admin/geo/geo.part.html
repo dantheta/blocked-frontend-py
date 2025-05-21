@@ -1,8 +1,9 @@
 {% macro tab_bar() %}
 
+<h3>Anomalies</h3>
 <ul class="nav nav-tabs">
-  {{ tab('Submit new', 'admin_geo.admin_geo_index') }}
-  {{ tab('Anomalies', 'admin_geo.admin_geo_anomaly_index') }}
+  {{ tab('New', 'admin_geo.admin_geo_anomaly_index') }}
+  {{ tab('All', 'admin_geo.admin_geo_anomaly_all') }}
 </ul>
 {% endmacro %}
 
