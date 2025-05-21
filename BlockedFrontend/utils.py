@@ -62,7 +62,7 @@ def parse_timestamp(s):
     return datetime.datetime.strptime(s, '%Y-%m-%d %H:%M:%S') 
 
 def get_pagecount(count, pagesize):
-    return int(math.ceil(count/pagesize)+1)
+    return int(math.ceil(count/pagesize))
 
 def fix_path(url):
     return re.sub(':/(?!/)', '://', url)
