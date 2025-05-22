@@ -28,6 +28,14 @@ def admin_geo_index():
 @admin_geo_pages.route('/control/geo/anomalies/<int:page>')
 @check_moderator
 def admin_geo_anomaly_index(page=1):
+    count=AnomalyCheckResult.count(g.conn, review='new')
+    return render_template('geo/geo_anomaly_index.html',
+                           anomalies=AnomalyCheckResult.select_with_urls(g.conn, page-1, PAGESIZE, review='new'),
+                           count=count,
+                           page=page,
+                           pagesize=PAGESIZE,
+                           pagecount=get_pagecount(count, PAGESIZE),
+                           )
     abort(501)
 
 @admin_geo_pages.route('/control/geo/anomalies/all')
@@ -61,7 +69,7 @@ def admin_geo_anomaly_view(id):
 @check_moderator
 def admin_geo_anomaly_review(id):
     rec = AnomalyCheckResult(g.conn, id)
-    rec.update_reviewed(session['userid'], request.form['reviewed'] == '1')        
+    rec.update_reviewed(session['userid'], request.form['review'])        
     g.conn.commit()
     
     return redirect(url_for('.admin_geo_anomaly_view', id=id))

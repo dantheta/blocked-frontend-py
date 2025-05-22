@@ -28,7 +28,7 @@
                 <td>{{ row.url }}</td>
                 <td>{{ row.score }}</td>
                 <td>{{ row.created|fmtime }}</td>
-                <td>{{ row.review_status_desc }}</td>                
+                <td>{{ geo.review_status(row.review) }}</td>                
             </tr>
             {% endfor %}
         </table>

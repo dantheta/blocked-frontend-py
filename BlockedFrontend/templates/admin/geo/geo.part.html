@@ -12,3 +12,7 @@
     <a href="{{ url_for(funcname) }}"> {{ title }}</a>
   </li>
 {% endmacro %}
+
+{% macro review_status(review) %}
+{{ review|replace('-', ' ')|title }}
+{% endmacro %}

@@ -1,6 +1,8 @@
 {% extends "admin.page.html" %}
 {% import "paging.part.html" as paging %}
 {% import "forms.part.html" as forms %}
+{% import "admin/geo/geo.part.html" as geo %}
+
 
 {% set pagetitle = "US Geo-block Results" %}
 
@@ -62,16 +64,16 @@
         <div class="well">
         <h4>Review status</h4>
         <div style="margin-bottom: 1em"><span>Score: </span>{{ anomaly.score }}</div>
-        <div><span>Geo-blocked: </span>{{ anomaly.review_status_desc }}</div>
-        {% if anomaly.review is not none %}
+        {% if anomaly.review != 'new' %}
+        <div><span>Geo-blocked: </span>{{ geo.review_status(anomaly.review) }}</div>
         <div><span>Reviewed by:</span> {{ review_user.username }}</div>
         <div><span>Reviewed at:</span> {{ anomaly.review_timestamp|fmtime }}</div>
         {% else %}
         <!-- review form -->
         <form action="{{ url_for('.admin_geo_anomaly_review', id=anomaly.id, method='POST') }}" method="POST">
         
-        {{ forms.radio_field('Geo-blocked', 'reviewed', '1') }}
-        {{ forms.radio_field('Not blocked', 'reviewed', '0') }}
+        {{ forms.radio_field('Geo-blocked', 'review', 'blocked') }}
+        {{ forms.radio_field('Not blocked', 'review', 'not-blocked') }}
         {{ forms.submit("Submit review") }}
         </form>
         {% endif %}

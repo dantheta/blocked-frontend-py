@@ -11,6 +11,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 from NORM import DBObject, Query
 from NORM.exceptions import ObjectNotFound
+from NORM.utils import encode_where
 
 
 class SavedList(DBObject):
@@ -1001,12 +1002,15 @@ class AnomalyCheckResult(DBObject):
         }
     
     @classmethod
-    def select_with_urls(cls, conn, page=0, pagesize=10):
+    def select_with_urls(cls, conn, page=0, pagesize=10, **kw):
+        where_clauses, args = encode_where(kw) 
+        where = "where " + where_clauses if where_clauses else ""
         sql = """select a.*, u.url from public.anomaly_check_results a
             inner join public.urls u using (urlid)
+            {where}
             order by a.created desc limit {} offset {}
-            """.format(pagesize, page*pagesize)
-        q = Query(conn, sql, [])
+            """.format(pagesize, page*pagesize, where=where)
+        q = Query(conn, sql, args)
         for row in q:
             yield cls(conn, data=row)
     
@@ -1015,10 +1019,7 @@ class AnomalyCheckResult(DBObject):
         r = sum([v * self.SCORE_MULTIPLIER.get(k,1) for (k,v) in self['result_json'].items() ])
         return r
     
-    @property
-    def review_status_desc(self):
-         return 'Not reviewed' if self['review'] is None else 'Blocked' if self['review'] else 'Not blocked'
-    
+   
     def get_url(self):
         return Url.select_one(self.conn, urlid=self['urlid'])
 
