@@ -6,6 +6,12 @@
 
 {% set pagetitle = "US Geo-block Testing" %}
 
+{% block page_style %}
+td.url {
+    overflow-x: ellipsis;
+}
+{% endblock %}
+
 {% block body %}
 <div class="row">
     <div class="col-md-12" style="margin-bottom: 3em">
@@ -25,7 +31,7 @@
             {% for row in anomalies %}
             <tr>
                 <td><a href="{{ url_for('.admin_geo_anomaly_view', id=row.id) }}">{{ row.id }}</a></td>
-                <td>{{ row.url }}</td>
+                <td class="url">{{ row.url }}</td>
                 <td>{{ row.score }}</td>
                 <td>{{ row.created|fmtime }}</td>
                 <td>{{ geo.review_status(row.review) }}</td>                
