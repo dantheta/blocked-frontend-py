@@ -9,14 +9,17 @@
 {% block pagestyle %}
 
 .expand {
-  padding-right: 2em;
+  padding-right: 3em;
   cursor: pointer;
 }
 
 .expand:after {
+  text-align: right;
   font-size: small;
+  width: 6em;
+  display: inline-block;
   color: "#aaa";
-  content: "[expand]";
+  content: "[↓ expand]";
 }
 
 {% endblock %}
