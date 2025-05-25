@@ -14,5 +14,8 @@
 {% endmacro %}
 
 {% macro review_status(review) %}
+<span class="label label-{{ 'danger' if review == 'blocked' else 'success' if review == 'not-blocked' else 'default' }}">
 {{ review|replace('-', ' ')|title }}
+</span>
 {% endmacro %}
+

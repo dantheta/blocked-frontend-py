@@ -94,13 +94,23 @@ $('.expand').click(function(){
         <div><span>Geo-blocked: </span>{{ geo.review_status(anomaly.review) }}</div>
         <div><span>Reviewed by:</span> {{ review_user.username }}</div>
         <div><span>Reviewed at:</span> {{ anomaly.review_timestamp|fmtime }}</div>
+        
+        {% if g.admin %}
+        <form style="margin-top: 1em" action="{{ url_for('.admin_geo_anomaly_review_reset', id=anomaly.id) }}" method="POST">
+        {{ forms.submit("Clear") }}
+        </form>        
+        {% endif %}
         {% else %}
         <!-- review form -->
-        <form action="{{ url_for('.admin_geo_anomaly_review', id=anomaly.id, method='POST') }}" method="POST">
         
-        {{ forms.radio_field('Geo-blocked', 'review', 'blocked') }}
-        {{ forms.radio_field('Not blocked', 'review', 'not-blocked') }}
-        {{ forms.submit("Submit review") }}
+        <form action="/nothere" method="POST">
+        <label>Record review result: </label>
+        <div class="btn-group">
+          <input type="submit" class="btn btn-primary" value="Not geo-blocked"
+            formaction="{{ url_for('.admin_geo_anomaly_review', id=anomaly.id, review='not-blocked') }}" >
+          <input type="submit" class="btn btn-danger" value="Geo-blocked"
+            formaction="{{ url_for('.admin_geo_anomaly_review', id=anomaly.id, review='blocked') }}">
+        </div>
         </form>
         {% endif %}
         </div>

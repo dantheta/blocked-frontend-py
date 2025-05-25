@@ -69,7 +69,23 @@ def admin_geo_anomaly_view(id):
 @check_moderator
 def admin_geo_anomaly_review(id):
     rec = AnomalyCheckResult(g.conn, id)
-    rec.update_reviewed(session['userid'], request.form['review'])        
+    
+    if 'review' in request.form:
+        status = request.form['review']
+    else:
+        status = request.args['review']
+    
+    rec.update_reviewed(session['userid'], status)        
     g.conn.commit()
     
     return redirect(url_for('.admin_geo_anomaly_view', id=id))
+
+
+@admin_geo_pages.route('/control/anomalies/review/<int:id>/reset', methods=['POST'])
+@check_admin
+def admin_geo_anomaly_review_reset(id):
+    rec = AnomalyCheckResult(g.conn, id)
+    rec.update_reviewed(None, 'new')
+    g.conn.commit()
+    return redirect(url_for('.admin_geo_anomaly_view', id=id))
+    
