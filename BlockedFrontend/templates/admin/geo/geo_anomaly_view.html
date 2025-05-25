@@ -6,6 +6,29 @@
 
 {% set pagetitle = "US Geo-block Results" %}
 
+{% block pagestyle %}
+
+.expand {
+  padding-right: 2em;
+  cursor: pointer;
+}
+
+.expand:after {
+  font-size: small;
+  color: "#aaa";
+  content: "[expand]";
+}
+
+{% endblock %}
+
+{% macro expand_js() %}
+$('.rsp-headers ul').hide();
+
+$('.expand').click(function(){
+  $(this).next('ul').slideDown();
+});
+{% endmacro %}
+
 {% macro format_response_value(s) %}
 {% set trunclen = 40 %}
 {% if s is string and ' ' in s %}
@@ -15,7 +38,7 @@
 {% elif s is mapping %}
   {% for k,v in s.items() %}
   {% if k != 'content' %}
-    <div><span>{{k|replace('_',' ')|title }}: </span>{{ format_response_value(v) }}</div>
+    <div class="rsp-{{ k }}"><span class="{{ 'expand' if k == 'headers' else '' }}">{{k|replace('_',' ')|title }}: </span>{{ format_response_value(v) }}</div>
   {% endif %}
   {% endfor %}
 {% elif (s is iterable and s|length == 2) %}
@@ -104,3 +127,8 @@
 
 {% endblock %}
 
+{% block page_script %}
+$(document).ready(function(){  
+{{ expand_js() }}
+})
+{% endblock %}
