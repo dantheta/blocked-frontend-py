@@ -2,6 +2,8 @@
 from flask import Blueprint, render_template, redirect, request, \
     g, url_for, abort, config, current_app, session, Response
 
+import logging
+
 from .models import Url
 
 class OSACase:
@@ -19,3 +21,18 @@ class OSACase:
         return {
             'urlid': req['urlid']
         }
+
+    @staticmethod
+    def snapshot_url(url):
+        import waybackpy
+        
+        call = waybackpy.WaybackMachineSaveAPI(url)
+        try:
+            archive_url = call.save()
+            return {'archive_url': archive_url, 'status': 'success'}
+        except waybackpy.exceptions.WaybackError as wbexc:
+            logging.error("wayback status: %s", repr(wbexc))
+            return {'status': 'error', 'error': repr(wbexc)}
+        
+        
+        

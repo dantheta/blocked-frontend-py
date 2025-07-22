@@ -123,3 +123,18 @@ def admin_osa_delete(id):
     
     flash("Case {} deleted".format(case.id))
     return redirect(url_for('.admin_osa_index'))
+
+@admin_osa_pages.route('/control/osa/snapshot', methods=['POST'])
+# @check_moderator
+def admin_osa_snapshot():
+    url = request.form['url']
+
+    resp = helpers.OSACase.snapshot_url(url)
+    
+    if resp['status'] == 'error':
+        headers['X-Error'] = resp['error']
+    else:
+        headers = {}
+    
+    return jsonify(resp), 200 if resp['status'] == "success" else 500, headers
+

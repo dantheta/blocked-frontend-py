@@ -5,6 +5,7 @@
 
 {% set pagetitle = "OSA Block Admin" %}
 
+
 {% block body %}
 <div class="row">
     <div class="col-md-12">
@@ -82,7 +83,8 @@
 {% if case.status == 'submitted' %}
 <form action="{{ url_for('.admin_osa_verify') }}" method="POST">
 <input type="hidden" name="id" value="{{ case.id }}" />
-{{ forms.text_field('Shutdown announcement archive URL', 'archive_url', case.archive_url, css='col-md-12') }}
+{{ forms.text_field('Shutdown announcement archive URL', 'archive_url', case.archive_url, css='col-md-12', input_customize=input_snapshot) }}
+<p id="wayback_status"></p>
 {{ forms.submit('Record confirmation') }}
 </form>
 {% else %}
@@ -116,5 +118,41 @@
 
 
 </div> <!-- .well -->
+
+{% endblock %}
+
+{% macro input_snapshot() %}
+    <span class="input-group-btn">
+        <button id="snapshot" class="btn btn-default" type="button" title="Convert to wayback machine snapshot"><i class="glyphicon glyphicon-camera"></i></button>
+    </span>
+{% endmacro %}
+
+{% block page_script %}
+
+function rset_snapshot(ok) {
+    $('#snapshot i').removeClass('glyphicon-hourglass')
+    if (ok) {
+        $('#snapshot i').addClass('glyphicon-ok')
+    } else {
+        $('#snapshot i').addClass('glyphicon-warning-sign')
+    }
+}
+
+$(document).ready(function(){
+    $('#snapshot').click(function(){
+        $('#snapshot i').removeClass('glyphicon-camera')
+        $('#snapshot i').addClass('glyphicon-hourglass')
+        $.post('{{ url_for('.admin_osa_snapshot') }}',
+               {'url': $('input[name=archive_url]').val()}
+               ).done(function(data, status, xhr){
+                    $('input[name=archive_url]').val(data.archive_url)   
+                    rset_snapshot(true)
+               }).fail(function(xhr, status, err){
+                    $('#wayback_status').text("Error: " + xhr.getResponseHeader('X-Error'))
+                    rset_snapshot(false)
+               })
+    })
+})
+    
 
 {% endblock %}

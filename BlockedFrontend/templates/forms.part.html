@@ -8,10 +8,13 @@
     {% endif %}
 {% endmacro %}
 
-{% macro text_field(label, name, value='', placeholder='', hint=None, css='') %}
+{% macro text_field(label, name, value='', placeholder='', hint=None, css='', input_customize=None) %}
 <div class="form-group  {{ css }}">
     <label class="control-label" for="{{name}}">{{label}}</label>
-    <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
+    <div class="input-group">
+        <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
+        {% if input_customize %}{{ input_customize() }}{% endif %}
+    </div>
     {{ hint_para(hint) }}
 </div>
 {% endmacro %}
