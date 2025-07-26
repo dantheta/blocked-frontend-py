@@ -45,7 +45,10 @@
                     <h3 style="margin-top: 0px"><a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.id}}</a></h3>
                 </td>
                 <td>
-                    <div><a href="{{ case.url }}" rel="nofollow" target="_blank">{{case.title or case.url}}</a></div>
+                    <div><a href="{{ case.url }}" rel="nofollow" target="_blank">{{case.url}}</a></div>
+                    {% if case.title %}
+                    <div><small>{{ case.title|null }}</small></div>
+                    {% endif %}
                     <p style="max-width: 90%"><em><small>{{ case.description|null|safe }}</small></em></p>
                 </td>
                 <td  style=""><span class="label label-default">{{ case.status }}</span></td>
