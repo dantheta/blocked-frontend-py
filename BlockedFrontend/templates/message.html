@@ -5,6 +5,12 @@
 {% block banner_text %}
 {% endblock %}
 
+{% block subtitle %}
+{% if subtitle %}
+<h2>{{ subtitle }}</h2>
+{% endif %}
+{% endblock %}
+
 {% block body %}
 
 {{ message }}

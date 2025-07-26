@@ -626,6 +626,7 @@ def osa_blocks_report_submit():
         return redirect(url_for('.osa_blocks'))
     except ObjectExists:
         return render_template('message.html',
-                               title='Duplicate site submission',
+                               title='Online Safety Act Blocks',
+                               subtitle='Duplicate site submitted',
                                message='Thank you for your site submission.  This site has already been reported as an Online Safety Act block.')
     
