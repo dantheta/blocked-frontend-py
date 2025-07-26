@@ -68,15 +68,21 @@ def admin_osa_update(id=None):
         'modifications': request.form.getlist('modifications'),
         'reasons': request.form.getlist('reasons'),
     })
-        
-    case.store()
-    g.conn.commit()
-    if id is None:
-        flash("Record added")
-    else:
-        flash("Record updated")
-    return redirect(url_for('.admin_osa_index'))
-
+     
+    try:
+        case.store()
+        g.conn.commit()
+        if id is None:
+            flash("Record added")
+        else:
+            flash("Record updated")
+        return redirect(url_for('.admin_osa_index'))
+    except ObjectExists:
+        return render_template('osa_edit.html',
+                               mode='edit' if id else 'add',
+                               url=case.get_url(),
+                               case=case,
+                               errmsg='duplicate')
 
 @admin_osa_pages.route('/control/osa/view/<int:id>')
 @check_moderator

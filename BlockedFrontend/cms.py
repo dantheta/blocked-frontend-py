@@ -10,7 +10,7 @@ from .models import Item, ISPReport
 from . import models
 from . import helpers
 from NORM import Query
-from NORM.exceptions import ObjectNotFound
+from NORM.exceptions import ObjectNotFound, ObjectExists
 
 from .resources import load_country_data
 
@@ -619,8 +619,13 @@ def osa_blocks_report_submit():
         'modifications': request.form.getlist('modifications')
     })
     
-    case.store()
-    g.conn.commit()
+    try:
+        case.store()
+        g.conn.commit()
+        
+        return redirect(url_for('.osa_blocks'))
+    except ObjectExists:
+        return render_template('message.html',
+                               title='Duplicate site submission',
+                               message='Thank you for your site submission.  This site has already been reported as an Online Safety Act block.')
     
-    return redirect(url_for('.osa_blocks'))
-

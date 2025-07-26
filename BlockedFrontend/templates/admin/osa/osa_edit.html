@@ -16,6 +16,9 @@
 <form method="POST" action="{{ url_for('.admin_osa_update', id=case.id) }}">
     <div class="row">
     {{ forms.text_field('URL', 'url', url.url, css='col-md-12') }}
+    {% if errmsg %}
+    <p class="alert alert-danger">{{ url.url }} has already been reported.</p>
+    {% endif %}
     </div>
 
     <div class="row">
