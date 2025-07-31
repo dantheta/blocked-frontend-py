@@ -41,14 +41,14 @@
         <h3 style="">
             <a href="{{ case.url }}" rel="nofollow">{{ case.title or (case.url|domain) }}</a>
         {% if case.block_type == 'shutdown_osa' %}
-            <span class="glyphicon glyphicon-remove-sign" />
+            <span class="glyphicon glyphicon-remove-sign" title="Site has shut down" />
         {% elif case.block_type == 'geoblock' or case.block_type == 'geoblock_osa' %}
-            <span class="glyphicon glyphicon-ban-circle" />
+            <span class="glyphicon glyphicon-ban-circle" title="Site is geo-blocking content" />
         {% endif %}
+        </h3>
         {% if case.title %}
         <div><small>{{ case.url }}</small></div>
         {% endif %}
-        </h3>
         <div>Reported: {{ case.created|fmtime}}</div>
         {% if case.shutdown_date %}
         <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
