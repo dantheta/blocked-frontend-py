@@ -46,9 +46,7 @@
             <span class="glyphicon glyphicon-ban-circle" title="Site is geo-blocking content" />
         {% endif %}
         </h3>
-        {% if case.title %}
         <div><small>{{ case.url }}</small></div>
-        {% endif %}
         <div>Reported: {{ case.created|fmtime}}</div>
         {% if case.shutdown_date %}
         <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
