@@ -39,7 +39,7 @@
 <div class="row row-border">
     <div class="col-md-12">
         <h3 style="">
-            <a href="{{ case.url }}" rel="nofollow">{{ case.title or (case.url|domain) }}</a>
+            <a href="{{ case.url }}" rel="nofollow">{{ case.url|domain|noproto }}{% if case.title %} | {{ case.title }}{% endif %}</a>
         {% if case.block_type == 'shutdown_osa' %}
             <span class="glyphicon glyphicon-remove-sign" title="Site has shut down" />
         {% elif case.block_type == 'geoblock' or case.block_type == 'geoblock_osa' %}
