@@ -969,7 +969,7 @@ class OSACase(DBObject):
             # messy, fix later
             sqlwhere, sqlargs = encode_where({OSACase.TABLE+'.'+k: v for (k,v) in kwargs.items()})
         else:
-            sqlwhere = "osa_cases.status > 'rejected'"
+            sqlwhere = "osa_cases.status >= 'confirmed'"
             sqlargs = []
         
         orderby = _orderby or 'osa_cases.created desc, urls.url'
