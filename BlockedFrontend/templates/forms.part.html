@@ -11,10 +11,10 @@
 {% macro text_field(label, name, value='', placeholder='', hint=None, css='', input_customize=None) %}
 <div class="form-group  {{ css }}">
     <label class="control-label" for="{{name}}">{{label}}</label>
-    <div class="input-group">
+    {% if input_customize %}<div class="input-group">{% endif %}
         <input class="form-control" name="{{name}}" value="{{value or ''}}" placeholder="{{placeholder}}"/>
-        {% if input_customize %}{{ input_customize() }}{% endif %}
-    </div>
+    {% if input_customize %}{{ input_customize() }}
+    </div>{% endif %}
     {{ hint_para(hint) }}
 </div>
 {% endmacro %}
