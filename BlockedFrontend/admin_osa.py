@@ -23,7 +23,7 @@ admin_osa_pages = Blueprint('admin_osa', __name__)
 @check_moderator
 def admin_osa_index():
     flt = request.args.get('filter')
-    fltargs = {}
+    fltargs = {'status': ('>=', 'submitted')}
     if flt == 'submitted':
         fltargs['status'] = 'submitted'
     if flt == 'rejected':
@@ -129,6 +129,18 @@ def admin_osa_delete(id):
     
     flash("Case {} deleted".format(case.id))
     return redirect(url_for('.admin_osa_index'))
+
+
+@admin_osa_pages.route('/control/osa/relaunch/<int:id>', methods=['POST'])
+@check_moderator
+def admin_osa_relaunch(id):
+    case = OSACase(g.conn, id)
+    case.update_relaunch(request.form['relaunch_date'], request.form['relaunch_url'])
+    g.conn.commit()
+
+    flash("Relaunch recorded")
+    return redirect(url_for('.admin_osa_view', id=case.id))
+
 
 @admin_osa_pages.route('/control/osa/snapshot', methods=['POST'])
 # @check_moderator

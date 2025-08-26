@@ -61,13 +61,14 @@ CREATE TYPE enum_osacase_status AS ENUM(
     'duplicate',
     'rejected',
     'submitted',
-    'confirmed'
+    'confirmed',
+    'relaunched'
 );
 
 
 CREATE TABLE osa_cases(
     id serial primary key,
-    urlid int NOT NULL unique,
+    urlid int NOT NULL,
     contact_id int NULL,
     source enum_osacase_source NOT NULL,
     block_type enum_osacase_block_type,
@@ -75,6 +76,9 @@ CREATE TABLE osa_cases(
     archive_url text,
     status enum_osacase_status DEFAULT 'submitted' NOT NULL,
     shutdown_date date null,
+
+    relaunch_url varchar null,
+    relaunch_date date null,
     
     reasons varchar[] default '{}',
     modifications varchar[] default '{}',
@@ -86,5 +90,5 @@ CREATE TABLE osa_cases(
     last_updated timestamptz null
 );
 
-
+CREATE UNIQUE INDEX ON osa_cases(urlid) WHERE status >= 'submitted';
 

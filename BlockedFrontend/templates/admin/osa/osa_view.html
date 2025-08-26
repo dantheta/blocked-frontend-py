@@ -109,13 +109,33 @@
     be possible straight away.</p>
   {% endif %}
   </div>
-</div>
+</div> <!-- /.row -->
 
-</div>
-</div>
+</div> <!-- /.well  -->
 
 
-</div> <!-- .well -->
+{% if case.status in ('confirmed','relaunched') %}
+<div class="well" style="margin-top: 3em">
+<div class="row">
+  <div class="col-md-6">
+      <h2>Relaunch</h2>
+      {% if case.status == 'confirmed' %}
+<form action="{{ url_for('.admin_osa_relaunch', id=case.id) }}" method="POST">
+
+{{ forms.text_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12', input_customize=input_snapshot) }}
+{{ forms.date_field('Relaunch date', 'relaunch_date', case.relaunch_date, css='col-md-12') }}
+
+{{ forms.submit('Record relaunch') }}
+</form>
+      {% elif case.status == 'relaunched' %}
+{{ forms.static_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12') }}
+{{ forms.static_field('Relaunch date', 'relaunch_date', case.relaunch_date|fmdate, css='col-md-12') }}
+
+      {% endif %}
+  </div>
+</div>
+</div> <!-- /.well -->
+{% endif %}
 
 {% endblock %}
 

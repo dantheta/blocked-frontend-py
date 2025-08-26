@@ -912,6 +912,8 @@ class OSACase(DBObject):
         'source',
         'shutdown_date',
         'archive_url',
+        'relaunch_date',
+        'relaunch_url',
         'reasons',
         'modifications',
         'comments',
@@ -944,6 +946,14 @@ class OSACase(DBObject):
             'status': 'submitted',
             'reviewed_userid': None,
             'reviewed_timestamp': None,
+        })
+        self.store()
+
+    def update_relaunch(self, relaunch_date, relaunch_url):
+        self.update({
+            'status': 'relaunched',
+            'relaunch_date': relaunch_date,
+            'relaunch_url': relaunch_url,
         })
         self.store()
 
