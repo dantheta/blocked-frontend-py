@@ -95,3 +95,5 @@ DEFAULT_REGION = 'gb'
 MAIL_DOMAIN = 'example.com'
 
 REPORT_AGE_CUTOFF = 30
+
+OG_TITLE_LOGO = "/static/img/result-logo-placeholder.png"
