@@ -14,8 +14,21 @@
     }
 
 .mr-1rem {
-   margin-right: 1rem;
+    margin-right: 1rem;
 }
+
+.mt-spc {
+    margin-top: 0.75em;
+}
+
+.link-list span:after {
+    content: " | ";
+}
+
+.link-list span:last-child:after {
+    content: "";
+}
+
 {% endblock %}
 
 {% block banner_text %}
@@ -49,19 +62,27 @@
         <div><small>{{ case.url }}</small></div>
         <div>Reported: {{ case.created|fmtime}}</div>
         {% if case.shutdown_date %}
-        <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
+            <div>Shut down on: {{ case.shutdown_date|fmdate }}</div>
         {% endif %}
-        <div style="margin-top: 0.75rem">{{ osa_common.block_type_options[case.block_type]|safe }}</div>
+        {% if case.status == 'relaunched' %}
+            <div>Relaunched: {{ case.relaunch_date|fmdate }} </div>
+        {% endif %}
+        <div class="mt-spc">{{ osa_common.block_type_options[case.block_type]|safe }}</div>
         <div>
             {{ case.description|null }}
         </div>
-        <div style="margin-top: 0.75rem">
+        <div class="mt-spc">
             <span class="label label-default mr-1rem">
                 {{ case.status|title }}
             </span>
+            <span class="link-list">
             {% if case.archive_url %}
-            <a href="{{ case.archive_url }}">Archived page <span class="glyphicon glyphicon-new-window" /></a>
+                <span><a href="{{ case.archive_url }}" target="_blank">Shutdown announcement <span class="glyphicon glyphicon-new-window" /></a></span>
             {% endif %}
+            {% if case.status == 'relaunched' %}
+                <span><a href="{{ case.relaunch_url }}" target="_blank">Relaunch announcement <span class="glyphicon glyphicon-new-window" /></a></span>
+            {% endif %}
+            </span>
         </div>
     </div>
 </div>
