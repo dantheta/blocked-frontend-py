@@ -122,7 +122,7 @@
       {% if case.status == 'confirmed' %}
 <form action="{{ url_for('.admin_osa_relaunch', id=case.id) }}" method="POST">
 
-{{ forms.text_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12') }}
+{{ forms.text_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12', input_customize=input_snapshot) }}
 {{ forms.date_field('Relaunch date', 'relaunch_date', case.relaunch_date, css='col-md-12') }}
 
 {{ forms.submit('Record relaunch') }}
@@ -141,29 +141,30 @@
 
 {% macro input_snapshot() %}
     <span class="input-group-btn">
-        <button id="snapshot" class="btn btn-default" type="button" title="Convert to wayback machine snapshot"><i class="glyphicon glyphicon-camera"></i></button>
+        <button class="snapshot btn btn-default" type="button" title="Convert to wayback machine snapshot"><i class="glyphicon glyphicon-camera"></i></button>
     </span>
 {% endmacro %}
 
 {% block page_script %}
 
 function rset_snapshot(ok) {
-    $('#snapshot i').removeClass('glyphicon-hourglass')
+    $('.snapshot i').removeClass('glyphicon-hourglass')
     if (ok) {
-        $('#snapshot i').addClass('glyphicon-ok')
+        $('.snapshot i').addClass('glyphicon-ok')
     } else {
-        $('#snapshot i').addClass('glyphicon-warning-sign')
+        $('.snapshot i').addClass('glyphicon-warning-sign')
     }
 }
 
 $(document).ready(function(){
-    $('#snapshot').click(function(){
-        $('#snapshot i').removeClass('glyphicon-camera')
-        $('#snapshot i').addClass('glyphicon-hourglass')
+    $('.snapshot').click(function(){
+        $(this).find('i').removeClass('glyphicon-camera').addClass('glyphicon-hourglass')
+        urlfield = $(this).parent().parent().find('input')
+
         $.post('{{ url_for('.admin_osa_snapshot') }}',
-               {'url': $('input[name=archive_url]').val()}
+               {'url': urlfield.val()}
                ).done(function(data, status, xhr){
-                    $('input[name=archive_url]').val(data.archive_url)   
+                    urlfield.val(data.archive_url)   
                     rset_snapshot(true)
                }).fail(function(xhr, status, err){
                     $('#wayback_status').text("Error: " + xhr.getResponseHeader('X-Error'))
