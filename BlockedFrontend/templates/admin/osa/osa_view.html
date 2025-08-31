@@ -122,7 +122,7 @@
       {% if case.status == 'confirmed' %}
 <form action="{{ url_for('.admin_osa_relaunch', id=case.id) }}" method="POST">
 
-{{ forms.text_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12', input_customize=input_snapshot) }}
+{{ forms.text_field('Relaunch announcement archive URL', 'relaunch_url', case.relaunch_url, css='col-md-12') }}
 {{ forms.date_field('Relaunch date', 'relaunch_date', case.relaunch_date, css='col-md-12') }}
 
 {{ forms.submit('Record relaunch') }}
