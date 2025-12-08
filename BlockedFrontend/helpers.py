@@ -25,6 +25,11 @@ class OSACase:
     @staticmethod
     def snapshot_url(url):
         import waybackpy
+
+        if current_app.testing:
+            import time
+            time.sleep(1)
+            return {'archive_url': "ok " + url, 'status': 'success'}
         
         call = waybackpy.WaybackMachineSaveAPI(url)
         try:
