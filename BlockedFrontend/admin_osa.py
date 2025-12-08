@@ -28,6 +28,8 @@ def admin_osa_index():
         fltargs['status'] = 'submitted'
     if flt == 'rejected':
         fltargs['status'] = 'rejected'
+    if flt == 'at-risk':
+        fltargs['status'] = 'at-risk'
     
     objlist = OSACase.select_with_urls(g.conn, _orderby='id desc', **fltargs)
     return render_template('osa/osa_index.html',
@@ -45,7 +47,8 @@ def admin_osa_edit(id=None):
     return render_template('osa/osa_edit.html', 
                            mode='edit' if id else 'add',
                            url=case.get_url(),
-                           case=case
+                           case=case,
+                           formtype=request.args.get('formtype'),
                            )
 
 @admin_osa_pages.route('/control/osa/update', methods=['POST'])
@@ -60,14 +63,20 @@ def admin_osa_update(id=None):
         case.update(helpers.OSACase.submit_url(request.form['url']))
 
     case.update({
-        'shutdown_date': request.form['shutdown_date'] or None,
         'description': request.form['description'],
-        'block_type': request.form['block_type'],
         'source': request.form['source'],
-        
-        'modifications': request.form.getlist('modifications'),
-        'reasons': request.form.getlist('reasons'),
     })
+
+
+    if request.form.get('formtype') in (None, 'shutdown'):
+        case.update({
+            'shutdown_date': request.form['shutdown_date'] or None,
+            'block_type': request.form['block_type'],
+            'modifications': request.form.getlist('modifications'),
+            'reasons': request.form.getlist('reasons'),
+        })
+    else:
+        case.update({'status': 'at-risk'})
      
     try:
         case.store()
@@ -83,6 +92,7 @@ def admin_osa_update(id=None):
                                url=case.get_url(),
                                case=case,
                                errmsg='duplicate')
+
 
 @admin_osa_pages.route('/control/osa/view/<int:id>')
 @check_moderator

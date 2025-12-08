@@ -10,7 +10,8 @@
 
         <h1>{{pagetitle}}</h1>
         <div class="pull-right">
-            <a href="{{url_for('.admin_osa_edit')}}" class="btn btn-primary">Add</a>
+            <a href="{{url_for('.admin_osa_edit')}}" class="btn btn-default">Record site shut-down</a>
+            <a href="{{url_for('.admin_osa_edit', formtype='at-risk')}}" class="btn btn-default">Record at-risk</a>
         </div>
         <h2>Online safety act shutdowns/blocks</h2>
         
@@ -25,6 +26,7 @@
     <li role="presentation" class="{{ 'active' if not filter else '' }}" title="All non-rejected cases"><a href="{{ url_for('.admin_osa_index') }}">All</a></li>
     <li role="presentation" class="{{ 'active' if filter=='submitted' else ''}}" title="All cases awaiting moderation"><a href="{{ url_for('.admin_osa_index', filter='submitted') }}">Submitted</a></li>
     <li role="presentation" class="{{ 'active' if filter=='rejected' else ''}}" title="All rejected cases"><a href="{{ url_for('.admin_osa_index', filter='rejected') }}">Rejected</a></li>
+    <li role="presentation" class="{{ 'active' if filter=='at-risk' else ''}}" title="At-risk sites"><a href="{{ url_for('.admin_osa_index', filter='at-risk') }}">At-risk</a></li>
     </ul>
   </div>
 </div>
@@ -34,7 +36,6 @@
 
         <table class="table">
             <tr>
-                <th></th>
                 <th>Site</th>
                 <th>Status</th>
                 <th></th>
@@ -42,10 +43,10 @@
             {% for case in cases %}
             <tr>
                 <td>
-                    <h3 style="margin-top: 0px"><a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.id}}</a></h3>
-                </td>
-                <td>
-                    <div><a href="{{ case.url }}" rel="nofollow" target="_blank">{{case.url}}</a></div>
+                    <div>
+                        <a href="{{url_for('.admin_osa_view', id=case.id)}}">{{case.url}}</a>
+                        <a href="{{ case.url }}" rel="nofollow" target="_blank"><span class="glyphicon glyphicon-share" title="open {{ case.url }} in a new window" /></a>
+                    </div>
                     {% if case.title %}
                     <div><small>{{ case.title|null }}</small></div>
                     {% endif %}

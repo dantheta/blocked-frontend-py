@@ -60,6 +60,7 @@ CREATE TYPE enum_osacase_block_type AS ENUM(
 CREATE TYPE enum_osacase_status AS ENUM(
     'duplicate',
     'rejected',
+    'at_risk',
     'submitted',
     'confirmed',
     'relaunched'
