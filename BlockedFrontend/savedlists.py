@@ -77,6 +77,11 @@ def show_list(name, page=1):
     network = request.args.get('network')
     status = request.args.get('status')
 
+    # protect from bad performance
+    if not g.admin:
+        if request.args.get('exclude') or request.args.get('tld') or network:
+            abort(403)
+
     session['route'] = 'savedlist'
     if page < 1:
         return redirect(url_for('.show_list', name=name))
