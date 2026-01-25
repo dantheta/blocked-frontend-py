@@ -65,6 +65,7 @@ def admin_osa_update(id=None):
     case.update({
         'description': request.form['description'],
         'source': request.form['source'],
+        'hide_url': 'hide_url' in request.form,
     })
 
 

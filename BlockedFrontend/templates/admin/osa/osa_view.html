@@ -19,7 +19,9 @@
         </div>
         <h3>{{ url.title or url.url }}
         {% if url.title %}
-        <small><a href="{{ url.url }}" rel="nofollow">{{ url.url }}</a></small>
+        <small><a href="{{ url.url }}" rel="nofollow">{{ url.url }}</a>
+        {% if case.hide_url %} (URL hidden) {% endif %}
+        </small>
         {% endif %} 
         </h3>        
         <p>{{ case.description }}</p>

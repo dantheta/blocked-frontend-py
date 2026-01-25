@@ -28,6 +28,12 @@
     </div>
 
     <div class="row">
+        <div class="col-md-6">
+            {{ forms.check_field('Hide URL on public site','hide_url', '1', case.hide_url) }}
+        </div>
+    </div>
+
+    <div class="row">
     {{ forms.textarea_field('Description', 'description', case.description, css='col-md-12') }}
     </div>
     
