@@ -920,6 +920,7 @@ class OSACase(DBObject):
         'description',
         'reviewed_userid',
         'reviewed_timestamp',
+        'hide_url',
     ]
 
 

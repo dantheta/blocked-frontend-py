@@ -84,6 +84,7 @@ CREATE TABLE osa_cases(
     reasons varchar[] default '{}',
     modifications varchar[] default '{}',
     comments text null,
+    hide_url boolean default false,
     
     reviewed_userid int null,
     reviewed_timestamp timestamptz null,
